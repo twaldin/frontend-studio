@@ -1,0 +1,10 @@
+.DS_Store
+node_modules/
+dist/
+playwright-report/
+test-results/
+*.log
+.env
+.env.*
+!.env.example
+studio/export/

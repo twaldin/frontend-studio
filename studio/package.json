@@ -1,0 +1,33 @@
+{
+  "name": "frontend-studio",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "tree:md": "bun run scripts/tree-md.ts",
+    "audit": "bun scripts/audit.ts",
+    "export": "bun run scripts/export.ts",
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@base-ui/react": "^1.8.0",
+    "@radix-ui/colors": "^3.0.0",
+    "clsx": "^2.1.1",
+    "lucide-react": "^1.47.0",
+    "motion": "^13.4.0",
+    "react": "^19",
+    "react-dom": "^19"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.3.3",
+    "@types/node": "^26.6.2",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.1",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.0"
+  }
+}

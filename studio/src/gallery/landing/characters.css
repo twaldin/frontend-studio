@@ -1,0 +1,193 @@
+.landing-character {
+  --voxel: 4px;
+  --character-scale: 1;
+  position: relative;
+  width: calc(var(--voxel) * 16);
+  height: calc(var(--voxel) * 33);
+  transform-style: preserve-3d;
+  animation: landing-walk-track 16s linear infinite;
+  animation-play-state: var(--character-motion, running);
+}
+
+.landing-character--two {
+  --character-scale: 0.82;
+  animation-duration: 20s;
+  animation-delay: -7s;
+}
+
+.landing-character--three {
+  --character-scale: 1.08;
+  animation: landing-miner-pause 14s ease-in-out infinite;
+  animation-play-state: var(--character-motion, running);
+}
+
+.landing-character__figure {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-origin: bottom center;
+  animation: landing-character-bob 0.78s ease-in-out infinite alternate;
+  animation-play-state: var(--character-motion, running);
+}
+
+.landing-character__head,
+.landing-character__body,
+.landing-character__arm,
+.landing-character__leg {
+  position: absolute;
+  border: 1px solid var(--border-card);
+  box-shadow: var(--shadow-sm);
+  transform-style: preserve-3d;
+}
+
+.landing-character__head {
+  top: 0;
+  left: calc(var(--voxel) * 4);
+  width: calc(var(--voxel) * 8);
+  height: calc(var(--voxel) * 8);
+  background: var(--primary);
+  transform: rotateY(-12deg) rotateX(6deg);
+}
+
+.landing-character__head::before,
+.landing-character__body::before {
+  content: "";
+  position: absolute;
+  top: var(--voxel);
+  right: calc(var(--voxel) * -2);
+  width: calc(var(--voxel) * 2);
+  height: calc(100% - var(--voxel));
+  background: color-mix(in srgb, var(--primary) 62%, var(--foreground));
+  transform: skewY(-42deg);
+  transform-origin: left top;
+  opacity: 0.72;
+}
+
+.landing-character__head::after {
+  content: "";
+  position: absolute;
+  top: calc(var(--voxel) * 2);
+  left: calc(var(--voxel) * 2);
+  width: var(--voxel);
+  height: var(--voxel);
+  background: var(--primary-foreground);
+  box-shadow: calc(var(--voxel) * 3) 0 0 var(--primary-foreground);
+}
+
+.landing-character__body {
+  top: calc(var(--voxel) * 9);
+  left: calc(var(--voxel) * 4);
+  width: calc(var(--voxel) * 8);
+  height: calc(var(--voxel) * 12);
+  background: var(--muted);
+}
+
+.landing-character__body::before {
+  background: color-mix(in srgb, var(--muted) 65%, var(--foreground));
+}
+
+.landing-character__arm {
+  top: calc(var(--voxel) * 9);
+  width: calc(var(--voxel) * 4);
+  height: calc(var(--voxel) * 12);
+  background: color-mix(in srgb, var(--primary) 48%, var(--muted));
+  transform-origin: 50% var(--voxel);
+  animation: landing-limb-swing 0.78s ease-in-out infinite alternate;
+  animation-play-state: var(--character-motion, running);
+}
+
+.landing-character__arm--left {
+  left: 0;
+}
+
+.landing-character__arm--right {
+  right: 0;
+  animation-direction: alternate-reverse;
+}
+
+.landing-character__leg {
+  top: calc(var(--voxel) * 21);
+  width: calc(var(--voxel) * 4);
+  height: calc(var(--voxel) * 12);
+  background: var(--foreground);
+  transform-origin: 50% var(--voxel);
+  animation: landing-leg-swing 0.78s ease-in-out infinite alternate;
+  animation-play-state: var(--character-motion, running);
+}
+
+.landing-character__leg--left {
+  left: calc(var(--voxel) * 4);
+}
+
+.landing-character__leg--right {
+  right: calc(var(--voxel) * 4);
+  animation-direction: alternate-reverse;
+}
+
+.landing-character--mining .landing-character__arm--right {
+  top: calc(var(--voxel) * 7);
+  right: calc(var(--voxel) * -2);
+  transform-origin: 50% calc(var(--voxel) * 10);
+  animation: landing-mine-swing 1.2s ease-in-out infinite;
+  animation-play-state: var(--character-motion, running);
+}
+
+.landing-character__pickaxe {
+  position: absolute;
+  top: calc(var(--voxel) * 9);
+  left: calc(var(--voxel) * 1.5);
+  width: var(--voxel);
+  height: calc(var(--voxel) * 10);
+  border: 1px solid var(--border-card);
+  background: var(--foreground);
+}
+
+.landing-character__pickaxe::after {
+  content: "";
+  position: absolute;
+  bottom: calc(var(--voxel) * -1);
+  left: calc(var(--voxel) * -2);
+  width: calc(var(--voxel) * 5);
+  height: calc(var(--voxel) * 2);
+  border: 1px solid var(--border-card);
+  background: var(--primary);
+}
+
+.landing-character--mining .landing-character__leg {
+  animation-duration: 2.4s;
+}
+
+@keyframes landing-walk-track {
+  0% { transform: translateX(-90px); }
+  25% { transform: translateX(40px); }
+  50% { transform: translateX(160px); }
+  75% { transform: translateX(285px); }
+  100% { transform: translateX(420px); }
+}
+
+@keyframes landing-miner-pause {
+  0%, 16% { transform: translateX(-48px); }
+  30%, 78% { transform: translateX(28px); }
+  100% { transform: translateX(92px); }
+}
+
+@keyframes landing-character-bob {
+  from { transform: translateY(0) scale(var(--character-scale)); }
+  to { transform: translateY(-2px) scale(var(--character-scale)); }
+}
+
+@keyframes landing-limb-swing {
+  from { transform: rotateX(-24deg) rotateZ(-10deg); }
+  to { transform: rotateX(24deg) rotateZ(10deg); }
+}
+
+@keyframes landing-leg-swing {
+  from { transform: rotateX(-28deg); }
+  to { transform: rotateX(28deg); }
+}
+
+@keyframes landing-mine-swing {
+  0%, 100% { transform: rotateZ(-72deg); }
+  48% { transform: rotateZ(42deg); }
+  60% { transform: rotateZ(32deg); }
+}

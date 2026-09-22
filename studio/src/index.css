@@ -1,0 +1,93 @@
+@import "tailwindcss";
+@import "./fonts.css";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/*
+  Live variables are set on the gallery root by the token resolver. The
+  @theme inline block maps them to utilities so gallery components can use
+  bg-background, text-muted-foreground, rounded-md, shadow-sm, etc.
+*/
+@theme inline {
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-soft-hover: var(--accent-soft-hover);
+  --color-accent-text: var(--accent-text);
+  --color-destructive: var(--destructive);
+  --color-warning: var(--warning);
+  --color-success: var(--success);
+  --color-border: var(--border);
+  --color-border-card: var(--border-card);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-muted: var(--sidebar-muted);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-hover: var(--sidebar-hover);
+  --radius-sm: calc(var(--radius) - 2px);
+  --radius-md: var(--radius);
+  --radius-lg: calc(var(--radius) + 2px);
+  --radius-xl: calc(var(--radius) + 6px);
+  --radius-control: var(--radius-control);
+  --shadow-sm: var(--shadow-sm);
+  --shadow-md: var(--shadow-md);
+  --shadow-lg: var(--shadow-lg);
+  --text-chrome: var(--text-chrome);
+  --text-body: var(--text-body);
+  --spacing-control: var(--control-h);
+  --spacing-row: var(--row-h);
+}
+
+/* Studio chrome: fixed, independent of the gallery's live theme. */
+:root {
+  --studio-bg: #0b0c0e;
+  --studio-panel: #121317;
+  --studio-line: #23252b;
+  --studio-fg: #e6e7ea;
+  --studio-muted: #8b8f98;
+  --studio-accent: #7c86ff;
+  color-scheme: dark;
+}
+
+html, body, #root { height: 100%; margin: 0; }
+body {
+  background: var(--studio-bg);
+  color: var(--studio-fg);
+  font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
+  font-size: 13px;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* The gallery root: everything inside reads the live theme. */
+.gallery {
+  font-family: var(--font-sans);
+  font-size: var(--text-body);
+  background: var(--background);
+  color: var(--foreground);
+  color-scheme: light;
+}
+.gallery.dark { color-scheme: dark; }
+.gallery .tabular, .gallery table { font-variant-numeric: tabular-nums; }
+.gallery :focus-visible { outline: 2px solid var(--ring); outline-offset: 1px; }
+
+.chrome { font-size: var(--text-chrome); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
