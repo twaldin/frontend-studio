@@ -128,8 +128,9 @@ export function useStudio({ persist, contentSource }: { persist: boolean; conten
         if (!linkHasChoices) setState((s) => ({ ...s, choices: { ...untouched("choices", saved.choices), ...s.choices } }));
         setPersistence("file");
       } catch {
+        if (cancelled) return;
         touched.current = null;
-        if (!cancelled) setPersistence("off");
+        setPersistence("off");
       }
     };
     void load();

@@ -18,10 +18,16 @@ export interface LoadedContent {
 export function useContent(): LoadedContent {
   const [loaded, setLoaded] = useState<LoadedContent>({ content: DEFAULT_CONTENT, source: "default" });
   useEffect(() => {
-    // Same-origin sources stay paths into public/; anything else (`//cdn…/copy.json`) becomes an
-    // absolute URL, so `bun run export` can tell a file it reads from a URL it fetches.
-    const resolved = new URL(new URLSearchParams(location.search).get("content") ?? "/content.json", location.href);
-    const url = resolved.origin === location.origin ? resolved.pathname : resolved.href;
+    // A queryless same-origin source stays a path into public/; anything else (another origin,
+    // `//cdn…/copy.json`, an endpoint with a query) becomes the absolute URL, so `bun run export`
+    // reads the file or repeats the same request.
+    let url: string;
+    try {
+      const resolved = new URL(new URLSearchParams(location.search).get("content") ?? "/content.json", location.href);
+      url = resolved.origin === location.origin && !resolved.search ? resolved.pathname : resolved.href;
+    } catch {
+      return; // A malformed `?content=`: the default content stays.
+    }
     let last = "";
     let cancelled = false;
     const load = async () => {
