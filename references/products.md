@@ -29,7 +29,7 @@ The public sites below were reviewed in July 2026 at desktop width. Re-check bef
 | Community | Rounded friendly type, orange signal, pill controls | Feed of posts with replies and a side rail | Split hero, phone frame, numbers as proof |
 | Media app | Dark, cover art first, rounded tiles, glow | Shelves of covers and a now-playing bar | Full-bleed media, ambient motion |
 | Learning app | Rounded heavy type, green signal, pressed buttons | Lesson path, streaks and a daily goal | Device frame, characters, numbers |
-| Game companion | Dark cool neutral, amber, square corners, grotesk | Player card, quests, inventory, rankings | Media hero, scroll chapters, characters |
+| Game companion | Dark cool neutral, amber, square corners, grotesk | Player card, quests, inventory, rankings | Media hero over an accent glow, scroll chapters |
 | Indie shop | Grotesk, high contrast, pink, offset shadows, no radius | Product grid, filters and a cart | Typographic hero, abstract shapes, quotes |
 | Utilitarian | System type, no radius, black on white, blue links | One compact tool, plain rows | Typographic hero, email capture, no proof |
 | Newspaper | Serif text, warm paper, column rules, no radius | Reading-first, display page titles | Typographic hero, grain, quotes |

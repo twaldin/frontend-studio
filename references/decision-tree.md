@@ -367,10 +367,10 @@ _A frame says 'this is software'; no frame says 'this is the thing itself'._
 
 _Personality. The pieces must come from the product, never from a stock set._
 
-- **None** `none` — The product is the only visual. _(default for: linear, vercel, raycast, ramp, apple, cursor, supabase, attio, resend, agentchat, mediaapp, utilitarian, newspaper)_
+- **None** `none` — The product is the only visual. _(default for: linear, vercel, raycast, ramp, apple, cursor, supabase, attio, resend, agentchat, mediaapp, gamecompanion, utilitarian, newspaper)_
 - **Floating icons** `icons` — Product objects drift around the hero. _(default for: stripe, airbnb)_
-- **Characters** `characters` — Animated figures doing tasks. raindrop. _(default for: notion, raindrop, posthog, community, learning, gamecompanion)_
-- **Abstract** `shapes` — Geometric shapes and lines. _(default for: mercury, cashapp, figma, indieshop)_
+- **Characters** `characters` — Animated figures doing tasks. raindrop. _(default for: notion, raindrop, posthog, learning)_
+- **Abstract** `shapes` — Geometric shapes and lines. _(default for: mercury, cashapp, figma, community, indieshop)_
 
 ### 38. Proof section?
 

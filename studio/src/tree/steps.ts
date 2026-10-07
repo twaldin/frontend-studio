@@ -728,7 +728,7 @@ export const PRESETS: Record<string, ResolvedChoices> = {
     stats: "inline", trend: "none", tables: "borderless", rowHover: "fill", cards: "hairline", inputs: "filled", buttons: "filled",
     iconWeight: "regular", menus: "plain", motion: "expressive",
     register: "playful", display: "heavy", displayCase: "written", hero: "split", heroMotion: "entrance", background: "flat", rhythm: "bento",
-    frames: "phone", characters: "characters", proof: "numbers", cta: "pair",
+    frames: "phone", characters: "shapes", proof: "numbers", cta: "pair",
   },
   mediaapp: {
     archetype: "media", reference: "mediaapp", look: "immersive",
@@ -758,7 +758,7 @@ export const PRESETS: Record<string, ResolvedChoices> = {
     stats: "cards", trend: "sparkline", tables: "zebra", rowHover: "fill", cards: "fill", inputs: "filled", buttons: "filled",
     iconWeight: "tiles", menus: "hints", motion: "expressive",
     register: "same", display: "heavy", displayCase: "written", hero: "media", heroMotion: "scroll", background: "glow", rhythm: "chapters",
-    frames: "none", characters: "characters", proof: "numbers", cta: "single",
+    frames: "none", characters: "none", proof: "numbers", cta: "single",
   },
   indieshop: {
     archetype: "commerce", reference: "indieshop", look: "brutalist",
