@@ -1,10 +1,13 @@
 /**
  * The decision tree. A step is one design decision with a small set of
- * discrete options. Choosing a reference in the first step presets every
- * later step; the user then confirms or deviates one step at a time.
+ * discrete options. The archetype and the reference in the first steps
+ * preset every later step; the user then confirms or deviates one step at a time.
  */
 
-export type Branch = "base" | "app" | "landing";
+export type Branch = "product" | "frame" | "tokens" | "components" | "landing";
+
+/** The product's shape. It picks the home surface and the sample content the studio renders. */
+export type Archetype = "workspace" | "feed" | "commerce" | "reader" | "media" | "companion" | "canvas" | "conversation" | "utility";
 
 export interface Option {
   id: string;
@@ -26,8 +29,11 @@ export interface Step {
 }
 
 export type StepId =
-  // base
+  // product
+  | "archetype"
   | "reference"
+  | "look"
+  // tokens
   | "typeface"
   | "mono"
   | "neutral"
@@ -36,7 +42,7 @@ export type StepId =
   | "radius"
   | "depth"
   | "themes"
-  // app
+  // frame and components
   | "density"
   | "spacing"
   | "shell"

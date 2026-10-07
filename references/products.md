@@ -25,6 +25,36 @@ The public sites below were reviewed in July 2026 at desktop width. Re-check bef
 | PostHog | Warm neutral, orange signal, illustrated personality | Dense analytics suite | Playful product cards, grain, character-led proof |
 | Attio | Monochrome editorial precision, sharp geometry | Compact CRM tables and records | Restrained product shot, exact copy, alternating claims |
 | Resend | High-contrast dark monochrome, tight type | Compact developer infrastructure | Split code/product hero, grid, concise developer proof |
+| Agent chat | Neutral chrome, soft corners, filled inputs | Thread list plus one centered conversation | Product shot of a working thread |
+| Community | Rounded friendly type, orange signal, pill controls | Feed of posts with replies and a side rail | Split hero, phone frame, numbers as proof |
+| Media app | Dark, cover art first, rounded tiles, glow | Shelves of covers and a now-playing bar | Full-bleed media, ambient motion |
+| Learning app | Rounded heavy type, green signal, pressed buttons | Lesson path, streaks and a daily goal | Device frame, characters, numbers |
+| Game companion | Dark cool neutral, amber, square corners, grotesk | Player card, quests, inventory, rankings | Media hero over an accent glow, scroll chapters |
+| Indie shop | Grotesk, high contrast, pink, offset shadows, no radius | Product grid, filters and a cart | Typographic hero, abstract shapes, quotes |
+| Utilitarian | System type, no radius, black on white, blue links | One compact tool, plain rows | Typographic hero, email capture, no proof |
+| Newspaper | Serif text, warm paper, column rules, no radius | Reading-first, display page titles | Typographic hero, grain, quotes |
+
+The last eight are genre presets: each encodes a look common to a kind of product, drawn from several products rather than one profile. They exist so a product outside developer-tool SaaS starts from a register that fits it.
+
+## Archetypes
+
+The walk opens with the product's archetype. It picks the home surface the studio renders, the sample content, and the reference to start from; references that fit it are listed first.
+
+| Archetype | Main object and home | Starts from |
+| --- | --- | --- |
+| Workspace | Records and operations: figures, what needs attention, the main table | Linear |
+| Feed | Posts from people, a composer, replies, a side rail | Community |
+| Store or marketplace | Listings in a grid, filters, a cart | Airbnb |
+| Course or reader | A lesson path, progress and streaks, a reading library | Learning app |
+| Media library | A featured item, shelves of covers, a now-playing bar | Media app |
+| Game companion | A player card, quests, inventory, rankings | Game companion |
+| Editor or canvas | A toolbar, layers, the canvas, properties | Figma |
+| Conversation | A thread list, the thread with an agent or people, a composer | Agent chat |
+| Utility | One focused tool, its history and shortcuts | Raycast |
+
+## Looks
+
+The look is the app's visual language: quiet, editorial, playful, brutalist, print or immersive. Each reference has its own. Picking another re-defaults the steps that make the look (type, contrast, radius, depth, card, input and button style) and keeps the rest of the reference's frame, with three exceptions: editorial also sets a comfortable density, airy spacing and display page titles, print sets display page titles, and immersive sets a dark-only theme with a dimmer sidebar. `decision-tree.md` lists every look's re-defaults. A look also sets tokens no other step does: the heading voice (serif for editorial and print, heavy for playful), a canvas texture (paper grain for print, an accent glow for immersive), and the button edge (pressed for playful, a hard offset with offset depth).
 
 ## Researched profiles
 
@@ -128,10 +158,11 @@ The public sites below were reviewed in July 2026 at desktop width. Re-check bef
 
 Choose by structural similarity before visual taste:
 
-1. task frequency and information density;
-2. shell and primary object;
-3. trust posture and audience;
-4. evidence available for the landing page;
-5. only then type, color, motion, and personality.
+1. the archetype: the product's main object and its home surface;
+2. task frequency and information density;
+3. shell and primary object;
+4. trust posture and audience;
+5. evidence available for the landing page;
+6. only then type, color, motion, and personality, which the look step sets on purpose.
 
 A preset recommendation must name what transfers and what does not. For example: “Use Attio's compact relational hierarchy, but not its monochrome accent because this product needs status separation.” Record every deviation in the exported decisions.

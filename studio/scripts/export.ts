@@ -9,11 +9,11 @@
  */
 import { existsSync } from "node:fs";
 import { resolveChoices, STEP_BY_ID } from "../src/tree/steps";
-import type { Choices, StepId } from "../src/tree/types";
+import type { Archetype, Choices, StepId } from "../src/tree/types";
 import { resolveTokens, themeCss } from "../src/tokens/resolve";
 import { componentsJson, decisionsMarkdown, studioNotesMarkdown } from "../src/studio/Export";
 import { parseSaved, type SavedState } from "../src/studio/saved";
-import { DEFAULT_CONTENT } from "../src/content/default";
+import { CONTENT_BY_ARCHETYPE } from "../src/content/default";
 import { applyCopy, mergeContent } from "../src/content/copy";
 
 const argv = process.argv.slice(2);
@@ -74,7 +74,7 @@ if (saved) {
       process.exit(1);
     }
   }
-  const content = mergeContent(DEFAULT_CONTENT, project);
+  const content = mergeContent(CONTENT_BY_ARCHETYPE[resolved.archetype as Archetype], project);
   await Bun.write(new URL("content.json", dir), `${JSON.stringify(applyCopy(content, saved.copy), null, 2)}\n`);
   written.push("content.json");
 }

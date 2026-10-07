@@ -11,9 +11,9 @@ A step is one design decision; an option is one answer to it. Read this before w
 
 ## Product axes and style axes
 
-- **Style axes** are the generic tree in `studio/src/tree/steps.ts`: type, color, shape, depth, density, shell, motion and the landing. Every product walks them.
+- **Style axes** are the generic tree in `studio/src/tree/steps.ts`: the product's archetype, reference and look, then type, color, shape, depth, density, shell, motion and the landing. Every product walks them, on the home surface and sample content of its archetype.
 - **Product axes** come from the brief's surfaces: how the core object is composed, where secondary actions and generated or added content appear, how results and progress read, onboarding, first-run and empty states. Write them as steps under the same rules. They need the product's real surfaces, so they live in an in-app studio ([in-app-studio.md](in-app-studio.md)).
-- Order the tree from the frame (navigation, shell) to the fine grain (geometry, motion), so early answers constrain later ones.
+- Order the tree from the product's shape and register, through the frame (navigation, shell), to the fine grain (geometry, motion), so early answers constrain later ones. The generic tree runs product, frame, tokens, components, landing.
 
 ## Show what each option changes
 
@@ -37,4 +37,4 @@ Agents fall back on a few looks when nothing steers them. An option may use one 
 - a single gimmick standing in for a decision (a terminal theme, a CRT theme);
 - copy that explains the design ("clean, minimal, distraction-free").
 
-The opposite default is just as strong: calm developer-tool SaaS (a cool-gray sidebar, an Inter-class sans, one indigo or blue accent, hairlines). The reference presets lean that way, so check that a product outside that category isn't drifting there because it's the preset, not because it fits.
+The opposite default is just as strong: calm developer-tool SaaS (a cool-gray sidebar, an Inter-class sans, one indigo or blue accent, hairlines). Most of the product presets lean that way, so check that a product outside that category isn't drifting there because it's the preset, not because it fits. The archetype and look steps are where a product picks its shape and register on purpose: start from the archetype's reference, and pick a look other than quiet when the product's audience calls for it.

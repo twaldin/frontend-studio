@@ -3,12 +3,15 @@ import { useStudio, type Mode, type Studio } from "./studio/state";
 import { Stepper } from "./studio/Stepper";
 import { ExportPanel } from "./studio/Export";
 import { CopyPanel } from "./studio/CopyPanel";
-import { applyCopy } from "./content/copy";
+import { applyCopy, mergeContent } from "./content/copy";
+import { CONTENT_BY_ARCHETYPE } from "./content/default";
 import { useContent } from "./content/load";
 import { GalleryContext, type GalleryEnv } from "./gallery/context";
 import { AppGallery, ShellScene } from "./gallery/app";
 import { LandingGallery, LandingHero, LANDING_SPECIMENS, scrollTargetId } from "./gallery/landing";
 import { SPECIMENS } from "./gallery/specimens";
+import { defaultsFor, optionsFor } from "./tree/steps";
+import type { Archetype, StepId } from "./tree/types";
 import type { Resolved } from "./tokens/resolve";
 
 function GalleryRoot({ tokens, env, children, className = "" }: { tokens: Resolved; env: GalleryEnv; children: ReactNode; className?: string }) {
@@ -24,9 +27,9 @@ function GalleryRoot({ tokens, env, children, className = "" }: { tokens: Resolv
         data-shell={env.choices.shell}
         data-tables={env.choices.tables}
         data-buttons={env.choices.buttons}
-        data-depth={env.choices.depth}
         data-motion={env.choices.motion}
         data-register={env.choices.register}
+        data-look={env.choices.look}
       >
         {children}
       </div>
@@ -101,11 +104,14 @@ function TopBar({ studio, panel, setPanel }: { studio: Studio; panel: Panel; set
   );
 }
 
+/** Steps that set the defaults show the whole product: the app shell and the landing's first screen. */
+const PRODUCT_STEPS: Partial<Record<StepId, true>> = { archetype: true, reference: true, look: true };
+
 /** One theme's view of an app step: the step's specimen, then the shell as context. */
 function AppView({ studio, env }: { studio: Studio; env: GalleryEnv }) {
   const step = studio.step.id;
   const Specimen = SPECIMENS[step];
-  if (step === "reference") {
+  if (PRODUCT_STEPS[step]) {
     return (
       <div className="flex flex-col gap-6">
         <div>
@@ -143,8 +149,10 @@ function AppView({ studio, env }: { studio: Studio; env: GalleryEnv }) {
 export function App() {
   // `?capture`: the gallery alone, in document flow, for scripts/capture.ts. Never writes the state file.
   const capture = useMemo(() => new URLSearchParams(location.search).has("capture"), []);
-  const { content: loaded, source } = useContent();
+  const { project, source } = useContent();
   const studio = useStudio({ persist: !capture, contentSource: source });
+  // The archetype's sample content, with the project's copy deck over it.
+  const loaded = useMemo(() => mergeContent(CONTENT_BY_ARCHETYPE[studio.resolved.archetype as Archetype], project), [studio.resolved.archetype, project]);
   const content = useMemo(() => applyCopy(loaded, studio.record.copy), [loaded, studio.record.copy]);
   const [panel, setPanel] = useState<Panel>("gallery");
   const mainRef = useRef<HTMLElement>(null);
@@ -155,7 +163,7 @@ export function App() {
       if ((e.target as HTMLElement | null)?.closest("input, textarea, [contenteditable]")) return;
       const k = e.key;
       if (/^[1-9]$/.test(k)) {
-        const o = studio.step.options[Number(k) - 1];
+        const o = optionsFor(studio.step, defaultsFor(studio.state.choices))[Number(k) - 1];
         if (o) studio.choose(studio.step.id, o.id);
       } else if (k === "ArrowRight" || k === "Enter") studio.go(studio.state.step + 1);
       else if (k === "ArrowLeft") studio.go(studio.state.step - 1);

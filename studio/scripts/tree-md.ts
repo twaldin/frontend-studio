@@ -2,13 +2,14 @@
  * Renders the decision tree as Markdown for the no-browser fallback.
  * Run: bun run tree:md   (writes ../references/decision-tree.md)
  */
-import { STEPS, PRESETS } from "../src/tree/steps";
+import { ARCHETYPE_REFERENCE, LOOK_DEFAULTS, STEPS, PRESETS } from "../src/tree/steps";
+import type { Archetype } from "../src/tree/types";
 
 const refs = Object.keys(PRESETS);
 const lines: string[] = [
   "# Visual decision tree",
   "",
-  "Generated from `studio/src/tree/steps.ts`; edit there. Ask in this order. Each step lists the options and what every reference product picks, so a text-only run can still say \"Linear's default is X\".",
+  "Generated from `studio/src/tree/steps.ts`; edit there. Ask in this order. Each step lists the options and what every reference picks, so a text-only run can still say \"Linear's default is X\". The archetype picks the reference to start from; a look other than the reference's own re-defaults the steps it lists.",
   "",
 ];
 let n = 0;
@@ -22,7 +23,13 @@ for (const s of STEPS) {
   lines.push(`### ${n}. ${s.question}`, "", `_${s.why}_`, "");
   for (const o of s.options) {
     const picks = s.id === "reference" ? "" : refs.filter((r) => PRESETS[r]![s.id] === o.id).join(", ");
-    lines.push(`- **${o.label}** \`${o.id}\` — ${o.note}${picks ? ` _(default for: ${picks})_` : ""}`);
+    const extra =
+      s.id === "archetype"
+        ? ` Starts from ${ARCHETYPE_REFERENCE[o.id as Archetype]}.`
+        : s.id === "look"
+          ? ` Re-defaults: ${Object.entries(LOOK_DEFAULTS[o.id] ?? {}).map(([k, v]) => `${k} ${v}`).join(", ")}.`
+          : "";
+    lines.push(`- **${o.label}** \`${o.id}\` — ${o.note}${extra}${picks ? ` _(default for: ${picks})_` : ""}`);
   }
   lines.push("");
 }

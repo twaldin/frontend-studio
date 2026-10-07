@@ -1,16 +1,15 @@
-import { STEPS, PRESETS, deviations } from "@/tree/steps";
-import type { Branch, Step } from "@/tree/types";
+import { STEPS, LOOK_DEFAULTS, PRESETS, defaultsFor, deviations, optionsFor } from "@/tree/steps";
+import type { Branch, Step, StepId } from "@/tree/types";
 import type { Studio } from "./state";
 import type { Status } from "./saved";
 
-const BRANCH_LABEL: Record<Branch, string> = { base: "Base", app: "App", landing: "Landing" };
+const BRANCH_LABEL: Record<Branch, string> = { product: "Product", frame: "Frame", tokens: "Tokens", components: "Components", landing: "Landing" };
+const BRANCHES: readonly Branch[] = ["product", "frame", "tokens", "components", "landing"];
 const STATUS_MARK: Record<Status, string> = { decided: "✓", revisit: "↻" };
 
-function StepRow({ s, i, studio }: { s: Step; i: number; studio: Studio }) {
+function StepRow({ s, i, studio, deviated }: { s: Step; i: number; studio: Studio; deviated: boolean }) {
   const active = studio.state.step === i;
   const chosen = studio.resolved[s.id];
-  const preset = PRESETS[studio.resolved.reference]?.[s.id];
-  const deviated = s.id !== "reference" && studio.state.choices[s.id] !== undefined && studio.state.choices[s.id] !== preset;
   const label = s.options.find((o) => o.id === chosen)?.label ?? chosen;
   const status = studio.record.status[s.id];
   return (
@@ -72,10 +71,16 @@ function StepRecord({ step, studio }: { step: Step; studio: Studio }) {
 
 export function Stepper({ studio }: { studio: Studio }) {
   const step = studio.step;
-  const preset = PRESETS[studio.resolved.reference];
-  const refLabel = STEPS[0]!.options.find((o) => o.id === studio.resolved.reference)?.label ?? "reference";
-  const branches: Branch[] = ["base", "app", "landing"];
-  const dev = deviations(studio.state.choices);
+  // Committed choices, not the hover preview: the list must not reorder under the pointer.
+  const defaults = defaultsFor(studio.state.choices);
+  const label = (id: StepId, option: string) => STEPS.find((s) => s.id === id)?.options.find((o) => o.id === option)?.label ?? option;
+  const refLabel = label("reference", defaults.reference);
+  // A look picked over the reference's own supplies some defaults; the badge names whichever applies.
+  const look = studio.state.choices.look ?? defaults.look;
+  const lookDefaults = look !== defaults.look ? LOOK_DEFAULTS[look] : undefined;
+  const defaultLabel = lookDefaults?.[step.id] !== undefined ? `${label("look", look)} look` : refLabel;
+  const dev = new Set(deviations(studio.state.choices));
+  const setsDefaults = step.id === "archetype" || step.id === "reference";
 
   return (
     <aside className="flex h-full w-[340px] shrink-0 flex-col border-r border-[var(--studio-line)] bg-[var(--studio-panel)]">
@@ -91,9 +96,10 @@ export function Stepper({ studio }: { studio: Studio }) {
         <h2 className="text-[15px] font-medium">{step.question}</h2>
         <p className="mt-1 text-[12px] leading-[1.45] text-[var(--studio-muted)]">{step.why}</p>
         <ol className="mt-3 flex flex-col gap-1">
-          {step.options.map((o, i) => {
+          {optionsFor(step, defaults).map((o, i) => {
             const chosen = studio.resolved[step.id] === o.id;
-            const isDefault = step.id !== "reference" && preset?.[step.id] === o.id;
+            const isDefault = !setsDefaults && defaults[step.id] === o.id;
+            const fits = step.id === "reference" && PRESETS[o.id]?.archetype === defaults.archetype;
             return (
               <li key={o.id}>
                 <button
@@ -110,7 +116,8 @@ export function Stepper({ studio }: { studio: Studio }) {
                   <span className="flex min-w-0 flex-1 flex-col">
                     <span className="flex items-center gap-2 text-[13px]">
                       {o.label}
-                      {isDefault ? <span className="rounded bg-[var(--studio-line)] px-1 text-[10px] text-[var(--studio-muted)]">{refLabel}</span> : null}
+                      {isDefault ? <span className="rounded bg-[var(--studio-line)] px-1 text-[10px] text-[var(--studio-muted)]">{defaultLabel}</span> : null}
+                      {fits ? <span className="rounded bg-[var(--studio-line)] px-1 text-[10px] text-[var(--studio-muted)]">fits {label("archetype", defaults.archetype).toLowerCase()}</span> : null}
                     </span>
                     {o.note ? <span className="text-[11px] leading-[1.4] text-[var(--studio-muted)]">{o.note}</span> : null}
                   </span>
@@ -133,20 +140,20 @@ export function Stepper({ studio }: { studio: Studio }) {
             disabled={studio.state.step === STEPS.length - 1}
             onClick={() => studio.go(studio.state.step + 1)}
           >
-            {studio.state.choices[step.id] !== undefined || step.id === "reference" ? "Next →" : `Keep ${refLabel}'s →`}
+            {studio.state.choices[step.id] !== undefined || setsDefaults ? "Next →" : `Keep ${defaultLabel}'s →`}
           </button>
           <span className="ml-auto text-[11px] text-[var(--studio-muted)]">
-            {dev.length} deviation{dev.length === 1 ? "" : "s"}
+            {dev.size} deviation{dev.size === 1 ? "" : "s"}
           </span>
         </div>
       </div>
 
       {/* The whole tree */}
       <nav className="min-h-0 flex-1 overflow-y-auto p-2">
-        {branches.map((b) => (
+        {BRANCHES.map((b) => (
           <div key={b} className="mb-2">
             <div className="px-2 py-1 text-[11px] font-medium text-[var(--studio-muted)]">{BRANCH_LABEL[b]}</div>
-            {STEPS.map((s, i) => (s.branch === b ? <StepRow key={s.id} s={s} i={i} studio={studio} /> : null))}
+            {STEPS.map((s, i) => (s.branch === b ? <StepRow key={s.id} s={s} i={i} studio={studio} deviated={dev.has(s.id)} /> : null))}
           </div>
         ))}
       </nav>

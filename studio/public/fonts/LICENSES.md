@@ -47,3 +47,21 @@ All families in this directory are distributed under the SIL Open Font License 1
 - License: OFL-1.1 — [LICENSE-Instrument-Sans.txt](./LICENSE-Instrument-Sans.txt)
 - `InstrumentSans-Variable.woff2` — derived with FontTools from <https://raw.githubusercontent.com/google/fonts/main/ofl/instrumentsans/InstrumentSans%5Bwdth%2Cwght%5D.ttf>
 - `LICENSE-Instrument-Sans.txt` — source: <https://raw.githubusercontent.com/google/fonts/main/ofl/instrumentsans/OFL.txt>
+
+## Newsreader
+
+- License: OFL-1.1 — [LICENSE-Newsreader.txt](./LICENSE-Newsreader.txt)
+- `Newsreader-Variable.woff2` (Latin subset, weight and optical-size axes) — source: <https://registry.npmjs.org/@fontsource-variable/newsreader/-/newsreader-5.3.0.tgz> (`package/files/newsreader-latin-opsz-normal.woff2`), built from <https://github.com/productiontype/Newsreader>
+- `LICENSE-Newsreader.txt` — source: the same package (`package/LICENSE`)
+
+## Nunito
+
+- License: OFL-1.1 — [LICENSE-Nunito.txt](./LICENSE-Nunito.txt)
+- `Nunito-Variable.woff2` (Latin subset, weight axis) — source: <https://registry.npmjs.org/@fontsource-variable/nunito/-/nunito-5.3.0.tgz> (`package/files/nunito-latin-wght-normal.woff2`), built from <https://github.com/googlefonts/nunito>
+- `LICENSE-Nunito.txt` — source: the same package (`package/LICENSE`)
+
+## Space Grotesk
+
+- License: OFL-1.1 — [LICENSE-Space-Grotesk.txt](./LICENSE-Space-Grotesk.txt)
+- `SpaceGrotesk-Variable.woff2` (Latin subset, weight axis) — source: <https://registry.npmjs.org/@fontsource-variable/space-grotesk/-/space-grotesk-5.3.0.tgz> (`package/files/space-grotesk-latin-wght-normal.woff2`), built from <https://github.com/floriankarsten/space-grotesk>
+- `LICENSE-Space-Grotesk.txt` — source: the same package (`package/LICENSE`)

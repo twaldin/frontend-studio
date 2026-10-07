@@ -39,5 +39,5 @@ The question tree for step 1. Ask in this order; each answer unlocks the next. F
 
 19. Where does the game or domain register live: in content cells only, or in chrome too?
 20. Same visual language for app and landing, or a split?
-21. Which reference product does the visual grill start from?
+21. Which archetype is the product (its main object and home surface), which reference does the visual grill start from, and which look should the app speak?
 22. Which surfaces have product axes for the studio: decisions about how a surface is composed or behaves, beyond type, color and shape?

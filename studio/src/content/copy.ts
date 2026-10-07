@@ -1,10 +1,12 @@
 import type { Content } from "./schema";
 
-/** Deep-merges partial project content over the default; arrays replace. */
+/** Deep-merges partial project content over the default; arrays replace, and `null` keeps the default. */
 export function mergeContent<T>(base: T, over: unknown): T {
   if (!over || typeof over !== "object" || Array.isArray(over)) return (over as T) ?? base;
   const out: Record<string, unknown> = { ...(base as Record<string, unknown>) };
   for (const [k, v] of Object.entries(over as Record<string, unknown>)) {
+    // The schema has no nullable fields; a `null` (say `"items": null`) would leave a home mapping over nothing.
+    if (v === null) continue;
     const b = out[k];
     out[k] = b && typeof b === "object" && !Array.isArray(b) && v && typeof v === "object" && !Array.isArray(v) ? mergeContent(b, v) : v;
   }

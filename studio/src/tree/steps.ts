@@ -1,12 +1,30 @@
-import type { Choices, ResolvedChoices, Step, StepId } from "./types";
+import type { Archetype, Choices, Option, ResolvedChoices, Step, StepId } from "./types";
 
 export const STEPS: readonly Step[] = [
   {
-    id: "reference",
-    branch: "base",
+    id: "archetype",
+    branch: "product",
     gallery: "app",
-    question: "Which product is the reference?",
-    why: "Every later step defaults to what this product does. You confirm or deviate.",
+    question: "What shape is the product?",
+    why: "Decides the home surface and sample content every later step renders on, and which references fit.",
+    options: [
+      { id: "workspace", label: "Workspace", note: "Records and operations: lists, tables, figures. Linear, Stripe." },
+      { id: "feed", label: "Feed", note: "Posts from people or sources, newest first, with replies. Reddit, Bluesky." },
+      { id: "commerce", label: "Store or marketplace", note: "Listings to browse, compare and buy. Airbnb, Gumroad." },
+      { id: "reader", label: "Course or reader", note: "Lessons or articles, and progress through them. Duolingo, a newspaper." },
+      { id: "media", label: "Media library", note: "Albums, shows or videos to play. Spotify." },
+      { id: "companion", label: "Game companion", note: "A player's profile, quests, inventory and rankings." },
+      { id: "canvas", label: "Editor or canvas", note: "One document or board the user makes. Figma, Notion." },
+      { id: "conversation", label: "Conversation", note: "A thread with people or an agent. ChatGPT, Discord." },
+      { id: "utility", label: "Utility", note: "One focused tool, used in seconds. Raycast, a converter." },
+    ],
+  },
+  {
+    id: "reference",
+    branch: "product",
+    gallery: "app",
+    question: "Which product or genre is the reference?",
+    why: "Every later step defaults to what this reference does. References that fit the archetype come first.",
     options: [
       { id: "linear", label: "Linear", note: "Dense, 13px chrome, cool gray, indigo, sidebar, hairlines." },
       { id: "vercel", label: "Vercel", note: "14px, pure neutral, black accent, top nav, soft shadows." },
@@ -25,142 +43,34 @@ export const STEPS: readonly Step[] = [
       { id: "posthog", label: "PostHog", note: "Playful developer suite, warm canvas, orange signal, dense product cards." },
       { id: "attio", label: "Attio", note: "Editorial precision, monochrome CRM, compact data surfaces." },
       { id: "resend", label: "Resend", note: "Monochrome developer infrastructure, dark canvas, code and email proof." },
+      { id: "agentchat", label: "Agent chat", note: "Centered thread, quiet neutral chrome, one rounded composer. Like ChatGPT." },
+      { id: "community", label: "Community", note: "Posts and replies, rounded friendly type, one saturated accent. Like Reddit." },
+      { id: "mediaapp", label: "Media app", note: "Dark, cover art leads, big rounded tiles, a now-playing bar. Like Spotify." },
+      { id: "learning", label: "Learning app", note: "Bright and rounded, chunky tactile buttons, streaks and progress. Like Duolingo." },
+      { id: "gamecompanion", label: "Game companion", note: "Dark HUD panels, amber signal, square corners, grotesk headings." },
+      { id: "indieshop", label: "Indie shop", note: "Black outlines, hard offset shadows, pink accent, flat color. Like Gumroad." },
+      { id: "utilitarian", label: "Utilitarian", note: "System type, no radius, black on white, links that look like links. Like Craigslist." },
+      { id: "newspaper", label: "Newspaper", note: "Serif headlines and text, a paper canvas, column rules, no radius." },
     ],
   },
   {
-    id: "typeface",
-    branch: "base",
+    id: "look",
+    branch: "product",
     gallery: "app",
-    question: "Which typeface?",
-    why: "Carries 70–95% of rendered characters. Everything else is tuned to it.",
+    question: "What visual language does the app speak?",
+    why: "The app's own register, chosen on purpose. A look other than the reference's re-defaults type, shape, depth and texture to match.",
     options: [
-      { id: "inter", label: "Inter", note: "The default of the field. Neutral, huge x-height, great at 13px." },
-      { id: "geist", label: "Geist", note: "Vercel's. Slightly narrower and warmer than Inter." },
-      { id: "plex", label: "IBM Plex Sans", note: "More character, wider. Reads editorial." },
-      { id: "instrument", label: "Instrument Sans", note: "Geometric, friendly. Consumer feel." },
-      { id: "system", label: "System", note: "SF on Mac, Segoe on Windows. Zero bytes, native feel." },
-    ],
-  },
-  {
-    id: "mono",
-    branch: "base",
-    gallery: "app",
-    question: "Which mono, for identifiers and code?",
-    why: "Appears in paths, ids, timestamps, code blocks. Must pair with the sans.",
-    options: [
-      { id: "geist-mono", label: "Geist Mono", note: "Pairs with Inter and Geist." },
-      { id: "jetbrains", label: "JetBrains Mono", note: "Taller, more distinct glyphs. Reads as code." },
-      { id: "plex-mono", label: "IBM Plex Mono", note: "Pairs with Plex Sans; slab-ish." },
-      { id: "system-mono", label: "System mono", note: "SF Mono / Consolas. Zero bytes." },
-    ],
-  },
-  {
-    id: "neutral",
-    branch: "base",
-    gallery: "app",
-    question: "Neutral temperature?",
-    why: "The gray scale is 90% of every screen. Temperature sets the whole mood.",
-    options: [
-      { id: "cool", label: "Cool", note: "Blue-tinted gray. Linear, Stripe. Reads technical." },
-      { id: "neutral", label: "Neutral", note: "True gray. Vercel. Reads exact." },
-      { id: "warm", label: "Warm", note: "Sand/stone. Notion. Reads calm, paper-like." },
-      { id: "tinted", label: "Tinted", note: "Mauve, carries a hint of the accent. Reads designed." },
-    ],
-  },
-  {
-    id: "contrast",
-    branch: "base",
-    gallery: "app",
-    question: "Contrast level?",
-    why: "Linear generates its theme from base, accent and contrast. This is the third knob.",
-    options: [
-      { id: "soft", label: "Soft", note: "Tinted canvas, faint borders. Quieter, lower AA margin." },
-      { id: "standard", label: "Standard", note: "White canvas, step-6 borders. The field default." },
-      { id: "high", label: "High", note: "Pure white/black, strong borders. Accessibility variant." },
-    ],
-  },
-  {
-    id: "accent",
-    branch: "base",
-    gallery: "app",
-    question: "One accent?",
-    why: "Buttons, links, focus, selection. One hue; status colors are separate.",
-    options: [
-      { id: "indigo", label: "Indigo", note: "Linear." },
-      { id: "blue", label: "Blue", note: "Safe, expected." },
-      { id: "violet", label: "Violet", note: "Stripe." },
-      { id: "teal", label: "Teal", note: "Distinct from status green." },
-      { id: "green", label: "Green", note: "Reads 'go'; collides with success." },
-      { id: "orange", label: "Orange", note: "Warm, energetic." },
-      { id: "crimson", label: "Crimson", note: "Raycast." },
-      { id: "neutral", label: "Neutral", note: "Black/white primary. Vercel, Notion." },
-    ],
-  },
-  {
-    id: "radius",
-    branch: "base",
-    gallery: "app",
-    question: "Corner radius?",
-    why: "One value drives controls, cards and menus. Sets tone more than hue does.",
-    options: [
-      { id: "sharp", label: "4px", note: "Crisp, tool-like." },
-      { id: "medium", label: "6px", note: "Linear, Vercel." },
-      { id: "round", label: "8px", note: "Stripe, Raycast." },
-      { id: "soft", label: "10px", note: "Consumer, friendly." },
-      { id: "pill", label: "16px", note: "Consumer and mobile surfaces with visibly rounded controls." },
-    ],
-  },
-  {
-    id: "depth",
-    branch: "base",
-    gallery: "app",
-    question: "Depth by border or shadow?",
-    why: "Decides how panels, menus and cards separate from the canvas.",
-    options: [
-      { id: "hairline", label: "Hairlines", note: "1px borders, no shadows except menus. Linear." },
-      { id: "soft", label: "Hairlines + soft shadow", note: "Borders plus a 1–2px shadow on cards. Vercel." },
-      { id: "shadow", label: "Shadows", note: "Layered shadows, faint borders. Stripe." },
-    ],
-  },
-  {
-    id: "themes",
-    branch: "base",
-    gallery: "app",
-    question: "Which themes ship?",
-    why: "Dark mode is a full second palette and doubles the review surface.",
-    options: [
-      { id: "both", label: "Light and dark", note: "Both first-class; system default." },
-      { id: "light", label: "Light only", note: "" },
-      { id: "dark", label: "Dark only", note: "Raycast." },
-    ],
-  },
-  {
-    id: "density",
-    branch: "app",
-    gallery: "app",
-    question: "App density?",
-    why: "Chrome size, control height and row height move together.",
-    options: [
-      { id: "compact", label: "Compact", note: "13px chrome, 14px body, 28px controls. Linear." },
-      { id: "standard", label: "Standard", note: "14px chrome, 15px body, 32px controls. Vercel, Stripe." },
-      { id: "comfortable", label: "Comfortable", note: "15px chrome, 16px body, 36px controls. Notion." },
-    ],
-  },
-  {
-    id: "spacing",
-    branch: "app",
-    gallery: "app",
-    question: "Spacing unit?",
-    why: "Padding and gaps everywhere scale from one unit. Notion is airy; Linear is tight.",
-    options: [
-      { id: "tight", label: "Tight", note: "3.5px unit. Dense operator tools. Linear." },
-      { id: "regular", label: "Regular", note: "4px unit. The field default." },
-      { id: "airy", label: "Airy", note: "5px unit. Generous, document-like. Notion." },
+      { id: "quiet", label: "Quiet tool", note: "Neutral chrome, one accent, hairlines, medium-weight sans headings. Linear, Stripe." },
+      { id: "editorial", label: "Editorial", note: "Serif headings over a sans, warm paper tones, generous space, crisp corners. Magazines and long reads." },
+      { id: "playful", label: "Playful", note: "Rounded heavy type, pressed-in buttons, soft corners, springy motion. Duolingo, PostHog." },
+      { id: "brutalist", label: "Brutalist", note: "Grotesk type, square corners, high contrast, hard offset shadows. Gumroad." },
+      { id: "print", label: "Print", note: "Serif throughout, a grained paper canvas, column rules, no radius. A newspaper." },
+      { id: "immersive", label: "Immersive", note: "Dark and media-led, an accent glow, big rounded tiles, heavy headings. Spotify, a game client." },
     ],
   },
   {
     id: "shell",
-    branch: "app",
+    branch: "frame",
     gallery: "app",
     question: "App shell?",
     why: "The one layout decision every screen inherits.",
@@ -171,21 +81,8 @@ export const STEPS: readonly Step[] = [
     ],
   },
   {
-    id: "sidebarTone",
-    branch: "app",
-    gallery: "app",
-    question: "Sidebar tone?",
-    why: "Linear made theirs a few notches dimmer so content wins.",
-    options: [
-      { id: "same", label: "Same as canvas", note: "Separated by a hairline only." },
-      { id: "tinted", label: "Subtle step", note: "The scale's step 2 in both themes: darker in light, lighter in dark. Notion." },
-      { id: "dimmer", label: "Dimmer", note: "Darker in both themes; dark-mode content reads as a raised panel. Linear." },
-      { id: "dark", label: "Dark", note: "Dark rail in light mode. Slack-like." },
-    ],
-  },
-  {
     id: "sidebarCollapse",
-    branch: "app",
+    branch: "frame",
     gallery: "app",
     question: "Does the sidebar collapse?",
     why: "Decides how much screen the content can take and whether nav needs icons.",
@@ -198,8 +95,21 @@ export const STEPS: readonly Step[] = [
     ],
   },
   {
+    id: "sidebarTone",
+    branch: "frame",
+    gallery: "app",
+    question: "Sidebar tone?",
+    why: "Linear made theirs a few notches dimmer so content wins.",
+    options: [
+      { id: "same", label: "Same as canvas", note: "Separated by a hairline only." },
+      { id: "tinted", label: "Subtle step", note: "The scale's step 2 in both themes: darker in light, lighter in dark. Notion." },
+      { id: "dimmer", label: "Dimmer", note: "Darker in both themes; dark-mode content reads as a raised panel. Linear." },
+      { id: "dark", label: "Dark", note: "Dark rail in light mode. Slack-like." },
+    ],
+  },
+  {
     id: "navIcons",
-    branch: "app",
+    branch: "frame",
     gallery: "app",
     question: "Icons in the nav?",
     why: "Icons speed scanning and add visual weight; text-only reads calmer.",
@@ -210,7 +120,7 @@ export const STEPS: readonly Step[] = [
   },
   {
     id: "pageTitle",
-    branch: "app",
+    branch: "frame",
     gallery: "app",
     question: "Page title scale?",
     why: "Decides whether a page reads as a tool view or a document.",
@@ -221,8 +131,146 @@ export const STEPS: readonly Step[] = [
     ],
   },
   {
+    id: "density",
+    branch: "frame",
+    gallery: "app",
+    question: "App density?",
+    why: "Chrome size, control height and row height move together.",
+    options: [
+      { id: "compact", label: "Compact", note: "13px chrome, 14px body, 28px controls. Linear." },
+      { id: "standard", label: "Standard", note: "14px chrome, 15px body, 32px controls. Vercel, Stripe." },
+      { id: "comfortable", label: "Comfortable", note: "15px chrome, 16px body, 36px controls. Notion." },
+    ],
+  },
+  {
+    id: "spacing",
+    branch: "frame",
+    gallery: "app",
+    question: "Spacing unit?",
+    why: "Padding and gaps everywhere scale from one unit. Notion is airy; Linear is tight.",
+    options: [
+      { id: "tight", label: "Tight", note: "3.5px unit. Dense operator tools. Linear." },
+      { id: "regular", label: "Regular", note: "4px unit. The field default." },
+      { id: "airy", label: "Airy", note: "5px unit. Generous, document-like. Notion." },
+    ],
+  },
+  {
+    id: "typeface",
+    branch: "tokens",
+    gallery: "app",
+    question: "Which typeface?",
+    why: "Carries 70–95% of rendered characters. Everything else is tuned to it.",
+    options: [
+      { id: "inter", label: "Inter", note: "The default of the field. Neutral, huge x-height, great at 13px." },
+      { id: "geist", label: "Geist", note: "Vercel's. Slightly narrower and warmer than Inter." },
+      { id: "plex", label: "IBM Plex Sans", note: "More character, wider. Reads editorial." },
+      { id: "instrument", label: "Instrument Sans", note: "Geometric, friendly. Consumer feel." },
+      { id: "system", label: "System", note: "SF on Mac, Segoe on Windows. Zero bytes, native feel." },
+      { id: "serif", label: "Newsreader", note: "A text serif with optical sizes. Print and editorial products." },
+      { id: "rounded", label: "Nunito", note: "Rounded terminals. Friendly, playful, learning products." },
+      { id: "grotesk", label: "Space Grotesk", note: "A quirky grotesk. Brutalist, game and media products." },
+    ],
+  },
+  {
+    id: "mono",
+    branch: "tokens",
+    gallery: "app",
+    question: "Which mono, for identifiers and code?",
+    why: "Appears in paths, ids, timestamps, code blocks. Must pair with the sans.",
+    options: [
+      { id: "geist-mono", label: "Geist Mono", note: "Pairs with Inter and Geist." },
+      { id: "jetbrains", label: "JetBrains Mono", note: "Taller, more distinct glyphs. Reads as code." },
+      { id: "plex-mono", label: "IBM Plex Mono", note: "Pairs with Plex Sans; slab-ish." },
+      { id: "system-mono", label: "System mono", note: "SF Mono / Consolas. Zero bytes." },
+    ],
+  },
+  {
+    id: "neutral",
+    branch: "tokens",
+    gallery: "app",
+    question: "Neutral temperature?",
+    why: "The gray scale is 90% of every screen. Temperature sets the whole mood.",
+    options: [
+      { id: "cool", label: "Cool", note: "Blue-tinted gray. Linear, Stripe. Reads technical." },
+      { id: "neutral", label: "Neutral", note: "True gray. Vercel. Reads exact." },
+      { id: "warm", label: "Warm", note: "Sand/stone. Notion. Reads calm, paper-like." },
+      { id: "tinted", label: "Tinted", note: "Mauve, carries a hint of the accent. Reads designed." },
+    ],
+  },
+  {
+    id: "contrast",
+    branch: "tokens",
+    gallery: "app",
+    question: "Contrast level?",
+    why: "Linear generates its theme from base, accent and contrast. This is the third knob.",
+    options: [
+      { id: "soft", label: "Soft", note: "Tinted canvas, faint borders. Quieter, lower AA margin." },
+      { id: "standard", label: "Standard", note: "White canvas, step-6 borders. The field default." },
+      { id: "high", label: "High", note: "Pure white/black, strong borders. Accessibility variant." },
+    ],
+  },
+  {
+    id: "accent",
+    branch: "tokens",
+    gallery: "app",
+    question: "One accent?",
+    why: "Buttons, links, focus, selection. One hue; status colors are separate.",
+    options: [
+      { id: "indigo", label: "Indigo", note: "Linear." },
+      { id: "blue", label: "Blue", note: "Safe, expected." },
+      { id: "violet", label: "Violet", note: "Stripe." },
+      { id: "teal", label: "Teal", note: "Distinct from status green." },
+      { id: "green", label: "Green", note: "Reads 'go'; collides with success." },
+      { id: "orange", label: "Orange", note: "Warm, energetic." },
+      { id: "crimson", label: "Crimson", note: "Raycast." },
+      { id: "pink", label: "Pink", note: "Loud and indie. Gumroad." },
+      { id: "amber", label: "Amber", note: "A gold signal, strongest on dark. Games." },
+      { id: "neutral", label: "Neutral", note: "Black/white primary. Vercel, Notion." },
+    ],
+  },
+  {
+    id: "radius",
+    branch: "tokens",
+    gallery: "app",
+    question: "Corner radius?",
+    why: "One value drives controls, cards and menus. Sets tone more than hue does.",
+    options: [
+      { id: "none", label: "0px", note: "Square corners. Print and brutalist." },
+      { id: "sharp", label: "4px", note: "Crisp, tool-like." },
+      { id: "medium", label: "6px", note: "Linear, Vercel." },
+      { id: "round", label: "8px", note: "Stripe, Raycast." },
+      { id: "soft", label: "10px", note: "Consumer, friendly." },
+      { id: "pill", label: "16px", note: "Consumer and mobile surfaces with visibly rounded controls." },
+    ],
+  },
+  {
+    id: "depth",
+    branch: "tokens",
+    gallery: "app",
+    question: "Depth by border or shadow?",
+    why: "Decides how panels, menus and cards separate from the canvas.",
+    options: [
+      { id: "hairline", label: "Hairlines", note: "1px borders, no shadows except menus. Linear." },
+      { id: "soft", label: "Hairlines + soft shadow", note: "Borders plus a 1–2px shadow on cards. Vercel." },
+      { id: "shadow", label: "Shadows", note: "Layered shadows, faint borders. Stripe." },
+      { id: "offset", label: "Offset shadows", note: "A hard shadow offset down and right, in the text color, under strong borders. Brutalist." },
+    ],
+  },
+  {
+    id: "themes",
+    branch: "tokens",
+    gallery: "app",
+    question: "Which themes ship?",
+    why: "Dark mode is a full second palette and doubles the review surface.",
+    options: [
+      { id: "both", label: "Light and dark", note: "Both first-class; system default." },
+      { id: "light", label: "Light only", note: "" },
+      { id: "dark", label: "Dark only", note: "Raycast." },
+    ],
+  },
+  {
     id: "stats",
-    branch: "app",
+    branch: "components",
     gallery: "app",
     question: "Key figures?",
     why: "The most-read numbers on the home screen.",
@@ -234,7 +282,7 @@ export const STEPS: readonly Step[] = [
   },
   {
     id: "trend",
-    branch: "app",
+    branch: "components",
     gallery: "app",
     question: "Figures over time?",
     why: "Whether Home shows where a number is going, not just where it is.",
@@ -249,7 +297,7 @@ export const STEPS: readonly Step[] = [
   },
   {
     id: "tables",
-    branch: "app",
+    branch: "components",
     gallery: "app",
     question: "Table style?",
     why: "Most operator screens are tables.",
@@ -261,7 +309,7 @@ export const STEPS: readonly Step[] = [
   },
   {
     id: "rowHover",
-    branch: "app",
+    branch: "components",
     gallery: "app",
     question: "Row hover?",
     why: "Fill says rows are targets; none says the table is for reading.",
@@ -272,7 +320,7 @@ export const STEPS: readonly Step[] = [
   },
   {
     id: "cards",
-    branch: "app",
+    branch: "components",
     gallery: "app",
     question: "Card style?",
     why: "Panels, forms and cards share one treatment.",
@@ -283,7 +331,7 @@ export const STEPS: readonly Step[] = [
   },
   {
     id: "inputs",
-    branch: "app",
+    branch: "components",
     gallery: "app",
     question: "Input style?",
     why: "Every form and the composer.",
@@ -295,7 +343,7 @@ export const STEPS: readonly Step[] = [
   },
   {
     id: "buttons",
-    branch: "app",
+    branch: "components",
     gallery: "app",
     question: "Button style?",
     why: "Primary is the most-clicked pixel in the product.",
@@ -307,7 +355,7 @@ export const STEPS: readonly Step[] = [
   },
   {
     id: "iconWeight",
-    branch: "app",
+    branch: "components",
     gallery: "app",
     question: "Icon weight?",
     why: "Stroke width sets how loud icons are next to 13–15px text.",
@@ -319,7 +367,7 @@ export const STEPS: readonly Step[] = [
   },
   {
     id: "menus",
-    branch: "app",
+    branch: "components",
     gallery: "app",
     question: "Menu items?",
     why: "Menus and command lists are where keyboard users live.",
@@ -330,7 +378,7 @@ export const STEPS: readonly Step[] = [
   },
   {
     id: "motion",
-    branch: "app",
+    branch: "components",
     gallery: "app",
     question: "App motion?",
     why: "None on keyboard and many-times-a-day paths; the question is everything else.",
@@ -490,10 +538,11 @@ export const STEPS: readonly Step[] = [
 
 export const STEP_BY_ID: Record<StepId, Step> = Object.fromEntries(STEPS.map((s) => [s.id, s])) as Record<StepId, Step>;
 
-/** What each reference product does at every step. */
+/** What each reference does at every step, including the archetype it fits and its own look. */
 export const PRESETS: Record<string, ResolvedChoices> = {
   linear: {
-    reference: "linear", typeface: "inter", mono: "geist-mono", neutral: "cool", contrast: "standard", accent: "indigo",
+    archetype: "workspace", reference: "linear", look: "quiet",
+    typeface: "inter", mono: "geist-mono", neutral: "cool", contrast: "standard", accent: "indigo",
     radius: "medium", depth: "hairline", themes: "both",
     density: "compact", spacing: "tight", shell: "sidebar", sidebarTone: "dimmer", sidebarCollapse: "hide", navIcons: "icons", pageTitle: "toolbar",
     stats: "strip", trend: "none", tables: "hairline", rowHover: "fill", cards: "hairline", inputs: "outlined", buttons: "filled",
@@ -502,7 +551,8 @@ export const PRESETS: Record<string, ResolvedChoices> = {
     frames: "none", characters: "none", proof: "logos", cta: "pair",
   },
   vercel: {
-    reference: "vercel", typeface: "geist", mono: "geist-mono", neutral: "neutral", contrast: "standard", accent: "neutral",
+    archetype: "workspace", reference: "vercel", look: "quiet",
+    typeface: "geist", mono: "geist-mono", neutral: "neutral", contrast: "standard", accent: "neutral",
     radius: "medium", depth: "soft", themes: "both",
     density: "standard", spacing: "regular", shell: "topnav", sidebarTone: "same", sidebarCollapse: "fixed", navIcons: "text", pageTitle: "standard",
     stats: "cards", trend: "area", tables: "hairline", rowHover: "none", cards: "hairline", inputs: "outlined", buttons: "outline",
@@ -511,7 +561,8 @@ export const PRESETS: Record<string, ResolvedChoices> = {
     frames: "none", characters: "none", proof: "logos", cta: "pair",
   },
   stripe: {
-    reference: "stripe", typeface: "inter", mono: "jetbrains", neutral: "cool", contrast: "standard", accent: "violet",
+    archetype: "workspace", reference: "stripe", look: "quiet",
+    typeface: "inter", mono: "jetbrains", neutral: "cool", contrast: "standard", accent: "violet",
     radius: "round", depth: "shadow", themes: "light",
     density: "standard", spacing: "regular", shell: "sidebar", sidebarTone: "same", sidebarCollapse: "fixed", navIcons: "icons", pageTitle: "standard",
     stats: "cards", trend: "chart", tables: "hairline", rowHover: "fill", cards: "hairline", inputs: "outlined", buttons: "filled",
@@ -520,7 +571,8 @@ export const PRESETS: Record<string, ResolvedChoices> = {
     frames: "browser", characters: "icons", proof: "logos", cta: "pair",
   },
   notion: {
-    reference: "notion", typeface: "inter", mono: "system-mono", neutral: "warm", contrast: "soft", accent: "blue",
+    archetype: "canvas", reference: "notion", look: "quiet",
+    typeface: "inter", mono: "system-mono", neutral: "warm", contrast: "soft", accent: "blue",
     radius: "sharp", depth: "hairline", themes: "both",
     density: "comfortable", spacing: "airy", shell: "sidebar", sidebarTone: "tinted", sidebarCollapse: "peek", navIcons: "icons", pageTitle: "display",
     stats: "inline", trend: "none", tables: "borderless", rowHover: "fill", cards: "fill", inputs: "filled", buttons: "filled",
@@ -529,7 +581,8 @@ export const PRESETS: Record<string, ResolvedChoices> = {
     frames: "none", characters: "characters", proof: "logos", cta: "single",
   },
   raycast: {
-    reference: "raycast", typeface: "inter", mono: "jetbrains", neutral: "neutral", contrast: "standard", accent: "crimson",
+    archetype: "utility", reference: "raycast", look: "quiet",
+    typeface: "inter", mono: "jetbrains", neutral: "neutral", contrast: "standard", accent: "crimson",
     radius: "round", depth: "soft", themes: "dark",
     density: "compact", spacing: "regular", shell: "sidebar", sidebarTone: "tinted", sidebarCollapse: "rail", navIcons: "icons", pageTitle: "toolbar",
     stats: "strip", trend: "none", tables: "hairline", rowHover: "fill", cards: "fill", inputs: "filled", buttons: "soft",
@@ -538,7 +591,8 @@ export const PRESETS: Record<string, ResolvedChoices> = {
     frames: "laptop", characters: "none", proof: "numbers", cta: "single",
   },
   ramp: {
-    reference: "ramp", typeface: "inter", mono: "geist-mono", neutral: "neutral", contrast: "high", accent: "green",
+    archetype: "workspace", reference: "ramp", look: "quiet",
+    typeface: "inter", mono: "geist-mono", neutral: "neutral", contrast: "high", accent: "green",
     radius: "sharp", depth: "hairline", themes: "light",
     density: "compact", spacing: "regular", shell: "topnav", sidebarTone: "same", sidebarCollapse: "fixed", navIcons: "text", pageTitle: "toolbar",
     stats: "strip", trend: "area", tables: "borderless", rowHover: "fill", cards: "fill", inputs: "filled", buttons: "filled",
@@ -547,7 +601,8 @@ export const PRESETS: Record<string, ResolvedChoices> = {
     frames: "none", characters: "none", proof: "numbers", cta: "email",
   },
   apple: {
-    reference: "apple", typeface: "system", mono: "system-mono", neutral: "neutral", contrast: "high", accent: "blue",
+    archetype: "commerce", reference: "apple", look: "quiet",
+    typeface: "system", mono: "system-mono", neutral: "neutral", contrast: "high", accent: "blue",
     radius: "pill", depth: "soft", themes: "light",
     density: "comfortable", spacing: "airy", shell: "topnav", sidebarTone: "same", sidebarCollapse: "fixed", navIcons: "text", pageTitle: "display",
     stats: "cards", trend: "none", tables: "borderless", rowHover: "none", cards: "fill", inputs: "filled", buttons: "filled",
@@ -556,7 +611,8 @@ export const PRESETS: Record<string, ResolvedChoices> = {
     frames: "none", characters: "none", proof: "none", cta: "pair",
   },
   raindrop: {
-    reference: "raindrop", typeface: "inter", mono: "geist-mono", neutral: "neutral", contrast: "standard", accent: "green",
+    archetype: "workspace", reference: "raindrop", look: "quiet",
+    typeface: "inter", mono: "geist-mono", neutral: "neutral", contrast: "standard", accent: "green",
     radius: "medium", depth: "hairline", themes: "dark",
     density: "compact", spacing: "tight", shell: "sidebar", sidebarTone: "dimmer", sidebarCollapse: "rail", navIcons: "icons", pageTitle: "toolbar",
     stats: "strip", trend: "chart", tables: "hairline", rowHover: "fill", cards: "fill", inputs: "filled", buttons: "soft",
@@ -565,7 +621,8 @@ export const PRESETS: Record<string, ResolvedChoices> = {
     frames: "none", characters: "characters", proof: "numbers", cta: "pair",
   },
   mercury: {
-    reference: "mercury", typeface: "instrument", mono: "system-mono", neutral: "warm", contrast: "soft", accent: "orange",
+    archetype: "workspace", reference: "mercury", look: "quiet",
+    typeface: "instrument", mono: "system-mono", neutral: "warm", contrast: "soft", accent: "orange",
     radius: "round", depth: "shadow", themes: "light",
     density: "comfortable", spacing: "airy", shell: "topnav", sidebarTone: "same", sidebarCollapse: "fixed", navIcons: "text", pageTitle: "display",
     stats: "inline", trend: "area", tables: "borderless", rowHover: "fill", cards: "fill", inputs: "filled", buttons: "filled",
@@ -574,7 +631,8 @@ export const PRESETS: Record<string, ResolvedChoices> = {
     frames: "none", characters: "shapes", proof: "quotes", cta: "pair",
   },
   cashapp: {
-    reference: "cashapp", typeface: "system", mono: "system-mono", neutral: "neutral", contrast: "high", accent: "green",
+    archetype: "utility", reference: "cashapp", look: "quiet",
+    typeface: "system", mono: "system-mono", neutral: "neutral", contrast: "high", accent: "green",
     radius: "pill", depth: "soft", themes: "both",
     density: "comfortable", spacing: "airy", shell: "topnav", sidebarTone: "same", sidebarCollapse: "fixed", navIcons: "icons", pageTitle: "display",
     stats: "cards", trend: "none", tables: "borderless", rowHover: "none", cards: "fill", inputs: "filled", buttons: "filled",
@@ -583,7 +641,8 @@ export const PRESETS: Record<string, ResolvedChoices> = {
     frames: "phone", characters: "shapes", proof: "numbers", cta: "single",
   },
   airbnb: {
-    reference: "airbnb", typeface: "system", mono: "system-mono", neutral: "warm", contrast: "soft", accent: "crimson",
+    archetype: "commerce", reference: "airbnb", look: "quiet",
+    typeface: "system", mono: "system-mono", neutral: "warm", contrast: "soft", accent: "crimson",
     radius: "pill", depth: "soft", themes: "light",
     density: "comfortable", spacing: "airy", shell: "topnav", sidebarTone: "same", sidebarCollapse: "fixed", navIcons: "icons", pageTitle: "standard",
     stats: "cards", trend: "none", tables: "borderless", rowHover: "none", cards: "fill", inputs: "filled", buttons: "filled",
@@ -592,7 +651,8 @@ export const PRESETS: Record<string, ResolvedChoices> = {
     frames: "none", characters: "icons", proof: "quotes", cta: "pair",
   },
   figma: {
-    reference: "figma", typeface: "inter", mono: "jetbrains", neutral: "neutral", contrast: "high", accent: "orange",
+    archetype: "canvas", reference: "figma", look: "quiet",
+    typeface: "inter", mono: "jetbrains", neutral: "neutral", contrast: "high", accent: "orange",
     radius: "round", depth: "hairline", themes: "both",
     density: "standard", spacing: "regular", shell: "topnav", sidebarTone: "same", sidebarCollapse: "fixed", navIcons: "icons", pageTitle: "display",
     stats: "inline", trend: "none", tables: "borderless", rowHover: "fill", cards: "fill", inputs: "filled", buttons: "filled",
@@ -601,7 +661,8 @@ export const PRESETS: Record<string, ResolvedChoices> = {
     frames: "browser", characters: "shapes", proof: "logos", cta: "pair",
   },
   cursor: {
-    reference: "cursor", typeface: "geist", mono: "geist-mono", neutral: "warm", contrast: "standard", accent: "neutral",
+    archetype: "canvas", reference: "cursor", look: "quiet",
+    typeface: "geist", mono: "geist-mono", neutral: "warm", contrast: "standard", accent: "neutral",
     radius: "medium", depth: "hairline", themes: "dark",
     density: "compact", spacing: "tight", shell: "sidebar", sidebarTone: "dimmer", sidebarCollapse: "rail", navIcons: "icons", pageTitle: "toolbar",
     stats: "strip", trend: "none", tables: "hairline", rowHover: "fill", cards: "fill", inputs: "filled", buttons: "soft",
@@ -610,7 +671,8 @@ export const PRESETS: Record<string, ResolvedChoices> = {
     frames: "none", characters: "none", proof: "logos", cta: "pair",
   },
   supabase: {
-    reference: "supabase", typeface: "inter", mono: "jetbrains", neutral: "cool", contrast: "standard", accent: "green",
+    archetype: "workspace", reference: "supabase", look: "quiet",
+    typeface: "inter", mono: "jetbrains", neutral: "cool", contrast: "standard", accent: "green",
     radius: "medium", depth: "hairline", themes: "both",
     density: "compact", spacing: "tight", shell: "sidebar", sidebarTone: "dimmer", sidebarCollapse: "rail", navIcons: "icons", pageTitle: "toolbar",
     stats: "strip", trend: "chart", tables: "hairline", rowHover: "fill", cards: "fill", inputs: "filled", buttons: "soft",
@@ -619,7 +681,8 @@ export const PRESETS: Record<string, ResolvedChoices> = {
     frames: "browser", characters: "none", proof: "logos", cta: "pair",
   },
   posthog: {
-    reference: "posthog", typeface: "inter", mono: "jetbrains", neutral: "warm", contrast: "standard", accent: "orange",
+    archetype: "workspace", reference: "posthog", look: "playful",
+    typeface: "inter", mono: "jetbrains", neutral: "warm", contrast: "standard", accent: "orange",
     radius: "round", depth: "hairline", themes: "both",
     density: "compact", spacing: "regular", shell: "sidebar", sidebarTone: "tinted", sidebarCollapse: "rail", navIcons: "icons", pageTitle: "toolbar",
     stats: "strip", trend: "chart", tables: "hairline", rowHover: "fill", cards: "fill", inputs: "filled", buttons: "soft",
@@ -628,7 +691,8 @@ export const PRESETS: Record<string, ResolvedChoices> = {
     frames: "browser", characters: "characters", proof: "numbers", cta: "pair",
   },
   attio: {
-    reference: "attio", typeface: "inter", mono: "geist-mono", neutral: "neutral", contrast: "high", accent: "neutral",
+    archetype: "workspace", reference: "attio", look: "quiet",
+    typeface: "inter", mono: "geist-mono", neutral: "neutral", contrast: "high", accent: "neutral",
     radius: "sharp", depth: "hairline", themes: "both",
     density: "standard", spacing: "regular", shell: "sidebar", sidebarTone: "same", sidebarCollapse: "hide", navIcons: "icons", pageTitle: "toolbar",
     stats: "inline", trend: "none", tables: "borderless", rowHover: "fill", cards: "hairline", inputs: "outlined", buttons: "filled",
@@ -637,7 +701,8 @@ export const PRESETS: Record<string, ResolvedChoices> = {
     frames: "none", characters: "none", proof: "logos", cta: "pair",
   },
   resend: {
-    reference: "resend", typeface: "geist", mono: "geist-mono", neutral: "neutral", contrast: "high", accent: "neutral",
+    archetype: "workspace", reference: "resend", look: "quiet",
+    typeface: "geist", mono: "geist-mono", neutral: "neutral", contrast: "high", accent: "neutral",
     radius: "medium", depth: "hairline", themes: "dark",
     density: "compact", spacing: "tight", shell: "topnav", sidebarTone: "same", sidebarCollapse: "fixed", navIcons: "text", pageTitle: "toolbar",
     stats: "strip", trend: "none", tables: "hairline", rowHover: "fill", cards: "hairline", inputs: "outlined", buttons: "outline",
@@ -645,15 +710,139 @@ export const PRESETS: Record<string, ResolvedChoices> = {
     register: "dark", display: "heavy", displayCase: "written", hero: "split", heroMotion: "entrance", background: "grid", rhythm: "bento",
     frames: "browser", characters: "none", proof: "logos", cta: "pair",
   },
+  agentchat: {
+    archetype: "conversation", reference: "agentchat", look: "quiet",
+    typeface: "inter", mono: "geist-mono", neutral: "neutral", contrast: "standard", accent: "neutral",
+    radius: "soft", depth: "hairline", themes: "both",
+    density: "standard", spacing: "regular", shell: "sidebar", sidebarTone: "tinted", sidebarCollapse: "hide", navIcons: "icons", pageTitle: "toolbar",
+    stats: "inline", trend: "none", tables: "borderless", rowHover: "fill", cards: "fill", inputs: "filled", buttons: "filled",
+    iconWeight: "regular", menus: "hints", motion: "minimal",
+    register: "same", display: "heavy", displayCase: "written", hero: "shot", heroMotion: "entrance", background: "flat", rhythm: "alternating",
+    frames: "browser", characters: "none", proof: "logos", cta: "pair",
+  },
+  community: {
+    archetype: "feed", reference: "community", look: "playful",
+    typeface: "rounded", mono: "jetbrains", neutral: "cool", contrast: "standard", accent: "orange",
+    radius: "pill", depth: "hairline", themes: "both",
+    density: "standard", spacing: "regular", shell: "sidebar", sidebarTone: "same", sidebarCollapse: "fixed", navIcons: "icons", pageTitle: "standard",
+    stats: "inline", trend: "none", tables: "borderless", rowHover: "fill", cards: "hairline", inputs: "filled", buttons: "filled",
+    iconWeight: "regular", menus: "plain", motion: "expressive",
+    register: "playful", display: "heavy", displayCase: "written", hero: "split", heroMotion: "entrance", background: "flat", rhythm: "bento",
+    frames: "phone", characters: "shapes", proof: "numbers", cta: "pair",
+  },
+  mediaapp: {
+    archetype: "media", reference: "mediaapp", look: "immersive",
+    typeface: "instrument", mono: "system-mono", neutral: "neutral", contrast: "standard", accent: "green",
+    radius: "round", depth: "soft", themes: "dark",
+    density: "standard", spacing: "regular", shell: "sidebar", sidebarTone: "dimmer", sidebarCollapse: "rail", navIcons: "icons", pageTitle: "display",
+    stats: "cards", trend: "none", tables: "borderless", rowHover: "fill", cards: "fill", inputs: "filled", buttons: "filled",
+    iconWeight: "regular", menus: "plain", motion: "expressive",
+    register: "same", display: "giant", displayCase: "written", hero: "media", heroMotion: "ambient", background: "glow", rhythm: "fullbleed",
+    frames: "none", characters: "none", proof: "numbers", cta: "single",
+  },
+  learning: {
+    archetype: "reader", reference: "learning", look: "playful",
+    typeface: "rounded", mono: "system-mono", neutral: "neutral", contrast: "standard", accent: "green",
+    radius: "pill", depth: "hairline", themes: "both",
+    density: "comfortable", spacing: "airy", shell: "sidebar", sidebarTone: "same", sidebarCollapse: "fixed", navIcons: "icons", pageTitle: "standard",
+    stats: "cards", trend: "none", tables: "borderless", rowHover: "fill", cards: "hairline", inputs: "filled", buttons: "filled",
+    iconWeight: "regular", menus: "plain", motion: "expressive",
+    register: "playful", display: "giant", displayCase: "written", hero: "device", heroMotion: "ambient", background: "flat", rhythm: "bento",
+    frames: "phone", characters: "characters", proof: "numbers", cta: "single",
+  },
+  gamecompanion: {
+    archetype: "companion", reference: "gamecompanion", look: "immersive",
+    typeface: "grotesk", mono: "jetbrains", neutral: "cool", contrast: "high", accent: "amber",
+    radius: "none", depth: "soft", themes: "dark",
+    density: "compact", spacing: "tight", shell: "sidebar", sidebarTone: "dimmer", sidebarCollapse: "rail", navIcons: "icons", pageTitle: "display",
+    stats: "cards", trend: "sparkline", tables: "zebra", rowHover: "fill", cards: "fill", inputs: "filled", buttons: "filled",
+    iconWeight: "tiles", menus: "hints", motion: "expressive",
+    register: "same", display: "heavy", displayCase: "written", hero: "media", heroMotion: "scroll", background: "glow", rhythm: "chapters",
+    frames: "none", characters: "none", proof: "numbers", cta: "single",
+  },
+  indieshop: {
+    archetype: "commerce", reference: "indieshop", look: "brutalist",
+    typeface: "grotesk", mono: "jetbrains", neutral: "neutral", contrast: "high", accent: "pink",
+    radius: "none", depth: "offset", themes: "light",
+    density: "standard", spacing: "regular", shell: "topnav", sidebarTone: "same", sidebarCollapse: "fixed", navIcons: "text", pageTitle: "display",
+    stats: "cards", trend: "none", tables: "hairline", rowHover: "fill", cards: "hairline", inputs: "outlined", buttons: "filled",
+    iconWeight: "regular", menus: "plain", motion: "none",
+    register: "same", display: "giant", displayCase: "written", hero: "type", heroMotion: "static", background: "flat", rhythm: "bento",
+    frames: "none", characters: "shapes", proof: "quotes", cta: "single",
+  },
+  utilitarian: {
+    archetype: "utility", reference: "utilitarian", look: "brutalist",
+    typeface: "system", mono: "system-mono", neutral: "neutral", contrast: "high", accent: "blue",
+    radius: "none", depth: "hairline", themes: "light",
+    density: "compact", spacing: "tight", shell: "topnav", sidebarTone: "same", sidebarCollapse: "fixed", navIcons: "text", pageTitle: "toolbar",
+    stats: "inline", trend: "none", tables: "hairline", rowHover: "none", cards: "hairline", inputs: "outlined", buttons: "outline",
+    iconWeight: "regular", menus: "plain", motion: "none",
+    register: "same", display: "same", displayCase: "written", hero: "type", heroMotion: "static", background: "flat", rhythm: "alternating",
+    frames: "none", characters: "none", proof: "none", cta: "email",
+  },
+  newspaper: {
+    archetype: "reader", reference: "newspaper", look: "print",
+    typeface: "serif", mono: "plex-mono", neutral: "warm", contrast: "standard", accent: "neutral",
+    radius: "none", depth: "hairline", themes: "light",
+    density: "comfortable", spacing: "regular", shell: "topnav", sidebarTone: "same", sidebarCollapse: "fixed", navIcons: "text", pageTitle: "display",
+    stats: "inline", trend: "none", tables: "hairline", rowHover: "none", cards: "hairline", inputs: "underline", buttons: "outline",
+    iconWeight: "light", menus: "plain", motion: "minimal",
+    register: "same", display: "heavy", displayCase: "written", hero: "type", heroMotion: "static", background: "grain", rhythm: "alternating",
+    frames: "none", characters: "none", proof: "quotes", cta: "email",
+  },
 };
 
-export function resolveChoices(choices: Choices): ResolvedChoices {
-  const preset = PRESETS[choices.reference ?? "linear"] ?? PRESETS.linear!;
-  return { ...preset, ...(choices as Record<StepId, string>) };
+/** The reference each archetype starts from when none is picked. */
+export const ARCHETYPE_REFERENCE: Record<Archetype, string> = {
+  workspace: "linear",
+  feed: "community",
+  commerce: "airbnb",
+  reader: "learning",
+  media: "mediaapp",
+  companion: "gamecompanion",
+  canvas: "figma",
+  conversation: "agentchat",
+  utility: "raycast",
+};
+
+/**
+ * What a look re-defaults when the user picks it over the reference's own look.
+ * Steps it doesn't list keep the reference's value, so Linear's frame with a brutalist look stays Linear's frame.
+ */
+export const LOOK_DEFAULTS: Record<string, Partial<ResolvedChoices>> = {
+  quiet: { typeface: "inter", contrast: "standard", radius: "medium", depth: "hairline", cards: "hairline", inputs: "outlined", buttons: "filled", motion: "minimal", display: "same" },
+  editorial: { neutral: "warm", contrast: "soft", radius: "sharp", depth: "hairline", density: "comfortable", spacing: "airy", pageTitle: "display", cards: "hairline", inputs: "underline", buttons: "outline", display: "heavy" },
+  playful: { typeface: "rounded", contrast: "standard", radius: "pill", depth: "soft", cards: "fill", inputs: "filled", buttons: "filled", iconWeight: "regular", motion: "expressive", display: "giant" },
+  brutalist: { typeface: "grotesk", mono: "jetbrains", neutral: "neutral", contrast: "high", radius: "none", depth: "offset", tables: "hairline", cards: "hairline", inputs: "outlined", buttons: "filled", motion: "none" },
+  print: { typeface: "serif", mono: "plex-mono", neutral: "warm", contrast: "standard", radius: "none", depth: "hairline", pageTitle: "display", tables: "hairline", cards: "hairline", inputs: "underline", buttons: "outline" },
+  immersive: { typeface: "grotesk", contrast: "standard", radius: "round", depth: "soft", themes: "dark", sidebarTone: "dimmer", cards: "fill", inputs: "filled", motion: "expressive", display: "giant" },
+};
+
+/**
+ * Every step's default under these choices: the reference preset (the archetype's
+ * reference when none is picked), then a chosen look's re-defaults when it isn't the reference's own.
+ */
+export function defaultsFor(choices: Choices): ResolvedChoices {
+  const archetype = choices.archetype ?? PRESETS[choices.reference ?? ""]?.archetype ?? "workspace";
+  const reference = choices.reference ?? ARCHETYPE_REFERENCE[archetype as Archetype] ?? "linear";
+  const preset = PRESETS[reference] ?? PRESETS.linear!;
+  const look = choices.look !== undefined && choices.look !== preset.look ? LOOK_DEFAULTS[choices.look] : undefined;
+  return { ...preset, ...look, archetype, reference: preset.reference };
 }
 
-/** Steps whose user choice differs from the reference default. */
+export function resolveChoices(choices: Choices): ResolvedChoices {
+  return { ...defaultsFor(choices), ...(choices as Record<StepId, string>) };
+}
+
+/** Steps whose user choice differs from its default. The archetype and reference set the defaults, so they never deviate. */
 export function deviations(choices: Choices): StepId[] {
-  const preset = PRESETS[choices.reference ?? "linear"] ?? PRESETS.linear!;
-  return STEPS.filter((s) => s.id !== "reference" && choices[s.id] !== undefined && choices[s.id] !== preset[s.id]).map((s) => s.id);
+  const defaults = defaultsFor(choices);
+  return STEPS.filter((s) => s.id !== "archetype" && s.id !== "reference" && choices[s.id] !== undefined && choices[s.id] !== defaults[s.id]).map((s) => s.id);
+}
+
+/** A step's options in the order the walk shows them: references that fit the archetype come first. */
+export function optionsFor(step: Step, resolved: ResolvedChoices): readonly Option[] {
+  if (step.id !== "reference") return step.options;
+  const fits = (o: Option) => (PRESETS[o.id]?.archetype === resolved.archetype ? 0 : 1);
+  return [...step.options].sort((a, b) => fits(a) - fits(b));
 }

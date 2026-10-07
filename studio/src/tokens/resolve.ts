@@ -18,8 +18,10 @@ const scale = (name: string, dark: boolean): string[] => {
 
 const NEUTRAL: Record<string, string> = { cool: "slate", neutral: "gray", warm: "sand", tinted: "mauve" };
 const ACCENT: Record<string, string> = {
-  indigo: "indigo", blue: "blue", violet: "violet", teal: "teal", green: "green", orange: "orange", crimson: "crimson",
+  indigo: "indigo", blue: "blue", violet: "violet", teal: "teal", green: "green", orange: "orange", crimson: "crimson", pink: "pink", amber: "amber",
 };
+/** Accents whose solid fill needs dark text: in dark mode, or in both themes for amber. */
+const DARK_TEXT_ACCENT: Record<string, "dark" | "both"> = { orange: "dark", green: "dark", teal: "dark", amber: "both" };
 
 export const FONT_STACK: Record<string, string> = {
   inter: `"Inter", ui-sans-serif, system-ui, sans-serif`,
@@ -27,6 +29,9 @@ export const FONT_STACK: Record<string, string> = {
   plex: `"IBM Plex Sans", ui-sans-serif, system-ui, sans-serif`,
   instrument: `"Instrument Sans", ui-sans-serif, system-ui, sans-serif`,
   system: `ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif`,
+  serif: `"Newsreader", ui-serif, Georgia, serif`,
+  rounded: `"Nunito", ui-rounded, ui-sans-serif, system-ui, sans-serif`,
+  grotesk: `"Space Grotesk", ui-sans-serif, system-ui, sans-serif`,
 };
 export const MONO_STACK: Record<string, string> = {
   "geist-mono": `"Geist Mono", ui-monospace, monospace`,
@@ -35,7 +40,7 @@ export const MONO_STACK: Record<string, string> = {
   "system-mono": `ui-monospace, "SF Mono", Menlo, Consolas, monospace`,
 };
 
-export const RADIUS_PX: Record<string, number> = { sharp: 4, medium: 6, round: 8, soft: 10, pill: 16 };
+export const RADIUS_PX: Record<string, number> = { none: 0, sharp: 4, medium: 6, round: 8, soft: 10, pill: 16 };
 
 /** Tailwind v4 derives every padding, gap and size utility from `--spacing`. */
 export const SPACING_UNIT: Record<string, string> = { tight: "3.5px", regular: "4px", airy: "5px" };
@@ -57,6 +62,23 @@ export const MOTION_MS: Record<string, { fast: number; base: number; spring: boo
   minimal: { fast: 100, base: 150, spring: false },
   expressive: { fast: 150, base: 260, spring: true },
 };
+
+/**
+ * The look step's type voice for headings. Editorial and print set headings in the serif;
+ * the other looks keep the body face and change weight, tracking and case. Quiet is the
+ * studio's long-standing heading: medium weight, no tracking.
+ */
+const LOOK_HEADING: Record<string, { serif: boolean; weight: number; tracking: string; case: string }> = {
+  quiet: { serif: false, weight: 500, tracking: "normal", case: "none" },
+  editorial: { serif: true, weight: 500, tracking: "-0.015em", case: "none" },
+  playful: { serif: false, weight: 800, tracking: "-0.01em", case: "none" },
+  brutalist: { serif: false, weight: 700, tracking: "-0.025em", case: "none" },
+  print: { serif: true, weight: 600, tracking: "-0.01em", case: "none" },
+  immersive: { serif: false, weight: 700, tracking: "-0.02em", case: "none" },
+};
+
+/** Fine paper grain: SVG noise in a warm gray at 7% alpha. */
+const PAPER_GRAIN = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.35 0 0 0 0 0.3 0 0 0 0 0.24 0 0 0 0.07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`;
 
 export type Vars = Record<string, string>;
 
@@ -102,7 +124,8 @@ function palette(c: ResolvedChoices, dark: boolean): Vars {
   const hover = nA[3]!;
 
   const primary = a ? a[8]! : foreground;
-  const primaryForeground = a ? (c.accent === "orange" || c.accent === "green" || c.accent === "teal" ? (dark ? "#000000" : "#ffffff") : "#ffffff") : background;
+  const darkText = DARK_TEXT_ACCENT[c.accent];
+  const primaryForeground = a ? (darkText === "both" || (darkText === "dark" && dark) ? "#000000" : "#ffffff") : background;
   const ring = a ? a[7]! : step(8);
   const accentSoft = aA ? aA[2]! : nA[3]!;
   const accentSoftHover = aA ? aA[3]! : nA[4]!;
@@ -125,7 +148,14 @@ function palette(c: ResolvedChoices, dark: boolean): Vars {
   const sidebarMuted = c.sidebarTone === "dark" ? nD[10]! : mutedForeground;
   const sidebarBorder = c.sidebarTone === "dark" ? nDA[5]! : border;
   const sidebarHover = c.sidebarTone === "dark" ? nDA[3]! : nA[3]!;
-
+  // Offset depth draws hard shadows and card outlines in the text color.
+  const offset = c.depth === "offset";
+  const texture =
+    c.look === "print" && !dark
+      ? PAPER_GRAIN
+      : c.look === "immersive"
+        ? `radial-gradient(900px 420px at 15% -10%, color-mix(in oklab, ${primary} ${dark ? 24 : 14}%, transparent), transparent 70%)`
+        : "none";
   return {
     "--background": background,
     "--foreground": foreground,
@@ -169,10 +199,14 @@ function palette(c: ResolvedChoices, dark: boolean): Vars {
     "--chart-3": withAlpha(primary, STACK_OPACITY[2]!),
     "--chart-4": withAlpha(primary, STACK_OPACITY[3]!),
     "--chart-5": withAlpha(primary, STACK_OPACITY[4]!),
-    "--shadow-sm": c.depth === "hairline" ? "none" : c.depth === "soft" ? "0 1px 2px rgb(0 0 0 / 0.05)" : "0 1px 2px rgb(0 0 0 / 0.06), 0 2px 6px rgb(0 0 0 / 0.06)",
-    "--shadow-md": c.depth === "hairline" ? "none" : c.depth === "soft" ? "0 2px 6px rgb(0 0 0 / 0.06)" : "0 4px 12px rgb(0 0 0 / 0.08), 0 1px 3px rgb(0 0 0 / 0.06)",
-    "--shadow-lg": dark ? "0 12px 32px rgb(0 0 0 / 0.5)" : "0 12px 32px -8px rgb(0 0 0 / 0.18), 0 2px 8px rgb(0 0 0 / 0.08)",
-    "--border-card": c.depth === "shadow" ? (soft ? nA[3]! : nA[4]!) : border,
+    "--shadow-sm": offset ? `2px 2px 0 0 ${foreground}` : c.depth === "hairline" ? "none" : c.depth === "soft" ? "0 1px 2px rgb(0 0 0 / 0.05)" : "0 1px 2px rgb(0 0 0 / 0.06), 0 2px 6px rgb(0 0 0 / 0.06)",
+    "--shadow-md": offset ? `4px 4px 0 0 ${foreground}` : c.depth === "hairline" ? "none" : c.depth === "soft" ? "0 2px 6px rgb(0 0 0 / 0.06)" : "0 4px 12px rgb(0 0 0 / 0.08), 0 1px 3px rgb(0 0 0 / 0.06)",
+    "--shadow-lg": offset ? `6px 6px 0 0 ${foreground}` : dark ? "0 12px 32px rgb(0 0 0 / 0.5)" : "0 12px 32px -8px rgb(0 0 0 / 0.18), 0 2px 8px rgb(0 0 0 / 0.08)",
+    "--border-card": offset ? foreground : c.depth === "shadow" ? (soft ? nA[3]! : nA[4]!) : border,
+    "--texture": texture,
+    // Filled and outlined buttons sit on a hard offset (offset depth) or a pressed lip (playful).
+    // `0 0 #0000`, not `none`: Tailwind composes it into one box-shadow list with the focus ring.
+    "--button-edge": offset ? `2px 2px 0 0 ${foreground}` : c.look === "playful" ? "inset 0 -2px 0 rgb(0 0 0 / 0.22)" : "0 0 #0000",
   };
 }
 
@@ -189,8 +223,14 @@ export function resolveTokens(c: ResolvedChoices): Resolved {
   const d = DENSITY[c.density] ?? DENSITY.compact!;
   const m = MOTION_MS[c.motion] ?? MOTION_MS.minimal!;
   const r = RADIUS_PX[c.radius] ?? 6;
+  const heading = LOOK_HEADING[c.look] ?? LOOK_HEADING.quiet!;
+  const sans = FONT_STACK[c.typeface] ?? FONT_STACK.inter!;
   const shared: Vars = {
-    "--font-sans": FONT_STACK[c.typeface] ?? FONT_STACK.inter!,
+    "--font-sans": sans,
+    "--font-heading": heading.serif ? FONT_STACK.serif! : sans,
+    "--heading-weight": String(heading.weight),
+    "--heading-tracking": heading.tracking,
+    "--heading-case": heading.case,
     "--font-mono": MONO_STACK[c.mono] ?? MONO_STACK["geist-mono"]!,
     "--radius": `${r}px`,
     "--radius-control": c.buttons === "soft" && r >= 8 ? `${r + 2}px` : `${r}px`,
@@ -213,6 +253,9 @@ const FONT_FILES: Record<string, string> = {
   geist: "Geist",
   plex: "IBM Plex Sans",
   instrument: "Instrument Sans",
+  serif: "Newsreader",
+  rounded: "Nunito",
+  grotesk: "Space Grotesk",
   "geist-mono": "Geist Mono",
   jetbrains: "JetBrains Mono",
   "plex-mono": "IBM Plex Mono",
@@ -229,9 +272,10 @@ const block = (selector: string, vars: Vars) =>
  */
 export function themeCss(r: Resolved): string {
   const c = r.choices;
-  const fonts = [FONT_FILES[c.typeface], FONT_FILES[c.mono]].filter(Boolean);
+  const headingFont = LOOK_HEADING[c.look]?.serif ? "serif" : c.typeface;
+  const fonts = [...new Set([FONT_FILES[c.typeface], FONT_FILES[headingFont], FONT_FILES[c.mono]])].filter(Boolean);
   const lines = [
-    `/* Generated by frontend-studio. Reference: ${c.reference}. */`,
+    `/* Generated by frontend-studio. Archetype: ${c.archetype}. Reference: ${c.reference}. Look: ${c.look}. */`,
     `/* Import after "tailwindcss" and "shadcn/tailwind.css". */`,
     fonts.length
       ? `/* Self-host: ${fonts.join(", ")} — @fontsource-variable packages, or the woff2 files and @font-face rules from the studio's fonts.css. */`
@@ -246,7 +290,7 @@ export function themeCss(r: Resolved): string {
     `@theme inline {`,
     `  --font-sans: var(--font-sans);`,
     `  --font-mono: var(--font-mono);`,
-    `  --font-heading: var(--font-sans);`,
+    `  --font-heading: var(--font-heading);`,
     `  --color-background: var(--background);`,
     `  --color-foreground: var(--foreground);`,
     `  --color-card: var(--card);`,
@@ -309,6 +353,22 @@ export function themeCss(r: Resolved): string {
     `  --text-base: var(--text-body);`,
     `  --text-base--line-height: 1.5;`,
     `}`,
+    ``,
+    `/* The look's type voice: put \`heading\` on every heading. */`,
+    `@utility heading {`,
+    `  font-family: var(--font-heading);`,
+    `  font-weight: var(--heading-weight);`,
+    `  letter-spacing: var(--heading-tracking);`,
+    `  text-transform: var(--heading-case);`,
+    `}`,
+    ``,
+    `/* The look's canvas texture (paper grain, a glow, or none): put \`surface\` on the app canvas. */`,
+    `@utility surface {`,
+    `  background-color: var(--background);`,
+    `  background-image: var(--texture);`,
+    `}`,
+    ``,
+    `/* Filled and outlined buttons take \`shadow-[var(--button-edge)]\`: a hard offset or a pressed lip, per the look. */`,
     ``,
     `body {`,
     `  font-family: var(--font-sans);`,

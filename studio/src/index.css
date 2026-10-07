@@ -11,6 +11,7 @@
 @theme inline {
   --font-sans: var(--font-sans);
   --font-mono: var(--font-mono);
+  --font-heading: var(--font-heading);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -31,6 +32,9 @@
   --color-destructive: var(--destructive);
   --color-warning: var(--warning);
   --color-success: var(--success);
+  --color-destructive-text: var(--destructive-text);
+  --color-warning-text: var(--warning-text);
+  --color-success-text: var(--success-text);
   --color-border: var(--border);
   --color-border-card: var(--border-card);
   --color-input: var(--input);
@@ -54,6 +58,20 @@
   --text-body: var(--text-body);
   --spacing-control: var(--control-h);
   --spacing-row: var(--row-h);
+}
+
+/* The look step's type voice: every heading in the galleries uses it. Mirrors theme.css. */
+@utility heading {
+  font-family: var(--font-heading);
+  font-weight: var(--heading-weight);
+  letter-spacing: var(--heading-tracking);
+  text-transform: var(--heading-case);
+}
+
+/* The look's canvas texture (paper grain, a glow, or none) under app surfaces. Mirrors theme.css. */
+@utility surface {
+  background-color: var(--background);
+  background-image: var(--texture);
 }
 
 /* Studio chrome: fixed, independent of the gallery's live theme. */
