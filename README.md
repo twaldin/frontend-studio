@@ -65,6 +65,8 @@ Bind an address the other machine can reach, and allow the hostname it will use:
 STUDIO_HOST=100.64.0.10 STUDIO_ALLOWED_HOSTS=studio-host,studio-host.example.ts.net bun run dev
 ```
 
+The dev server has no authentication: anyone who can reach the bound address can read and replace the saved walk through `/__studio/state`, and read the studio's source. Bind a private interface such as a tailnet address, never a public or shared network. `STUDIO_ALLOWED_HOSTS` blocks DNS rebinding; it doesn't authenticate clients.
+
 Plain http on any host other than localhost isn't a secure context. The studio works without the APIs that require one; Copy falls back to a selection copy.
 
 Regenerate the textual tree after changing steps or options:

@@ -10,7 +10,7 @@ The visual grill runs in rounds. One round: write the tree, review it, render, c
   STUDIO_HOST=<lan or tailnet ip> STUDIO_ALLOWED_HOSTS=<hostname> bun run dev
   ```
 
-  Request the URL yourself, through that IP and that hostname, before sending it.
+  Request the URL yourself, through that IP and that hostname, before sending it. Anyone who can reach that address can read and replace the saved walk through `/__studio/state`, and read the studio's source, so bind a private interface such as a tailnet address, never a public or shared network. `STUDIO_ALLOWED_HOSTS` blocks DNS rebinding; it doesn't authenticate clients.
 - Plain http on any host other than localhost isn't a secure context, so the clipboard API, `crypto.randomUUID` and service workers are missing. The generic studio works without them; an in-app studio must too.
 - Serve a frozen copy (a git worktree at the commit under review) so ongoing work doesn't change the studio mid-walk. Stop it when the walk ends.
 - Send the exact URL that opens the studio, the keys, and the browser you checked it in. Chromium is the supported target; when the user reports a hang, ask which browser before debugging.

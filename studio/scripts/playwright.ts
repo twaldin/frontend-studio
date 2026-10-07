@@ -41,9 +41,10 @@ export async function launchChromium() {
   const { chromium } = await import(path);
   let browser;
   try {
-    browser = await chromium.launch({ headless: true, channel: "chrome" });
-  } catch {
-    browser = await chromium.launch({ headless: true });
+    browser = await chromium.launch({ headless: true, channel: "chrome" }).catch(() => chromium.launch({ headless: true }));
+  } catch (error) {
+    if (runtimeDir) await rm(runtimeDir, { recursive: true, force: true });
+    throw error;
   }
   const close = async () => {
     await browser.close();

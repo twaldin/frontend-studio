@@ -41,6 +41,7 @@ const modes = (args.mode ?? "light,dark").split(",").map((m) => m.trim());
 for (const m of modes) if (m !== "light" && m !== "dark") throw new Error(`--mode takes light and/or dark, not "${m}"`);
 /** Share of pixels that may differ before two shots stop counting as near-identical. */
 const near = Number(args.near ?? "0.001");
+if (!Number.isFinite(near) || near < 0 || near > 1) throw new Error(`--near takes a fraction from 0 to 1, not "${args.near}"`);
 const wanted = args.step?.split(",").map((s) => s.trim());
 for (const id of wanted ?? []) if (!STEPS.some((s) => s.id === id)) throw new Error(`Unknown step "${id}"`);
 const steps = STEPS.filter((s) => !wanted || wanted.includes(s.id));
