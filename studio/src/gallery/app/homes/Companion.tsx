@@ -70,8 +70,8 @@ export function CompanionHome() {
               <span className="shrink-0 text-chrome tabular text-muted-foreground">{player.value}</span>
             </div>
           </div>
-          <div className="w-[360px] shrink-0 border-l border-border pl-5">
-            <Figures stats={currencies} icons={currencies.map((currency) => CURRENCY_ICONS[currency.label] ?? Coins)} />
+          <div className="w-[420px] shrink-0 border-l border-border pl-5">
+            <Figures stats={currencies} icons={currencies.map((currency) => CURRENCY_ICONS[currency.label] ?? Coins)} size={16} />
           </div>
         </section>
       ) : null}
