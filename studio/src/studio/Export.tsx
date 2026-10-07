@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { STEPS, PRESETS, deviations } from "@/tree/steps";
+import { STEPS, LOOK_DEFAULTS, PRESETS, deviations } from "@/tree/steps";
 import type { Choices, ResolvedChoices, Step } from "@/tree/types";
 import { DENSITY, RADIUS_PX, SPACING_UNIT, themeCss, type Resolved } from "@/tokens/resolve";
 import type { Content } from "@/content/schema";
@@ -13,16 +13,24 @@ const label = (stepId: string, optionId: string) =>
 export function decisionsMarkdown(c: ResolvedChoices, choices: Choices): string {
   const dev = new Set(deviations(choices));
   const d = DENSITY[c.density]!;
+  const ref = label("reference", c.reference);
+  // A look picked over the reference's own supplies some defaults; name whichever applies.
+  const lookDefaults = c.look !== PRESETS[c.reference]?.look ? LOOK_DEFAULTS[c.look] : undefined;
   const line = (ids: keyof ResolvedChoices | (keyof ResolvedChoices)[], text: string) => {
-    const deviated = (Array.isArray(ids) ? ids : [ids]).some((id) => dev.has(id));
-    return `- ${text}${deviated ? "" : ` _(${label("reference", c.reference)}'s default)_`}`;
+    const list = Array.isArray(ids) ? ids : [ids];
+    if (list.some((id) => dev.has(id))) return `- ${text}`;
+    return `- ${text} _(${list.some((id) => lookDefaults?.[id] !== undefined) ? `the ${label("look", c.look).toLowerCase()} look` : ref}'s default)_`;
   };
   return [
     `## Design decisions`,
     ``,
-    `Reference: **${label("reference", c.reference)}**. Chosen in the studio; deviations from the reference are unmarked, defaults are marked.`,
+    `Archetype: **${label("archetype", c.archetype)}**. Reference: **${ref}**. Look: **${label("look", c.look)}**. Chosen in the studio; deviations from the defaults are unmarked, defaults are marked.`,
     ``,
-    `### Base`,
+    `### Frame`,
+    line(["shell", "sidebarTone", "sidebarCollapse", "navIcons", "pageTitle"], `Shell: ${label("shell", c.shell).toLowerCase()}; sidebar ${label("sidebarTone", c.sidebarTone).toLowerCase()}, ${label("sidebarCollapse", c.sidebarCollapse).toLowerCase()}, ${label("navIcons", c.navIcons).toLowerCase()}; page title ${label("pageTitle", c.pageTitle).toLowerCase()}.`),
+    line(["density", "spacing"], `Density: ${label("density", c.density).toLowerCase()} — chrome ${d.chrome}px, body ${d.body}px, controls ${d.control}px, rows ${d.row}px; spacing unit ${label("spacing", c.spacing).toLowerCase()} (${SPACING_UNIT[c.spacing]}).`),
+    ``,
+    `### Tokens`,
     line(["typeface", "mono"], `Typeface: ${label("typeface", c.typeface)}; mono: ${label("mono", c.mono)}.`),
     line(["neutral", "contrast"], `Neutral: ${label("neutral", c.neutral)}, ${label("contrast", c.contrast).toLowerCase()} contrast.`),
     line("accent", `Accent: ${label("accent", c.accent)}. Status colours are red/amber/green and sit on text only.`),
@@ -30,9 +38,7 @@ export function decisionsMarkdown(c: ResolvedChoices, choices: Choices): string 
     line("depth", `Depth: ${label("depth", c.depth).toLowerCase()}.`),
     line("themes", `Themes: ${label("themes", c.themes).toLowerCase()}.`),
     ``,
-    `### App`,
-    line(["density", "spacing"], `Density: ${label("density", c.density).toLowerCase()} — chrome ${d.chrome}px, body ${d.body}px, controls ${d.control}px, rows ${d.row}px; spacing unit ${label("spacing", c.spacing).toLowerCase()} (${SPACING_UNIT[c.spacing]}).`),
-    line(["shell", "sidebarTone", "sidebarCollapse", "navIcons", "pageTitle"], `Shell: ${label("shell", c.shell).toLowerCase()}; sidebar ${label("sidebarTone", c.sidebarTone).toLowerCase()}, ${label("sidebarCollapse", c.sidebarCollapse).toLowerCase()}, ${label("navIcons", c.navIcons).toLowerCase()}; page title ${label("pageTitle", c.pageTitle).toLowerCase()}.`),
+    `### Components`,
     line(["stats", "trend"], `Key figures: ${label("stats", c.stats).toLowerCase()}; over time: ${label("trend", c.trend).toLowerCase()}.`),
     line(["tables", "rowHover"], `Tables: ${label("tables", c.tables).toLowerCase()}; row hover ${label("rowHover", c.rowHover).toLowerCase()}.`),
     line(["cards", "inputs"], `Cards: ${label("cards", c.cards).toLowerCase()}; inputs ${label("inputs", c.inputs).toLowerCase()}.`),
@@ -154,14 +160,13 @@ export function ExportPanel({ tokens, choices, record, content }: { tokens: Reso
   const notes = useMemo(() => studioNotesMarkdown(tokens.choices, record), [tokens, record]);
   const cj = useMemo(() => componentsJson(tokens.choices), [tokens]);
   const copy = useMemo(() => `${JSON.stringify(applyCopy(content, record.copy), null, 2)}\n`, [content, record.copy]);
-  const preset = PRESETS[tokens.choices.reference];
   const dev = deviations(choices);
   return (
     <div className="flex h-full flex-col gap-4 p-4">
       <p className="text-[12px] text-[var(--studio-muted)]">
         {dev.length === 0
-          ? `Every step at ${preset ? label("reference", tokens.choices.reference) : "reference"}'s default.`
-          : `${dev.length} deviation${dev.length > 1 ? "s" : ""} from ${label("reference", tokens.choices.reference)}: ${dev.map((d) => label(d, tokens.choices[d])).join(", ")}.`}
+          ? `Every step at its default (${label("reference", tokens.choices.reference)}, ${label("look", tokens.choices.look).toLowerCase()} look).`
+          : `${dev.length} deviation${dev.length > 1 ? "s" : ""} from the defaults: ${dev.map((d) => label(d, tokens.choices[d])).join(", ")}.`}
       </p>
       <Artifact title="Design decisions" text={md} file="design-decisions.md" />
       <Artifact title="Notes and status" text={notes} file="studio-notes.md" />

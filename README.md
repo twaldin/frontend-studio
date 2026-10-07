@@ -7,7 +7,7 @@ Frontend Studio supports two paths:
 - **New product:** product grill → MVP cut → copy deck → visual grill → build.
 - **Existing frontend:** product recovery → MVP cut → live audit → copy rebuild → visual grill → clean rebuild.
 
-The studio renders every visual choice against the product's real content. Each decision is a step with a few composable options; the user confirms or departs from a reference preset, notes what no option offers, and the walk exports shadcn-compatible theme variables, a concise decision record, the notes for the next round, and component configuration. Reference presets are decision systems based on structural product patterns, not templates or branded copies.
+The studio renders every visual choice against the product's real content. The walk opens with the product's archetype (workspace, feed, store, course or reader, media library, game companion, editor, conversation or utility), which sets the home surface and sample content; then a reference and a look, then the frame, tokens, components and landing. Each decision is a step with a few composable options; the user confirms or departs from the defaults, notes what no option offers, and the walk exports shadcn-compatible theme variables, a concise decision record, the notes for the next round, and component configuration. Reference presets are decision systems based on structural product patterns, not templates or branded copies.
 
 ## Install
 
@@ -44,7 +44,7 @@ bun install
 bun run dev
 ```
 
-Open the printed local URL. Put product-specific content in `studio/public/content.json`; its schema lives at `studio/src/content/schema.ts`.
+Open the printed local URL. Each archetype ships sample content in `studio/src/content/archetypes/`; put product-specific content in `studio/public/content.json`, which deep-merges over the chosen archetype's sample. The schema lives at `studio/src/content/schema.ts`.
 
 Useful controls:
 
@@ -106,12 +106,19 @@ Use `references/audit-checklist.md` to turn the evidence into a product-specific
 
 ## Add or change a reference preset
 
-1. Research the live public site and public product UI or docs.
+1. Research the live public site and public product UI or docs. A genre preset (a look common to a kind of product, such as the newspaper or the game companion) cites the products it was drawn from instead.
 2. Record the reusable structural choices in `references/products.md`.
-3. Add the reference option and complete preset in `studio/src/tree/steps.ts`.
+3. Add the reference option and complete preset in `studio/src/tree/steps.ts`, including the archetype it fits and its look. The look's tokens (heading voice, texture, button edge) apply to the preset, so pick the look whose tokens match the product, usually `quiet`.
 4. If the product exposes a genuinely missing visual decision, add the smallest reusable option and render it in the gallery.
 5. Run `bun run tree:md`, then `bun run capture --step <the steps you touched>` and check the new option isn't flagged.
 6. Inspect the preset at desktop and phone widths. Do not add branded assets or copy page structure.
+
+## Add an archetype
+
+1. Add it to `Archetype` in `studio/src/tree/types.ts`, as an option of the archetype step, and its starting reference in `ARCHETYPE_REFERENCE` (`studio/src/tree/steps.ts`).
+2. Write its sample content in `studio/src/content/archetypes/<id>.ts` and register it in `studio/src/content/default.ts`.
+3. Write its home surface in `studio/src/gallery/app/homes/<Name>.tsx`: the main object first, built from the shared kit (`kit.tsx`, `sections.tsx`) so every step still changes it. Register it and its nav icons in `homes/index.ts`.
+4. Run `bun run tree:md` and `bun run capture --step archetype`, and check the new home isn't flagged.
 
 ## Outputs
 

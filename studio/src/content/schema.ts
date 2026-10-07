@@ -1,7 +1,7 @@
 /**
- * Everything the galleries display. A project overrides this with its own
- * copy deck by placing `content.json` in the studio's `public/` directory;
- * the shape below is the contract.
+ * Everything the galleries display. Each archetype ships its own sample content
+ * (`content/archetypes/`); a project overrides it with its own copy deck by
+ * placing `content.json` in the studio's `public/` directory. The shape below is the contract.
  */
 
 export type CellKind = "text" | "muted" | "mono" | "status" | "num";
@@ -10,6 +10,32 @@ export interface Cell {
   kind?: CellKind;
   /** For `status`: one of "ok" | "warn" | "bad" | "off" | "unknown". */
   tone?: "ok" | "warn" | "bad" | "off" | "unknown";
+}
+
+/**
+ * One of the product's main objects, as a home surface lays it out: a listing, a lesson,
+ * a post, a track, a quest, a file. Every field but `title` and `meta` is optional.
+ */
+export interface Item {
+  title: string;
+  /** One short line under the title: seller, author and time, duration, rarity. */
+  meta: string;
+  body?: string;
+  /** Price, score, duration or count, shown prominently. */
+  value?: string;
+  badge?: string;
+  /** 0–1: lesson or quest progress, a playback position. */
+  progress?: number;
+  /** Shelf, category or section the item belongs to. */
+  group?: string;
+}
+
+/** One message. `mine` marks the user's own; the rest come from people or an agent. */
+export interface Message {
+  author: string;
+  text: string;
+  mine?: boolean;
+  time?: string;
 }
 
 export interface Content {
@@ -47,6 +73,10 @@ export interface Content {
     search: string;
     /** Period tabs on the chart panel, e.g. 7d / 30d / 90d. */
     periods: string[];
+    /** The main objects the home lays out. The workspace home ignores them; every other home is built on them. */
+    items: Item[];
+    /** A conversation, oldest first: the conversation home's thread, replies elsewhere. */
+    thread: Message[];
   };
   landing: {
     nav: string[];

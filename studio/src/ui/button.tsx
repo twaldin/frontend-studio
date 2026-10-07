@@ -34,6 +34,9 @@ const paddings = {
   lg: "px-4",
 } as const;
 
+/** Variants with a fill or an outline: they take the look's button edge (an offset or a pressed lip). */
+const EDGED: Record<string, true> = { cta: true, soft: true, outline: true, secondary: true, destructive: true };
+
 export function Button({
   variant = "primary",
   size = "md",
@@ -85,6 +88,7 @@ export function Button({
         heights[size],
         variant === "link" ? "px-0" : paddings[size],
         variant === "primary" ? primary : variants[variant],
+        EDGED[resolvedVariant] && "shadow-[var(--button-edge)]",
         className,
         forcedState,
       )}

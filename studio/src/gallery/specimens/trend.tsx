@@ -1,5 +1,5 @@
 import { useGallery } from "@/gallery/context";
-import { Stats } from "@/gallery/app/Shell";
+import { Stats } from "@/gallery/app/sections";
 
 const NOTE: Record<string, string> = {
   none: "Figures only.",

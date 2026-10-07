@@ -1,22 +1,21 @@
 import { useEffect, useState } from "react";
-import { DEFAULT_CONTENT } from "./default";
-import { mergeContent } from "./copy";
-import type { Content } from "./schema";
 
 export interface LoadedContent {
-  content: Content;
+  /** The project's copy deck, possibly partial; the caller merges it over the archetype's sample content. */
+  project: unknown;
   /** `default`, a path under the studio's public dir (`/content.json`), or an absolute http(s) URL. */
   source: string;
 }
 
 /**
  * Project copy: `?content=<url>` wins, then `/content.json` in the studio's
- * public dir, then the generic default. Partial JSON deep-merges over the
- * default so a project can supply only the landing block. The file is
- * re-read every few seconds and on focus, so edits show without a reload.
+ * public dir, else none and the archetype's sample content shows as is. Partial
+ * JSON deep-merges over the sample content, so a project can supply only the
+ * landing block. The file is re-read every few seconds and on focus, so edits
+ * show without a reload.
  */
 export function useContent(): LoadedContent {
-  const [loaded, setLoaded] = useState<LoadedContent>({ content: DEFAULT_CONTENT, source: "default" });
+  const [loaded, setLoaded] = useState<LoadedContent>({ project: null, source: "default" });
   useEffect(() => {
     // A queryless same-origin source stays a path into public/; anything else (another origin,
     // `//cdn…/copy.json`, an endpoint with a query) becomes the absolute URL, so `bun run export`
@@ -37,7 +36,7 @@ export function useContent(): LoadedContent {
         const text = await r.text();
         if (cancelled || text === last) return;
         last = text;
-        setLoaded({ content: mergeContent(DEFAULT_CONTENT, JSON.parse(text)), source: url });
+        setLoaded({ project: JSON.parse(text), source: url });
       } catch {
         // The default content stays in place.
       }
