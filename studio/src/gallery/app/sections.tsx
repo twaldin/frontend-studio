@@ -7,10 +7,16 @@ import { AreaChart, STACK_OPACITY, Sparkline } from "./Trend";
 
 type Stat = Content["app"]["stats"][number];
 
-/** One figure: label, value, optional note, and its trend per the trend knob (or `trend`, in compact layouts). */
-function Figure({ stat, size = 22, trend, Icon }: { stat: Stat; size?: number; trend?: string; Icon?: LucideIcon }) {
+/** Wide trends need the workspace's full-width block; inside another surface they fall back to an area under each figure. */
+const COMPACT_TREND: Record<string, string> = { none: "none", sparkline: "sparkline", area: "area", chart: "area", panel: "area", stacked: "area" };
+
+/**
+ * One figure: label, value, optional note, and its trend per the trend knob. `compact` figures sit
+ * in narrow columns, so their trend goes under the value and wide trends become an area.
+ */
+function Figure({ stat, size = 22, compact = false, Icon }: { stat: Stat; size?: number; compact?: boolean; Icon?: LucideIcon }) {
   const { choices } = useGallery();
-  const shown = trend ?? choices.trend;
+  const shown = compact ? COMPACT_TREND[choices.trend] : choices.trend;
   const series = stat.series ?? [];
   return (
     <div className="min-w-0">
@@ -20,20 +26,18 @@ function Figure({ stat, size = 22, trend, Icon }: { stat: Stat; size?: number; t
       </div>
       <div className="mt-1 flex items-end gap-3">
         <div className="truncate font-medium leading-none tabular text-foreground" style={{ fontSize: size }}>{stat.value}</div>
-        {shown === "sparkline" ? <Sparkline series={series} className="mb-0.5 shrink-0" /> : null}
+        {shown === "sparkline" && !compact ? <Sparkline series={series} className="mb-0.5 shrink-0" /> : null}
       </div>
+      {shown === "sparkline" && compact ? <Sparkline series={series} width={48} height={16} className="mt-2 block" /> : null}
       {stat.note ? <div className="mt-1 truncate text-chrome text-muted-foreground">{stat.note}</div> : null}
       {shown === "area" ? <AreaChart series={series} height={36} className="mt-3 block" /> : null}
     </div>
   );
 }
 
-/** Wide trends need the workspace's full-width block; inside another surface they fall back to an area under each figure. */
-const COMPACT_TREND: Record<string, string> = { none: "none", sparkline: "sparkline", area: "area", chart: "area", panel: "area", stacked: "area" };
-
 /**
  * Figures inside another surface (a player card, a streak card), per the figures and trend steps:
- * divided columns for strip, a tile each for cards, one line for inline.
+ * divided columns for strip, a card each for cards, one line for inline.
  */
 export function Figures({ stats, icons = [], size = 18 }: { stats: Stat[]; icons?: readonly LucideIcon[]; size?: number }) {
   const { choices } = useGallery();
@@ -56,8 +60,8 @@ export function Figures({ stats, icons = [], size = 18 }: { stats: Stat[]; icons
   return (
     <div className={cn("grid", cards ? "gap-2" : "divide-x divide-border")} style={{ gridTemplateColumns: `repeat(${stats.length}, minmax(0, 1fr))` }}>
       {stats.map((stat, index) => (
-        <div key={`${stat.label}-${index}`} className={cn("min-w-0", cards ? "rounded-md bg-muted p-3" : "px-4 first:pl-0 last:pr-0")}>
-          <Figure stat={stat} size={size} trend={trend} Icon={icons[index]} />
+        <div key={`${stat.label}-${index}`} className={cn("min-w-0", cards ? cn("rounded-md p-3", CARD_CLASSES_BY_STYLE[choices.cards]) : "px-4 first:pl-0 last:pr-0")}>
+          <Figure stat={stat} size={size} compact Icon={icons[index]} />
         </div>
       ))}
     </div>
