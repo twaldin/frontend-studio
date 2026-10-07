@@ -1,6 +1,6 @@
 # Product grill
 
-The question tree for step 1. Ask in this order; each answer unlocks the next. Find facts yourself (the SDK, the API, the prior art); put only decisions to the user.
+The question tree for step 1. Ask in this order; each answer unlocks the next. Find facts yourself (the SDK, the API, the prior art); put only decisions to the user. Questions about product behavior that come up later, in studio notes, come back here.
 
 ## Who
 
@@ -17,25 +17,27 @@ The question tree for step 1. Ask in this order; each answer unlocks the next. F
 
 ## Where
 
-8. Navigation: flat list or grouped? Which item is first? Is there a global "new" action?
+8. Navigation: flat list or grouped? Which item is first? Is there a global "new" action? How many destinations will there be in a year, and where do settings, account and theme live?
 9. Every surface, with the one question it answers. A surface that answers two questions is two surfaces.
 10. Which surface is home, and what are the ≤4 questions it answers above the fold, in order?
-11. Which surfaces copy an existing product's layout outright, and which one?
+11. What does a brand-new user see first, and how does onboarding end: on an empty home, after a tour, or inside the first real run of the core workflow?
+12. Which surfaces copy an existing product's layout outright, and which one?
 
 ## How it behaves
 
-12. The state list every data surface implements: loading, empty, unknown, stale, halted, waiting, error, offline — keep, cut, or add, with the rendering rule for each in one line.
-13. What is the rendering rule for a value that was not observed? (A rendering rule, never a selling point.)
-14. What are the irreversible actions, and what does each one show before it runs?
+13. The state list every data surface implements: loading, empty, unknown, stale, halted, waiting, error, offline — keep, cut, or add, with the rendering rule for each in one line.
+14. What is the rendering rule for a value that was not observed? (A rendering rule, never a selling point.)
+15. What are the irreversible actions, and what does each one show before it runs?
 
 ## Voice
 
-15. Which product's copy does this sound like? (Changelog, docs, marketing — name the register per surface.)
-16. Three before/after pairs: an overfit line from the previous build or the conversation, and its plain replacement.
-17. The landing headline shape: category noun-phrase plus one scope sentence. Three candidates and the evaluator that picks.
+16. Which product's copy does this sound like? (Changelog, docs, marketing — name the register per surface.)
+17. Three before/after pairs: an overfit line from the previous build or the conversation, and its plain replacement.
+18. The landing headline shape: category noun-phrase plus one scope sentence. Three candidates and the evaluator that picks.
 
 ## Design frame (feeds the visual grill)
 
-18. Where does the game or domain register live: in content cells only, or in chrome too?
-19. Same visual language for app and landing, or a split?
-20. Which reference product does the visual grill start from?
+19. Where does the game or domain register live: in content cells only, or in chrome too?
+20. Same visual language for app and landing, or a split?
+21. Which reference product does the visual grill start from?
+22. Which surfaces have product axes for the studio: decisions about how a surface is composed or behaves, beyond type, color and shape?

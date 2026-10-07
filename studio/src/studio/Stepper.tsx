@@ -1,8 +1,10 @@
 import { STEPS, PRESETS, deviations } from "@/tree/steps";
 import type { Branch, Step } from "@/tree/types";
 import type { Studio } from "./state";
+import type { Status } from "./saved";
 
 const BRANCH_LABEL: Record<Branch, string> = { base: "Base", app: "App", landing: "Landing" };
+const STATUS_MARK: Record<Status, string> = { decided: "✓", revisit: "↻" };
 
 function StepRow({ s, i, studio }: { s: Step; i: number; studio: Studio }) {
   const active = studio.state.step === i;
@@ -10,6 +12,7 @@ function StepRow({ s, i, studio }: { s: Step; i: number; studio: Studio }) {
   const preset = PRESETS[studio.resolved.reference]?.[s.id];
   const deviated = s.id !== "reference" && studio.state.choices[s.id] !== undefined && studio.state.choices[s.id] !== preset;
   const label = s.options.find((o) => o.id === chosen)?.label ?? chosen;
+  const status = studio.record.status[s.id];
   return (
     <button
       onClick={() => studio.go(i)}
@@ -19,8 +22,51 @@ function StepRow({ s, i, studio }: { s: Step; i: number; studio: Studio }) {
     >
       <span className="w-4 text-right tabular-nums opacity-60">{i + 1}</span>
       <span className="flex-1 truncate">{s.question.replace(/\?$/, "")}</span>
+      {studio.record.notes[s.id] ? <span title="Has a note" className="text-[10px] opacity-70">✎</span> : null}
+      {status ? (
+        <span title={status === "decided" ? "Decided" : "Revisit"} className={status === "revisit" ? "text-amber-400" : "text-[var(--studio-accent)]"}>
+          {STATUS_MARK[status]}
+        </span>
+      ) : null}
       <span className={`truncate text-[11px] ${deviated ? "text-[var(--studio-accent)]" : "opacity-70"}`}>{label}</span>
     </button>
+  );
+}
+
+/** Open, decided or revisit, plus the user's own words: what the options can't say. */
+function StepRecord({ step, studio }: { step: Step; studio: Studio }) {
+  const status = studio.record.status[step.id];
+  const statuses: { value: Status | undefined; label: string }[] = [
+    { value: undefined, label: "Open" },
+    { value: "decided", label: "Decided" },
+    { value: "revisit", label: "Revisit" },
+  ];
+  return (
+    <div className="mt-3 flex flex-col gap-2">
+      <div role="radiogroup" aria-label="Status" className="flex items-center gap-0.5 self-start rounded border border-[var(--studio-line)] p-0.5">
+        {statuses.map((s) => (
+          <button
+            key={s.label}
+            role="radio"
+            aria-checked={status === s.value}
+            onClick={() => studio.setStatus(step.id, s.value)}
+            className={`rounded px-2 py-0.5 text-[12px] ${
+              status === s.value ? "bg-[var(--studio-line)] text-[var(--studio-fg)]" : "text-[var(--studio-muted)] hover:text-[var(--studio-fg)]"
+            }`}
+          >
+            {s.label}
+          </button>
+        ))}
+      </div>
+      <textarea
+        aria-label="Note"
+        value={studio.record.notes[step.id] ?? ""}
+        onChange={(e) => studio.setNote(step.id, e.target.value)}
+        placeholder="Note: what you'd change, what no option shows, what you're unsure of"
+        rows={3}
+        className="w-full resize-y rounded-md border border-[var(--studio-line)] bg-transparent px-2.5 py-2 text-[12px] leading-[1.45] text-[var(--studio-fg)] placeholder:text-[var(--studio-muted)] focus:border-[var(--studio-muted)] focus:outline-none"
+      />
+    </div>
   );
 }
 
@@ -34,7 +80,7 @@ export function Stepper({ studio }: { studio: Studio }) {
   return (
     <aside className="flex h-full w-[340px] shrink-0 flex-col border-r border-[var(--studio-line)] bg-[var(--studio-panel)]">
       {/* Current decision */}
-      <div className="border-b border-[var(--studio-line)] p-4">
+      <div className="max-h-[65%] min-h-0 shrink-0 overflow-y-auto border-b border-[var(--studio-line)] p-4">
         <div className="mb-1 flex items-center gap-2 text-[11px] text-[var(--studio-muted)]">
           <span>{BRANCH_LABEL[step.branch]}</span>
           <span>·</span>
@@ -73,6 +119,7 @@ export function Stepper({ studio }: { studio: Studio }) {
             );
           })}
         </ol>
+        <StepRecord step={step} studio={studio} />
         <div className="mt-3 flex items-center gap-2">
           <button
             className="rounded border border-[var(--studio-line)] px-2 py-1 text-[12px] hover:bg-[var(--studio-line)] disabled:opacity-40"

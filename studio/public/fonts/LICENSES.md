@@ -12,14 +12,14 @@ All families in this directory are distributed under the SIL Open Font License 1
 ## Geist
 
 - License: OFL-1.1 — [LICENSE-Geist.txt](./LICENSE-Geist.txt)
-- `Geist-Variable.woff2` — copied from `file:///Users/twaldin/dev/sky-agent/app/src/assets/fonts/Geist-Variable.woff2` as required; official upstream release: <https://github.com/vercel/geist-font/releases/download/v1.7.2/geist-font-v1.7.2.zip>
-- `LICENSE-Geist.txt` — copied from `file:///Users/twaldin/dev/sky-agent/app/src/assets/fonts/LICENSE-geist.txt`; official upstream release: <https://github.com/vercel/geist-font/releases/download/v1.7.2/geist-font-v1.7.2.zip>
+- `Geist-Variable.woff2` — source: <https://github.com/vercel/geist-font/releases/download/v1.7.2/geist-font-v1.7.2.zip>
+- `LICENSE-Geist.txt` — source: <https://github.com/vercel/geist-font/releases/download/v1.7.2/geist-font-v1.7.2.zip>
 
 ## Geist Mono
 
 - License: OFL-1.1 — [LICENSE-Geist.txt](./LICENSE-Geist.txt)
-- `GeistMono-Variable.woff2` — copied from `file:///Users/twaldin/dev/sky-agent/app/src/assets/fonts/GeistMono-Variable.woff2` as required; official upstream release: <https://github.com/vercel/geist-font/releases/download/v1.7.2/geist-font-v1.7.2.zip>
-- `LICENSE-Geist.txt` — copied from `file:///Users/twaldin/dev/sky-agent/app/src/assets/fonts/LICENSE-geist.txt`; official upstream release: <https://github.com/vercel/geist-font/releases/download/v1.7.2/geist-font-v1.7.2.zip>
+- `GeistMono-Variable.woff2` — source: <https://github.com/vercel/geist-font/releases/download/v1.7.2/geist-font-v1.7.2.zip>
+- `LICENSE-Geist.txt` — source: <https://github.com/vercel/geist-font/releases/download/v1.7.2/geist-font-v1.7.2.zip>
 
 ## IBM Plex Sans
 

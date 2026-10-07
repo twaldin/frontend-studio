@@ -2,6 +2,8 @@ import { useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNod
 import { useStudio, type Mode, type Studio } from "./studio/state";
 import { Stepper } from "./studio/Stepper";
 import { ExportPanel } from "./studio/Export";
+import { CopyPanel } from "./studio/CopyPanel";
+import { applyCopy } from "./content/copy";
 import { useContent } from "./content/load";
 import { GalleryContext, type GalleryEnv } from "./gallery/context";
 import { AppGallery, ShellScene } from "./gallery/app";
@@ -43,7 +45,9 @@ function Caption({ children }: { children: ReactNode }) {
   return <div className="mb-2 text-[11px] font-medium text-[var(--studio-muted)]">{children}</div>;
 }
 
-function TopBar({ studio, panel, setPanel }: { studio: Studio; panel: "gallery" | "export"; setPanel: (p: "gallery" | "export") => void }) {
+type Panel = "gallery" | "copy" | "export";
+
+function TopBar({ studio, panel, setPanel }: { studio: Studio; panel: Panel; setPanel: (p: Panel) => void }) {
   const modes: Mode[] = ["light", "dark", "both"];
   const btn = (active: boolean) =>
     `rounded px-2 py-0.5 text-[12px] ${active ? "bg-[var(--studio-line)] text-[var(--studio-fg)]" : "text-[var(--studio-muted)] hover:text-[var(--studio-fg)]"}`;
@@ -85,6 +89,9 @@ function TopBar({ studio, panel, setPanel }: { studio: Studio; panel: "gallery" 
         </button>
         <button className={btn(panel === "export")} onClick={() => setPanel("export")}>
           Export
+        </button>
+        <button className={btn(panel === "copy")} onClick={() => setPanel(panel === "copy" ? "gallery" : "copy")} title="Edit every string of the content">
+          Copy
         </button>
         <button className={btn(false)} onClick={studio.reset} title="Drop every deviation">
           Reset
@@ -134,12 +141,16 @@ function AppView({ studio, env }: { studio: Studio; env: GalleryEnv }) {
 }
 
 export function App() {
-  const studio = useStudio();
-  const { content, source } = useContent();
-  const [panel, setPanel] = useState<"gallery" | "export">("gallery");
+  // `?capture`: the gallery alone, in document flow, for scripts/capture.ts. Never writes the state file.
+  const capture = useMemo(() => new URLSearchParams(location.search).has("capture"), []);
+  const studio = useStudio({ persist: !capture });
+  const { content: loaded, source } = useContent();
+  const content = useMemo(() => applyCopy(loaded, studio.record.copy), [loaded, studio.record.copy]);
+  const [panel, setPanel] = useState<Panel>("gallery");
   const mainRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
+    if (capture) return;
     const onKey = (e: KeyboardEvent) => {
       if ((e.target as HTMLElement | null)?.closest("input, textarea, [contenteditable]")) return;
       const k = e.key;
@@ -161,12 +172,12 @@ export function App() {
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [studio]);
+  }, [studio, capture]);
 
   // Landing steps scroll the gallery to the part being decided.
   const stepId = studio.step.id;
   useEffect(() => {
-    if (panel !== "gallery" || studio.step.gallery !== "landing") return;
+    if (panel === "export" || studio.step.gallery !== "landing") return;
     // A step with its own specimen shows that first; otherwise jump to the landing part being decided.
     const id = LANDING_SPECIMENS[stepId] ? null : scrollTargetId(stepId);
     const el = id ? mainRef.current?.querySelector(`#${id}`) : null;
@@ -176,53 +187,61 @@ export function App() {
 
   const base: Omit<GalleryEnv, "mode"> = { content, choices: studio.resolved, density: studio.tokens.density };
   const isLanding = studio.step.gallery === "landing";
-  const both = studio.state.mode === "both" || stepId === "themes";
-  const single: "light" | "dark" = studio.state.mode === "dark" ? "dark" : "light";
+  // The themes step shows what ships: both side by side, or the one theme.
+  const shipsOne = stepId === "themes" && studio.resolved.themes !== "both";
+  const both = !shipsOne && (studio.state.mode === "both" || stepId === "themes");
+  const single: "light" | "dark" = shipsOne ? (studio.resolved.themes === "dark" ? "dark" : "light") : studio.state.mode === "dark" ? "dark" : "light";
   const LandingSpecimen = LANDING_SPECIMENS[stepId];
+
+  const gallery = isLanding ? (
+    <div className="flex flex-col gap-4 p-6">
+      {LandingSpecimen ? (
+        <div>
+          <Caption>Specimen</Caption>
+          <GalleryRoot tokens={studio.tokens} env={{ ...base, mode: landingMode(studio.resolved.register, studio.state.mode) }} className="mx-auto w-[1200px] overflow-hidden rounded-lg border border-[var(--studio-line)]">
+            <LandingSpecimen />
+          </GalleryRoot>
+        </div>
+      ) : null}
+      <div>
+        <Caption>Landing</Caption>
+        <GalleryRoot tokens={studio.tokens} env={{ ...base, mode: landingMode(studio.resolved.register, studio.state.mode) }} className="mx-auto w-[1200px] overflow-hidden rounded-lg border border-[var(--studio-line)]">
+          <LandingGallery fullHeight={capture} />
+        </GalleryRoot>
+      </div>
+    </div>
+  ) : both ? (
+    <div className="grid grid-cols-2 gap-4 p-4">
+      {(["light", "dark"] as const).map((mode) => (
+        <GalleryRoot key={mode} tokens={studio.tokens} env={{ ...base, mode }} className="min-w-0 overflow-hidden rounded-lg border border-[var(--studio-line)] p-5 [zoom:0.58]">
+          <AppView studio={studio} env={{ ...base, mode }} />
+        </GalleryRoot>
+      ))}
+    </div>
+  ) : (
+    <div className="p-6">
+      <GalleryRoot tokens={studio.tokens} env={{ ...base, mode: single }} className="mx-auto max-w-[1240px] overflow-hidden rounded-lg border border-[var(--studio-line)] p-6">
+        <AppView studio={studio} env={{ ...base, mode: single }} />
+      </GalleryRoot>
+    </div>
+  );
+
+  if (capture) return <div className="w-max min-w-full bg-[var(--studio-bg)]">{gallery}</div>;
 
   return (
     <div className="flex h-full">
-      <Stepper studio={studio} />
+      {panel === "copy" ? <CopyPanel studio={studio} content={loaded} /> : <Stepper studio={studio} />}
       <div className="flex min-w-0 flex-1 flex-col">
         <TopBar studio={studio} panel={panel} setPanel={setPanel} />
         <main ref={mainRef} className="min-h-0 flex-1 overflow-auto bg-[var(--studio-bg)]">
-          {panel === "export" ? (
-            <ExportPanel tokens={studio.tokens} choices={studio.state.choices} />
-          ) : isLanding ? (
-            <div className="flex flex-col gap-4 p-6">
-              {LandingSpecimen ? (
-                <div>
-                  <Caption>Specimen</Caption>
-                  <GalleryRoot tokens={studio.tokens} env={{ ...base, mode: landingMode(studio.resolved.register, studio.state.mode) }} className="mx-auto w-[1200px] overflow-hidden rounded-lg border border-[var(--studio-line)]">
-                    <LandingSpecimen />
-                  </GalleryRoot>
-                </div>
-              ) : null}
-              <div>
-                <Caption>Landing</Caption>
-                <GalleryRoot tokens={studio.tokens} env={{ ...base, mode: landingMode(studio.resolved.register, studio.state.mode) }} className="mx-auto w-[1200px] overflow-hidden rounded-lg border border-[var(--studio-line)]">
-                  <LandingGallery />
-                </GalleryRoot>
-              </div>
-            </div>
-          ) : both ? (
-            <div className="grid grid-cols-2 gap-4 p-4">
-              {(["light", "dark"] as const).map((mode) => (
-                <GalleryRoot key={mode} tokens={studio.tokens} env={{ ...base, mode }} className="min-w-0 overflow-hidden rounded-lg border border-[var(--studio-line)] p-5 [zoom:0.58]">
-                  <AppView studio={studio} env={{ ...base, mode }} />
-                </GalleryRoot>
-              ))}
-            </div>
-          ) : (
-            <div className="p-6">
-              <GalleryRoot tokens={studio.tokens} env={{ ...base, mode: single }} className="mx-auto max-w-[1240px] overflow-hidden rounded-lg border border-[var(--studio-line)] p-6">
-                <AppView studio={studio} env={{ ...base, mode: single }} />
-              </GalleryRoot>
-            </div>
-          )}
+          {panel === "export" ? <ExportPanel tokens={studio.tokens} choices={studio.state.choices} record={studio.record} content={loaded} /> : gallery}
         </main>
         <footer className="flex h-6 shrink-0 items-center gap-3 border-t border-[var(--studio-line)] bg-[var(--studio-panel)] px-3 text-[11px] text-[var(--studio-muted)]">
           <span>content: {source}</span>
+          <span>·</span>
+          <span>
+            {studio.persistence === "file" ? "saved to .studio/state.json" : studio.persistence === "off" ? "not saved: no state endpoint, the URL holds the choices" : "loading saved state"}
+          </span>
           <span>·</span>
           <span>{studio.preview ? `previewing ${studio.preview.option}` : studio.compare ? `showing pin ${studio.compare.toUpperCase()}` : "committed"}</span>
           <span className="ml-auto truncate font-mono">{location.hash.slice(0, 120)}</span>

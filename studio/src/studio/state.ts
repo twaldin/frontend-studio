@@ -2,6 +2,8 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { STEPS, resolveChoices } from "@/tree/steps";
 import type { Choices, ResolvedChoices, Step, StepId } from "@/tree/types";
 import { resolveTokens, type Resolved } from "@/tokens/resolve";
+import { parseSaved, type DecisionRecord, type SavedState, type Status } from "./saved";
+import { STATE_ROUTE } from "./route";
 
 export type Mode = "light" | "dark" | "both";
 
@@ -31,6 +33,20 @@ const writeHash = (s: StudioState) => {
   history.replaceState(null, "", `#${p.toString()}`);
 };
 
+/** A copy of `map` with `key` set, or removed when `value` is undefined. */
+function withKey<K extends string, V>(map: Partial<Record<K, V>>, key: K, value: V | undefined): Partial<Record<K, V>> {
+  const next = { ...map };
+  if (value === undefined) delete next[key];
+  else next[key] = value;
+  return next;
+}
+
+/**
+ * `file`: the dev server saves every change to `.studio/state.json`.
+ * `off`: no state endpoint (a static build); choices live in the URL only.
+ */
+export type Persistence = "loading" | "file" | "off";
+
 export interface Preview {
   step: StepId;
   option: string;
@@ -52,20 +68,69 @@ export interface Studio {
   pin: (slot: "a" | "b") => void;
   compare: "a" | "b" | null;
   setCompare: (c: "a" | "b" | null) => void;
+  record: DecisionRecord;
+  setNote: (step: StepId, text: string) => void;
+  setStatus: (step: StepId, status: Status | undefined) => void;
+  setCopy: (path: string, text: string | undefined) => void;
+  persistence: Persistence;
 }
 
-export function useStudio(): Studio {
+/** `persist: false` keeps the state file untouched, e.g. while `bun run capture` drives the studio. */
+export function useStudio({ persist }: { persist: boolean }): Studio {
   const [state, setState] = useState<StudioState>(parseHash);
+  const [record, setRecord] = useState<DecisionRecord>({ notes: {}, status: {}, copy: {} });
+  const [persistence, setPersistence] = useState<Persistence>(persist ? "loading" : "off");
   const [preview, setPreview] = useState<Preview | null>(null);
   const [pins, setPins] = useState<{ a: Choices | null; b: Choices | null }>({ a: null, b: null });
   const [compare, setCompare] = useState<"a" | "b" | null>(null);
 
   useEffect(() => writeHash(state), [state]);
   useEffect(() => {
-    const onHash = () => setState(parseHash());
+    // A hash that only moves the step or mode (`#step=5`) keeps the walk's choices.
+    const onHash = () =>
+      setState((s) => {
+        const next = parseHash();
+        return Object.keys(next.choices).length ? next : { ...next, choices: s.choices };
+      });
     window.addEventListener("hashchange", onHash);
     return () => window.removeEventListener("hashchange", onHash);
   }, []);
+
+  // Resume the saved walk. A link whose hash carries choices wins over the file.
+  useEffect(() => {
+    if (!persist) return;
+    let cancelled = false;
+    const load = async () => {
+      try {
+        const r = await fetch(STATE_ROUTE, { cache: "no-store" });
+        if (!r.ok || !r.headers.get("content-type")?.includes("json")) throw new Error("no state endpoint");
+        const saved = parseSaved(await r.json());
+        if (cancelled) return;
+        setRecord({ notes: saved.notes, status: saved.status, copy: saved.copy });
+        if (Object.keys(parseHash().choices).length === 0) setState((s) => ({ ...s, choices: saved.choices }));
+        setPersistence("file");
+      } catch {
+        if (!cancelled) setPersistence("off");
+      }
+    };
+    void load();
+    return () => {
+      cancelled = true;
+    };
+  }, [persist]);
+
+  useEffect(() => {
+    if (persistence !== "file") return;
+    const timer = setTimeout(() => {
+      const body: SavedState = { choices: state.choices, ...record, savedAt: new Date().toISOString() };
+      fetch(STATE_ROUTE, { method: "PUT", headers: { "content-type": "application/json" }, body: JSON.stringify(body) })
+        .then((r) => {
+          if (!r.ok) setPersistence("off");
+        })
+        .catch(() => setPersistence("off"));
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [persistence, state.choices, record]);
 
   const choose = useCallback((step: StepId, option: string) => {
     setState((s) => ({ ...s, choices: { ...s.choices, [step]: option } }));
@@ -73,6 +138,18 @@ export function useStudio(): Studio {
   const go = useCallback((step: number) => setState((s) => ({ ...s, step: Math.min(Math.max(step, 0), STEPS.length - 1) })), []);
   const setMode = useCallback((mode: Mode) => setState((s) => ({ ...s, mode })), []);
   const reset = useCallback(() => setState((s) => ({ ...s, choices: { reference: s.choices.reference } })), []);
+  const setNote = useCallback(
+    (step: StepId, text: string) => setRecord((r) => ({ ...r, notes: withKey(r.notes, step, text.trim() ? text : undefined) })),
+    [],
+  );
+  const setStatus = useCallback(
+    (step: StepId, status: Status | undefined) => setRecord((r) => ({ ...r, status: withKey(r.status, step, status) })),
+    [],
+  );
+  const setCopy = useCallback(
+    (path: string, text: string | undefined) => setRecord((r) => ({ ...r, copy: withKey(r.copy, path, text) as Record<string, string> })),
+    [],
+  );
 
   /** Choices actually rendered: pinned comparison, else hover preview over the committed state. */
   const shown: Choices = useMemo(() => {
@@ -102,5 +179,10 @@ export function useStudio(): Studio {
     pin,
     compare,
     setCompare,
+    record,
+    setNote,
+    setStatus,
+    setCopy,
+    persistence,
   };
 }
