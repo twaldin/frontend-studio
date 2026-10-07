@@ -17,6 +17,8 @@ export interface DecisionRecord {
 /** `.studio/state.json`: the walk so far. The agent and `bun run export` read it. */
 export interface SavedState extends DecisionRecord {
   choices: Choices;
+  /** Where the walk's content came from: `default`, `/content.json`, or a `?content=` URL. */
+  contentSource?: string;
   savedAt?: string;
 }
 
@@ -45,5 +47,12 @@ export function parseSaved(raw: unknown): SavedState {
   if (isObject(src.copy)) {
     for (const [k, v] of Object.entries(src.copy)) if (typeof v === "string") copy[k] = v;
   }
-  return { choices, notes, status, copy, ...(typeof src.savedAt === "string" ? { savedAt: src.savedAt } : {}) };
+  return {
+    choices,
+    notes,
+    status,
+    copy,
+    ...(typeof src.contentSource === "string" ? { contentSource: src.contentSource } : {}),
+    ...(typeof src.savedAt === "string" ? { savedAt: src.savedAt } : {}),
+  };
 }

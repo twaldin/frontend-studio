@@ -48,10 +48,29 @@ await Bun.write(new URL("theme.css", dir), themeCss(tokens));
 await Bun.write(new URL("design-decisions.md", dir), decisionsMarkdown(resolved, choices));
 await Bun.write(new URL("components.json", dir), componentsJson(resolved));
 if (saved) {
-  const projectContent = new URL("../public/content.json", import.meta.url);
-  const content = mergeContent(DEFAULT_CONTENT, existsSync(projectContent) ? await Bun.file(projectContent).json() : {});
   await Bun.write(new URL("studio-notes.md", dir), studioNotesMarkdown(resolved, saved));
+  written.push("studio-notes.md");
+  // The same content the browser showed: the default, a file in public/, or a `?content=` URL.
+  const source = saved.contentSource ?? "/content.json";
+  let project: unknown = {};
+  if (/^https?:\/\//.test(source)) {
+    const r = await fetch(source);
+    if (!r.ok) {
+      console.error(`Could not fetch the walk's content from ${source} (HTTP ${r.status}); content.json not written.`);
+      process.exit(1);
+    }
+    project = await r.json();
+  } else if (source !== "default") {
+    const publicDir = new URL("../public/", import.meta.url);
+    const file = new URL(source.replace(/^\/+/, ""), publicDir);
+    if (!file.pathname.startsWith(publicDir.pathname)) {
+      console.error(`The walk's content source ${source} is outside studio/public/; content.json not written.`);
+      process.exit(1);
+    }
+    if (existsSync(file)) project = await Bun.file(file).json();
+  }
+  const content = mergeContent(DEFAULT_CONTENT, project);
   await Bun.write(new URL("content.json", dir), `${JSON.stringify(applyCopy(content, saved.copy), null, 2)}\n`);
-  written.push("studio-notes.md", "content.json");
+  written.push("content.json");
 }
 console.log(`wrote ${dir.pathname}{${written.join(",")}}`);

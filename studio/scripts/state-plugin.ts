@@ -23,21 +23,32 @@ async function readBody(req: IncomingMessage): Promise<string> {
 }
 
 export function studioState(file: string): Plugin {
+  // Writes run one at a time, in arrival order, so two tabs saving at once can't interleave.
+  let writes: Promise<void> = Promise.resolve();
+  let sequence = 0;
+  const write = (state: object) => {
+    const run = writes.then(async () => {
+      await mkdir(dirname(file), { recursive: true });
+      const tmp = `${file}.${process.pid}.${(sequence += 1)}.tmp`;
+      await writeFile(tmp, `${JSON.stringify(state, null, 2)}\n`);
+      await rename(tmp, file);
+    });
+    writes = run.catch(() => {});
+    return run;
+  };
+
   const handle = async (req: IncomingMessage, res: ServerResponse) => {
     try {
       if (req.method === "GET") {
+        await writes;
         const text = await readFile(file, "utf8").catch(() => "{}");
         res.setHeader("content-type", "application/json");
         res.setHeader("cache-control", "no-store");
         res.end(text);
       } else if (req.method === "PUT") {
-        const body = await readBody(req);
-        const parsed: unknown = JSON.parse(body);
+        const parsed: unknown = JSON.parse(await readBody(req));
         if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) throw new Error("state must be a JSON object");
-        await mkdir(dirname(file), { recursive: true });
-        const tmp = `${file}.tmp`;
-        await writeFile(tmp, `${JSON.stringify(parsed, null, 2)}\n`);
-        await rename(tmp, file);
+        await write(parsed);
         res.statusCode = 204;
         res.end();
       } else {

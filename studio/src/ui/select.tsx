@@ -40,7 +40,7 @@ export function Select({ options, value, onChange, placeholder, className, previ
         </BaseSelect.Icon>
       </BaseSelect.Trigger>
       <BaseSelect.Positioner sideOffset={4} align="start" alignItemWithTrigger={false} className="z-50">
-        <BaseSelect.Popup className="min-w-[var(--anchor-width)] rounded-lg border border-border bg-popover p-1 text-popover-foreground shadow-lg outline-none">
+        <BaseSelect.Popup className="min-w-[var(--anchor-width)] rounded-popover border border-border bg-popover p-1.5 text-popover-foreground shadow-lg outline-none">
           <BaseSelect.List>
             {options.map((option) => (
               <BaseSelect.Item

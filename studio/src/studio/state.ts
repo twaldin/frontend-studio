@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { STEPS, resolveChoices } from "@/tree/steps";
 import type { Choices, ResolvedChoices, Step, StepId } from "@/tree/types";
 import { resolveTokens, type Resolved } from "@/tokens/resolve";
@@ -75,11 +75,17 @@ export interface Studio {
   persistence: Persistence;
 }
 
-/** `persist: false` keeps the state file untouched, e.g. while `bun run capture` drives the studio. */
-export function useStudio({ persist }: { persist: boolean }): Studio {
+/**
+ * `persist: false` keeps the state file untouched, e.g. while `bun run capture` drives the studio.
+ * `contentSource` is saved with the walk so `bun run export` reads the same content.
+ */
+export function useStudio({ persist, contentSource }: { persist: boolean; contentSource: string }): Studio {
   const [state, setState] = useState<StudioState>(parseHash);
+  // Read once: a link that opened the studio with choices wins over the saved walk.
+  const [linkHasChoices] = useState(() => Object.keys(parseHash().choices).length > 0);
   const [record, setRecord] = useState<DecisionRecord>({ notes: {}, status: {}, copy: {} });
   const [persistence, setPersistence] = useState<Persistence>(persist ? "loading" : "off");
+  const saving = useRef<Promise<void>>(Promise.resolve());
   const [preview, setPreview] = useState<Preview | null>(null);
   const [pins, setPins] = useState<{ a: Choices | null; b: Choices | null }>({ a: null, b: null });
   const [compare, setCompare] = useState<"a" | "b" | null>(null);
@@ -96,7 +102,7 @@ export function useStudio({ persist }: { persist: boolean }): Studio {
     return () => window.removeEventListener("hashchange", onHash);
   }, []);
 
-  // Resume the saved walk. A link whose hash carries choices wins over the file.
+  // Resume the saved walk. Anything changed while it loads wins over the file.
   useEffect(() => {
     if (!persist) return;
     let cancelled = false;
@@ -106,8 +112,12 @@ export function useStudio({ persist }: { persist: boolean }): Studio {
         if (!r.ok || !r.headers.get("content-type")?.includes("json")) throw new Error("no state endpoint");
         const saved = parseSaved(await r.json());
         if (cancelled) return;
-        setRecord({ notes: saved.notes, status: saved.status, copy: saved.copy });
-        if (Object.keys(parseHash().choices).length === 0) setState((s) => ({ ...s, choices: saved.choices }));
+        setRecord((local) => ({
+          notes: { ...saved.notes, ...local.notes },
+          status: { ...saved.status, ...local.status },
+          copy: { ...saved.copy, ...local.copy },
+        }));
+        if (!linkHasChoices) setState((s) => ({ ...s, choices: { ...saved.choices, ...s.choices } }));
         setPersistence("file");
       } catch {
         if (!cancelled) setPersistence("off");
@@ -117,20 +127,23 @@ export function useStudio({ persist }: { persist: boolean }): Studio {
     return () => {
       cancelled = true;
     };
-  }, [persist]);
+  }, [persist, linkHasChoices]);
 
+  // Saves go out one at a time, in order, so an older snapshot never lands after a newer one.
   useEffect(() => {
     if (persistence !== "file") return;
     const timer = setTimeout(() => {
-      const body: SavedState = { choices: state.choices, ...record, savedAt: new Date().toISOString() };
-      fetch(STATE_ROUTE, { method: "PUT", headers: { "content-type": "application/json" }, body: JSON.stringify(body) })
-        .then((r) => {
-          if (!r.ok) setPersistence("off");
-        })
-        .catch(() => setPersistence("off"));
+      const body: SavedState = { choices: state.choices, ...record, contentSource, savedAt: new Date().toISOString() };
+      saving.current = saving.current.then(() =>
+        fetch(STATE_ROUTE, { method: "PUT", headers: { "content-type": "application/json" }, body: JSON.stringify(body) })
+          .then((r) => {
+            if (!r.ok) setPersistence("off");
+          })
+          .catch(() => setPersistence("off")),
+      );
     }, 300);
     return () => clearTimeout(timer);
-  }, [persistence, state.choices, record]);
+  }, [persistence, state.choices, record, contentSource]);
 
   const choose = useCallback((step: StepId, option: string) => {
     setState((s) => ({ ...s, choices: { ...s.choices, [step]: option } }));

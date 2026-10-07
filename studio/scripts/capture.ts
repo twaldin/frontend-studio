@@ -147,8 +147,8 @@ try {
     const pngs = new Map<string, Buffer>();
     for (const mode of modes) {
       for (const option of step.options) {
-        const hash = new URLSearchParams({ [step.id]: option.id, step: String(index), mode });
-        await page.goto(`${url}#${hash}`);
+        url.hash = new URLSearchParams({ [step.id]: option.id, step: String(index), mode }).toString();
+        await page.goto(url.toString());
         await settle();
         const png: Buffer = await page.screenshot({ fullPage: true, animations: "disabled" });
         const file = resolve(outDir, step.id, `${option.id}.${mode}.png`);

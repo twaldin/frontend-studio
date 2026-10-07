@@ -143,8 +143,8 @@ function AppView({ studio, env }: { studio: Studio; env: GalleryEnv }) {
 export function App() {
   // `?capture`: the gallery alone, in document flow, for scripts/capture.ts. Never writes the state file.
   const capture = useMemo(() => new URLSearchParams(location.search).has("capture"), []);
-  const studio = useStudio({ persist: !capture });
   const { content: loaded, source } = useContent();
+  const studio = useStudio({ persist: !capture, contentSource: source });
   const content = useMemo(() => applyCopy(loaded, studio.record.copy), [loaded, studio.record.copy]);
   const [panel, setPanel] = useState<Panel>("gallery");
   const mainRef = useRef<HTMLElement>(null);
