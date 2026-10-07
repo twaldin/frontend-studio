@@ -71,12 +71,14 @@ function StepRecord({ step, studio }: { step: Step; studio: Studio }) {
 
 export function Stepper({ studio }: { studio: Studio }) {
   const step = studio.step;
+  // Committed choices, not the hover preview: the list must not reorder under the pointer.
   const defaults = defaultsFor(studio.state.choices);
   const label = (id: StepId, option: string) => STEPS.find((s) => s.id === id)?.options.find((o) => o.id === option)?.label ?? option;
   const refLabel = label("reference", defaults.reference);
   // A look picked over the reference's own supplies some defaults; the badge names whichever applies.
-  const lookDefaults = studio.resolved.look !== defaults.look ? LOOK_DEFAULTS[studio.resolved.look] : undefined;
-  const defaultLabel = lookDefaults?.[step.id] !== undefined ? `${label("look", studio.resolved.look)} look` : refLabel;
+  const look = studio.state.choices.look ?? defaults.look;
+  const lookDefaults = look !== defaults.look ? LOOK_DEFAULTS[look] : undefined;
+  const defaultLabel = lookDefaults?.[step.id] !== undefined ? `${label("look", look)} look` : refLabel;
   const dev = new Set(deviations(studio.state.choices));
   const setsDefaults = step.id === "archetype" || step.id === "reference";
 
@@ -94,10 +96,10 @@ export function Stepper({ studio }: { studio: Studio }) {
         <h2 className="text-[15px] font-medium">{step.question}</h2>
         <p className="mt-1 text-[12px] leading-[1.45] text-[var(--studio-muted)]">{step.why}</p>
         <ol className="mt-3 flex flex-col gap-1">
-          {optionsFor(step, studio.resolved).map((o, i) => {
+          {optionsFor(step, defaults).map((o, i) => {
             const chosen = studio.resolved[step.id] === o.id;
             const isDefault = !setsDefaults && defaults[step.id] === o.id;
-            const fits = step.id === "reference" && PRESETS[o.id]?.archetype === studio.resolved.archetype;
+            const fits = step.id === "reference" && PRESETS[o.id]?.archetype === defaults.archetype;
             return (
               <li key={o.id}>
                 <button
@@ -115,7 +117,7 @@ export function Stepper({ studio }: { studio: Studio }) {
                     <span className="flex items-center gap-2 text-[13px]">
                       {o.label}
                       {isDefault ? <span className="rounded bg-[var(--studio-line)] px-1 text-[10px] text-[var(--studio-muted)]">{defaultLabel}</span> : null}
-                      {fits ? <span className="rounded bg-[var(--studio-line)] px-1 text-[10px] text-[var(--studio-muted)]">fits {label("archetype", studio.resolved.archetype).toLowerCase()}</span> : null}
+                      {fits ? <span className="rounded bg-[var(--studio-line)] px-1 text-[10px] text-[var(--studio-muted)]">fits {label("archetype", defaults.archetype).toLowerCase()}</span> : null}
                     </span>
                     {o.note ? <span className="text-[11px] leading-[1.4] text-[var(--studio-muted)]">{o.note}</span> : null}
                   </span>

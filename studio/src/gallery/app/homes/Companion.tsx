@@ -2,7 +2,7 @@ import { Backpack, Check, Clock, Coins, Crown, Flame, FlaskConical, Gem, House, 
 import { useGallery } from "@/gallery/context";
 import { Badge, Button, Input, cn, type BadgeProps } from "@/ui";
 import { CARD_CLASSES_BY_STYLE, INPUT_CLASSES_BY_STYLE, NavIcon, iconStroke } from "../kit";
-import { DataTable } from "../sections";
+import { DataTable, Figures } from "../sections";
 
 /** Nav icons in `content.app.nav` order. */
 export const COMPANION_ICONS: readonly LucideIcon[] = [House, Scroll, Backpack, Shield, Trophy, Settings];
@@ -70,17 +70,9 @@ export function CompanionHome() {
               <span className="shrink-0 text-chrome tabular text-muted-foreground">{player.value}</span>
             </div>
           </div>
-          <dl className="grid shrink-0 grid-cols-4 gap-5 border-l border-border pl-5">
-            {currencies.map((currency) => (
-              <div key={currency.label} className="min-w-0">
-                <dt className="flex items-center gap-1.5 text-chrome text-muted-foreground">
-                  <NavIcon Icon={CURRENCY_ICONS[currency.label] ?? Coins} iconWeight={choices.iconWeight} />
-                  <span className="truncate">{currency.label}</span>
-                </dt>
-                <dd className="mt-1 text-lg leading-none font-medium tabular text-foreground">{currency.value}</dd>
-              </div>
-            ))}
-          </dl>
+          <div className="w-[360px] shrink-0 border-l border-border pl-5">
+            <Figures stats={currencies} icons={currencies.map((currency) => CURRENCY_ICONS[currency.label] ?? Coins)} />
+          </div>
         </section>
       ) : null}
 

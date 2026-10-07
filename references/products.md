@@ -54,7 +54,7 @@ The walk opens with the product's archetype. It picks the home surface the studi
 
 ## Looks
 
-The look is the app's visual language: quiet, editorial, playful, brutalist, print or immersive. Each reference has its own. Picking another re-defaults the steps that make the look (type, contrast, radius, depth, card, input and button style), and keeps the reference's frame. A look also sets tokens no other step does: the heading voice (serif for editorial and print, heavy for playful), a canvas texture (paper grain for print, an accent glow for immersive), and the button edge (pressed for playful, a hard offset with offset depth).
+The look is the app's visual language: quiet, editorial, playful, brutalist, print or immersive. Each reference has its own. Picking another re-defaults the steps that make the look (type, contrast, radius, depth, card, input and button style) and keeps the rest of the reference's frame, with three exceptions: editorial also sets a comfortable density, airy spacing and display page titles, print sets display page titles, and immersive sets a dark-only theme with a dimmer sidebar. `decision-tree.md` lists every look's re-defaults. A look also sets tokens no other step does: the heading voice (serif for editorial and print, heavy for playful), a canvas texture (paper grain for print, an accent glow for immersive), and the button edge (pressed for playful, a hard offset with offset depth).
 
 ## Researched profiles
 

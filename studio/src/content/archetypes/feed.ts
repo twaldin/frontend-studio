@@ -107,7 +107,7 @@ export const FEED_CONTENT: Content = {
       },
       { title: "#sourdough", meta: "Baking · 1.2K posts", group: "Trending" },
       { title: "#balconygarden", meta: "Gardening · 860 posts", group: "Trending" },
-      { title: "#nanowrimo", meta: "Writing · 3.4K posts", group: "Trending" },
+      { title: "#novelwriting", meta: "Writing · 3.4K posts", group: "Trending" },
       { title: "#kilnday", meta: "Ceramics · 410 posts", group: "Trending" },
       { title: "Wren Okafor", meta: "Ceramics · 4.1K followers", badge: "Follow", group: "Who to follow" },
       { title: "Matteo Bianchi", meta: "Bread and pastry · 2.7K followers", badge: "Follow", group: "Who to follow" },

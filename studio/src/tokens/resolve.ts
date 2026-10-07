@@ -20,8 +20,8 @@ const NEUTRAL: Record<string, string> = { cool: "slate", neutral: "gray", warm: 
 const ACCENT: Record<string, string> = {
   indigo: "indigo", blue: "blue", violet: "violet", teal: "teal", green: "green", orange: "orange", crimson: "crimson", pink: "pink", amber: "amber",
 };
-/** Accents bright enough that their solid fill needs dark text in dark mode. */
-const BRIGHT_ACCENT: Record<string, true> = { orange: true, green: true, teal: true, amber: true };
+/** Accents whose solid fill needs dark text: in dark mode, or in both themes for amber. */
+const DARK_TEXT_ACCENT: Record<string, "dark" | "both"> = { orange: "dark", green: "dark", teal: "dark", amber: "both" };
 
 export const FONT_STACK: Record<string, string> = {
   inter: `"Inter", ui-sans-serif, system-ui, sans-serif`,
@@ -124,7 +124,8 @@ function palette(c: ResolvedChoices, dark: boolean): Vars {
   const hover = nA[3]!;
 
   const primary = a ? a[8]! : foreground;
-  const primaryForeground = a ? (BRIGHT_ACCENT[c.accent] ? (dark ? "#000000" : "#ffffff") : "#ffffff") : background;
+  const darkText = DARK_TEXT_ACCENT[c.accent];
+  const primaryForeground = a ? (darkText === "both" || (darkText === "dark" && dark) ? "#000000" : "#ffffff") : background;
   const ring = a ? a[7]! : step(8);
   const accentSoft = aA ? aA[2]! : nA[3]!;
   const accentSoftHover = aA ? aA[3]! : nA[4]!;
@@ -203,6 +204,9 @@ function palette(c: ResolvedChoices, dark: boolean): Vars {
     "--shadow-lg": offset ? `6px 6px 0 0 ${foreground}` : dark ? "0 12px 32px rgb(0 0 0 / 0.5)" : "0 12px 32px -8px rgb(0 0 0 / 0.18), 0 2px 8px rgb(0 0 0 / 0.08)",
     "--border-card": offset ? foreground : c.depth === "shadow" ? (soft ? nA[3]! : nA[4]!) : border,
     "--texture": texture,
+    // Filled and outlined buttons sit on a hard offset (offset depth) or a pressed lip (playful).
+    // `0 0 #0000`, not `none`: Tailwind composes it into one box-shadow list with the focus ring.
+    "--button-edge": offset ? `2px 2px 0 0 ${foreground}` : c.look === "playful" ? "inset 0 -2px 0 rgb(0 0 0 / 0.22)" : "0 0 #0000",
   };
 }
 
@@ -227,8 +231,6 @@ export function resolveTokens(c: ResolvedChoices): Resolved {
     "--heading-weight": String(heading.weight),
     "--heading-tracking": heading.tracking,
     "--heading-case": heading.case,
-    // Buttons with a fill or an outline sit on a hard edge: offset in brutalist depth, a pressed lip in the playful look.
-    "--button-edge": c.depth === "offset" ? "2px 2px 0 0 var(--foreground)" : c.look === "playful" ? "inset 0 -2px 0 rgb(0 0 0 / 0.22)" : "none",
     "--font-mono": MONO_STACK[c.mono] ?? MONO_STACK["geist-mono"]!,
     "--radius": `${r}px`,
     "--radius-control": c.buttons === "soft" && r >= 8 ? `${r + 2}px` : `${r}px`,

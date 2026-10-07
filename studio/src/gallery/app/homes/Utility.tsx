@@ -130,7 +130,7 @@ export function UtilityHome() {
                 </button>
               ))}
             </div>
-            <Button variant={primaryVariant} onClick={() => void navigator.clipboard?.writeText(`${result} ${to}`)}>
+            <Button variant={primaryVariant}>
               <Copy aria-hidden="true" className="size-4" strokeWidth={stroke} />
               Copy result
             </Button>

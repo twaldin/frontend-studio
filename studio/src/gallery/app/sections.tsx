@@ -1,22 +1,65 @@
+import type { LucideIcon } from "lucide-react";
+import type { Content } from "@/content/schema";
 import { useGallery } from "@/gallery/context";
 import { Badge, Button, cn } from "@/ui";
-import { CARD_CLASSES_BY_STYLE } from "./kit";
+import { CARD_CLASSES_BY_STYLE, NavIcon } from "./kit";
 import { AreaChart, STACK_OPACITY, Sparkline } from "./Trend";
 
-/** One figure: label, value, optional note, and its trend per the trend knob. */
-function Figure({ stat, size = 22 }: { stat: { label: string; value: string; note?: string; series?: number[] }; size?: number }) {
+type Stat = Content["app"]["stats"][number];
+
+/** One figure: label, value, optional note, and its trend per the trend knob (or `trend`, in compact layouts). */
+function Figure({ stat, size = 22, trend, Icon }: { stat: Stat; size?: number; trend?: string; Icon?: LucideIcon }) {
   const { choices } = useGallery();
-  const trend = choices.trend;
+  const shown = trend ?? choices.trend;
   const series = stat.series ?? [];
   return (
     <div className="min-w-0">
-      <div className="truncate text-chrome text-muted-foreground">{stat.label}</div>
+      <div className="flex items-center gap-1.5 text-chrome text-muted-foreground">
+        {Icon ? <NavIcon Icon={Icon} iconWeight={choices.iconWeight} /> : null}
+        <span className="truncate">{stat.label}</span>
+      </div>
       <div className="mt-1 flex items-end gap-3">
         <div className="truncate font-medium leading-none tabular text-foreground" style={{ fontSize: size }}>{stat.value}</div>
-        {trend === "sparkline" ? <Sparkline series={series} className="mb-0.5 shrink-0" /> : null}
+        {shown === "sparkline" ? <Sparkline series={series} className="mb-0.5 shrink-0" /> : null}
       </div>
       {stat.note ? <div className="mt-1 truncate text-chrome text-muted-foreground">{stat.note}</div> : null}
-      {trend === "area" ? <AreaChart series={series} height={36} className="mt-3 block" /> : null}
+      {shown === "area" ? <AreaChart series={series} height={36} className="mt-3 block" /> : null}
+    </div>
+  );
+}
+
+/** Wide trends need the workspace's full-width block; inside another surface they fall back to an area under each figure. */
+const COMPACT_TREND: Record<string, string> = { none: "none", sparkline: "sparkline", area: "area", chart: "area", panel: "area", stacked: "area" };
+
+/**
+ * Figures inside another surface (a player card, a streak card), per the figures and trend steps:
+ * divided columns for strip, a tile each for cards, one line for inline.
+ */
+export function Figures({ stats, icons = [], size = 18 }: { stats: Stat[]; icons?: readonly LucideIcon[]; size?: number }) {
+  const { choices } = useGallery();
+  const trend = COMPACT_TREND[choices.trend] ?? "none";
+  if (choices.stats === "inline") {
+    return (
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-chrome text-muted-foreground">
+        {stats.map((stat, index) => (
+          <span key={`${stat.label}-${index}`} className="flex items-center gap-1.5">
+            {index > 0 ? <span aria-hidden="true">·</span> : null}
+            <span>{stat.label}</span>
+            <span className="tabular text-foreground">{stat.value}</span>
+            {trend !== "none" ? <Sparkline series={stat.series ?? []} width={40} height={14} /> : null}
+          </span>
+        ))}
+      </div>
+    );
+  }
+  const cards = choices.stats === "cards";
+  return (
+    <div className={cn("grid", cards ? "gap-2" : "divide-x divide-border")} style={{ gridTemplateColumns: `repeat(${stats.length}, minmax(0, 1fr))` }}>
+      {stats.map((stat, index) => (
+        <div key={`${stat.label}-${index}`} className={cn("min-w-0", cards ? "rounded-md bg-muted p-3" : "px-4 first:pl-0 last:pr-0")}>
+          <Figure stat={stat} size={size} trend={trend} Icon={icons[index]} />
+        </div>
+      ))}
     </div>
   );
 }

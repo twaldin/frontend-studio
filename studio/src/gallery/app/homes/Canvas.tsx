@@ -89,8 +89,11 @@ export function CanvasHome() {
 
   const [tool, setTool] = useState(0);
   const [zoom, setZoom] = useState("100%");
-  const [box, setBox] = useState<Box>({ x: "24", y: "756", w: size?.[1] ?? "342", h: size?.[2] ?? "52" });
-  const [resizing, setResizing] = useState(selectField?.options?.[1] ?? "");
+  // The content sets the defaults, so a loaded copy deck shows its own sizes; the user's edits sit on top.
+  const [edits, setEdits] = useState<Partial<Box>>({});
+  const box: Box = { x: "24", y: "756", w: size?.[1] ?? "342", h: size?.[2] ?? "52", ...edits };
+  const [resizingEdit, setResizing] = useState<string | null>(null);
+  const resizing = resizingEdit ?? selectField?.options?.[1] ?? "";
   const [clip, setClip] = useState(true);
 
   return (
@@ -246,7 +249,7 @@ export function CanvasHome() {
                   <span className="w-3 shrink-0">{label}</span>
                   <Input
                     value={box[key]}
-                    onChange={(event) => setBox({ ...box, [key]: event.target.value })}
+                    onChange={(event) => setEdits({ ...edits, [key]: event.target.value })}
                     className={cn("min-w-0 tabular", inputClasses)}
                   />
                 </label>

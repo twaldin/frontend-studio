@@ -57,10 +57,11 @@ export function FeedHome() {
   const card = CARD_CLASSES_BY_STYLE[choices.cards];
   const listRow = choices.rowHover === "fill" && "cursor-pointer hover:bg-accent";
 
+  // Posts are the first group (or the ungrouped items); the rail's sections exist only when their own groups do.
   const [postGroup, trendingGroup, peopleGroup] = [...new Set(content.app.items.map((item) => item.group))];
   const posts = content.app.items.filter((item) => item.group === postGroup).slice(0, 4);
-  const trending = content.app.items.filter((item) => item.group === trendingGroup).slice(0, 4);
-  const people = content.app.items.filter((item) => item.group === peopleGroup).slice(0, 3);
+  const trending = trendingGroup === undefined ? [] : content.app.items.filter((item) => item.group === trendingGroup).slice(0, 4);
+  const people = peopleGroup === undefined ? [] : content.app.items.filter((item) => item.group === peopleGroup).slice(0, 3);
   const me = content.app.thread.find((message) => message.mine)?.author ?? "You";
 
   return (
@@ -153,45 +154,49 @@ export function FeedHome() {
       </section>
 
       <aside className="-mx-1.5 flex w-[272px] shrink-0 flex-col gap-4 overflow-y-auto px-1.5 pb-6 pt-1.5">
-        <section aria-label={trendingGroup} className={cn("shrink-0 rounded-lg p-4", card)}>
-          <h2 className="heading flex items-center gap-2 text-body text-foreground">
-            <NavIcon Icon={TrendingUp} iconWeight={choices.iconWeight} />
-            {trendingGroup}
-          </h2>
-          <ul className="-mx-2 mt-2">
-            {trending.map((topic, topicIndex) => (
-              <li
-                key={topic.title}
-                className={cn("flex items-center gap-3 rounded-md px-2 py-1.5 transition-colors duration-[var(--duration-fast)] ease-[var(--ease)]", listRow)}
-              >
-                <span className="tabular w-3 shrink-0 text-chrome text-muted-foreground">{topicIndex + 1}</span>
-                <div className="min-w-0 flex-1">
-                  <div className="truncate font-medium text-foreground">{topic.title}</div>
-                  <div className="truncate text-chrome text-muted-foreground">{topic.meta}</div>
-                </div>
-              </li>
-            ))}
-          </ul>
-        </section>
+        {trending.length > 0 ? (
+          <section aria-label={trendingGroup} className={cn("shrink-0 rounded-lg p-4", card)}>
+            <h2 className="heading flex items-center gap-2 text-body text-foreground">
+              <NavIcon Icon={TrendingUp} iconWeight={choices.iconWeight} />
+              {trendingGroup}
+            </h2>
+            <ul className="-mx-2 mt-2">
+              {trending.map((topic, topicIndex) => (
+                <li
+                  key={topic.title}
+                  className={cn("flex items-center gap-3 rounded-md px-2 py-1.5 transition-colors duration-[var(--duration-fast)] ease-[var(--ease)]", listRow)}
+                >
+                  <span className="tabular w-3 shrink-0 text-chrome text-muted-foreground">{topicIndex + 1}</span>
+                  <div className="min-w-0 flex-1">
+                    <div className="truncate font-medium text-foreground">{topic.title}</div>
+                    <div className="truncate text-chrome text-muted-foreground">{topic.meta}</div>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ) : null}
 
-        <section aria-label={peopleGroup} className={cn("shrink-0 rounded-lg p-4", card)}>
-          <h2 className="heading flex items-center gap-2 text-body text-foreground">
-            <NavIcon Icon={UserPlus} iconWeight={choices.iconWeight} />
-            {peopleGroup}
-          </h2>
-          <ul className="mt-3 space-y-3">
-            {people.map((person) => (
-              <li key={person.title} className="flex items-center gap-2.5">
-                <Avatar name={person.title} className="size-8 text-chrome" />
-                <div className="min-w-0 flex-1 leading-tight">
-                  <div className="truncate font-medium text-foreground">{person.title}</div>
-                  <div className="line-clamp-2 text-chrome text-muted-foreground">{person.meta}</div>
-                </div>
-                {person.badge ? <Button variant={secondaryVariant} size="sm">{person.badge}</Button> : null}
-              </li>
-            ))}
-          </ul>
-        </section>
+        {people.length > 0 ? (
+          <section aria-label={peopleGroup} className={cn("shrink-0 rounded-lg p-4", card)}>
+            <h2 className="heading flex items-center gap-2 text-body text-foreground">
+              <NavIcon Icon={UserPlus} iconWeight={choices.iconWeight} />
+              {peopleGroup}
+            </h2>
+            <ul className="mt-3 space-y-3">
+              {people.map((person) => (
+                <li key={person.title} className="flex items-center gap-2.5">
+                  <Avatar name={person.title} className="size-8 text-chrome" />
+                  <div className="min-w-0 flex-1 leading-tight">
+                    <div className="truncate font-medium text-foreground">{person.title}</div>
+                    <div className="line-clamp-2 text-chrome text-muted-foreground">{person.meta}</div>
+                  </div>
+                  {person.badge ? <Button variant={secondaryVariant} size="sm">{person.badge}</Button> : null}
+                </li>
+              ))}
+            </ul>
+          </section>
+        ) : null}
       </aside>
     </div>
   );

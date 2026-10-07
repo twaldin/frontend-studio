@@ -3,6 +3,7 @@ import type { Item } from "@/content/schema";
 import { useGallery } from "@/gallery/context";
 import { Badge, Button, cn } from "@/ui";
 import { CARD_CLASSES_BY_STYLE, NavIcon, iconStroke } from "../kit";
+import { Figures } from "../sections";
 
 /** Nav icons in `content.app.nav` order. */
 export const READER_ICONS: readonly LucideIcon[] = [GraduationCap, Dumbbell, Library, Trophy, User, Settings];
@@ -135,18 +136,7 @@ export function ReaderHome() {
 
       <aside className="flex w-[256px] shrink-0 flex-col gap-4">
         <section className={cn("shrink-0 rounded-lg p-4", card)}>
-          <div className="grid grid-cols-2 gap-3">
-            {content.app.stats.slice(0, 2).map((stat, index) => (
-              <div key={stat.label} className="min-w-0">
-                <div className="flex items-center gap-2 text-chrome text-muted-foreground">
-                  <NavIcon Icon={FIGURE_ICONS[index] ?? Flame} iconWeight={choices.iconWeight} />
-                  <span className="truncate">{stat.label}</span>
-                </div>
-                <div className="mt-2 truncate text-[26px] font-medium leading-none tabular text-foreground">{stat.value}</div>
-                {stat.note ? <div className="mt-1.5 truncate text-chrome text-muted-foreground">{stat.note}</div> : null}
-              </div>
-            ))}
-          </div>
+          <Figures stats={content.app.stats.slice(0, 2)} icons={FIGURE_ICONS} size={26} />
           <div className="mt-4 grid grid-cols-7 gap-1 border-t border-border pt-3">
             {WEEK.map((day, index) => (
               <div key={`${day}-${index}`} className="flex flex-col items-center gap-1 text-chrome text-muted-foreground">

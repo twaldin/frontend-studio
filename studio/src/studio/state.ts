@@ -161,9 +161,13 @@ export function useStudio({ persist, contentSource }: { persist: boolean; conten
   }, []);
   const go = useCallback((step: number) => setState((s) => ({ ...s, step: Math.min(Math.max(step, 0), STEPS.length - 1) })), []);
   const setMode = useCallback((mode: Mode) => setState((s) => ({ ...s, mode })), []);
+  // Reset drops every deviation; the archetype and reference set the defaults, so they stay.
   const reset = useCallback(() => {
-    for (const s of STEPS) if (s.id !== "reference") touched.current?.add(`choices:${s.id}`);
-    setState((s) => ({ ...s, choices: { reference: s.choices.reference } }));
+    for (const s of STEPS) if (s.id !== "archetype" && s.id !== "reference") touched.current?.add(`choices:${s.id}`);
+    setState((s) => {
+      const { archetype, reference } = s.choices;
+      return { ...s, choices: { ...(archetype && { archetype }), ...(reference && { reference }) } };
+    });
   }, []);
   const setNote = useCallback((step: StepId, text: string) => {
     touched.current?.add(`notes:${step}`);

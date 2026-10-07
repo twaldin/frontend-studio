@@ -10,7 +10,7 @@ import { GalleryContext, type GalleryEnv } from "./gallery/context";
 import { AppGallery, ShellScene } from "./gallery/app";
 import { LandingGallery, LandingHero, LANDING_SPECIMENS, scrollTargetId } from "./gallery/landing";
 import { SPECIMENS } from "./gallery/specimens";
-import { optionsFor } from "./tree/steps";
+import { defaultsFor, optionsFor } from "./tree/steps";
 import type { Archetype, StepId } from "./tree/types";
 import type { Resolved } from "./tokens/resolve";
 
@@ -163,7 +163,7 @@ export function App() {
       if ((e.target as HTMLElement | null)?.closest("input, textarea, [contenteditable]")) return;
       const k = e.key;
       if (/^[1-9]$/.test(k)) {
-        const o = optionsFor(studio.step, studio.resolved)[Number(k) - 1];
+        const o = optionsFor(studio.step, defaultsFor(studio.state.choices))[Number(k) - 1];
         if (o) studio.choose(studio.step.id, o.id);
       } else if (k === "ArrowRight" || k === "Enter") studio.go(studio.state.step + 1);
       else if (k === "ArrowLeft") studio.go(studio.state.step - 1);

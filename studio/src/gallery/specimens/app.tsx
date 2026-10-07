@@ -196,7 +196,7 @@ export function PageTitleSpecimen() {
       <div className={cn("rounded-xl border border-border bg-background", toolbar ? "p-0" : "p-8")}>
         <header className={cn("flex items-center justify-between gap-6", toolbar ? "h-10 border-b border-border px-4" : "mb-8")}>
           <div>
-            <h1 className="font-medium leading-tight text-[length:var(--title-size)]">{content.app.page.title}</h1>
+            <h1 className="heading leading-tight text-[length:var(--title-size)]">{content.app.page.title}</h1>
             {!toolbar ? <p className="mt-2 text-body text-muted-foreground">{content.product.tagline}</p> : null}
           </div>
           <Button size={toolbar ? "sm" : "md"}>{content.app.page.action}</Button>
