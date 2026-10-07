@@ -5,6 +5,7 @@ import type { Content } from "./schema";
 
 export interface LoadedContent {
   content: Content;
+  /** `default`, a path under the studio's public dir (`/content.json`), or an absolute http(s) URL. */
   source: string;
 }
 
@@ -17,7 +18,10 @@ export interface LoadedContent {
 export function useContent(): LoadedContent {
   const [loaded, setLoaded] = useState<LoadedContent>({ content: DEFAULT_CONTENT, source: "default" });
   useEffect(() => {
-    const url = new URLSearchParams(location.search).get("content") ?? "/content.json";
+    // Same-origin sources stay paths into public/; anything else (`//cdn…/copy.json`) becomes an
+    // absolute URL, so `bun run export` can tell a file it reads from a URL it fetches.
+    const resolved = new URL(new URLSearchParams(location.search).get("content") ?? "/content.json", location.href);
+    const url = resolved.origin === location.origin ? resolved.pathname : resolved.href;
     let last = "";
     let cancelled = false;
     const load = async () => {

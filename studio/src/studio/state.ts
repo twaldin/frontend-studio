@@ -86,6 +86,9 @@ export function useStudio({ persist, contentSource }: { persist: boolean; conten
   const [record, setRecord] = useState<DecisionRecord>({ notes: {}, status: {}, copy: {} });
   const [persistence, setPersistence] = useState<Persistence>(persist ? "loading" : "off");
   const saving = useRef<Promise<void>>(Promise.resolve());
+  // Keys (`notes:accent`, `choices:radius`) changed while the saved walk loads. The file never
+  // overrides them, so a note cleared or a step reset before the load stays cleared. null once loaded.
+  const touched = useRef<Set<string> | null>(persist ? new Set() : null);
   const [preview, setPreview] = useState<Preview | null>(null);
   const [pins, setPins] = useState<{ a: Choices | null; b: Choices | null }>({ a: null, b: null });
   const [compare, setCompare] = useState<"a" | "b" | null>(null);
@@ -93,16 +96,17 @@ export function useStudio({ persist, contentSource }: { persist: boolean; conten
   useEffect(() => writeHash(state), [state]);
   useEffect(() => {
     // A hash that only moves the step or mode (`#step=5`) keeps the walk's choices.
-    const onHash = () =>
-      setState((s) => {
-        const next = parseHash();
-        return Object.keys(next.choices).length ? next : { ...next, choices: s.choices };
-      });
+    const onHash = () => {
+      const next = parseHash();
+      const replaces = Object.keys(next.choices).length > 0;
+      if (replaces) for (const s of STEPS) touched.current?.add(`choices:${s.id}`);
+      setState((s) => (replaces ? next : { ...next, choices: s.choices }));
+    };
     window.addEventListener("hashchange", onHash);
     return () => window.removeEventListener("hashchange", onHash);
   }, []);
 
-  // Resume the saved walk. Anything changed while it loads wins over the file.
+  // Resume the saved walk, except for whatever was changed while it loaded.
   useEffect(() => {
     if (!persist) return;
     let cancelled = false;
@@ -112,14 +116,19 @@ export function useStudio({ persist, contentSource }: { persist: boolean; conten
         if (!r.ok || !r.headers.get("content-type")?.includes("json")) throw new Error("no state endpoint");
         const saved = parseSaved(await r.json());
         if (cancelled) return;
-        setRecord((local) => ({
-          notes: { ...saved.notes, ...local.notes },
-          status: { ...saved.status, ...local.status },
-          copy: { ...saved.copy, ...local.copy },
+        const local = touched.current ?? new Set<string>();
+        touched.current = null;
+        const untouched = <V,>(kind: string, map: Partial<Record<string, V>>) =>
+          Object.fromEntries(Object.entries(map).filter(([key]) => !local.has(`${kind}:${key}`))) as Partial<Record<string, V>>;
+        setRecord((r) => ({
+          notes: { ...untouched("notes", saved.notes), ...r.notes },
+          status: { ...untouched("status", saved.status), ...r.status },
+          copy: { ...(untouched("copy", saved.copy) as Record<string, string>), ...r.copy },
         }));
-        if (!linkHasChoices) setState((s) => ({ ...s, choices: { ...saved.choices, ...s.choices } }));
+        if (!linkHasChoices) setState((s) => ({ ...s, choices: { ...untouched("choices", saved.choices), ...s.choices } }));
         setPersistence("file");
       } catch {
+        touched.current = null;
         if (!cancelled) setPersistence("off");
       }
     };
@@ -146,23 +155,27 @@ export function useStudio({ persist, contentSource }: { persist: boolean; conten
   }, [persistence, state.choices, record, contentSource]);
 
   const choose = useCallback((step: StepId, option: string) => {
+    touched.current?.add(`choices:${step}`);
     setState((s) => ({ ...s, choices: { ...s.choices, [step]: option } }));
   }, []);
   const go = useCallback((step: number) => setState((s) => ({ ...s, step: Math.min(Math.max(step, 0), STEPS.length - 1) })), []);
   const setMode = useCallback((mode: Mode) => setState((s) => ({ ...s, mode })), []);
-  const reset = useCallback(() => setState((s) => ({ ...s, choices: { reference: s.choices.reference } })), []);
-  const setNote = useCallback(
-    (step: StepId, text: string) => setRecord((r) => ({ ...r, notes: withKey(r.notes, step, text.trim() ? text : undefined) })),
-    [],
-  );
-  const setStatus = useCallback(
-    (step: StepId, status: Status | undefined) => setRecord((r) => ({ ...r, status: withKey(r.status, step, status) })),
-    [],
-  );
-  const setCopy = useCallback(
-    (path: string, text: string | undefined) => setRecord((r) => ({ ...r, copy: withKey(r.copy, path, text) as Record<string, string> })),
-    [],
-  );
+  const reset = useCallback(() => {
+    for (const s of STEPS) if (s.id !== "reference") touched.current?.add(`choices:${s.id}`);
+    setState((s) => ({ ...s, choices: { reference: s.choices.reference } }));
+  }, []);
+  const setNote = useCallback((step: StepId, text: string) => {
+    touched.current?.add(`notes:${step}`);
+    setRecord((r) => ({ ...r, notes: withKey(r.notes, step, text.trim() ? text : undefined) }));
+  }, []);
+  const setStatus = useCallback((step: StepId, status: Status | undefined) => {
+    touched.current?.add(`status:${step}`);
+    setRecord((r) => ({ ...r, status: withKey(r.status, step, status) }));
+  }, []);
+  const setCopy = useCallback((path: string, text: string | undefined) => {
+    touched.current?.add(`copy:${path}`);
+    setRecord((r) => ({ ...r, copy: withKey(r.copy, path, text) as Record<string, string> }));
+  }, []);
 
   /** Choices actually rendered: pinned comparison, else hover preview over the committed state. */
   const shown: Choices = useMemo(() => {

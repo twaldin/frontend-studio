@@ -55,19 +55,24 @@ if (saved) {
   let project: unknown = {};
   if (/^https?:\/\//.test(source)) {
     const r = await fetch(source);
-    if (!r.ok) {
-      console.error(`Could not fetch the walk's content from ${source} (HTTP ${r.status}); content.json not written.`);
+    // A dev server answers a missing file with its HTML fallback and a 200.
+    if (!r.ok || !r.headers.get("content-type")?.includes("json")) {
+      console.error(`${source} didn't return JSON (HTTP ${r.status}); content.json not written.`);
       process.exit(1);
     }
     project = await r.json();
   } else if (source !== "default") {
     const publicDir = new URL("../public/", import.meta.url);
-    const file = new URL(source.replace(/^\/+/, ""), publicDir);
-    if (!file.pathname.startsWith(publicDir.pathname)) {
-      console.error(`The walk's content source ${source} is outside studio/public/; content.json not written.`);
+    const file = new URL(`.${source}`, publicDir);
+    if (!source.startsWith("/") || source.startsWith("//") || !file.pathname.startsWith(publicDir.pathname)) {
+      console.error(`The walk's content source ${source} is neither a path in studio/public/ nor an http(s) URL; content.json not written.`);
       process.exit(1);
     }
     if (existsSync(file)) project = await Bun.file(file).json();
+    else if (saved.contentSource) {
+      console.error(`The walk's content came from ${file.pathname}, which no longer exists; content.json not written.`);
+      process.exit(1);
+    }
   }
   const content = mergeContent(DEFAULT_CONTENT, project);
   await Bun.write(new URL("content.json", dir), `${JSON.stringify(applyCopy(content, saved.copy), null, 2)}\n`);
