@@ -45,6 +45,8 @@
   --radius-lg: calc(var(--radius) + 2px);
   --radius-xl: calc(var(--radius) + 6px);
   --radius-control: var(--radius-control);
+  /* Concentric nesting: outer = item radius + the p-1.5 inset. Mirrors theme.css. */
+  --radius-popover: calc(var(--radius) + var(--spacing) * 1.5);
   --shadow-sm: var(--shadow-sm);
   --shadow-md: var(--shadow-md);
   --shadow-lg: var(--shadow-lg);

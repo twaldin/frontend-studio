@@ -1,6 +1,13 @@
 import { useEffect, useState } from "react";
 import { DEFAULT_CONTENT } from "./default";
+import { mergeContent } from "./copy";
 import type { Content } from "./schema";
+
+export interface LoadedContent {
+  content: Content;
+  /** `default`, a path under the studio's public dir (`/content.json`), or an absolute http(s) URL. */
+  source: string;
+}
 
 /**
  * Project copy: `?content=<url>` wins, then `/content.json` in the studio's
@@ -8,25 +15,19 @@ import type { Content } from "./schema";
  * default so a project can supply only the landing block. The file is
  * re-read every few seconds and on focus, so edits show without a reload.
  */
-function merge<T>(base: T, over: unknown): T {
-  if (!over || typeof over !== "object" || Array.isArray(over)) return (over as T) ?? base;
-  const out: Record<string, unknown> = { ...(base as Record<string, unknown>) };
-  for (const [k, v] of Object.entries(over as Record<string, unknown>)) {
-    const b = out[k];
-    out[k] = b && typeof b === "object" && !Array.isArray(b) && v && typeof v === "object" && !Array.isArray(v) ? merge(b, v) : v;
-  }
-  return out as T;
-}
-
-export interface LoadedContent {
-  content: Content;
-  source: string;
-}
-
 export function useContent(): LoadedContent {
   const [loaded, setLoaded] = useState<LoadedContent>({ content: DEFAULT_CONTENT, source: "default" });
   useEffect(() => {
-    const url = new URLSearchParams(location.search).get("content") ?? "/content.json";
+    // A queryless same-origin source stays a path into public/; anything else (another origin,
+    // `//cdn…/copy.json`, an endpoint with a query) becomes the absolute URL, so `bun run export`
+    // reads the file or repeats the same request.
+    let url: string;
+    try {
+      const resolved = new URL(new URLSearchParams(location.search).get("content") ?? "/content.json", location.href);
+      url = resolved.origin === location.origin && !resolved.search ? resolved.pathname : resolved.href;
+    } catch {
+      return; // A malformed `?content=`: the default content stays.
+    }
     let last = "";
     let cancelled = false;
     const load = async () => {
@@ -36,7 +37,7 @@ export function useContent(): LoadedContent {
         const text = await r.text();
         if (cancelled || text === last) return;
         last = text;
-        setLoaded({ content: merge(DEFAULT_CONTENT, JSON.parse(text)), source: url });
+        setLoaded({ content: mergeContent(DEFAULT_CONTENT, JSON.parse(text)), source: url });
       } catch {
         // The default content stays in place.
       }

@@ -368,7 +368,7 @@ export function MenusSpecimen() {
       <div className="grid grid-cols-2 gap-8">
         <div>
           <StateLabel>{content.app.page.action}</StateLabel>
-          <div className="rounded-lg border border-border bg-popover p-1.5 text-popover-foreground shadow-lg">
+          <div className="rounded-popover border border-border bg-popover p-1.5 text-popover-foreground shadow-lg">
             {labels.map((item, index) => {
               const Icon = MENU_ICONS[index % MENU_ICONS.length]!;
               return (

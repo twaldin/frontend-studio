@@ -1,7 +1,10 @@
 import { useMemo, useState } from "react";
 import { STEPS, PRESETS, deviations } from "@/tree/steps";
-import type { Choices, ResolvedChoices } from "@/tree/types";
+import type { Choices, ResolvedChoices, Step } from "@/tree/types";
 import { DENSITY, RADIUS_PX, SPACING_UNIT, themeCss, type Resolved } from "@/tokens/resolve";
+import type { Content } from "@/content/schema";
+import { applyCopy } from "@/content/copy";
+import type { DecisionRecord } from "./saved";
 
 const label = (stepId: string, optionId: string) =>
   STEPS.find((s) => s.id === stepId)?.options.find((o) => o.id === optionId)?.label ?? optionId;
@@ -61,8 +64,55 @@ export function componentsJson(c: ResolvedChoices): string {
   );
 }
 
+/**
+ * The walk's record for the next round: what to revisit, the user's notes
+ * (they become acceptance criteria) and how many steps are still open.
+ */
+export function studioNotesMarkdown(c: ResolvedChoices, record: DecisionRecord): string {
+  const decided = STEPS.filter((s) => record.status[s.id] === "decided").length;
+  const revisit = STEPS.filter((s) => record.status[s.id] === "revisit").length;
+  const item = (s: Step) => {
+    const note = record.notes[s.id]?.trim();
+    return `- **${STEPS.indexOf(s) + 1}. ${s.question}** Now: ${label(s.id, c[s.id])}.${note ? ` ${note.replace(/\s*\n\s*/g, " ")}` : ""}`;
+  };
+  const section = (title: string, steps: Step[]) => (steps.length ? [`### ${title}`, ``, ...steps.map(item), ``] : []);
+  const edits = Object.keys(record.copy).length;
+  return [
+    `## Studio notes`,
+    ``,
+    `${decided} of ${STEPS.length} steps decided, ${revisit} marked revisit, ${STEPS.length - decided - revisit} still open.`,
+    ``,
+    ...section("Revisit", STEPS.filter((s) => record.status[s.id] === "revisit")),
+    ...section("Notes on decided steps", STEPS.filter((s) => record.status[s.id] === "decided" && record.notes[s.id])),
+    ...section("Notes on open steps", STEPS.filter((s) => !record.status[s.id] && record.notes[s.id])),
+    ...(edits ? [`### Copy`, ``, `${edits} string${edits === 1 ? "" : "s"} edited in the studio; \`content.json\` holds the result.`, ``] : []),
+  ].join("\n");
+}
+
+/** Clipboard API where it exists (https or localhost); a selection copy elsewhere, e.g. plain http on a LAN. */
+async function copyText(text: string): Promise<boolean> {
+  if (window.isSecureContext && navigator.clipboard) {
+    try {
+      await navigator.clipboard.writeText(text);
+      return true;
+    } catch {
+      // Fall through to the selection copy.
+    }
+  }
+  const area = document.createElement("textarea");
+  area.value = text;
+  area.setAttribute("readonly", "");
+  area.style.position = "fixed";
+  area.style.opacity = "0";
+  document.body.append(area);
+  area.select();
+  const ok = document.execCommand("copy");
+  area.remove();
+  return ok;
+}
+
 function Artifact({ title, text, file }: { title: string; text: string; file: string }) {
-  const [copied, setCopied] = useState(false);
+  const [copied, setCopied] = useState<"copied" | "failed" | null>(null);
   const download = () => {
     const a = document.createElement("a");
     a.href = URL.createObjectURL(new Blob([text], { type: "text/plain" }));
@@ -77,9 +127,14 @@ function Artifact({ title, text, file }: { title: string; text: string; file: st
         <span className="ml-auto flex gap-1">
           <button
             className="rounded border border-[var(--studio-line)] px-2 py-0.5 text-[11px] hover:bg-[var(--studio-line)]"
-            onClick={() => navigator.clipboard.writeText(text).then(() => { setCopied(true); setTimeout(() => setCopied(false), 1200); })}
+            onClick={() =>
+              void copyText(text).then((ok) => {
+                setCopied(ok ? "copied" : "failed");
+                setTimeout(() => setCopied(null), 1600);
+              })
+            }
           >
-            {copied ? "Copied" : "Copy"}
+            {copied === "copied" ? "Copied" : copied === "failed" ? "Copy failed: use Download" : "Copy"}
           </button>
           <button className="rounded border border-[var(--studio-line)] px-2 py-0.5 text-[11px] hover:bg-[var(--studio-line)]" onClick={download}>
             Download
@@ -93,10 +148,12 @@ function Artifact({ title, text, file }: { title: string; text: string; file: st
   );
 }
 
-export function ExportPanel({ tokens, choices }: { tokens: Resolved; choices: Choices }) {
+export function ExportPanel({ tokens, choices, record, content }: { tokens: Resolved; choices: Choices; record: DecisionRecord; content: Content }) {
   const css = useMemo(() => themeCss(tokens), [tokens]);
   const md = useMemo(() => decisionsMarkdown(tokens.choices, choices), [tokens, choices]);
+  const notes = useMemo(() => studioNotesMarkdown(tokens.choices, record), [tokens, record]);
   const cj = useMemo(() => componentsJson(tokens.choices), [tokens]);
+  const copy = useMemo(() => `${JSON.stringify(applyCopy(content, record.copy), null, 2)}\n`, [content, record.copy]);
   const preset = PRESETS[tokens.choices.reference];
   const dev = deviations(choices);
   return (
@@ -107,8 +164,10 @@ export function ExportPanel({ tokens, choices }: { tokens: Resolved; choices: Ch
           : `${dev.length} deviation${dev.length > 1 ? "s" : ""} from ${label("reference", tokens.choices.reference)}: ${dev.map((d) => label(d, tokens.choices[d])).join(", ")}.`}
       </p>
       <Artifact title="Design decisions" text={md} file="design-decisions.md" />
+      <Artifact title="Notes and status" text={notes} file="studio-notes.md" />
       <Artifact title="Theme" text={css} file="theme.css" />
       <Artifact title="shadcn config" text={cj} file="components.json" />
+      <Artifact title="Copy" text={copy} file="content.json" />
     </div>
   );
 }

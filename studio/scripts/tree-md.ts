@@ -29,7 +29,7 @@ for (const s of STEPS) {
 lines.push(
   "## Export",
   "",
-  "The choices resolve to `theme.css` (shadcn variable names, light and dark), `design-decisions.md` (one line per step, defaults marked), and a `components.json` snippet. With a browser: the studio's Export panel. Without: `bun run export -- <stepId>=<optionId> ...` in `studio/`.",
+  "The choices resolve to `theme.css` (shadcn variable names, light and dark), `design-decisions.md` (one line per step, defaults marked), and a `components.json` snippet. A walk in the studio also yields `studio-notes.md` (notes, the revisit list, open steps) and `content.json` (the copy with its edits). With a browser: the studio's Export panel, or `bun run export` in `studio/` for the saved walk. Without one: `bun run export -- <stepId>=<optionId> ...`, and record notes and revisit steps in the conversation.",
   "",
 );
 const out = new URL("../../references/decision-tree.md", import.meta.url);

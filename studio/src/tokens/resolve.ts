@@ -296,6 +296,8 @@ export function themeCss(r: Resolved): string {
     `  --radius-2xl: calc(var(--radius) + 10px);`,
     `  --radius-3xl: calc(var(--radius) + 14px);`,
     `  --radius-4xl: calc(var(--radius) + 18px);`,
+    `  /* Concentric nesting: a menu or popover with p-1.5 around rounded-md items. Outer = inner + inset. */`,
+    `  --radius-popover: calc(var(--radius) + var(--spacing) * 1.5);`,
     `  --shadow-sm: var(--shadow-sm);`,
     `  --shadow-md: var(--shadow-md);`,
     `  --shadow-lg: var(--shadow-lg);`,

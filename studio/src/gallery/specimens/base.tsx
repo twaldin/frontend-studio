@@ -257,8 +257,8 @@ export function RadiusSpecimen() {
           </div>
         </div>
         <div>
-          <StateLabel>Open menu · {radius + 2}px</StateLabel>
-          <div className="w-64 rounded-lg border border-border bg-popover p-2 text-body shadow-lg">
+          <StateLabel>Open menu · concentric with its items</StateLabel>
+          <div className="w-64 rounded-popover border border-border bg-popover p-1.5 text-body shadow-lg">
             {content.app.nav.slice(0, 4).map((item, index) => <div key={item.label} className={cn("flex h-control items-center rounded-md px-3", index === 1 && "bg-accent")}>{item.label}</div>)}
           </div>
         </div>
@@ -302,7 +302,7 @@ export function DepthSpecimen() {
           <h2 className="text-[22px] font-medium">{content.app.prose.title}</h2>
           <p className="mt-3 max-w-[46ch] text-body leading-relaxed text-muted-foreground">{content.app.prose.paragraphs[0]}</p>
         </div>
-        <div className="absolute left-[430px] top-[55px] z-10 w-64 rounded-lg border border-border bg-popover p-2 shadow-lg">
+        <div className="absolute left-[430px] top-[55px] z-10 w-64 rounded-popover border border-border bg-popover p-1.5 shadow-lg">
           {content.app.nav.slice(0, 4).map((item, index) => <div key={item.label} className={cn("flex h-control items-center rounded-md px-3 text-body", index === 0 && "bg-accent")}>{item.label}</div>)}
         </div>
         <div className="absolute inset-0 z-20 bg-foreground/10" />

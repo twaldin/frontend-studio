@@ -48,7 +48,7 @@ export function MotionSpecimen() {
               initial={instant ? false : { opacity: 0, scale: 0.96, y: -4 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               transition={transition}
-              className="w-56 rounded-lg border border-border bg-popover p-1.5 shadow-lg"
+              className="w-56 rounded-popover border border-border bg-popover p-1.5 shadow-lg"
             >
               {content.app.nav.slice(0, 4).map((item, index) => <div key={item.label} className={cn("flex h-control items-center rounded-md px-3 text-body", index === 1 && "bg-accent")}>{item.label}</div>)}
             </motion.div>

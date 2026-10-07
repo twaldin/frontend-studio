@@ -70,7 +70,8 @@ A palette is generic when it is merely the framework default and communicates no
 - Check whether border, fill, and shadow each have a clear job.
 - Identify nested-card stacks that add boxes without hierarchy.
 - Compare card padding and header/footer treatment across equivalent content.
-- Verify elevation works in both themes and does not erase focus or borders.
+- Verify elevation works in both themes and does not erase focus or borders. Canvas, panel, raised surfaces and overlays rank in the same order in light and dark.
+- Check nested corners are concentric: an outer radius equals the inner radius plus the gap between them.
 
 Flag random radius or shadow values. Preserve deliberate changes for device frames, pills, or full-bleed media.
 
@@ -90,7 +91,8 @@ Measure control height, row height, shell chrome, page gutters, section gaps, ca
 - active, hover, focus, collapsed, overflow, and mobile states;
 - page title, breadcrumbs, tabs, filters, search, and primary action order;
 - stable content width and gutters between routes;
-- whether the shell competes with the work.
+- whether the shell competes with the work;
+- fixed top bars and tab bars clear the device safe area and the browser's own bars.
 
 ## 9. Data display and states
 
@@ -111,7 +113,7 @@ Measure control height, row height, shell chrome, page gutters, section gaps, ca
 
 ## 11. Accessibility and interaction
 
-Keyboard-walk the primary workflow. Inspect focus visibility, landmark structure, heading order, names/labels, error announcements, touch targets, hover-only disclosure, motion preferences, zoom, and contrast. Accessibility defects are product defects, not style deviations.
+Keyboard-walk the primary workflow. Inspect focus visibility, landmark structure, heading order, names/labels, error announcements, touch targets, hover-only disclosure, motion preferences, zoom, and contrast. Check that every interactive indicator has hover, press and focus states, that status and validation messages appear without shifting layout, and that loading states don't flash on fast responses. Accessibility defects are product defects, not style deviations.
 
 ## 12. Write the audit
 

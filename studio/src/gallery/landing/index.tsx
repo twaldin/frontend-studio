@@ -6,15 +6,16 @@ import { Nav } from "./Nav";
 import { Proof } from "./Proof";
 import { Sections } from "./Sections";
 
-export function LandingGallery() {
+/** `fullHeight`: the whole page in document flow, for captures; otherwise its own scroll area. */
+export function LandingGallery({ fullHeight = false }: { fullHeight?: boolean }) {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   return (
     <div
       ref={scrollRef}
       data-landing-scroll
-      className="mx-auto min-h-[560px] w-full max-w-[1200px] overscroll-contain overflow-y-auto bg-background text-foreground"
-      style={{ height: "calc(100vh - 112px)" }}
+      className={`mx-auto w-full max-w-[1200px] bg-background text-foreground ${fullHeight ? "" : "min-h-[560px] overscroll-contain overflow-y-auto"}`}
+      style={fullHeight ? undefined : { height: "calc(100vh - 112px)" }}
     >
       <Nav />
       <main>
