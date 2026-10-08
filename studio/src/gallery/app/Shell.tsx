@@ -2,6 +2,7 @@ import { Activity, ChevronDown, CircleUserRound, PanelLeft, Plus, Search } from 
 import { useGallery } from "@/gallery/context";
 import { Button, Input, Kbd, cn } from "@/ui";
 import type { Archetype } from "@/tree/types";
+import { SURFACES } from "@/gallery/surfaces";
 import { HOME_ICONS, HOMES } from "./homes";
 import { INPUT_CLASSES_BY_STYLE, NavIcon, iconStroke } from "./kit";
 
@@ -290,10 +291,10 @@ function PageHeader() {
   );
 }
 
-/** The page header, then the archetype's home surface. */
+/** The page header, then the archetype's home surface, or on a surface step the surface being decided. */
 function MainContent() {
-  const { choices } = useGallery();
-  const Home = HOMES[choices.archetype as Archetype];
+  const { choices, surface } = useGallery();
+  const Home = surface ? SURFACES[surface].Body : HOMES[choices.archetype as Archetype];
   return (
     <div className="flex min-h-0 flex-1 flex-col">
       <PageHeader />

@@ -1,7 +1,7 @@
-import type { Content } from "../schema";
+import type { ArchetypeContent } from "../schema";
 
 /** Companion: the second-screen app for a fictional online game: character, quests, gear, clan and rankings. */
-export const COMPANION_CONTENT: Content = {
+export const COMPANION_CONTENT: ArchetypeContent = {
   product: { name: "Hollowmere", tagline: "Quests, gear and clan for Hollowmere, in one app." },
   app: {
     nav: [{ label: "Home" }, { label: "Quests", badge: 4 }, { label: "Inventory" }, { label: "Clan" }, { label: "Rankings" }, { label: "Settings" }],

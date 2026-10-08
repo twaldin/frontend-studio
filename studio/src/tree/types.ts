@@ -4,7 +4,7 @@
  * preset every later step; the user then confirms or deviates one step at a time.
  */
 
-export type Branch = "product" | "frame" | "tokens" | "components" | "landing";
+export type Branch = "product" | "frame" | "surfaces" | "tokens" | "components" | "interaction" | "landing";
 
 /** The product's shape. It picks the home surface and the sample content the studio renders. */
 export type Archetype = "workspace" | "feed" | "commerce" | "reader" | "media" | "companion" | "canvas" | "conversation" | "utility";
@@ -26,6 +26,8 @@ export interface Step {
   options: readonly Option[];
   /** Which gallery to show while this step is active. */
   gallery: "app" | "landing";
+  /** The pattern record in `references/patterns/` that this step's options are the variants of. */
+  pattern?: string;
 }
 
 export type StepId =
@@ -59,7 +61,20 @@ export type StepId =
   | "buttons"
   | "iconWeight"
   | "menus"
+  // surfaces: how each kind of surface is composed
+  | "feedLayout"
+  | "boardLayout"
+  | "conversationLayout"
+  | "readerLayout"
+  | "commerceLayout"
+  // interaction and motion
   | "motion"
+  | "layerArrival"
+  | "controlResponse"
+  | "contentSwap"
+  | "asyncFeedback"
+  | "routeMotion"
+  | "themeMotion"
   // landing
   | "register"
   | "display"

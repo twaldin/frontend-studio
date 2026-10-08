@@ -8,17 +8,20 @@ import { CONTENT_BY_ARCHETYPE } from "./content/default";
 import { useContent } from "./content/load";
 import { GalleryContext, type GalleryEnv } from "./gallery/context";
 import { AppGallery, ShellScene } from "./gallery/app";
+import { SURFACES, SURFACE_OF_STEP } from "./gallery/surfaces";
 import { LandingGallery, LandingHero, LANDING_SPECIMENS, scrollTargetId } from "./gallery/landing";
 import { SPECIMENS } from "./gallery/specimens";
-import { defaultsFor, optionsFor } from "./tree/steps";
+import { STEP_BY_ID, defaultsFor, optionsFor } from "./tree/steps";
 import type { Archetype, StepId } from "./tree/types";
 import type { Resolved } from "./tokens/resolve";
+import { interactionCss } from "./tokens/motion";
 
 function GalleryRoot({ tokens, env, children, className = "" }: { tokens: Resolved; env: GalleryEnv; children: ReactNode; className?: string }) {
   const vars = useMemo(
     () => ({ ...tokens.shared, ...(env.mode === "dark" ? tokens.dark : tokens.light) }) as CSSProperties,
     [tokens, env.mode],
   );
+  const interactions = useMemo(() => interactionCss(env.choices), [env.choices]);
   return (
     <GalleryContext.Provider value={env}>
       <div
@@ -28,9 +31,15 @@ function GalleryRoot({ tokens, env, children, className = "" }: { tokens: Resolv
         data-tables={env.choices.tables}
         data-buttons={env.choices.buttons}
         data-motion={env.choices.motion}
+        data-layer-arrival={env.choices.layerArrival}
+        data-control-response={env.choices.controlResponse}
+        data-content-swap={env.choices.contentSwap}
+        data-route-motion={env.choices.routeMotion}
+        data-theme-motion={env.choices.themeMotion}
         data-register={env.choices.register}
         data-look={env.choices.look}
       >
+        <style>{interactions}</style>
         {children}
       </div>
     </GalleryContext.Provider>
@@ -107,10 +116,11 @@ function TopBar({ studio, panel, setPanel }: { studio: Studio; panel: Panel; set
 /** Steps that set the defaults show the whole product: the app shell and the landing's first screen. */
 const PRODUCT_STEPS: Partial<Record<StepId, true>> = { archetype: true, reference: true, look: true };
 
-/** One theme's view of an app step: the step's specimen, then the shell as context. */
+/** One theme's view of an app step: the step's specimen, then the shell as context; a surface step shows its surface in the shell. */
 function AppView({ studio, env }: { studio: Studio; env: GalleryEnv }) {
   const step = studio.step.id;
   const Specimen = SPECIMENS[step];
+  const surface = SURFACE_OF_STEP[step];
   if (PRODUCT_STEPS[step]) {
     return (
       <div className="flex flex-col gap-6">
@@ -129,6 +139,31 @@ function AppView({ studio, env }: { studio: Studio; env: GalleryEnv }) {
       </div>
     );
   }
+  if (surface) {
+    // The surface's own title and action head the page, so the shell reads as that surface of this product.
+    const page = env.content.surfaces[surface];
+    const surfaceEnv: GalleryEnv = { ...env, surface, content: { ...env.content, app: { ...env.content.app, page: { title: page.title, action: page.action } } } };
+    const archetype = STEP_BY_ID.archetype.options.find((o) => o.id === env.choices.archetype)?.label ?? env.choices.archetype;
+    const { States } = SURFACES[surface];
+    return (
+      <GalleryContext.Provider value={surfaceEnv}>
+        <div className="flex flex-col gap-6">
+          <div>
+            <Caption>
+              {studio.step.options.find((o) => o.id === env.choices[step])?.label} · on the {archetype.toLowerCase()} sample
+            </Caption>
+            <div className="overflow-hidden rounded-lg border border-border">
+              <ShellScene />
+            </div>
+          </div>
+          <div>
+            <Caption>Empty and loading</Caption>
+            <States />
+          </div>
+        </div>
+      </GalleryContext.Provider>
+    );
+  }
   return (
     <div className="flex flex-col gap-6">
       {Specimen ? (
@@ -143,7 +178,6 @@ function AppView({ studio, env }: { studio: Studio; env: GalleryEnv }) {
       </div>
     </div>
   );
-  void env;
 }
 
 export function App() {
@@ -160,8 +194,12 @@ export function App() {
   useEffect(() => {
     if (capture) return;
     const onKey = (e: KeyboardEvent) => {
-      if ((e.target as HTMLElement | null)?.closest("input, textarea, [contenteditable]")) return;
+      if (e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey) return;
+      const target = e.target instanceof Element ? e.target : null;
+      if (target?.closest("input, textarea, select, [contenteditable]")) return;
       const k = e.key;
+      // Preserve native activation without dropping later walk shortcuts on focused controls.
+      if ((k === "Enter" || k === " ") && target?.closest("button, a, summary")) return;
       if (/^[1-9]$/.test(k)) {
         const o = optionsFor(studio.step, defaultsFor(studio.state.choices))[Number(k) - 1];
         if (o) studio.choose(studio.step.id, o.id);

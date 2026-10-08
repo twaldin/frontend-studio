@@ -1,11 +1,11 @@
-import type { Content } from "../schema";
+import type { ArchetypeContent } from "../schema";
 
 /**
  * Utility: a unit and currency converter used in seconds.
  * The home reads `items` by group: "Presets" (title is `FROM → TO`, meta is the category, which the home knows as Currency, Length, Weight or Volume),
  * "Shortcuts" (title is the action, badge is the key combination, such as `mod+e`) and everything else as conversion history (badge is the category).
  */
-export const UTILITY_CONTENT: Content = {
+export const UTILITY_CONTENT: ArchetypeContent = {
   product: { name: "Kilter", tagline: "Convert units and currencies in a keystroke." },
   app: {
     nav: [{ label: "Convert" }, { label: "History" }, { label: "Favorites", badge: 6 }, { label: "Rates" }, { label: "Shortcuts" }, { label: "Settings" }],

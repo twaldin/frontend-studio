@@ -1,11 +1,11 @@
-import type { Content } from "../schema";
+import type { ArchetypeContent } from "../schema";
 
 /**
  * Reader: a language course with a reading library.
  * The home reads `items` in two ways: lessons grouped by unit (in path order; the first one that isn't finished is the current lesson)
  * and a single item in the "Today" group, the daily goal.
  */
-export const READER_CONTENT: Content = {
+export const READER_CONTENT: ArchetypeContent = {
   product: { name: "Tessel", tagline: "Short Portuguese lessons and a library of stories you can read." },
   app: {
     nav: [{ label: "Learn" }, { label: "Practice", badge: 12 }, { label: "Library" }, { label: "Leaderboard" }, { label: "Profile" }, { label: "Settings" }],

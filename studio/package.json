@@ -9,6 +9,7 @@
     "tree:md": "bun run scripts/tree-md.ts",
     "audit": "bun scripts/audit.ts",
     "capture": "bun scripts/capture.ts",
+    "smoke": "bun scripts/smoke.ts",
     "export": "bun run scripts/export.ts",
     "typecheck": "tsc -p tsconfig.json"
   },

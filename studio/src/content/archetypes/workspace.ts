@@ -1,7 +1,7 @@
-import type { Content } from "../schema";
+import type { ArchetypeContent } from "../schema";
 
 /** Workspace: an operator tool for deploys, services and incidents. */
-export const WORKSPACE_CONTENT: Content = {
+export const WORKSPACE_CONTENT: ArchetypeContent = {
   product: { name: "Relay", tagline: "Deploys, services and incidents in one place." },
   app: {
     nav: [{ label: "Home" }, { label: "Deploys", badge: 3 }, { label: "Services" }, { label: "Incidents" }, { label: "Members" }, { label: "Settings" }],

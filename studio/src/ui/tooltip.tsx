@@ -19,7 +19,7 @@ export function Tooltip({ content, children, preview }: TooltipProps) {
           <BaseTooltip.Positioner sideOffset={6} className="z-50">
             <BaseTooltip.Popup
               className={cn(
-                "max-w-64 rounded-lg border border-border bg-popover px-2.5 py-1.5 text-chrome text-popover-foreground shadow-lg",
+                "studio-layer studio-layer-local max-w-64 rounded-lg border border-border bg-popover px-2.5 py-1.5 text-chrome text-popover-foreground shadow-lg",
                 previewClass(preview, {
                   hover: "shadow-md",
                   active: "opacity-90",

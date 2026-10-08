@@ -1,7 +1,9 @@
 import { useMemo, useState } from "react";
-import { STEPS, LOOK_DEFAULTS, PRESETS, deviations } from "@/tree/steps";
-import type { Choices, ResolvedChoices, Step } from "@/tree/types";
+import { STEPS, STEP_BY_ID, defaultSource, deviations, patternUrl } from "@/tree/steps";
+import type { Choices, ResolvedChoices, Step, StepId } from "@/tree/types";
 import { DENSITY, RADIUS_PX, SPACING_UNIT, themeCss, type Resolved } from "@/tokens/resolve";
+import { MOTION_LANGUAGES } from "@/tokens/motion";
+import { INTERACTION_RUNTIME } from "@/tokens/runtime";
 import type { Content } from "@/content/schema";
 import { applyCopy } from "@/content/copy";
 import type { DecisionRecord } from "./saved";
@@ -13,14 +15,23 @@ const label = (stepId: string, optionId: string) =>
 export function decisionsMarkdown(c: ResolvedChoices, choices: Choices): string {
   const dev = new Set(deviations(choices));
   const d = DENSITY[c.density]!;
+  const m = MOTION_LANGUAGES[c.motion]!;
   const ref = label("reference", c.reference);
-  // A look picked over the reference's own supplies some defaults; name whichever applies.
-  const lookDefaults = c.look !== PRESETS[c.reference]?.look ? LOOK_DEFAULTS[c.look] : undefined;
-  const line = (ids: keyof ResolvedChoices | (keyof ResolvedChoices)[], text: string) => {
+  // A default is marked with whatever supplied it: the reference, a look or motion language picked over it, or the archetype.
+  const line = (ids: StepId | StepId[], text: string) => {
     const list = Array.isArray(ids) ? ids : [ids];
     if (list.some((id) => dev.has(id))) return `- ${text}`;
-    return `- ${text} _(${list.some((id) => lookDefaults?.[id] !== undefined) ? `the ${label("look", c.look).toLowerCase()} look` : ref}'s default)_`;
+    const sources = [...new Set(list.map((id) => defaultSource(choices, id)))];
+    return `- ${text} _(${sources.join(" and ")}'s default${sources.length > 1 ? "s" : ""})_`;
   };
+  // Pattern selections name the exact record variant; Still and layer Cut are universal baselines.
+  const contract = (id: StepId) => {
+    const pattern = STEP_BY_ID[id].pattern!;
+    const baseline = (id === "motion" && c[id] === "still") || (id === "layerArrival" && c[id] === "cut");
+    return `Contract: [${pattern}](${patternUrl(pattern)}) (\`references/patterns/${pattern}.md\`), ${baseline ? `universal baseline "${label(id, c[id])}"` : `variant "${label(id, c[id])}"`}.`;
+  };
+  const surface = (id: StepId, name: string) =>
+    line(id, `${name}: ${label(id, c[id]).toLowerCase()}. ${contract(id)}`);
   return [
     `## Design decisions`,
     ``,
@@ -29,6 +40,14 @@ export function decisionsMarkdown(c: ResolvedChoices, choices: Choices): string 
     `### Frame`,
     line(["shell", "sidebarTone", "sidebarCollapse", "navIcons", "pageTitle"], `Shell: ${label("shell", c.shell).toLowerCase()}; sidebar ${label("sidebarTone", c.sidebarTone).toLowerCase()}, ${label("sidebarCollapse", c.sidebarCollapse).toLowerCase()}, ${label("navIcons", c.navIcons).toLowerCase()}; page title ${label("pageTitle", c.pageTitle).toLowerCase()}.`),
     line(["density", "spacing"], `Density: ${label("density", c.density).toLowerCase()} — chrome ${d.chrome}px, body ${d.body}px, controls ${d.control}px, rows ${d.row}px; spacing unit ${label("spacing", c.spacing).toLowerCase()} (${SPACING_UNIT[c.spacing]}).`),
+    ``,
+    `### Surfaces`,
+    `Only the surfaces the product has; drop the rest.`,
+    surface("feedLayout", "Feed"),
+    surface("boardLayout", "Board"),
+    surface("conversationLayout", "Conversation"),
+    surface("readerLayout", "Reading view"),
+    surface("commerceLayout", "Storefront"),
     ``,
     `### Tokens`,
     line(["typeface", "mono"], `Typeface: ${label("typeface", c.typeface)}; mono: ${label("mono", c.mono)}.`),
@@ -43,7 +62,19 @@ export function decisionsMarkdown(c: ResolvedChoices, choices: Choices): string 
     line(["tables", "rowHover"], `Tables: ${label("tables", c.tables).toLowerCase()}; row hover ${label("rowHover", c.rowHover).toLowerCase()}.`),
     line(["cards", "inputs"], `Cards: ${label("cards", c.cards).toLowerCase()}; inputs ${label("inputs", c.inputs).toLowerCase()}.`),
     line(["buttons", "iconWeight", "menus"], `Buttons: ${label("buttons", c.buttons).toLowerCase()}; icons ${label("iconWeight", c.iconWeight).toLowerCase()}; menus ${label("menus", c.menus).toLowerCase()}.`),
-    line("motion", `Motion: ${label("motion", c.motion).toLowerCase()}; none on keyboard-initiated or many-times-a-day paths.`),
+    ``,
+    `### Interaction`,
+    line("motion", `Motion language: ${label("motion", c.motion).toLowerCase()} — press ${m.press} ms, local ${m.local} ms, layers ${m.layer} ms, swaps ${m.swap} ms, pages ${m.route} ms; enter \`${m.enter}\`, exit \`${m.exit}\`, change \`${m.change}\`. ${contract("motion")}`),
+    line("layerArrival", `Layers: ${label("layerArrival", c.layerArrival).toLowerCase()}. ${contract("layerArrival")}`),
+    line("controlResponse", `Controls on press: ${label("controlResponse", c.controlResponse).toLowerCase()}. ${contract("controlResponse")}`),
+    line("contentSwap", `Content swaps: ${label("contentSwap", c.contentSwap).toLowerCase()}. ${contract("contentSwap")}`),
+    line("asyncFeedback", `Work in progress: ${label("asyncFeedback", c.asyncFeedback).toLowerCase()}. ${contract("asyncFeedback")}`),
+    line("routeMotion", `Pages: ${label("routeMotion", c.routeMotion).toLowerCase()}. ${contract("routeMotion")}`),
+    line("themeMotion", `Theme change: ${label("themeMotion", c.themeMotion).toLowerCase()}. ${contract("themeMotion")}`),
+    `- Import \`theme.css\` and \`transitionStudio\` from \`interaction.js\`. Controls use \`.studio-control\`; layers use \`.studio-layer[data-state="open"|"closed"]\`. Keep closing layers mounted until their CSS exit finishes, then hide/unmount and restore focus. Under reduced motion, Still or Cut, finish that lifecycle immediately rather than waiting for an animation event.`,
+    `- In-place regions use \`.studio-swap\`, page content uses \`.studio-page\` outside the shell, and one matching item in each view may use \`.studio-item\` for continuity. Call \`transitionStudio("content"|"route"|"theme", update, {direction: "forward"|"back", x, y})\` around the real DOM commit; the update callback must resolve after the new DOM exists. Theme x/y are viewport coordinates of the toggle. No view-transition API means an immediate real update, not a simulated animation.`,
+    `- Keyboard-triggered and frequent paths pass \`instant: true\` to the helper, or set \`data-studio-instant\` on CSS-animated regions. Reduced motion removes travel and looping effects while retaining status, focus and tonal feedback. Cut/Still timings are zero; geometry studies in the studio are explicitly schematic, not active timing.`,
+    `- Async rendering follows the actual request state; \`theme.css\` includes the selected treatment's classes and contract comments. Report percent only from completed/total work and ETA only from measured service data. Keep input and useful content on failure; do not export demo state selectors, fake delays or automatic progress.`,
     ``,
     `### Landing`,
     line(["register", "display", "displayCase"], `Register: ${label("register", c.register).toLowerCase()}; display type ${label("display", c.display).toLowerCase()}, ${label("displayCase", c.displayCase).toLowerCase()}.`),
@@ -171,6 +202,7 @@ export function ExportPanel({ tokens, choices, record, content }: { tokens: Reso
       <Artifact title="Design decisions" text={md} file="design-decisions.md" />
       <Artifact title="Notes and status" text={notes} file="studio-notes.md" />
       <Artifact title="Theme" text={css} file="theme.css" />
+      <Artifact title="Interaction runtime" text={INTERACTION_RUNTIME} file="interaction.js" />
       <Artifact title="shadcn config" text={cj} file="components.json" />
       <Artifact title="Copy" text={copy} file="content.json" />
     </div>

@@ -7,7 +7,7 @@ Frontend Studio supports two paths:
 - **New product:** product grill → MVP cut → copy deck → visual grill → build.
 - **Existing frontend:** product recovery → MVP cut → live audit → copy rebuild → visual grill → clean rebuild.
 
-The studio renders every visual choice against the product's real content. The walk opens with the product's archetype (workspace, feed, store, course or reader, media library, game companion, editor, conversation or utility), which sets the home surface and sample content; then a reference and a look, then the frame, tokens, components and landing. Each decision is a step with a few composable options; the user confirms or departs from the defaults, notes what no option offers, and the walk exports shadcn-compatible theme variables, a concise decision record, the notes for the next round, and component configuration. Reference presets are decision systems based on structural product patterns, not templates or branded copies.
+The studio renders every visual choice against the product's real content. The walk opens with the product's archetype (workspace, feed, store, course or reader, media library, game companion, editor, conversation or utility), which sets the home surface and sample content; then a reference and a look, followed by frame, surfaces, tokens, components, interaction and landing. Each decision is a step with a few composable options; the user confirms or departs from the defaults, records what no option offers, and exports theme variables, selected patterns, next-round notes and component configuration. Reference presets are decision systems based on structural product patterns, not templates or branded copies.
 
 ## Install
 
@@ -28,6 +28,7 @@ Or keep the clone anywhere and tell the agent to read `SKILL.md` before any desi
 - `references/audit-checklist.md`: evidence-first live frontend review.
 - `references/products.md`: researched reference profiles and preset anchors.
 - `references/decision-tree.md`: generated visual decision tree.
+- `references/patterns/`: independently authored task, surface, state and interaction records, with variants, contracts, dated references and code-license boundaries; its index is the source of truth for catalog membership.
 - `references/options.md`: what a step and an option are, and what earns an option its place.
 - `references/review.md`: adversarial review before and after rendering.
 - `references/rounds.md`: serving the walk, recording it, and locking in between rounds.
@@ -36,7 +37,7 @@ Or keep the clone anywhere and tell the agent to read `SKILL.md` before any desi
 
 ## Run the studio
 
-Requirements: Bun and a Chromium-based browser.
+Requirements: Bun and a Chromium-based browser. Vite's default Node runner needs Node.js 20.19+ (20.x) or 22.12+. Alternatively, `bun run --bun dev` and `bun run --bun build` use Bun's own runtime.
 
 ```sh
 cd studio
@@ -45,6 +46,22 @@ bun run dev
 ```
 
 Open the printed local URL. Each archetype ships sample content in `studio/src/content/archetypes/`; put product-specific content in `studio/public/content.json`, which deep-merges over the chosen archetype's sample. The schema lives at `studio/src/content/schema.ts`.
+
+### Compose surfaces and interactions
+
+The five surface galleries each offer four structural options, on every archetype's content and each of the six looks:
+
+| Surface | Options |
+| --- | --- |
+| Feed | Timeline, Cards, Compact list, Digest |
+| Board | Columns, Swimlanes, Grouped list, Pipeline |
+| Conversation | Bubbles, Transcript, Channel, With context |
+| Reader | Single column, With outline, Margin notes, Paged |
+| Commerce | Grid, List, Shelves, List and detail |
+
+The interaction branch separates **motion language** (Still, Snappy, Anchored, Tactile, Material), **layer arrival**, **control response**, **content swap**, **async feedback**, **route transition** and **theme transition**. Motion specimens show explicit before/during/after frames for static review and a live replay; reduced motion keeps access to the final state immediate. A language re-defaults the interaction axes while explicit choices remain independent.
+
+Use the [pattern index](references/patterns/README.md) to bind selections to a product as **flow → surface → slot**. The generic studio is a fixed catalog: it does not yet generate a tree from a product model, and its specimens are not complete executable product workflows. Bind only the surfaces and capabilities the brief actually needs. Guidance, link-only inspiration and cleared implementation candidates stay separate; no reference site's assets or proprietary source are bundled.
 
 Useful controls:
 
@@ -84,7 +101,7 @@ bun run capture                       # every step, light and dark
 bun run capture --step accent,radius  # just these steps
 ```
 
-The script uses Playwright (see the audit section for how it is provisioned) and writes one screenshot per option and theme to `studio/capture/`, plus `report.json` and an `index.html` contact sheet. It flags pairs of options in the same step that render identically (a capture gap or a dead option) or differ in at most 0.1% of pixels (a candidate twinge; change the threshold with `--near`). Motion steps and options that only differ in the other theme flag too; `references/review.md` says how to read them. Reviewers read the contact sheet before the user walks the tree.
+The script uses Playwright (see the audit section for how it is provisioned) and writes one screenshot per option and theme to `studio/capture/`, plus `report.json` and an `index.html` contact sheet. It flags pairs of options in the same step that render identically (a capture gap or a dead option) or differ in at most 0.1% of pixels (a candidate twinge; change the threshold with `--near`). Interaction filmstrips make transition choices legible even in reduced-motion stills; also review live replay to judge timing. Options that only differ in the other theme can flag in one theme; [review.md](references/review.md) explains the review contract.
 
 ## Audit an existing frontend
 
@@ -113,6 +130,16 @@ Use `references/audit-checklist.md` to turn the evidence into a product-specific
 5. Run `bun run tree:md`, then `bun run capture --step <the steps you touched>` and check the new option isn't flagged.
 6. Inspect the preset at desktop and phone widths. Do not add branded assets or copy page structure.
 
+## Run the smoke suite
+
+With the dev server running, from `studio/`:
+
+```sh
+bun run smoke --url http://127.0.0.1:5199/
+```
+
+The suite checks the saved walk, keyboard selection, copy editing, reset, reference order, defaults and exports, plus all surface options across archetypes and looks and every interaction option. It uses at most two browser pages and restores the saved walk after the run. Capture is a separate visual gate.
+
 ## Add an archetype
 
 1. Add it to `Archetype` in `studio/src/tree/types.ts`, as an option of the archetype step, and its starting reference in `ARCHETYPE_REFERENCE` (`studio/src/tree/steps.ts`).
@@ -124,9 +151,10 @@ Use `references/audit-checklist.md` to turn the evidence into a product-specific
 
 The Export view, or `bun run export` for the saved walk, produces:
 
-- `design-decisions.md`: confirmed choices and deviations;
+- `design-decisions.md`: confirmed choices, deviations and selected pattern records;
 - `studio-notes.md`: notes, the steps to revisit, and the steps still open;
-- `theme.css`: shadcn-compatible tokens for light/dark themes;
+- `theme.css`: shadcn-compatible light/dark tokens, motion durations and curves, and interaction CSS;
+- `interaction.js`: a dependency-free DOM helper for content, route and theme transitions; the product supplies the actual state update and focus/scroll lifecycle;
 - `components.json`: shadcn configuration;
 - `content.json`: the content with the studio's copy edits.
 

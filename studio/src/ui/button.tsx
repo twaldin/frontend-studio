@@ -1,8 +1,8 @@
-import type { MouseEventHandler, ReactNode } from "react";
+import { forwardRef, type ComponentPropsWithoutRef, type MouseEventHandler, type ReactNode } from "react";
 import { useGallery } from "@/gallery/context";
 import { cn, previewClass, type PreviewState } from "./cn";
 
-export interface ButtonProps {
+export interface ButtonProps extends Omit<ComponentPropsWithoutRef<"button">, "children"> {
   variant?: "primary" | "cta" | "secondary" | "ghost" | "outline" | "destructive" | "link";
   size?: "sm" | "md" | "lg";
   children: ReactNode;
@@ -37,7 +37,8 @@ const paddings = {
 /** Variants with a fill or an outline: they take the look's button edge (an offset or a pressed lip). */
 const EDGED: Record<string, true> = { cta: true, soft: true, outline: true, secondary: true, destructive: true };
 
-export function Button({
+/** Native handlers/attributes and the ref must reach the button when Base UI composes a trigger. */
+export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button({
   variant = "primary",
   size = "md",
   children,
@@ -46,7 +47,8 @@ export function Button({
   onClick,
   type = "button",
   preview,
-}: ButtonProps) {
+  ...nativeProps
+}, ref) {
   const { choices } = useGallery();
   // A soft primary is a tinted accent; with a neutral accent there is no tint, so it is filled.
   const soft = choices.buttons === "soft" && choices.accent !== "neutral";
@@ -80,11 +82,14 @@ export function Button({
 
   return (
     <button
+      {...nativeProps}
+      ref={ref}
       type={type}
       disabled={disabled}
       onClick={onClick}
+      data-preview={preview}
       className={cn(
-        "inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-[var(--radius-control)] text-chrome font-medium transition-colors duration-[var(--duration-fast)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50",
+        "studio-control inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-[var(--radius-control)] text-chrome font-medium transition-colors duration-[var(--duration-fast)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50",
         heights[size],
         variant === "link" ? "px-0" : paddings[size],
         variant === "primary" ? primary : variants[variant],
@@ -96,4 +101,4 @@ export function Button({
       {children}
     </button>
   );
-}
+});

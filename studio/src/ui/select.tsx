@@ -23,8 +23,9 @@ export function Select({ options, value, onChange, placeholder, className, previ
       }}
     >
       <BaseSelect.Trigger
+        data-preview={preview}
         className={cn(
-          "flex h-control w-full items-center justify-between gap-3 rounded-[var(--radius-control)] border border-input bg-background px-3 text-left text-body text-foreground shadow-sm outline-none transition-colors duration-[var(--duration-fast)] hover:bg-accent focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/30 data-[pressed]:bg-muted",
+          "studio-control flex h-control w-full items-center justify-between gap-3 rounded-[var(--radius-control)] border border-input bg-background px-3 text-left text-body text-foreground shadow-sm outline-none transition-colors duration-[var(--duration-fast)] hover:bg-accent focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/30 data-[pressed]:bg-muted",
           className,
           previewClass(preview, {
             hover: "bg-accent",
@@ -40,7 +41,7 @@ export function Select({ options, value, onChange, placeholder, className, previ
         </BaseSelect.Icon>
       </BaseSelect.Trigger>
       <BaseSelect.Positioner sideOffset={4} align="start" alignItemWithTrigger={false} className="z-50">
-        <BaseSelect.Popup className="min-w-[var(--anchor-width)] rounded-popover border border-border bg-popover p-1.5 text-popover-foreground shadow-lg outline-none">
+        <BaseSelect.Popup className="studio-layer studio-layer-local min-w-[var(--anchor-width)] rounded-popover border border-border bg-popover p-1.5 text-popover-foreground shadow-lg outline-none">
           <BaseSelect.List>
             {options.map((option) => (
               <BaseSelect.Item

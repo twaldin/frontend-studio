@@ -1,5 +1,5 @@
 import { createContext, useContext } from "react";
-import type { Content } from "@/content/schema";
+import type { Content, Surfaces } from "@/content/schema";
 import type { ResolvedChoices } from "@/tree/types";
 import type { Density } from "@/tokens/resolve";
 
@@ -16,6 +16,8 @@ export interface GalleryEnv {
   density: Density;
   /** The theme this gallery root is rendered in. */
   mode: "light" | "dark";
+  /** On a surface step: the surface the shell shows in place of the archetype's home. */
+  surface?: keyof Surfaces;
 }
 
 export const GalleryContext = createContext<GalleryEnv | null>(null);

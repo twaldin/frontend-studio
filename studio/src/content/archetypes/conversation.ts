@@ -1,7 +1,7 @@
-import type { Content } from "../schema";
+import type { ArchetypeContent } from "../schema";
 
 /** Conversation: a chat with an AI agent that also holds team threads. */
-export const CONVERSATION_CONTENT: Content = {
+export const CONVERSATION_CONTENT: ArchetypeContent = {
   product: { name: "Plover", tagline: "Ask an agent, or pull your team into the thread." },
   app: {
     nav: [{ label: "Chats", badge: 3 }, { label: "Agents" }, { label: "Projects" }, { label: "Files" }, { label: "Search" }, { label: "Settings" }],

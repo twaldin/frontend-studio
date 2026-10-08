@@ -1,4 +1,4 @@
-import type { Content } from "../schema";
+import type { ArchetypeContent } from "../schema";
 
 /**
  * Media: a library to play music and podcasts from.
@@ -7,7 +7,7 @@ import type { Content } from "../schema";
  * shelves of five. The now-playing bar shows the first item that has a `progress`, and reads its
  * duration from `value` ("4:12") to put elapsed and total time beside the bar.
  */
-export const MEDIA_CONTENT: Content = {
+export const MEDIA_CONTENT: ArchetypeContent = {
   product: { name: "Marigold", tagline: "Music, podcasts and radio, with your place saved." },
   app: {
     nav: [{ label: "Home" }, { label: "Search" }, { label: "Library" }, { label: "Radio" }, { label: "Downloads", badge: 2 }, { label: "Settings" }],
