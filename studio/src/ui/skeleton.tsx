@@ -13,7 +13,7 @@ export function Skeleton({ className, preview }: SkeletonProps) {
       aria-hidden="true"
       className={cn(
         "rounded-md bg-muted",
-        choices.motion !== "none" && "animate-pulse",
+        choices.motion !== "still" && "animate-pulse",
         previewClass(preview, {
           hover: "bg-accent",
           active: "opacity-70",

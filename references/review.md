@@ -25,7 +25,7 @@ Apply the cuts and fixes, then build.
 ## After rendering
 
 1. Capture every option of every step in both themes: `bun run capture` in `studio/`, or the in-app capture ([in-app-studio.md](in-app-studio.md)), which adds phone and desktop widths and motion clips.
-2. Fix capture gaps first. An identical pair means the setup never exercises the option, or the option does nothing. Recapture those steps with `--step`. Two kinds of flag are expected and need no fix: steps whose options only differ in the other theme (the report shows the theme of each pair), and motion steps, which stills can't show; judge those live with replay.
+2. Fix capture gaps first. An identical pair means the setup never exercises the option, or the option does nothing. Recapture those steps with `--step`. Options that only differ in the other theme can flag in one theme. The interaction branch uses explicit filmstrip states so its options remain distinguishable in reduced-motion captures; judge timing and interruptibility live with replay as well.
 3. Reviewers read the contact sheet (`capture/index.html`) and the shots, and the clips or a live replay for motion steps.
 4. Cut true twinges and rule collisions, and make options that look alike visibly different. When reviewers disagree with a recommendation or a cut, record it on the step ("the craft review would cut this"); the user settles it in the studio.
 5. Recapture what changed and confirm the flagged pairs are gone.

@@ -26,8 +26,10 @@ export interface Item {
   badge?: string;
   /** 0–1: lesson or quest progress, a playback position. */
   progress?: number;
-  /** Shelf, category or section the item belongs to. */
+  /** Shelf, category or section the item belongs to; a board's swimlane. */
   group?: string;
+  /** On a board: the index into `surfaces.board.lanes` of the stage the item is in. */
+  stage?: number;
 }
 
 /** One message. `mine` marks the user's own; the rest come from people or an agent. */
@@ -36,6 +38,32 @@ export interface Message {
   text: string;
   mine?: boolean;
   time?: string;
+}
+
+/** A surface's page header and its one-line empty state, in the archetype's vocabulary. */
+export interface SurfacePage {
+  title: string;
+  action: string;
+  /** What the surface says when it has nothing to show. */
+  empty: string;
+}
+
+/**
+ * What the surface galleries lay out: feed, board, conversation, reader and storefront,
+ * each in the archetype's own vocabulary (a learning app's feed is classmates' progress,
+ * a game companion's storefront is the item shop).
+ */
+export interface Surfaces {
+  /** Entries newest first. `meta` is the author and time, `body` the text, `badge` Photo, Video or Link for a media tile, `value` the counts ("replies · reposts · likes"), `group` the topic a digest groups by. */
+  feed: SurfacePage & { entries: Item[]; composer: string };
+  /** Work moving through stages: `lanes` name the stages in order, each card's `stage` indexes them, and its `group` is its swimlane (an owner or an area). */
+  board: SurfacePage & { lanes: string[]; cards: Item[] };
+  /** The thread is `app.thread` and the composer `app.composer`; `context` is the thing the conversation is about. */
+  conversation: SurfacePage & { context: { title: string; body: string; facts: { label: string; value: string }[] } };
+  /** A long read. `notes` gloss a `term` that appears in the text. */
+  reader: SurfacePage & { byline: string; sections: { heading: string; paragraphs: string[] }[]; notes: { term: string; note: string }[] };
+  /** Things to buy: `value` is the price, `meta` the seller or a spec line, `badge` a flag (New, Sale), `group` the shelf, `body` the detail. */
+  commerce: SurfacePage & { listings: Item[]; buy: string; cart: string; checkout: string };
 }
 
 export interface Content {
@@ -78,6 +106,7 @@ export interface Content {
     /** A conversation, oldest first: the conversation home's thread, replies elsewhere. */
     thread: Message[];
   };
+  surfaces: Surfaces;
   landing: {
     nav: string[];
     cta: string;
@@ -94,3 +123,6 @@ export interface Content {
     footer: string;
   };
 }
+
+/** An archetype's own sample: everything but the surfaces, which `content/surfaces/` writes per archetype. */
+export type ArchetypeContent = Omit<Content, "surfaces">;

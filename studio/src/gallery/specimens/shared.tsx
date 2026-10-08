@@ -13,7 +13,8 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import type { Cell } from "@/content/schema";
-import type { ResolvedChoices } from "@/tree/types";
+import type { ResolvedChoices, StepId } from "@/tree/types";
+import { STEP_BY_ID } from "@/tree/steps";
 import { Badge, cn } from "@/ui";
 
 export const NAV_ICONS: readonly LucideIcon[] = [Home, Rocket, Boxes, ShieldAlert, Users, Settings];
@@ -21,6 +22,11 @@ export const DEMO_ICONS: readonly LucideIcon[] = [Home, Search, Rocket, Boxes, B
 
 export function iconStroke(choices: ResolvedChoices): number {
   return choices.iconWeight === "regular" ? 2 : 1.5;
+}
+
+/** The option name is the studio/pattern record's shared vocabulary. */
+export function interactionOptionLabel(id: StepId, value: string): string {
+  return STEP_BY_ID[id].options.find((option) => option.id === value)?.label ?? value;
 }
 
 export function SpecimenFrame({

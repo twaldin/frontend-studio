@@ -1,7 +1,7 @@
-import type { Content } from "../schema";
+import type { ArchetypeContent } from "../schema";
 
 /** Canvas: a shared design and whiteboard editor for screens, flows and notes. */
-export const CANVAS_CONTENT: Content = {
+export const CANVAS_CONTENT: ArchetypeContent = {
   product: { name: "Tilework", tagline: "Draw screens, flows and ideas on one shared canvas." },
   app: {
     nav: [{ label: "Boards" }, { label: "Components" }, { label: "Templates" }, { label: "Comments", badge: 4 }, { label: "Team" }, { label: "Settings" }],

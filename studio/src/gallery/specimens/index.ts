@@ -23,8 +23,14 @@ import {
   StatsSpecimen,
   TablesSpecimen,
 } from "./app";
+import { AsyncFeedbackSpecimen } from "./asyncFeedback";
+import { ContentSwapSpecimen } from "./contentSwap";
+import { ControlResponseSpecimen } from "./controlResponse";
+import { LayerArrivalSpecimen } from "./layerArrival";
 import { MotionSpecimen } from "./motion";
+import { RouteMotionSpecimen } from "./routeMotion";
 import { SidebarCollapseSpecimen } from "./sidebar";
+import { ThemeMotionSpecimen } from "./themeMotion";
 import { TrendSpecimen } from "./trend";
 /**
  * A specimen renders the thing one step decides, large, with every state
@@ -54,4 +60,10 @@ export const SPECIMENS: Partial<Record<StepId, ComponentType>> = {
   iconWeight: IconWeightSpecimen,
   menus: MenusSpecimen,
   motion: MotionSpecimen,
+  layerArrival: LayerArrivalSpecimen,
+  controlResponse: ControlResponseSpecimen,
+  contentSwap: ContentSwapSpecimen,
+  asyncFeedback: AsyncFeedbackSpecimen,
+  routeMotion: RouteMotionSpecimen,
+  themeMotion: ThemeMotionSpecimen,
 };

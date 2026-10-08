@@ -1,10 +1,18 @@
-import { STEPS, LOOK_DEFAULTS, PRESETS, defaultsFor, deviations, optionsFor } from "@/tree/steps";
+import { STEPS, PRESETS, defaultSource, defaultsFor, deviations, optionsFor, patternUrl } from "@/tree/steps";
 import type { Branch, Step, StepId } from "@/tree/types";
 import type { Studio } from "./state";
 import type { Status } from "./saved";
 
-const BRANCH_LABEL: Record<Branch, string> = { product: "Product", frame: "Frame", tokens: "Tokens", components: "Components", landing: "Landing" };
-const BRANCHES: readonly Branch[] = ["product", "frame", "tokens", "components", "landing"];
+const BRANCH_LABEL: Record<Branch, string> = {
+  product: "Product",
+  frame: "Frame",
+  surfaces: "Surfaces",
+  tokens: "Tokens",
+  components: "Components",
+  interaction: "Interaction",
+  landing: "Landing",
+};
+const BRANCHES: readonly Branch[] = ["product", "frame", "surfaces", "tokens", "components", "interaction", "landing"];
 const STATUS_MARK: Record<Status, string> = { decided: "✓", revisit: "↻" };
 
 function StepRow({ s, i, studio, deviated }: { s: Step; i: number; studio: Studio; deviated: boolean }) {
@@ -74,11 +82,9 @@ export function Stepper({ studio }: { studio: Studio }) {
   // Committed choices, not the hover preview: the list must not reorder under the pointer.
   const defaults = defaultsFor(studio.state.choices);
   const label = (id: StepId, option: string) => STEPS.find((s) => s.id === id)?.options.find((o) => o.id === option)?.label ?? option;
-  const refLabel = label("reference", defaults.reference);
-  // A look picked over the reference's own supplies some defaults; the badge names whichever applies.
-  const look = studio.state.choices.look ?? defaults.look;
-  const lookDefaults = look !== defaults.look ? LOOK_DEFAULTS[look] : undefined;
-  const defaultLabel = lookDefaults?.[step.id] !== undefined ? `${label("look", look)} look` : refLabel;
+  // The reference, a look or motion language picked over it, or the archetype: the badge names whichever supplies this default.
+  const source = defaultSource(studio.state.choices, step.id);
+  const defaultLabel = source.replace(/^the /, "");
   const dev = new Set(deviations(studio.state.choices));
   const setsDefaults = step.id === "archetype" || step.id === "reference";
 
@@ -95,6 +101,14 @@ export function Stepper({ studio }: { studio: Studio }) {
         </div>
         <h2 className="text-[15px] font-medium">{step.question}</h2>
         <p className="mt-1 text-[12px] leading-[1.45] text-[var(--studio-muted)]">{step.why}</p>
+        {step.pattern ? (
+          <p className="mt-1 text-[11px] text-[var(--studio-muted)]">
+            Pattern record: <a href={patternUrl(step.pattern)} target="_blank" rel="noreferrer" className="underline underline-offset-2"><code className="font-mono">references/patterns/{step.pattern}.md</code></a>
+          </p>
+        ) : null}
+        {step.id === "motion" || step.id === "layerArrival" ? (
+          <p className="mt-1 text-[11px] text-[var(--studio-muted)]">Still / Cut is the universal baseline; the record documents the other four variants.</p>
+        ) : null}
         <ol className="mt-3 flex flex-col gap-1">
           {optionsFor(step, defaults).map((o, i) => {
             const chosen = studio.resolved[step.id] === o.id;
@@ -106,6 +120,7 @@ export function Stepper({ studio }: { studio: Studio }) {
                   onMouseEnter={() => studio.setPreview({ step: step.id, option: o.id })}
                   onMouseLeave={() => studio.setPreview(null)}
                   onClick={() => studio.choose(step.id, o.id)}
+                  aria-pressed={chosen}
                   className={`flex w-full items-start gap-2 rounded-md border px-2.5 py-2 text-left transition-colors ${
                     chosen
                       ? "border-[var(--studio-accent)] bg-[color-mix(in_oklab,var(--studio-accent)_12%,transparent)]"
@@ -140,7 +155,7 @@ export function Stepper({ studio }: { studio: Studio }) {
             disabled={studio.state.step === STEPS.length - 1}
             onClick={() => studio.go(studio.state.step + 1)}
           >
-            {studio.state.choices[step.id] !== undefined || setsDefaults ? "Next →" : `Keep ${defaultLabel}'s →`}
+            {studio.state.choices[step.id] !== undefined || setsDefaults ? "Next →" : `Keep ${source}'s →`}
           </button>
           <span className="ml-auto text-[11px] text-[var(--studio-muted)]">
             {dev.size} deviation{dev.size === 1 ? "" : "s"}

@@ -11,6 +11,7 @@ import { existsSync } from "node:fs";
 import { resolveChoices, STEP_BY_ID } from "../src/tree/steps";
 import type { Archetype, Choices, StepId } from "../src/tree/types";
 import { resolveTokens, themeCss } from "../src/tokens/resolve";
+import { INTERACTION_RUNTIME } from "../src/tokens/runtime";
 import { componentsJson, decisionsMarkdown, studioNotesMarkdown } from "../src/studio/Export";
 import { parseSaved, type SavedState } from "../src/studio/saved";
 import { CONTENT_BY_ARCHETYPE } from "../src/content/default";
@@ -43,8 +44,9 @@ if (argv.length === 0) {
 const resolved = resolveChoices(choices);
 const tokens = resolveTokens(resolved);
 const dir = new URL("../export/", import.meta.url);
-const written = ["theme.css", "design-decisions.md", "components.json"];
+const written = ["theme.css", "interaction.js", "design-decisions.md", "components.json"];
 await Bun.write(new URL("theme.css", dir), themeCss(tokens));
+await Bun.write(new URL("interaction.js", dir), INTERACTION_RUNTIME);
 await Bun.write(new URL("design-decisions.md", dir), decisionsMarkdown(resolved, choices));
 await Bun.write(new URL("components.json", dir), componentsJson(resolved));
 if (saved) {

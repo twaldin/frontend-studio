@@ -155,6 +155,76 @@ export const STEPS: readonly Step[] = [
     ],
   },
   {
+    id: "feedLayout",
+    branch: "surfaces",
+    gallery: "app",
+    pattern: "feed",
+    question: "How does a feed lay out its entries?",
+    why: "A feed is read top to bottom many times a day; the entry's shape decides how much each one says before a tap.",
+    options: [
+      { id: "timeline", label: "Timeline", note: "One column of whole entries: author, text, media and actions. Bluesky, Threads." },
+      { id: "cards", label: "Cards", note: "Entries as cards in two columns, media first. Pinterest, Dribbble." },
+      { id: "compact", label: "Compact list", note: "One line per entry with its counts; the title is the link. Hacker News." },
+      { id: "digest", label: "Digest", note: "Entries grouped under topic headings, a line of summary each. A newsletter or a morning briefing." },
+    ],
+  },
+  {
+    id: "boardLayout",
+    branch: "surfaces",
+    gallery: "app",
+    pattern: "board",
+    question: "How does a board show work moving through stages?",
+    why: "Decides whether people see the flow of work, who owns what, or only what's next.",
+    options: [
+      { id: "columns", label: "Columns", note: "A column per stage, cards stacked in each. Trello, Linear's board." },
+      { id: "swimlanes", label: "Swimlanes", note: "Columns per stage, a row per owner or area. Jira." },
+      { id: "grouped", label: "Grouped list", note: "One list under a heading per stage; holds on a phone. Linear's list view." },
+      { id: "pipeline", label: "Pipeline", note: "Stage counts in a strip, with one stage's cards open below. Sales pipelines." },
+    ],
+  },
+  {
+    id: "conversationLayout",
+    branch: "surfaces",
+    gallery: "app",
+    pattern: "conversation",
+    question: "How does a conversation lay out its messages?",
+    why: "Says who the conversation is with: a friend, a team, or an agent that writes documents.",
+    options: [
+      { id: "bubbles", label: "Bubbles", note: "Yours on the right, theirs on the left, in rounded bubbles. iMessage, WhatsApp." },
+      { id: "transcript", label: "Transcript", note: "Turns run full width without bubbles, so long answers read as documents. ChatGPT, Claude." },
+      { id: "channel", label: "Channel", note: "Dense rows with name and time; consecutive messages group under one name. Slack, Discord." },
+      { id: "context", label: "With context", note: "The thread beside a panel about what it discusses: the order, the file, the customer. Support inboxes." },
+    ],
+  },
+  {
+    id: "readerLayout",
+    branch: "surfaces",
+    gallery: "app",
+    pattern: "reader",
+    question: "How does the reading view hold a long text?",
+    why: "Long reads need a steady measure; the space beside the text is for finding your place, or for notes.",
+    options: [
+      { id: "column", label: "Single column", note: "One centered measure and nothing beside it. Medium, Substack." },
+      { id: "outline", label: "With outline", note: "A sticky outline beside the text marks where you are. Documentation sites." },
+      { id: "margin", label: "Margin notes", note: "Notes and glossary sit in the margin beside the line they explain. Tufte-style books." },
+      { id: "paged", label: "Paged", note: "One page at a time, with page turns and a progress line. Kindle, Apple Books." },
+    ],
+  },
+  {
+    id: "commerceLayout",
+    branch: "surfaces",
+    gallery: "app",
+    pattern: "storefront",
+    question: "How are things to buy laid out?",
+    why: "Browsing by picture, comparing by detail and buying the one you came for need different layouts.",
+    options: [
+      { id: "grid", label: "Grid", note: "Picture-led tiles with the price under each. Airbnb, Etsy." },
+      { id: "list", label: "List", note: "Rows with a thumbnail, details and price, for comparing. Search results on Amazon." },
+      { id: "shelves", label: "Shelves", note: "One featured item, then a shelf per category. App Store, Steam." },
+      { id: "split", label: "List and detail", note: "The list beside the selected item's detail and buy box; buying never leaves the list." },
+    ],
+  },
+  {
     id: "typeface",
     branch: "tokens",
     gallery: "app",
@@ -378,14 +448,102 @@ export const STEPS: readonly Step[] = [
   },
   {
     id: "motion",
-    branch: "components",
+    branch: "interaction",
     gallery: "app",
-    question: "App motion?",
-    why: "None on keyboard and many-times-a-day paths; the question is everything else.",
+    pattern: "motion-language",
+    question: "What motion language does the app speak?",
+    why: "Timing and easing for every move, set once. Keyboard and many-times-a-day paths stay instant in every language.",
     options: [
-      { id: "none", label: "None", note: "Instant. Raycast." },
-      { id: "minimal", label: "Minimal", note: "≤150ms fades on menus and dialogs. Linear." },
-      { id: "expressive", label: "Expressive", note: "Springs on overlays and layout. Consumer." },
+      { id: "still", label: "Still", note: "Nothing moves; every state change is a cut. Raycast, utilitarian tools." },
+      { id: "snappy", label: "Snappy", note: "Short fades with almost no travel, 80–150 ms, fast-out curves. Linear." },
+      { id: "anchored", label: "Anchored", note: "Layers grow from the control that opened them, 100–200 ms, no overshoot. macOS menus." },
+      { id: "tactile", label: "Tactile", note: "Springs with a little give: controls squash and settle, layers rise. Consumer and playful apps." },
+      { id: "material", label: "Material", note: "Emphasized easing, 150–300 ms, shared-axis moves between related views. Material 3." },
+    ],
+  },
+  {
+    id: "layerArrival",
+    branch: "interaction",
+    gallery: "app",
+    pattern: "layer-arrival",
+    question: "How do menus, popovers and dialogs arrive?",
+    why: "Layers open many times a session; their arrival says where they came from without slowing the next action.",
+    options: [
+      { id: "cut", label: "Cut", note: "Appear and vanish in place. Keyboard-first tools." },
+      { id: "fade", label: "Fade", note: "Opacity only, in place." },
+      { id: "anchored", label: "Grow from the trigger", note: "Scales up from the edge of the control that opened it, with a fade." },
+      { id: "rise", label: "Rise", note: "Slides up a few pixels while fading in; dialogs rise from below." },
+      { id: "reveal", label: "Reveal", note: "The layer's edge unrolls away from the trigger while its content stays still. Material." },
+    ],
+  },
+  {
+    id: "controlResponse",
+    branch: "interaction",
+    gallery: "app",
+    pattern: "control-response",
+    question: "How does a control answer a press?",
+    why: "The press confirms the hit before anything else happens; every button in the product carries it.",
+    options: [
+      { id: "tone", label: "Tone", note: "The fill darkens while held; nothing moves." },
+      { id: "press", label: "Press in", note: "The face shrinks to 97% while held and returns on release." },
+      { id: "sink", label: "Sink", note: "The face drops onto its edge or shadow, like a key. Gumroad, Duolingo." },
+      { id: "ink", label: "Ink", note: "A wash spreads from the middle of the control while held. Material." },
+    ],
+  },
+  {
+    id: "contentSwap",
+    branch: "interaction",
+    gallery: "app",
+    pattern: "content-swap",
+    question: "How does content change in place: tabs, filters, pages of results?",
+    why: "The swap tells people whether they moved sideways, narrowed what they see, or stayed put.",
+    options: [
+      { id: "cut", label: "Cut", note: "The new content replaces the old at once." },
+      { id: "crossfade", label: "Crossfade", note: "Old and new fade across each other in the same place." },
+      { id: "slide", label: "Slide by direction", note: "Content slides the way the tab moved: from the right for the next, from the left for the previous." },
+      { id: "resize", label: "Resize and settle", note: "The container grows or shrinks to fit, then the new content fades in." },
+    ],
+  },
+  {
+    id: "asyncFeedback",
+    branch: "interaction",
+    gallery: "app",
+    pattern: "async-progress",
+    question: "How does work in progress report itself?",
+    why: "Waiting is bearable when people can see what is happening and roughly how long is left.",
+    options: [
+      { id: "spinner", label: "Inline spinner", note: "A spinner and a status line in the control or row that started the work. Carbon's inline loading." },
+      { id: "skeleton", label: "Skeleton", note: "Gray shapes of the result hold its place until it arrives." },
+      { id: "progress", label: "Progress bar", note: "A bar with the percent and the time left, for work that can measure itself. Uploads, exports." },
+      { id: "steps", label: "Step list", note: "Named steps tick off as they finish; a failure stops at its step. Deploy logs, agents." },
+    ],
+  },
+  {
+    id: "routeMotion",
+    branch: "interaction",
+    gallery: "app",
+    pattern: "route-transition",
+    question: "How does the app move between pages?",
+    why: "A page change either cuts, or shows how the new page relates to the one before.",
+    options: [
+      { id: "cut", label: "Cut", note: "The new page replaces the old; the shell stays put." },
+      { id: "fade", label: "Fade", note: "The content area crossfades under a still shell." },
+      { id: "axis", label: "Shared axis", note: "Forward slides in from the right and back from the left. Material, iOS navigation." },
+      { id: "continuity", label: "Continuity", note: "The item you opened grows into the page it opens." },
+    ],
+  },
+  {
+    id: "themeMotion",
+    branch: "interaction",
+    gallery: "app",
+    pattern: "theme-transition",
+    question: "How does a change of theme arrive?",
+    why: "A small moment people repeat: a cut, or a signature.",
+    options: [
+      { id: "cut", label: "Cut", note: "The palette swaps in one frame." },
+      { id: "fade", label: "Crossfade", note: "The page fades from one palette to the other." },
+      { id: "circle", label: "Circular reveal", note: "The new theme spreads in a circle from the toggle." },
+      { id: "wipe", label: "Wipe", note: "The new theme sweeps across the page from one edge." },
     ],
   },
   {
@@ -538,15 +696,30 @@ export const STEPS: readonly Step[] = [
 
 export const STEP_BY_ID: Record<StepId, Step> = Object.fromEntries(STEPS.map((s) => [s.id, s])) as Record<StepId, Step>;
 
-/** What each reference does at every step, including the archetype it fits and its own look. */
-export const PRESETS: Record<string, ResolvedChoices> = {
+/** Public source record; exported decisions also retain the repository-relative contract path. */
+export function patternUrl(pattern: string): string {
+  return `https://github.com/twaldin/frontend-studio/blob/main/references/patterns/${pattern}.md`;
+}
+
+/** Steps whose defaults come from the archetype or the motion language, unless a preset or look names them. */
+type DerivedStep = SurfaceStep | InteractionAxis | "asyncFeedback";
+export type SurfaceStep = "feedLayout" | "boardLayout" | "conversationLayout" | "readerLayout" | "commerceLayout";
+export type InteractionAxis = "layerArrival" | "controlResponse" | "contentSwap" | "routeMotion" | "themeMotion";
+export type PresetChoices = Omit<ResolvedChoices, DerivedStep> & Partial<Pick<ResolvedChoices, DerivedStep>>;
+
+/**
+ * What each reference does at every step, including the archetype it fits and its own look.
+ * Surface layouts, async feedback and the interaction axes come from the archetype and the
+ * motion language (below) unless a preset names its own.
+ */
+export const PRESETS: Record<string, PresetChoices> = {
   linear: {
     archetype: "workspace", reference: "linear", look: "quiet",
     typeface: "inter", mono: "geist-mono", neutral: "cool", contrast: "standard", accent: "indigo",
     radius: "medium", depth: "hairline", themes: "both",
     density: "compact", spacing: "tight", shell: "sidebar", sidebarTone: "dimmer", sidebarCollapse: "hide", navIcons: "icons", pageTitle: "toolbar",
     stats: "strip", trend: "none", tables: "hairline", rowHover: "fill", cards: "hairline", inputs: "outlined", buttons: "filled",
-    iconWeight: "light", menus: "hints", motion: "minimal",
+    iconWeight: "light", menus: "hints", motion: "snappy",
     register: "same", display: "same", displayCase: "written", hero: "shot", heroMotion: "entrance", background: "flat", rhythm: "alternating",
     frames: "none", characters: "none", proof: "logos", cta: "pair",
   },
@@ -556,7 +729,7 @@ export const PRESETS: Record<string, ResolvedChoices> = {
     radius: "medium", depth: "soft", themes: "both",
     density: "standard", spacing: "regular", shell: "topnav", sidebarTone: "same", sidebarCollapse: "fixed", navIcons: "text", pageTitle: "standard",
     stats: "cards", trend: "area", tables: "hairline", rowHover: "none", cards: "hairline", inputs: "outlined", buttons: "outline",
-    iconWeight: "regular", menus: "plain", motion: "minimal",
+    iconWeight: "regular", menus: "plain", motion: "snappy",
     register: "dark", display: "heavy", displayCase: "written", hero: "shot", heroMotion: "entrance", background: "grid", rhythm: "bento",
     frames: "none", characters: "none", proof: "logos", cta: "pair",
   },
@@ -566,7 +739,7 @@ export const PRESETS: Record<string, ResolvedChoices> = {
     radius: "round", depth: "shadow", themes: "light",
     density: "standard", spacing: "regular", shell: "sidebar", sidebarTone: "same", sidebarCollapse: "fixed", navIcons: "icons", pageTitle: "standard",
     stats: "cards", trend: "chart", tables: "hairline", rowHover: "fill", cards: "hairline", inputs: "outlined", buttons: "filled",
-    iconWeight: "regular", menus: "plain", motion: "minimal",
+    iconWeight: "regular", menus: "plain", motion: "anchored",
     register: "editorial", display: "heavy", displayCase: "written", hero: "split", heroMotion: "ambient", background: "glow", rhythm: "alternating",
     frames: "browser", characters: "icons", proof: "logos", cta: "pair",
   },
@@ -576,7 +749,7 @@ export const PRESETS: Record<string, ResolvedChoices> = {
     radius: "sharp", depth: "hairline", themes: "both",
     density: "comfortable", spacing: "airy", shell: "sidebar", sidebarTone: "tinted", sidebarCollapse: "peek", navIcons: "icons", pageTitle: "display",
     stats: "inline", trend: "none", tables: "borderless", rowHover: "fill", cards: "fill", inputs: "filled", buttons: "filled",
-    iconWeight: "light", menus: "plain", motion: "minimal",
+    iconWeight: "light", menus: "plain", motion: "anchored",
     register: "editorial", display: "heavy", displayCase: "written", hero: "split", heroMotion: "static", background: "flat", rhythm: "alternating",
     frames: "none", characters: "characters", proof: "logos", cta: "single",
   },
@@ -586,7 +759,7 @@ export const PRESETS: Record<string, ResolvedChoices> = {
     radius: "round", depth: "soft", themes: "dark",
     density: "compact", spacing: "regular", shell: "sidebar", sidebarTone: "tinted", sidebarCollapse: "rail", navIcons: "icons", pageTitle: "toolbar",
     stats: "strip", trend: "none", tables: "hairline", rowHover: "fill", cards: "fill", inputs: "filled", buttons: "soft",
-    iconWeight: "tiles", menus: "hints", motion: "none",
+    iconWeight: "tiles", menus: "hints", motion: "still",
     register: "dark", display: "heavy", displayCase: "written", hero: "device", heroMotion: "scroll", background: "glow", rhythm: "fullbleed",
     frames: "laptop", characters: "none", proof: "numbers", cta: "single",
   },
@@ -596,7 +769,7 @@ export const PRESETS: Record<string, ResolvedChoices> = {
     radius: "sharp", depth: "hairline", themes: "light",
     density: "compact", spacing: "regular", shell: "topnav", sidebarTone: "same", sidebarCollapse: "fixed", navIcons: "text", pageTitle: "toolbar",
     stats: "strip", trend: "area", tables: "borderless", rowHover: "fill", cards: "fill", inputs: "filled", buttons: "filled",
-    iconWeight: "regular", menus: "plain", motion: "minimal",
+    iconWeight: "regular", menus: "plain", motion: "snappy",
     register: "editorial", display: "heavy", displayCase: "written", hero: "media", heroMotion: "entrance", background: "grid", rhythm: "bento",
     frames: "none", characters: "none", proof: "numbers", cta: "email",
   },
@@ -606,7 +779,7 @@ export const PRESETS: Record<string, ResolvedChoices> = {
     radius: "pill", depth: "soft", themes: "light",
     density: "comfortable", spacing: "airy", shell: "topnav", sidebarTone: "same", sidebarCollapse: "fixed", navIcons: "text", pageTitle: "display",
     stats: "cards", trend: "none", tables: "borderless", rowHover: "none", cards: "fill", inputs: "filled", buttons: "filled",
-    iconWeight: "regular", menus: "plain", motion: "expressive",
+    iconWeight: "regular", menus: "plain", motion: "material",
     register: "editorial", display: "giant", displayCase: "written", hero: "media", heroMotion: "ambient", background: "flat", rhythm: "chapters",
     frames: "none", characters: "none", proof: "none", cta: "pair",
   },
@@ -616,7 +789,7 @@ export const PRESETS: Record<string, ResolvedChoices> = {
     radius: "medium", depth: "hairline", themes: "dark",
     density: "compact", spacing: "tight", shell: "sidebar", sidebarTone: "dimmer", sidebarCollapse: "rail", navIcons: "icons", pageTitle: "toolbar",
     stats: "strip", trend: "chart", tables: "hairline", rowHover: "fill", cards: "fill", inputs: "filled", buttons: "soft",
-    iconWeight: "light", menus: "hints", motion: "minimal",
+    iconWeight: "light", menus: "hints", motion: "snappy",
     register: "dark", display: "heavy", displayCase: "lowercase", hero: "shot", heroMotion: "interactiveScroll", background: "flat", rhythm: "chapters",
     frames: "none", characters: "characters", proof: "numbers", cta: "pair",
   },
@@ -626,7 +799,7 @@ export const PRESETS: Record<string, ResolvedChoices> = {
     radius: "round", depth: "shadow", themes: "light",
     density: "comfortable", spacing: "airy", shell: "topnav", sidebarTone: "same", sidebarCollapse: "fixed", navIcons: "text", pageTitle: "display",
     stats: "inline", trend: "area", tables: "borderless", rowHover: "fill", cards: "fill", inputs: "filled", buttons: "filled",
-    iconWeight: "light", menus: "plain", motion: "minimal",
+    iconWeight: "light", menus: "plain", motion: "anchored",
     register: "editorial", display: "giant", displayCase: "written", hero: "media", heroMotion: "ambient", background: "grain", rhythm: "alternating",
     frames: "none", characters: "shapes", proof: "quotes", cta: "pair",
   },
@@ -636,7 +809,7 @@ export const PRESETS: Record<string, ResolvedChoices> = {
     radius: "pill", depth: "soft", themes: "both",
     density: "comfortable", spacing: "airy", shell: "topnav", sidebarTone: "same", sidebarCollapse: "fixed", navIcons: "icons", pageTitle: "display",
     stats: "cards", trend: "none", tables: "borderless", rowHover: "none", cards: "fill", inputs: "filled", buttons: "filled",
-    iconWeight: "regular", menus: "plain", motion: "expressive",
+    iconWeight: "regular", menus: "plain", motion: "tactile",
     register: "playful", display: "giant", displayCase: "written", hero: "device", heroMotion: "ambient", background: "flat", rhythm: "fullbleed",
     frames: "phone", characters: "shapes", proof: "numbers", cta: "single",
   },
@@ -646,7 +819,7 @@ export const PRESETS: Record<string, ResolvedChoices> = {
     radius: "pill", depth: "soft", themes: "light",
     density: "comfortable", spacing: "airy", shell: "topnav", sidebarTone: "same", sidebarCollapse: "fixed", navIcons: "icons", pageTitle: "standard",
     stats: "cards", trend: "none", tables: "borderless", rowHover: "none", cards: "fill", inputs: "filled", buttons: "filled",
-    iconWeight: "regular", menus: "plain", motion: "minimal",
+    iconWeight: "regular", menus: "plain", motion: "anchored",
     register: "playful", display: "heavy", displayCase: "written", hero: "media", heroMotion: "entrance", background: "flat", rhythm: "bento",
     frames: "none", characters: "icons", proof: "quotes", cta: "pair",
   },
@@ -656,7 +829,7 @@ export const PRESETS: Record<string, ResolvedChoices> = {
     radius: "round", depth: "hairline", themes: "both",
     density: "standard", spacing: "regular", shell: "topnav", sidebarTone: "same", sidebarCollapse: "fixed", navIcons: "icons", pageTitle: "display",
     stats: "inline", trend: "none", tables: "borderless", rowHover: "fill", cards: "fill", inputs: "filled", buttons: "filled",
-    iconWeight: "regular", menus: "hints", motion: "expressive",
+    iconWeight: "regular", menus: "hints", motion: "tactile",
     register: "playful", display: "giant", displayCase: "written", hero: "media", heroMotion: "interactive", background: "scene", rhythm: "bento",
     frames: "browser", characters: "shapes", proof: "logos", cta: "pair",
   },
@@ -666,7 +839,7 @@ export const PRESETS: Record<string, ResolvedChoices> = {
     radius: "medium", depth: "hairline", themes: "dark",
     density: "compact", spacing: "tight", shell: "sidebar", sidebarTone: "dimmer", sidebarCollapse: "rail", navIcons: "icons", pageTitle: "toolbar",
     stats: "strip", trend: "none", tables: "hairline", rowHover: "fill", cards: "fill", inputs: "filled", buttons: "soft",
-    iconWeight: "light", menus: "hints", motion: "minimal",
+    iconWeight: "light", menus: "hints", motion: "snappy",
     register: "dark", display: "heavy", displayCase: "written", hero: "shot", heroMotion: "ambient", background: "grid", rhythm: "alternating",
     frames: "none", characters: "none", proof: "logos", cta: "pair",
   },
@@ -676,7 +849,7 @@ export const PRESETS: Record<string, ResolvedChoices> = {
     radius: "medium", depth: "hairline", themes: "both",
     density: "compact", spacing: "tight", shell: "sidebar", sidebarTone: "dimmer", sidebarCollapse: "rail", navIcons: "icons", pageTitle: "toolbar",
     stats: "strip", trend: "chart", tables: "hairline", rowHover: "fill", cards: "fill", inputs: "filled", buttons: "soft",
-    iconWeight: "light", menus: "hints", motion: "minimal",
+    iconWeight: "light", menus: "hints", motion: "snappy",
     register: "dark", display: "heavy", displayCase: "written", hero: "shot", heroMotion: "entrance", background: "grid", rhythm: "bento",
     frames: "browser", characters: "none", proof: "logos", cta: "pair",
   },
@@ -686,7 +859,7 @@ export const PRESETS: Record<string, ResolvedChoices> = {
     radius: "round", depth: "hairline", themes: "both",
     density: "compact", spacing: "regular", shell: "sidebar", sidebarTone: "tinted", sidebarCollapse: "rail", navIcons: "icons", pageTitle: "toolbar",
     stats: "strip", trend: "chart", tables: "hairline", rowHover: "fill", cards: "fill", inputs: "filled", buttons: "soft",
-    iconWeight: "regular", menus: "hints", motion: "expressive",
+    iconWeight: "regular", menus: "hints", motion: "tactile", controlResponse: "sink",
     register: "playful", display: "heavy", displayCase: "written", hero: "shot", heroMotion: "ambient", background: "grain", rhythm: "bento",
     frames: "browser", characters: "characters", proof: "numbers", cta: "pair",
   },
@@ -696,7 +869,7 @@ export const PRESETS: Record<string, ResolvedChoices> = {
     radius: "sharp", depth: "hairline", themes: "both",
     density: "standard", spacing: "regular", shell: "sidebar", sidebarTone: "same", sidebarCollapse: "hide", navIcons: "icons", pageTitle: "toolbar",
     stats: "inline", trend: "none", tables: "borderless", rowHover: "fill", cards: "hairline", inputs: "outlined", buttons: "filled",
-    iconWeight: "light", menus: "hints", motion: "minimal",
+    iconWeight: "light", menus: "hints", motion: "snappy",
     register: "editorial", display: "heavy", displayCase: "written", hero: "shot", heroMotion: "entrance", background: "flat", rhythm: "alternating",
     frames: "none", characters: "none", proof: "logos", cta: "pair",
   },
@@ -706,7 +879,7 @@ export const PRESETS: Record<string, ResolvedChoices> = {
     radius: "medium", depth: "hairline", themes: "dark",
     density: "compact", spacing: "tight", shell: "topnav", sidebarTone: "same", sidebarCollapse: "fixed", navIcons: "text", pageTitle: "toolbar",
     stats: "strip", trend: "none", tables: "hairline", rowHover: "fill", cards: "hairline", inputs: "outlined", buttons: "outline",
-    iconWeight: "light", menus: "plain", motion: "minimal",
+    iconWeight: "light", menus: "plain", motion: "snappy",
     register: "dark", display: "heavy", displayCase: "written", hero: "split", heroMotion: "entrance", background: "grid", rhythm: "bento",
     frames: "browser", characters: "none", proof: "logos", cta: "pair",
   },
@@ -716,7 +889,7 @@ export const PRESETS: Record<string, ResolvedChoices> = {
     radius: "soft", depth: "hairline", themes: "both",
     density: "standard", spacing: "regular", shell: "sidebar", sidebarTone: "tinted", sidebarCollapse: "hide", navIcons: "icons", pageTitle: "toolbar",
     stats: "inline", trend: "none", tables: "borderless", rowHover: "fill", cards: "fill", inputs: "filled", buttons: "filled",
-    iconWeight: "regular", menus: "hints", motion: "minimal",
+    iconWeight: "regular", menus: "hints", motion: "snappy",
     register: "same", display: "heavy", displayCase: "written", hero: "shot", heroMotion: "entrance", background: "flat", rhythm: "alternating",
     frames: "browser", characters: "none", proof: "logos", cta: "pair",
   },
@@ -726,7 +899,7 @@ export const PRESETS: Record<string, ResolvedChoices> = {
     radius: "pill", depth: "hairline", themes: "both",
     density: "standard", spacing: "regular", shell: "sidebar", sidebarTone: "same", sidebarCollapse: "fixed", navIcons: "icons", pageTitle: "standard",
     stats: "inline", trend: "none", tables: "borderless", rowHover: "fill", cards: "hairline", inputs: "filled", buttons: "filled",
-    iconWeight: "regular", menus: "plain", motion: "expressive",
+    iconWeight: "regular", menus: "plain", motion: "tactile", controlResponse: "sink",
     register: "playful", display: "heavy", displayCase: "written", hero: "split", heroMotion: "entrance", background: "flat", rhythm: "bento",
     frames: "phone", characters: "shapes", proof: "numbers", cta: "pair",
   },
@@ -736,7 +909,7 @@ export const PRESETS: Record<string, ResolvedChoices> = {
     radius: "round", depth: "soft", themes: "dark",
     density: "standard", spacing: "regular", shell: "sidebar", sidebarTone: "dimmer", sidebarCollapse: "rail", navIcons: "icons", pageTitle: "display",
     stats: "cards", trend: "none", tables: "borderless", rowHover: "fill", cards: "fill", inputs: "filled", buttons: "filled",
-    iconWeight: "regular", menus: "plain", motion: "expressive",
+    iconWeight: "regular", menus: "plain", motion: "material",
     register: "same", display: "giant", displayCase: "written", hero: "media", heroMotion: "ambient", background: "glow", rhythm: "fullbleed",
     frames: "none", characters: "none", proof: "numbers", cta: "single",
   },
@@ -746,7 +919,7 @@ export const PRESETS: Record<string, ResolvedChoices> = {
     radius: "pill", depth: "hairline", themes: "both",
     density: "comfortable", spacing: "airy", shell: "sidebar", sidebarTone: "same", sidebarCollapse: "fixed", navIcons: "icons", pageTitle: "standard",
     stats: "cards", trend: "none", tables: "borderless", rowHover: "fill", cards: "hairline", inputs: "filled", buttons: "filled",
-    iconWeight: "regular", menus: "plain", motion: "expressive",
+    iconWeight: "regular", menus: "plain", motion: "tactile", controlResponse: "sink",
     register: "playful", display: "giant", displayCase: "written", hero: "device", heroMotion: "ambient", background: "flat", rhythm: "bento",
     frames: "phone", characters: "characters", proof: "numbers", cta: "single",
   },
@@ -756,7 +929,7 @@ export const PRESETS: Record<string, ResolvedChoices> = {
     radius: "none", depth: "soft", themes: "dark",
     density: "compact", spacing: "tight", shell: "sidebar", sidebarTone: "dimmer", sidebarCollapse: "rail", navIcons: "icons", pageTitle: "display",
     stats: "cards", trend: "sparkline", tables: "zebra", rowHover: "fill", cards: "fill", inputs: "filled", buttons: "filled",
-    iconWeight: "tiles", menus: "hints", motion: "expressive",
+    iconWeight: "tiles", menus: "hints", motion: "material",
     register: "same", display: "heavy", displayCase: "written", hero: "media", heroMotion: "scroll", background: "glow", rhythm: "chapters",
     frames: "none", characters: "none", proof: "numbers", cta: "single",
   },
@@ -766,7 +939,7 @@ export const PRESETS: Record<string, ResolvedChoices> = {
     radius: "none", depth: "offset", themes: "light",
     density: "standard", spacing: "regular", shell: "topnav", sidebarTone: "same", sidebarCollapse: "fixed", navIcons: "text", pageTitle: "display",
     stats: "cards", trend: "none", tables: "hairline", rowHover: "fill", cards: "hairline", inputs: "outlined", buttons: "filled",
-    iconWeight: "regular", menus: "plain", motion: "none",
+    iconWeight: "regular", menus: "plain", motion: "still", controlResponse: "sink",
     register: "same", display: "giant", displayCase: "written", hero: "type", heroMotion: "static", background: "flat", rhythm: "bento",
     frames: "none", characters: "shapes", proof: "quotes", cta: "single",
   },
@@ -776,7 +949,7 @@ export const PRESETS: Record<string, ResolvedChoices> = {
     radius: "none", depth: "hairline", themes: "light",
     density: "compact", spacing: "tight", shell: "topnav", sidebarTone: "same", sidebarCollapse: "fixed", navIcons: "text", pageTitle: "toolbar",
     stats: "inline", trend: "none", tables: "hairline", rowHover: "none", cards: "hairline", inputs: "outlined", buttons: "outline",
-    iconWeight: "regular", menus: "plain", motion: "none",
+    iconWeight: "regular", menus: "plain", motion: "still",
     register: "same", display: "same", displayCase: "written", hero: "type", heroMotion: "static", background: "flat", rhythm: "alternating",
     frames: "none", characters: "none", proof: "none", cta: "email",
   },
@@ -786,7 +959,7 @@ export const PRESETS: Record<string, ResolvedChoices> = {
     radius: "none", depth: "hairline", themes: "light",
     density: "comfortable", spacing: "regular", shell: "topnav", sidebarTone: "same", sidebarCollapse: "fixed", navIcons: "text", pageTitle: "display",
     stats: "inline", trend: "none", tables: "hairline", rowHover: "none", cards: "hairline", inputs: "underline", buttons: "outline",
-    iconWeight: "light", menus: "plain", motion: "minimal",
+    iconWeight: "light", menus: "plain", motion: "still",
     register: "same", display: "heavy", displayCase: "written", hero: "type", heroMotion: "static", background: "grain", rhythm: "alternating",
     frames: "none", characters: "none", proof: "quotes", cta: "email",
   },
@@ -805,29 +978,81 @@ export const ARCHETYPE_REFERENCE: Record<Archetype, string> = {
   utility: "raycast",
 };
 
+/** How each archetype composes the surfaces it may have, and how its work in progress reports itself. */
+export const ARCHETYPE_DEFAULTS: Record<Archetype, Pick<ResolvedChoices, SurfaceStep | "asyncFeedback">> = {
+  workspace: { feedLayout: "compact", boardLayout: "columns", conversationLayout: "channel", readerLayout: "outline", commerceLayout: "list", asyncFeedback: "steps" },
+  feed: { feedLayout: "timeline", boardLayout: "grouped", conversationLayout: "bubbles", readerLayout: "column", commerceLayout: "grid", asyncFeedback: "spinner" },
+  commerce: { feedLayout: "cards", boardLayout: "pipeline", conversationLayout: "context", readerLayout: "column", commerceLayout: "grid", asyncFeedback: "skeleton" },
+  reader: { feedLayout: "digest", boardLayout: "grouped", conversationLayout: "bubbles", readerLayout: "margin", commerceLayout: "shelves", asyncFeedback: "skeleton" },
+  media: { feedLayout: "cards", boardLayout: "columns", conversationLayout: "bubbles", readerLayout: "paged", commerceLayout: "shelves", asyncFeedback: "skeleton" },
+  companion: { feedLayout: "compact", boardLayout: "swimlanes", conversationLayout: "channel", readerLayout: "paged", commerceLayout: "grid", asyncFeedback: "progress" },
+  canvas: { feedLayout: "digest", boardLayout: "columns", conversationLayout: "context", readerLayout: "outline", commerceLayout: "grid", asyncFeedback: "progress" },
+  conversation: { feedLayout: "digest", boardLayout: "grouped", conversationLayout: "bubbles", readerLayout: "outline", commerceLayout: "list", asyncFeedback: "steps" },
+  utility: { feedLayout: "compact", boardLayout: "grouped", conversationLayout: "transcript", readerLayout: "column", commerceLayout: "list", asyncFeedback: "spinner" },
+};
+
+/** What each motion language does on every interaction axis. A language picked over the reference's or the look's own re-defaults them. */
+export const MOTION_DEFAULTS: Record<string, Pick<ResolvedChoices, InteractionAxis>> = {
+  still: { layerArrival: "cut", controlResponse: "tone", contentSwap: "cut", routeMotion: "cut", themeMotion: "cut" },
+  snappy: { layerArrival: "fade", controlResponse: "tone", contentSwap: "crossfade", routeMotion: "fade", themeMotion: "cut" },
+  anchored: { layerArrival: "anchored", controlResponse: "press", contentSwap: "crossfade", routeMotion: "fade", themeMotion: "fade" },
+  tactile: { layerArrival: "rise", controlResponse: "press", contentSwap: "slide", routeMotion: "axis", themeMotion: "circle" },
+  material: { layerArrival: "reveal", controlResponse: "ink", contentSwap: "resize", routeMotion: "continuity", themeMotion: "circle" },
+};
+
 /**
  * What a look re-defaults when the user picks it over the reference's own look.
  * Steps it doesn't list keep the reference's value, so Linear's frame with a brutalist look stays Linear's frame.
  */
 export const LOOK_DEFAULTS: Record<string, Partial<ResolvedChoices>> = {
-  quiet: { typeface: "inter", contrast: "standard", radius: "medium", depth: "hairline", cards: "hairline", inputs: "outlined", buttons: "filled", motion: "minimal", display: "same" },
-  editorial: { neutral: "warm", contrast: "soft", radius: "sharp", depth: "hairline", density: "comfortable", spacing: "airy", pageTitle: "display", cards: "hairline", inputs: "underline", buttons: "outline", display: "heavy" },
-  playful: { typeface: "rounded", contrast: "standard", radius: "pill", depth: "soft", cards: "fill", inputs: "filled", buttons: "filled", iconWeight: "regular", motion: "expressive", display: "giant" },
-  brutalist: { typeface: "grotesk", mono: "jetbrains", neutral: "neutral", contrast: "high", radius: "none", depth: "offset", tables: "hairline", cards: "hairline", inputs: "outlined", buttons: "filled", motion: "none" },
-  print: { typeface: "serif", mono: "plex-mono", neutral: "warm", contrast: "standard", radius: "none", depth: "hairline", pageTitle: "display", tables: "hairline", cards: "hairline", inputs: "underline", buttons: "outline" },
-  immersive: { typeface: "grotesk", contrast: "standard", radius: "round", depth: "soft", themes: "dark", sidebarTone: "dimmer", cards: "fill", inputs: "filled", motion: "expressive", display: "giant" },
+  quiet: { typeface: "inter", contrast: "standard", radius: "medium", depth: "hairline", cards: "hairline", inputs: "outlined", buttons: "filled", motion: "snappy", display: "same" },
+  editorial: { neutral: "warm", contrast: "soft", radius: "sharp", depth: "hairline", density: "comfortable", spacing: "airy", pageTitle: "display", cards: "hairline", inputs: "underline", buttons: "outline", motion: "anchored", display: "heavy" },
+  playful: { typeface: "rounded", contrast: "standard", radius: "pill", depth: "soft", cards: "fill", inputs: "filled", buttons: "filled", iconWeight: "regular", motion: "tactile", controlResponse: "sink", display: "giant" },
+  brutalist: { typeface: "grotesk", mono: "jetbrains", neutral: "neutral", contrast: "high", radius: "none", depth: "offset", tables: "hairline", cards: "hairline", inputs: "outlined", buttons: "filled", motion: "still", controlResponse: "sink" },
+  print: { typeface: "serif", mono: "plex-mono", neutral: "warm", contrast: "standard", radius: "none", depth: "hairline", pageTitle: "display", tables: "hairline", cards: "hairline", inputs: "underline", buttons: "outline", motion: "still" },
+  immersive: { typeface: "grotesk", contrast: "standard", radius: "round", depth: "soft", themes: "dark", sidebarTone: "dimmer", cards: "fill", inputs: "filled", motion: "material", display: "giant" },
 };
 
-/**
- * Every step's default under these choices: the reference preset (the archetype's
- * reference when none is picked), then a chosen look's re-defaults when it isn't the reference's own.
- */
-export function defaultsFor(choices: Choices): ResolvedChoices {
-  const archetype = choices.archetype ?? PRESETS[choices.reference ?? ""]?.archetype ?? "workspace";
-  const reference = choices.reference ?? ARCHETYPE_REFERENCE[archetype as Archetype] ?? "linear";
+const SURFACE_DEFAULTED: Record<string, true> = { feedLayout: true, boardLayout: true, conversationLayout: true, readerLayout: true, commerceLayout: true, asyncFeedback: true };
+const MOTION_DEFAULTED: Record<string, true> = { layerArrival: true, controlResponse: true, contentSwap: true, routeMotion: true, themeMotion: true };
+
+/** The reference, the look picked over it, and the motion language picked over theirs: the three layers of defaults. */
+function layers(choices: Choices) {
+  const archetype = (choices.archetype ?? PRESETS[choices.reference ?? ""]?.archetype ?? "workspace") as Archetype;
+  const reference = choices.reference ?? ARCHETYPE_REFERENCE[archetype] ?? "linear";
   const preset = PRESETS[reference] ?? PRESETS.linear!;
   const look = choices.look !== undefined && choices.look !== preset.look ? LOOK_DEFAULTS[choices.look] : undefined;
-  return { ...preset, ...look, archetype, reference: preset.reference };
+  const framed = { ...preset, ...look };
+  const language = choices.motion !== undefined && choices.motion !== framed.motion ? MOTION_DEFAULTS[choices.motion] : undefined;
+  return { archetype, preset, look, framed, language };
+}
+
+/**
+ * Every step's default under these choices: the archetype's surfaces and the motion language's axes,
+ * then the reference preset (the archetype's reference when none is picked), then a chosen look's
+ * re-defaults when it isn't the reference's own, then a chosen motion language's when it isn't theirs.
+ */
+export function defaultsFor(choices: Choices): ResolvedChoices {
+  const { archetype, preset, framed, language } = layers(choices);
+  return {
+    ...(ARCHETYPE_DEFAULTS[archetype] ?? ARCHETYPE_DEFAULTS.workspace),
+    ...(MOTION_DEFAULTS[framed.motion] ?? MOTION_DEFAULTS.snappy!),
+    ...framed,
+    ...language,
+    archetype,
+    reference: preset.reference,
+  };
+}
+
+/** Where a step's default comes from, as a phrase: "Linear", "the playful look", "the tactile motion language", "the feed archetype". */
+export function defaultSource(choices: Choices, id: StepId): string {
+  const { archetype, preset, look, framed, language } = layers(choices);
+  const label = (step: StepId, option: string) => STEP_BY_ID[step].options.find((o) => o.id === option)?.label.toLowerCase() ?? option;
+  if (language && MOTION_DEFAULTED[id]) return `the ${label("motion", choices.motion!)} motion language`;
+  if (look?.[id] !== undefined) return `the ${label("look", choices.look!)} look`;
+  if (preset[id] === undefined && MOTION_DEFAULTED[id]) return `the ${label("motion", framed.motion)} motion language`;
+  if (preset[id] === undefined && SURFACE_DEFAULTED[id]) return `the ${label("archetype", archetype)} archetype`;
+  return STEP_BY_ID.reference.options.find((o) => o.id === preset.reference)?.label ?? preset.reference;
 }
 
 export function resolveChoices(choices: Choices): ResolvedChoices {

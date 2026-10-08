@@ -1,4 +1,4 @@
-import type { Content } from "../schema";
+import type { ArchetypeContent } from "../schema";
 
 /**
  * Feed: a community feed of posts from people, newest first.
@@ -8,7 +8,7 @@ import type { Content } from "../schema";
  * repost and like counts as "42 · 18 · 231", and its `badge` (Photo, Video or Link) adds a media tile.
  * A person's `badge` is the label of their follow button.
  */
-export const FEED_CONTENT: Content = {
+export const FEED_CONTENT: ArchetypeContent = {
   product: { name: "Porchlight", tagline: "Posts from the people and topics you follow, newest first." },
   app: {
     nav: [{ label: "Home" }, { label: "Popular" }, { label: "Following" }, { label: "Messages", badge: 4 }, { label: "Saved" }, { label: "Settings" }],

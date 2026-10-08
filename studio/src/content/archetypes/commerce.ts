@@ -1,7 +1,7 @@
-import type { Content } from "../schema";
+import type { ArchetypeContent } from "../schema";
 
 /** Commerce: a marketplace where independent makers sell small-batch goods. */
-export const COMMERCE_CONTENT: Content = {
+export const COMMERCE_CONTENT: ArchetypeContent = {
   product: { name: "Loomlane", tagline: "Small-batch goods from independent makers." },
   app: {
     nav: [{ label: "Shop" }, { label: "Categories" }, { label: "Orders", badge: 2 }, { label: "Saved" }, { label: "Messages", badge: 3 }, { label: "Settings" }],

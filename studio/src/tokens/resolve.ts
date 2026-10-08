@@ -4,6 +4,7 @@
  */
 import * as radix from "@radix-ui/colors";
 import type { ResolvedChoices } from "@/tree/types";
+import { interactionCss, motionVars } from "./motion";
 
 type Scale = Record<string, string>;
 /** Radix names scales `slate`, `slateDark`, `slateA`, `slateDarkA`; `name` may end in `A`. */
@@ -55,12 +56,6 @@ export const DENSITY: Record<string, Density> = {
   compact: { chrome: 13, body: 14, control: 28, row: 34 },
   standard: { chrome: 14, body: 15, control: 32, row: 38 },
   comfortable: { chrome: 15, body: 16, control: 36, row: 44 },
-};
-
-export const MOTION_MS: Record<string, { fast: number; base: number; spring: boolean }> = {
-  none: { fast: 0, base: 0, spring: false },
-  minimal: { fast: 100, base: 150, spring: false },
-  expressive: { fast: 150, base: 260, spring: true },
 };
 
 /**
@@ -221,7 +216,7 @@ export interface Resolved {
 
 export function resolveTokens(c: ResolvedChoices): Resolved {
   const d = DENSITY[c.density] ?? DENSITY.compact!;
-  const m = MOTION_MS[c.motion] ?? MOTION_MS.minimal!;
+  const motion = motionVars(c.motion);
   const r = RADIUS_PX[c.radius] ?? 6;
   const heading = LOOK_HEADING[c.look] ?? LOOK_HEADING.quiet!;
   const sans = FONT_STACK[c.typeface] ?? FONT_STACK.inter!;
@@ -238,9 +233,7 @@ export function resolveTokens(c: ResolvedChoices): Resolved {
     "--text-body": `${d.body}px`,
     "--control-h": `${d.control}px`,
     "--row-h": `${d.row}px`,
-    "--duration-fast": `${m.fast}ms`,
-    "--duration-base": `${m.base}ms`,
-    "--ease": m.spring ? "cubic-bezier(0.34, 1.56, 0.64, 1)" : "cubic-bezier(0.22, 1, 0.36, 1)",
+    ...motion,
     "--spacing": SPACING_UNIT[c.spacing] ?? "4px",
     "--icon-stroke": c.iconWeight === "regular" ? "2" : "1.5",
     "--title-size": c.pageTitle === "display" ? "36px" : c.pageTitle === "standard" ? "22px" : `${d.chrome + 1}px`,
@@ -379,8 +372,11 @@ export function themeCss(r: Resolved): string {
     `}`,
     `.tabular, table { font-variant-numeric: tabular-nums; }`,
     ``,
+    `/* Interaction: ${c.motion} motion language (the --duration-* and --ease* variables above), layers ${c.layerArrival}, controls ${c.controlResponse}, content swap ${c.contentSwap}, async ${c.asyncFeedback}, pages ${c.routeMotion}, theme ${c.themeMotion}. */`,
+    interactionCss(c),
+    ``,
     `@media (prefers-reduced-motion: reduce) {`,
-    `  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }`,
+    `  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }`,
     `}`,
   ];
   return lines.join("\n");

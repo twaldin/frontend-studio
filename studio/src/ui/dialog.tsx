@@ -22,7 +22,7 @@ export function Dialog({ open, onOpenChange, title, children, footer, preview }:
           <BaseDialog.Viewport className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto p-4">
             <BaseDialog.Popup
               className={cn(
-                "w-full max-w-md rounded-lg border border-border bg-popover text-popover-foreground shadow-lg outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                "studio-layer w-full max-w-md rounded-lg border border-border bg-popover text-popover-foreground shadow-lg outline-none focus-visible:ring-2 focus-visible:ring-ring",
                 previewClass(preview, {
                   hover: "shadow-md",
                   active: "opacity-90",
