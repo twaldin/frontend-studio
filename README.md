@@ -37,7 +37,7 @@ Or keep the clone anywhere and tell the agent to read `SKILL.md` before any desi
 
 ## Run the studio
 
-Requirements: Bun and a Chromium-based browser.
+Requirements: Bun and a Chromium-based browser. Vite's default Node runner needs Node.js 20.19+ (20.x) or 22.12+. Alternatively, `bun run --bun dev` and `bun run --bun build` use Bun's own runtime.
 
 ```sh
 cd studio

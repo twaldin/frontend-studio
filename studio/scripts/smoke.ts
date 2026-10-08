@@ -135,6 +135,8 @@ try {
   const exportText = await page.locator("main").innerText();
   check("export shows revisit", exportText.includes("### Revisit") && exportText.includes("Check the accent"));
   check("export shows edited content", exportText.includes("Smoke edited heading"));
+  // Hash-only navigation preserves the current panel; return through the public control.
+  await page.getByRole("button", { name: "Gallery", exact: true }).click();
 
   const resume = await context.newPage();
   observe(resume);
@@ -159,6 +161,7 @@ try {
   check("feed sample renders", (await page.locator("main").innerText()).includes(CONTENT_BY_ARCHETYPE.feed.product.name));
   const brutal = await page.locator(".gallery").first().evaluate((root: HTMLElement) => ({ look: root.dataset.look, weight: getComputedStyle(root).getPropertyValue("--heading-weight").trim() }));
   check("look tokens apply", brutal.look === "brutalist" && brutal.weight === "700");
+  await page.getByRole("heading", { name: STEPS[index("look")]!.question, exact: true }).click();
   await page.keyboard.press("r");
   const reset = await persist();
   check("reset preserves archetype", reset.choices?.archetype === "feed" && reset.choices?.look === undefined);
