@@ -3,7 +3,7 @@ import type { CSSProperties } from "react";
 export function swapFrame(option: string, p: number, incoming: boolean): CSSProperties {
   const progress = Math.min(1, Math.max(0, p));
   if (option === "cut") return { opacity: incoming ? Number(progress >= 1) : Number(progress < 1) };
-  if (option === "slide") return { opacity: incoming ? progress : 1 - progress, transform: `translateX(${incoming ? 100 * (1 - p) : -100 * p}%)` };
+  if (option === "slide") return { opacity: incoming ? progress : 1 - progress, transform: `translateX(${incoming ? 100 * (1 - progress) : -100 * progress}%)` };
   if (option === "resize") return { opacity: incoming ? Math.max(0, (progress - 0.5) * 2) : Math.max(0, 1 - progress * 2) };
   return { opacity: incoming ? progress : 1 - progress };
 }

@@ -174,7 +174,7 @@ Pattern: [storefront](patterns/storefront.md).
 - **Grid** `grid` — Picture-led tiles with the price under each. Airbnb, Etsy. _(default for: notion, apple, airbnb, figma, cursor, community, gamecompanion, indieshop)_
 - **List** `list` — Rows with a thumbnail, details and price, for comparing. Search results on Amazon. _(default for: linear, vercel, stripe, raycast, ramp, raindrop, mercury, cashapp, supabase, posthog, attio, resend, agentchat, utilitarian)_
 - **Shelves** `shelves` — One featured item, then a shelf per category. App Store, Steam. _(default for: mediaapp, learning, newspaper)_
-- **List and detail** `split` — The list beside the selected item's detail and buy box; buying never leaves the list.
+- **List and detail** `split` — The selected item's detail stays beside the list for inspection; purchase follows the product's checkout flow.
 
 ## Tokens
 

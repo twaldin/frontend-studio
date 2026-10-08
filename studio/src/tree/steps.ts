@@ -221,7 +221,7 @@ export const STEPS: readonly Step[] = [
       { id: "grid", label: "Grid", note: "Picture-led tiles with the price under each. Airbnb, Etsy." },
       { id: "list", label: "List", note: "Rows with a thumbnail, details and price, for comparing. Search results on Amazon." },
       { id: "shelves", label: "Shelves", note: "One featured item, then a shelf per category. App Store, Steam." },
-      { id: "split", label: "List and detail", note: "The list beside the selected item's detail and buy box; buying never leaves the list." },
+      { id: "split", label: "List and detail", note: "The selected item's detail stays beside the list for inspection; purchase follows the product's checkout flow." },
     ],
   },
   {

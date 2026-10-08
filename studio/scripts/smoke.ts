@@ -13,6 +13,7 @@ import { componentsJson, decisionsMarkdown, studioNotesMarkdown } from "../src/s
 import { parseSaved } from "../src/studio/saved";
 import { resolveTokens, themeCss } from "../src/tokens/resolve";
 import { INTERACTION_RUNTIME } from "../src/tokens/runtime";
+import { swapFrame } from "../src/tokens/axes/contentSwap";
 import { launchChromium } from "./playwright";
 
 const argv = Bun.argv.slice(2);
@@ -49,11 +50,20 @@ const link = (choices: Choices, id: StepId, capture = false, mode = "light") => 
 const patternDir = new URL("../../references/patterns/", import.meta.url);
 const recordFiles = (await readdir(patternDir)).filter((name) => name.endsWith(".md") && name !== "README.md");
 const catalog = await Bun.file(new URL("README.md", patternDir)).text();
+const catalogIndex = catalog.split("## Index\n")[1]?.split("\n## ")[0] ?? "";
+const indexedRecords = new Set<string>();
+let indexedRecordCount = 0;
+for (const match of catalogIndex.matchAll(/^\| \[[^\]]+\]\(([^)#/]+\.md)\) \|/gm)) {
+  indexedRecords.add(match[1]!);
+  indexedRecordCount += 1;
+}
 const requiredSections = ["Problem and outcome", "When to use / When not to use", "Structure and slots", "Variants", "States and transitions", "Data and copy contract", "Accessibility", "Responsive", "Motion", "Looks", "References", "Code you can use"];
-check("catalog contains 34 records", recordFiles.length === 34, String(recordFiles.length));
+check("catalog index has records", indexedRecordCount > 0);
+check("catalog index has unique records", indexedRecords.size === indexedRecordCount);
+check("catalog file count matches its index", recordFiles.length === indexedRecordCount, `${recordFiles.length} files / ${indexedRecordCount} indexed`);
 for (const file of recordFiles) {
   const text = await Bun.file(new URL(file, patternDir)).text();
-  check(`catalog indexes ${file}`, catalog.includes(`](${file})`));
+  check(`catalog indexes ${file}`, indexedRecords.has(file));
   for (const heading of requiredSections) check(`record section ${file}/${heading}`, text.includes(`## ${heading}\n`));
   const variants = text.split("## Variants\n")[1]?.split("\n## ")[0] ?? "";
   const variantLines = variants.split("\n");
@@ -66,6 +76,17 @@ for (const file of recordFiles) {
   for (const match of text.matchAll(/\]\(([^)#]+\.md)(?:#[^)]*)?\)/g)) {
     check(`record link ${file}/${match[1]}`, await Bun.file(new URL(match[1]!, new URL(file, patternDir))).exists());
   }
+}
+
+// Every slide channel uses the same bounded progress, including overshooting curves.
+for (const [p, incoming, opacity, transform] of [
+  [-0.4, true, 0, "translateX(100%)"],
+  [1.4, true, 1, "translateX(0%)"],
+  [-0.4, false, 1, "translateX(0%)"],
+  [1.4, false, 0, "translateX(-100%)"],
+] as const) {
+  const frame = swapFrame("slide", p, incoming);
+  check(`slide clamps ${p}/${incoming}`, frame.opacity === opacity && frame.transform === transform);
 }
 
 // Every preset and derived default must resolve to a real option at every step.
@@ -116,11 +137,30 @@ try {
     await document.fonts.ready;
     await new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve())));
   });
+  const currentStep = async () => {
+    await settle();
+    return Number(new URLSearchParams(await page.evaluate(() => location.hash)).get("step"));
+  };
 
   await page.goto(link({ archetype: "workspace" }, "accent"), { waitUntil: "load" });
   await page.waitForTimeout(700);
   check("footer confirms persistence", (await page.locator("footer").innerText()).includes("saved to .studio/state.json"));
+  await page.locator("aside ol li button").first().click();
   await page.keyboard.press("3");
+  await settle();
+  check("number shortcut works immediately after option click", new URLSearchParams(await page.evaluate(() => location.hash)).get("accent") === STEPS[index("accent")]!.options[2]!.id);
+  await page.keyboard.press("Enter");
+  check("focused option keeps native Enter activation", await currentStep() === index("accent"));
+  await page.keyboard.press("3");
+  await page.keyboard.press("ArrowRight");
+  check("navigation shortcut works from a focused option", await currentStep() === index("accent") + 1);
+  await page.locator("aside").getByRole("button", { name: "← Back", exact: true }).click();
+  await page.keyboard.press("ArrowRight");
+  check("navigation shortcut works after Back click", await currentStep() === index("accent") + 1);
+  await page.locator("aside").getByRole("button", { name: /^(?:Next|Keep .+) →$/ }).click();
+  await page.keyboard.press("ArrowLeft");
+  check("navigation shortcut works after Next click", await currentStep() === index("accent") + 1);
+  await page.keyboard.press("ArrowLeft");
   await page.getByRole("radio", { name: "Revisit" }).click();
   await page.getByLabel("Note", { exact: true }).fill("Check the accent with the selected neutral.");
   const walk = await persist();
@@ -148,6 +188,21 @@ try {
   check("note resumes", (await resume.getByLabel("Note", { exact: true }).inputValue()) === "Check the accent with the selected neutral.");
   await resume.close();
 
+  await page.goto(link({ archetype: "workspace", readerLayout: "outline" }, "readerLayout"));
+  await settle();
+  const outlineHash = await page.evaluate(() => location.hash);
+  const outline = page.getByRole("navigation", { name: `${CONTENT_BY_ARCHETYPE.workspace.surfaces.reader.title} contents`, exact: true }).first();
+  const outlineEntry = outline.getByRole("link").nth(1);
+  const targetId = (await outlineEntry.getAttribute("href"))!.slice(1);
+  await outlineEntry.click();
+  check("outline click preserves the complete studio hash", await page.evaluate(() => location.hash) === outlineHash);
+  check("outline click preserves the current step", await currentStep() === index("readerLayout"));
+  check("outline marks the inspected section", await outlineEntry.getAttribute("aria-current") === "location");
+  check("outline focuses its section heading", await page.evaluate((id: string) => document.activeElement?.id === id, targetId));
+  await outline.getByRole("link").first().focus();
+  await page.keyboard.press("Enter");
+  check("outline keeps native keyboard activation without replacing the hash", await page.evaluate(() => location.hash) === outlineHash && await currentStep() === index("readerLayout"));
+
   // Reset and reference ordering use the same selectors as the original builder smoke.
   await page.goto(link({ archetype: "feed" }, "reference"));
   await page.waitForTimeout(500);
@@ -161,10 +216,10 @@ try {
   check("feed sample renders", (await page.locator("main").innerText()).includes(CONTENT_BY_ARCHETYPE.feed.product.name));
   const brutal = await page.locator(".gallery").first().evaluate((root: HTMLElement) => ({ look: root.dataset.look, weight: getComputedStyle(root).getPropertyValue("--heading-weight").trim() }));
   check("look tokens apply", brutal.look === "brutalist" && brutal.weight === "700");
-  await page.getByRole("heading", { name: STEPS[index("look")]!.question, exact: true }).click();
+  await page.locator("aside ol li button[aria-pressed='true']").click();
   await page.keyboard.press("r");
   const reset = await persist();
-  check("reset preserves archetype", reset.choices?.archetype === "feed" && reset.choices?.look === undefined);
+  check("reset works after option click and preserves archetype", reset.choices?.archetype === "feed" && reset.choices?.look === undefined);
   await page.goto(link({ archetype: "feed", accent: "amber" }, "accent"));
   await page.waitForTimeout(500);
   const foreground = await page.locator(".gallery").first().evaluate((root: HTMLElement) => getComputedStyle(root).getPropertyValue("--primary-foreground").trim());

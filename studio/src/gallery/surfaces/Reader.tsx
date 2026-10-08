@@ -54,7 +54,13 @@ function ReaderView({ state = "populated" }: { state?: SurfaceState }) {
         <nav aria-label={`${page.title} contents`} className="sticky top-0 min-w-0 flex-[1_1_170px] rounded-md bg-background p-2">
           <h2 className="heading mb-3 text-chrome text-muted-foreground">Contents</h2>
           {loading ? <div className="space-y-4">{[0, 1, 2, 3].map((index) => <Placeholder key={index} className="h-3 w-4/5" />)}</div> : empty ? <div aria-hidden="true" className="h-20 border-l border-dashed border-border" /> : <ol className="space-y-1">
-            {page.sections.map((section, index) => <li key={`${section.heading}-${index}`}><a href={`#${readerId}-${index}`} aria-current={index === sectionIndex ? "location" : undefined} onClick={() => setSelectedSection(index)} className={cn("block break-words border-l-2 px-3 py-2 text-chrome", SELECTABLE_ROW, index === sectionIndex ? "border-primary bg-accent-soft text-accent-text" : "border-transparent text-muted-foreground hover:bg-accent hover:text-foreground")}>{section.heading}</a></li>)}
+            {page.sections.map((section, index) => <li key={`${section.heading}-${index}`}><a href={`#${readerId}-${index}`} aria-current={index === sectionIndex ? "location" : undefined} onClick={(event) => {
+              event.preventDefault();
+              setSelectedSection(index);
+              const heading = event.currentTarget.ownerDocument.getElementById(`${readerId}-${index}`);
+              heading?.focus({ preventScroll: true });
+              heading?.scrollIntoView({ block: "start" });
+            }} className={cn("block break-words border-l-2 px-3 py-2 text-chrome", SELECTABLE_ROW, index === sectionIndex ? "border-primary bg-accent-soft text-accent-text" : "border-transparent text-muted-foreground hover:bg-accent hover:text-foreground")}>{section.heading}</a></li>)}
           </ol>}
         </nav>
         <div className="min-w-0 flex-[3_1_360px] max-w-[68ch]">{article}</div>

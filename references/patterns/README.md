@@ -55,7 +55,7 @@ Every record has these sections, in this order. A record with a dedicated studio
 
 ## Index
 
-There are **34 pattern records**, excluding this README: **13 flows + 9 surfaces + 6 components/states + 6 interaction/motion records**. These are problem-oriented index groups, not a count of executable studio options. For example, `async-progress` is an interaction record indexed with states, while `search-filter` is a flow contract that can bind to local toolbar/results slots. Twelve dedicated axes point at records: the five surface axes and seven interaction axes; the latter include `asyncFeedback`. Text-only records do not acquire an executable studio step merely by appearing here.
+The tables below are the source of truth for record membership and count, excluding this README. They group flows, surfaces, components/states and interaction/motion contracts, not executable studio options. For example, `async-progress` is an interaction record indexed with states, while `search-filter` is a flow contract that can bind to local toolbar/results slots. Twelve dedicated axes point at records: the five surface axes and seven interaction axes; the latter include `asyncFeedback`. Text-only records do not acquire an executable studio step merely by appearing here.
 
 ### Flows
 

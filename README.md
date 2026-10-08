@@ -28,7 +28,7 @@ Or keep the clone anywhere and tell the agent to read `SKILL.md` before any desi
 - `references/audit-checklist.md`: evidence-first live frontend review.
 - `references/products.md`: researched reference profiles and preset anchors.
 - `references/decision-tree.md`: generated visual decision tree.
-- `references/patterns/`: 34 independently authored task, surface, state and interaction records, with variants, contracts, dated references and code-license boundaries.
+- `references/patterns/`: independently authored task, surface, state and interaction records, with variants, contracts, dated references and code-license boundaries; its index is the source of truth for catalog membership.
 - `references/options.md`: what a step and an option are, and what earns an option its place.
 - `references/review.md`: adversarial review before and after rendering.
 - `references/rounds.md`: serving the walk, recording it, and locking in between rounds.

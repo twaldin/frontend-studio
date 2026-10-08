@@ -194,8 +194,12 @@ export function App() {
   useEffect(() => {
     if (capture) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey || (e.target as HTMLElement | null)?.closest("input, textarea, select, button, a, summary, [contenteditable]")) return;
+      if (e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey) return;
+      const target = e.target instanceof Element ? e.target : null;
+      if (target?.closest("input, textarea, select, [contenteditable]")) return;
       const k = e.key;
+      // Preserve native activation without dropping later walk shortcuts on focused controls.
+      if ((k === "Enter" || k === " ") && target?.closest("button, a, summary")) return;
       if (/^[1-9]$/.test(k)) {
         const o = optionsFor(studio.step, defaultsFor(studio.state.choices))[Number(k) - 1];
         if (o) studio.choose(studio.step.id, o.id);
