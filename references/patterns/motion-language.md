@@ -27,6 +27,8 @@ There are **five studio options: one universal no-motion baseline and four timed
 
 These are the studio's own current tokens, not copied source timing tables or measured performance claims. Easing curves live in the implementation; choose effects separately rather than bundling them into a branded preset.
 
+The studio's layer-progress graph and filmstrip compare timed languages on the same 300ms clock, so duration differences remain visible even when curves match. These are computed token/easing studies, not recordings or measured browser performance. Still shows only the immediate before/after change.
+
 ## States and transitions
 
 Each effect has idle → responding/entering/changing/exiting → settled, with interruption resolving to the latest real state. Repeated input never queues a backlog of animations. Opening/closing/navigation updates semantics immediately, independent of visual completion. Reduced-motion preference or Still selection removes movement without losing feedback. Failed data/task transitions expose failure rather than finishing a success sequence. Frequent/keyboard-triggered paths cut in every timed language.

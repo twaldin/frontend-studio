@@ -237,6 +237,7 @@ try {
   }
   console.log(`Surface matrix: ${surfaces} renders (${archetypes.length} archetypes × ${looks.length} looks × ${surfaceSteps.reduce((n, s) => n + s.options.length, 0)} options)`);
   let interactions = 0;
+  const motionPositions: Record<string, string> = {};
   for (const step of STEPS.filter((s) => s.branch === "interaction")) {
     for (const option of step.options) {
       const hash = new URL(link({ archetype: "workspace", [step.id]: option.id }, step.id, true)).hash;
@@ -244,10 +245,17 @@ try {
       await settle();
       const text = await page.locator(".gallery").innerText();
       check(`interaction ${step.id}/${option.id}`, text.includes("Specimen") && text.includes(option.label));
+      if (step.id === "motion") {
+        const labels = await page.locator(".gallery figure figcaption").allTextContents();
+        const expected = option.id === "still" ? ["Before", "After · instant"] : ["0 ms", "50 ms", "100 ms", "150 ms", "300 ms"];
+        check(`motion clock ${option.id}`, JSON.stringify(labels) === JSON.stringify(expected), labels.join(", "));
+        motionPositions[option.id] = (await page.locator(".gallery figure [style*='translateX']").evaluateAll((nodes: HTMLElement[]) => nodes.map((node) => node.style.transform))).join("|");
+      }
       interactions += 1;
     }
   }
   console.log(`Interaction matrix: ${interactions} options`);
+  check("matching motion curves still expose duration differences", Boolean(motionPositions.snappy && motionPositions.material) && motionPositions.snappy !== motionPositions.material);
   check("capture leaves saved walk untouched", JSON.stringify(await saved()) === before);
   check("no runtime or console errors", errors.length === 0, errors.join(" | ").slice(0, 1500));
 } finally {

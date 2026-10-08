@@ -3,25 +3,31 @@ import { easeAt } from "@/tokens/motion";
 import { Button, cn } from "@/ui";
 
 /** Computed, fixed-time samples of the chosen easing, never a claim of recorded browser timing. */
-export function Filmstrip({ duration, easing, frames = 5, render, className, geometryOnly = false }: {
+export function Filmstrip({ duration, easing, frames = 5, sampleTimesMs, render, className, geometryOnly = false }: {
   duration: number;
   easing: string;
   frames?: number;
+  /** Optional shared clock for comparing durations; samples after completion show the final state. */
+  sampleTimesMs?: readonly number[];
   render: (progress: number) => ReactNode;
   className?: string;
   /** A normalized geometry study when the active Still language has no intermediate times. */
   geometryOnly?: boolean;
 }) {
+  const absoluteTimes = duration > 0 ? sampleTimesMs : undefined;
   const count = Math.max(2, frames);
-  const times = duration > 0 || geometryOnly ? Array.from({ length: count }, (_, i) => i / (count - 1)) : [0, 1];
+  const times = absoluteTimes ?? (duration > 0 || geometryOnly ? Array.from({ length: count }, (_, i) => i / (count - 1)) : [0, 1]);
   return (
     <div className={cn("grid gap-2", className)} style={{ gridTemplateColumns: `repeat(${times.length}, minmax(0, 1fr))` }}>
-      {times.map((t) => (
-        <figure key={t} className="flex min-w-0 flex-col gap-1.5">
-          <div className="relative overflow-hidden rounded-md border border-border bg-background">{render(duration > 0 ? easeAt(easing, t) : t)}</div>
-          <figcaption className="tabular text-center text-chrome text-muted-foreground">{geometryOnly ? `${Math.round(t * 100)}% geometry` : duration > 0 ? `${Math.round(t * duration)} ms` : t === 0 ? "Before" : "After · instant"}</figcaption>
-        </figure>
-      ))}
+      {times.map((t) => {
+        const progress = absoluteTimes ? Math.min(1, t / duration) : t;
+        return (
+          <figure key={t} className="flex min-w-0 flex-col gap-1.5">
+            <div className="relative overflow-hidden rounded-md border border-border bg-background">{render(duration > 0 ? easeAt(easing, progress) : progress)}</div>
+            <figcaption className="tabular text-center text-chrome text-muted-foreground">{geometryOnly ? `${Math.round(t * 100)}% geometry` : duration > 0 ? `${Math.round(absoluteTimes ? t : t * duration)} ms` : t === 0 ? "Before" : "After · instant"}</figcaption>
+          </figure>
+        );
+      })}
     </div>
   );
 }
