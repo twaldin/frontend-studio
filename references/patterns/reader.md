@@ -1,3 +1,15 @@
+---
+id: reader
+scale: surface
+studio: readerLayout
+slots: {"required":["header","primary","position","state"],"optional":["outline","notes","glossary","savedPosition","completion","navigation","media","related","actions"]}
+variants: [{"id":"column","label":"Single column"},{"id":"outline","label":"With outline"},{"id":"margin","label":"Margin notes"},{"id":"paged","label":"Paged"}]
+states: ["loading","readable","missing","denied","failed","restored","mediaUnavailable","saveFailed","positionMoved","pending","confirmed"]
+copy: ["position"]
+events: ["navigateSection","changePage","restorePosition","savePosition","complete"]
+renderer: variants
+---
+
 # Reader
 
 `id: reader` · `scale: surface` · `studio: readerLayout` · `references checked: 2026-10-08`

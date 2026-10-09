@@ -1,0 +1,2448 @@
+{
+  "model": 1,
+  "product": {
+    "id": "media",
+    "outcome": "Choose a saved song or episode, start playback at its saved position, and see what is playing; downloaded recordings remain playable when the connection drops.",
+    "archetype": "media",
+    "users": [
+      {
+        "id": "listener",
+        "who": "A listener using a phone during a commute and a laptop at home, with intermittent connectivity.",
+        "device": "both",
+        "surfaces": [
+          "home",
+          "library",
+          "player",
+          "downloads",
+          "queue",
+          "newPlaylist",
+          "settings",
+          "help",
+          "landing",
+          "pushDownloadComplete",
+          "episodeComments"
+        ]
+      }
+    ]
+  },
+  "entities": [
+    {
+      "id": "mediaEntry",
+      "contract": "Media",
+      "words": [
+        "song",
+        "episode",
+        "album"
+      ],
+      "never": [
+        "item"
+      ]
+    },
+    {
+      "id": "playlist",
+      "contract": "Playlist",
+      "words": [
+        "playlist"
+      ]
+    }
+  ],
+  "capabilities": [
+    {
+      "id": "playMedia",
+      "real": true,
+      "note": "Start, pause, seek, change volume and playback speed, and advance through the queue; buffering, failure and end-of-recording outcomes are explicit."
+    },
+    {
+      "id": "downloadMedia",
+      "real": true,
+      "note": "Download recordings with progress and accepted completion; only completed downloads play offline. Saved positions survive download removal."
+    },
+    {
+      "id": "removeDownloads",
+      "real": true,
+      "note": "Remove selected local recordings after confirmation without deleting library entries or listening positions."
+    },
+    {
+      "id": "editQueue",
+      "real": true,
+      "note": "Reorder, remove or play the next queued recording and preserve the accepted order."
+    },
+    {
+      "id": "createPlaylists",
+      "real": true,
+      "note": "Persist a named playlist, visibility and optional offline-download choice; automatic additions of played songs are an explicit playlist preference."
+    },
+    {
+      "id": "savePreferences",
+      "real": true,
+      "note": "Persist download conditions, low-space cleanup, remembered position and default playlist visibility."
+    },
+    {
+      "id": "sendMessages",
+      "real": true,
+      "note": "Persist episode comments beneath their episode; failure retains the same draft for a nonduplicating retry."
+    },
+    {
+      "id": "notifyDownloads",
+      "real": true,
+      "note": "Send a completion push only once a recording has been accepted as downloaded."
+    }
+  ],
+  "data": {
+    "Media": {
+      "fields": {
+        "title": "text",
+        "creator": "text",
+        "description": "longText",
+        "durationSeconds": "number",
+        "positionSeconds": "number",
+        "kind": "enum",
+        "download": "enum",
+        "lastPlayedAt": "date",
+        "shelf": "enum"
+      },
+      "typical": 11,
+      "max": 300,
+      "long": [
+        "title",
+        "description"
+      ],
+      "enums": {
+        "kind": [
+          "album",
+          "song",
+          "podcast",
+          "live",
+          "playlist"
+        ],
+        "download": [
+          "notDownloaded",
+          "downloaded",
+          "downloading",
+          "unavailable"
+        ],
+        "shelf": [
+          "continue",
+          "featured",
+          "new"
+        ]
+      }
+    },
+    "Playlist": {
+      "fields": {
+        "name": "text",
+        "trackCount": "number",
+        "visibility": "enum"
+      },
+      "typical": 4,
+      "max": 100,
+      "long": [
+        "name"
+      ],
+      "enums": {
+        "visibility": [
+          "private",
+          "friends",
+          "public"
+        ]
+      }
+    },
+    "Message": {
+      "fields": {
+        "author": "text",
+        "text": "longText",
+        "sentAt": "date",
+        "mine": "enum"
+      },
+      "typical": 4,
+      "max": 500,
+      "long": [
+        "author",
+        "text"
+      ],
+      "enums": {
+        "mine": [
+          "mine",
+          "theirs"
+        ]
+      }
+    },
+    "PlaylistDraft": {
+      "fields": {
+        "name": "text",
+        "visibility": "enum",
+        "offline": "enum",
+        "appendPlayed": "enum"
+      },
+      "typical": 1,
+      "max": 1,
+      "long": [
+        "name"
+      ],
+      "enums": {
+        "visibility": [
+          "private",
+          "friends",
+          "public"
+        ],
+        "offline": [
+          "on",
+          "off"
+        ],
+        "appendPlayed": [
+          "on",
+          "off"
+        ]
+      }
+    },
+    "ListeningPreferences": {
+      "fields": {
+        "downloadWifi": "enum",
+        "downloadCharging": "enum",
+        "removeFinished": "enum",
+        "rememberPosition": "enum",
+        "visibility": "enum"
+      },
+      "typical": 1,
+      "max": 1,
+      "enums": {
+        "downloadWifi": [
+          "on",
+          "off"
+        ],
+        "downloadCharging": [
+          "on",
+          "off"
+        ],
+        "removeFinished": [
+          "on",
+          "off"
+        ],
+        "rememberPosition": [
+          "on",
+          "off"
+        ],
+        "visibility": [
+          "private",
+          "friends",
+          "public"
+        ]
+      }
+    },
+    "DownloadSelection": {
+      "fields": {
+        "count": "number"
+      },
+      "typical": 1,
+      "max": 1
+    },
+    "CommentDraft": {
+      "fields": {
+        "text": "longText"
+      },
+      "typical": 1,
+      "max": 1,
+      "long": [
+        "text"
+      ]
+    }
+  },
+  "states": {
+    "homeReady": {
+      "label": "Ready",
+      "rule": "Show saved recordings with resumable positions, followed by featured recordings; selecting one opens its paused player.",
+      "kind": "data",
+      "fixtures": {
+        "Media": "populated"
+      }
+    },
+    "homeLoading": {
+      "label": "Loading",
+      "rule": "Keep known recording identities and saved positions visible while refreshing the listening shelf.",
+      "kind": "data",
+      "fixtures": {
+        "Media": "populated"
+      }
+    },
+    "homeEmpty": {
+      "label": "Empty",
+      "rule": "No saved recording is available to resume; offer Library rather than claiming there are no downloads.",
+      "kind": "firstRun",
+      "fixtures": {
+        "Media": "none"
+      }
+    },
+    "homeFailed": {
+      "label": "Failed",
+      "rule": "The listening shelf could not be loaded; retry the shelf read without changing the saved playback position.",
+      "kind": "data",
+      "fixtures": {
+        "Media": "none"
+      }
+    },
+    "homeLongContent": {
+      "label": "Long content",
+      "rule": "Wrap the tide-pool episode title and creator-written notes while keeping its resume action associated with that recording.",
+      "kind": "data",
+      "fixtures": {
+        "Media": "long"
+      }
+    },
+    "libraryReady": {
+      "label": "Ready",
+      "rule": "List saved songs, albums and episodes with creator, duration, download status and last-played date.",
+      "kind": "data",
+      "fixtures": {
+        "Media": "populated",
+        "Playlist": "populated"
+      }
+    },
+    "libraryLoading": {
+      "label": "Loading",
+      "rule": "Retain the last saved library while refreshing recording availability; do not imply playback has begun.",
+      "kind": "data",
+      "fixtures": {
+        "Media": "populated",
+        "Playlist": "populated"
+      }
+    },
+    "libraryEmpty": {
+      "label": "Empty",
+      "rule": "No recordings are saved in the library; return to featured recordings on Home.",
+      "kind": "firstRun",
+      "fixtures": {
+        "Media": "none",
+        "Playlist": "none"
+      }
+    },
+    "libraryFailed": {
+      "label": "Failed",
+      "rule": "The library read failed; do not clear saved entries or listening positions.",
+      "kind": "data",
+      "fixtures": {
+        "Media": "none",
+        "Playlist": "none"
+      }
+    },
+    "libraryLongContent": {
+      "label": "Long content",
+      "rule": "Wrap extended episode titles without losing their creator, duration or download state.",
+      "kind": "data",
+      "fixtures": {
+        "Media": "long",
+        "Playlist": "long"
+      }
+    },
+    "playerPlaying": {
+      "label": "Playing",
+      "rule": "Show the selected recording with the service-reported elapsed position; Pause retains that position.",
+      "kind": "operation",
+      "fixtures": {
+        "Media": "selected"
+      }
+    },
+    "playerPaused": {
+      "label": "Paused",
+      "rule": "Show the selected recording and its saved position without playing; Play starts from that position.",
+      "kind": "operation",
+      "fixtures": {
+        "Media": "selected"
+      }
+    },
+    "playerBuffering": {
+      "label": "Buffering",
+      "rule": "Keep the selected recording and last confirmed position visible while the playback request waits for audio; do not advance the clock without audio.",
+      "kind": "operation",
+      "fixtures": {
+        "Media": "selected"
+      }
+    },
+    "playerOfflineUnavailable": {
+      "label": "Not downloaded offline",
+      "rule": "The selected recording is not downloaded; show why it cannot play, hide Play, and offer Downloads while retaining its listening position.",
+      "kind": "connectivity",
+      "fixtures": {
+        "Media": "offlineUnavailable"
+      }
+    },
+    "playerLongContent": {
+      "label": "Long episode title",
+      "rule": "Wrap the tide-pool episode identity and notes without covering transport or elapsed-position controls.",
+      "kind": "data",
+      "fixtures": {
+        "Media": "long"
+      }
+    },
+    "downloadsReady": {
+      "label": "Downloads ready",
+      "rule": "List completed, active and unavailable local transfers; only completed recordings expose Remove download and offline playback.",
+      "kind": "data",
+      "fixtures": {
+        "Media": "downloadRows",
+        "DownloadSelection": "one"
+      }
+    },
+    "downloadsLoading": {
+      "label": "Loading downloads",
+      "rule": "Reserve download rows while reading local transfer metadata; no row statuses or removal controls are shown yet.",
+      "kind": "data",
+      "fixtures": {
+        "Media": "none",
+        "DownloadSelection": "one"
+      }
+    },
+    "downloadsEmpty": {
+      "label": "No downloads",
+      "rule": "No local transfer exists; explain how to download a recording from Library.",
+      "kind": "firstRun",
+      "fixtures": {
+        "Media": "none",
+        "DownloadSelection": "one"
+      }
+    },
+    "downloadsFailed": {
+      "label": "Downloads could not load",
+      "rule": "The local download list is unavailable; retry the list read rather than a playback operation.",
+      "kind": "data",
+      "fixtures": {
+        "Media": "none",
+        "DownloadSelection": "one"
+      }
+    },
+    "downloadsLongContent": {
+      "label": "Long download title",
+      "rule": "Wrap an extended downloaded episode title while retaining its completion status and Remove download action.",
+      "kind": "data",
+      "fixtures": {
+        "Media": "long",
+        "DownloadSelection": "one"
+      }
+    },
+    "queueReady": {
+      "label": "Ready",
+      "rule": "Show the accepted playback order; move, remove and play-next actions refer to the selected recording.",
+      "kind": "data",
+      "fixtures": {
+        "Media": "populated"
+      }
+    },
+    "queueLoading": {
+      "label": "Loading",
+      "rule": "Keep the accepted queue visible while retrieving its latest order.",
+      "kind": "data",
+      "fixtures": {
+        "Media": "populated"
+      }
+    },
+    "queueEmpty": {
+      "label": "Empty",
+      "rule": "No next recording is queued; offer Library to choose one.",
+      "kind": "firstRun",
+      "fixtures": {
+        "Media": "none"
+      }
+    },
+    "queueFailed": {
+      "label": "Failed",
+      "rule": "The queue could not be loaded; do not replace the accepted order with an empty queue.",
+      "kind": "data",
+      "fixtures": {
+        "Media": "none"
+      }
+    },
+    "queueLongContent": {
+      "label": "Long content",
+      "rule": "Wrap long recording titles while keeping each move control attached to the correct queue entry.",
+      "kind": "data",
+      "fixtures": {
+        "Media": "long"
+      }
+    },
+    "newPlaylistDraft": {
+      "label": "Draft",
+      "rule": "Keep playlist name, visibility and download choices local until Create playlist; a draft is not in Library.",
+      "kind": "data",
+      "fixtures": {
+        "PlaylistDraft": "blank"
+      }
+    },
+    "newPlaylistSaving": {
+      "label": "Saving",
+      "rule": "Retain the proposed playlist configuration and prevent duplicate creation while the playlist write is pending.",
+      "kind": "operation",
+      "fixtures": {
+        "PlaylistDraft": "one"
+      }
+    },
+    "newPlaylistSaved": {
+      "label": "Saved",
+      "rule": "Show the accepted playlist name and route to Library; offline choice schedules downloads rather than claiming they are complete.",
+      "kind": "operation",
+      "fixtures": {
+        "PlaylistDraft": "one"
+      }
+    },
+    "newPlaylistFailed": {
+      "label": "Failed",
+      "rule": "No playlist was created; preserve the name, visibility and download choices for retry.",
+      "kind": "operation",
+      "fixtures": {
+        "PlaylistDraft": "one"
+      }
+    },
+    "newPlaylistLongContent": {
+      "label": "Long content",
+      "rule": "Keep a descriptive playlist name fully editable with visibility and offline preferences still reachable.",
+      "kind": "data",
+      "fixtures": {
+        "PlaylistDraft": "long"
+      }
+    },
+    "settingsReady": {
+      "label": "Ready",
+      "rule": "Show saved download conditions, resume-position preference and playlist visibility; changes do not interrupt playback.",
+      "kind": "data",
+      "fixtures": {
+        "ListeningPreferences": "one"
+      }
+    },
+    "settingsSaving": {
+      "label": "Saving",
+      "rule": "Keep the edited preference values visible and disable duplicate saves until the preference write returns.",
+      "kind": "operation",
+      "fixtures": {
+        "ListeningPreferences": "one"
+      }
+    },
+    "settingsSaved": {
+      "label": "Saved",
+      "rule": "Show the saved preference values and an inline acknowledgement; reopening this page shows the same choices.",
+      "kind": "operation",
+      "fixtures": {
+        "ListeningPreferences": "one"
+      }
+    },
+    "settingsFailed": {
+      "label": "Failed",
+      "rule": "Keep edited preference values separate from the last saved values; Save preferences retries the write, Cancel restores the saved choices.",
+      "kind": "operation",
+      "fixtures": {
+        "ListeningPreferences": "one"
+      }
+    },
+    "helpReady": {
+      "label": "Ready",
+      "rule": "Keep product help available without replacing the task.",
+      "kind": "data",
+      "fixtures": {}
+    },
+    "landingReady": {
+      "label": "Ready",
+      "rule": "Present the product explanation and a real route into the app.",
+      "kind": "data",
+      "fixtures": {}
+    },
+    "pushDownloadCompleteReady": {
+      "label": "Ready",
+      "rule": "Send only after a completed download is accepted; name that recording and open Downloads where its completed status and play action are visible.",
+      "kind": "operation",
+      "fixtures": {
+        "Media": "downloadComplete"
+      }
+    },
+    "episodeCommentsReady": {
+      "label": "Ready",
+      "rule": "Read accepted listener comments in order beneath this episode’s title and notes; the composer addresses its host.",
+      "kind": "data",
+      "fixtures": {
+        "Message": "populated",
+        "Media": "selected",
+        "CommentDraft": "blank"
+      }
+    },
+    "episodeCommentsLoading": {
+      "label": "Loading",
+      "rule": "Keep the episode context visible while fetching comments; retain earlier accepted comments and disable sending until the read finishes.",
+      "kind": "data",
+      "fixtures": {
+        "Message": "populated",
+        "Media": "selected",
+        "CommentDraft": "blank"
+      }
+    },
+    "episodeCommentsEmpty": {
+      "label": "Empty",
+      "rule": "Keep the episode notes visible with no comments; invite the first question to its host.",
+      "kind": "firstRun",
+      "fixtures": {
+        "Message": "none",
+        "Media": "selected",
+        "CommentDraft": "blank"
+      }
+    },
+    "episodeCommentsFailed": {
+      "label": "Failed",
+      "rule": "Keep episode identity visible and retry the failed comment read; this message is not a send failure.",
+      "kind": "data",
+      "fixtures": {
+        "Message": "none",
+        "Media": "selected",
+        "CommentDraft": "blank"
+      }
+    },
+    "episodeCommentsLongContent": {
+      "label": "Long content",
+      "rule": "Wrap the host’s detailed species answer without losing the episode title or comment chronology.",
+      "kind": "data",
+      "fixtures": {
+        "Message": "long",
+        "Media": "selected",
+        "CommentDraft": "blank"
+      }
+    },
+    "playerOfflinePlaying": {
+      "label": "Playing offline",
+      "rule": "The selected recording is fully downloaded; play local audio and retain the confirmed position without a connection.",
+      "kind": "connectivity",
+      "fixtures": {
+        "Media": "offlinePlayable"
+      }
+    },
+    "playerFailed": {
+      "label": "Playback failed",
+      "rule": "The playback request failed without advancing the saved position; retry the selected recording and do not claim it is playing.",
+      "kind": "operation",
+      "fixtures": {
+        "Media": "selected"
+      }
+    },
+    "playerFinished": {
+      "label": "Recording finished",
+      "rule": "Elapsed position equals duration; acknowledge the end and let the listener replay or advance to the next queue entry.",
+      "kind": "operation",
+      "fixtures": {
+        "Media": "finished"
+      }
+    },
+    "downloadsDownloading": {
+      "label": "Downloading recording",
+      "rule": "Show the selected recording as downloading and prevent duplicate transfer starts; it is not yet available offline.",
+      "kind": "operation",
+      "fixtures": {
+        "Media": "downloading",
+        "DownloadSelection": "one"
+      }
+    },
+    "downloadsDownloaded": {
+      "label": "Download complete",
+      "rule": "Mark the accepted transfer downloaded and make it available for local playback; only now send a completion push.",
+      "kind": "operation",
+      "fixtures": {
+        "Media": "downloadComplete",
+        "DownloadSelection": "one"
+      }
+    },
+    "downloadsDownloadFailed": {
+      "label": "Download failed",
+      "rule": "Retain the selected recording but mark it not downloaded; retry the same transfer without implying offline availability.",
+      "kind": "operation",
+      "fixtures": {
+        "Media": "downloadFailed",
+        "DownloadSelection": "one"
+      }
+    },
+    "downloadsRemoving": {
+      "label": "Removing downloads",
+      "rule": "Keep the selected downloaded rows visible with removal pending; prevent duplicate removal requests.",
+      "kind": "operation",
+      "fixtures": {
+        "Media": "downloadRows",
+        "DownloadSelection": "one"
+      }
+    },
+    "downloadsRemoved": {
+      "label": "Downloads removed",
+      "rule": "Remove the selected local recordings from the downloaded rows, retaining their library entries and saved positions.",
+      "kind": "operation",
+      "fixtures": {
+        "Media": "downloadsRemoved",
+        "DownloadSelection": "one"
+      }
+    },
+    "downloadsRemoveFailed": {
+      "label": "Removal failed",
+      "rule": "The selected downloads remain available locally; retain the selection and allow retry without changing library entries.",
+      "kind": "operation",
+      "fixtures": {
+        "Media": "downloadRows",
+        "DownloadSelection": "one"
+      }
+    },
+    "queueSaving": {
+      "label": "Saving queue",
+      "rule": "Keep the proposed order visible while preserving the last accepted queue for playback; prevent duplicate edits until the write returns.",
+      "kind": "operation",
+      "fixtures": {
+        "Media": "reorderedQueue"
+      }
+    },
+    "queueSaved": {
+      "label": "Queue saved",
+      "rule": "The accepted order becomes the player’s next-recording order and survives reopening Queue.",
+      "kind": "operation",
+      "fixtures": {
+        "Media": "reorderedQueue"
+      }
+    },
+    "queueSaveFailed": {
+      "label": "Queue change failed",
+      "rule": "Restore the last accepted playback order after the rejected edit; retry the same queue change without claiming the proposed order is active.",
+      "kind": "operation",
+      "fixtures": {
+        "Media": "populated"
+      }
+    },
+    "episodeCommentsSending": {
+      "label": "Sending comment",
+      "rule": "Keep the comment draft and accepted comments visible; disable duplicate sends while the episode accepts the comment.",
+      "kind": "operation",
+      "fixtures": {
+        "Media": "selected",
+        "Message": "populated",
+        "CommentDraft": "one"
+      }
+    },
+    "episodeCommentsSent": {
+      "label": "Comment sent",
+      "rule": "Append the accepted comment beneath the episode and clear only its submitted draft.",
+      "kind": "operation",
+      "fixtures": {
+        "Media": "selected",
+        "Message": "commentSent",
+        "CommentDraft": "blank"
+      }
+    },
+    "episodeCommentsSendFailed": {
+      "label": "Comment not sent",
+      "rule": "Keep the unsent comment draft separate from accepted comments; retry that same comment without duplication.",
+      "kind": "operation",
+      "fixtures": {
+        "Media": "selected",
+        "Message": "populated",
+        "CommentDraft": "one"
+      }
+    },
+    "libraryCreated": {
+      "label": "New playlist listed",
+      "rule": "Show the accepted Low tide afternoons playlist in Library with zero tracks and its private visibility; creation does not imply a download has finished.",
+      "kind": "operation",
+      "fixtures": {
+        "Media": "populated",
+        "Playlist": "created"
+      }
+    }
+  },
+  "events": {
+    "playerToggleEvent": {
+      "label": "Pause or resume this recording",
+      "kind": "press",
+      "needs": "playMedia"
+    },
+    "playerStartEvent": {
+      "label": "Start the chosen recording",
+      "kind": "operation",
+      "needs": "playMedia"
+    },
+    "downloadsStartEvent": {
+      "label": "Download the selected recording",
+      "kind": "operation",
+      "needs": "downloadMedia"
+    },
+    "downloadsOpenDialogEvent": {
+      "label": "Review removal of selected downloads",
+      "kind": "layer",
+      "needs": "removeDownloads"
+    },
+    "downloadsRemoveEvent": {
+      "label": "Remove the confirmed local recordings",
+      "kind": "operation",
+      "needs": "removeDownloads"
+    },
+    "queueSaveEvent": {
+      "label": "Save the new queue order",
+      "kind": "operation",
+      "needs": "editQueue"
+    },
+    "newPlaylistSaveEvent": {
+      "label": "Create this playlist",
+      "kind": "operation",
+      "needs": "createPlaylists"
+    },
+    "newPlaylistInvalidEvent": {
+      "label": "Show missing playlist name",
+      "kind": "submit"
+    },
+    "episodeCommentsSendEvent": {
+      "label": "Send a comment beneath this episode",
+      "kind": "operation",
+      "needs": "sendMessages"
+    },
+    "savePreferencesEvent": {
+      "label": "Save listening and download preferences",
+      "kind": "operation",
+      "needs": "savePreferences"
+    }
+  },
+  "nav": {
+    "items": [
+      {
+        "surface": "home",
+        "copy": "nav.home"
+      },
+      {
+        "surface": "library",
+        "copy": "nav.library"
+      },
+      {
+        "surface": "queue",
+        "copy": "nav.queue"
+      },
+      {
+        "surface": "downloads",
+        "copy": "nav.downloads"
+      },
+      {
+        "surface": "settings",
+        "copy": "nav.settings"
+      }
+    ],
+    "inAYear": 8
+  },
+  "flows": [
+    {
+      "id": "listenFlow",
+      "goal": "Choose a saved song or episode and hear it from the last saved position.",
+      "priority": "must",
+      "stages": [
+        {
+          "id": "chooseShelf",
+          "surface": "home",
+          "next": [
+            "chooseRecording"
+          ]
+        },
+        {
+          "id": "chooseRecording",
+          "surface": "library",
+          "next": [
+            "reviewSelection"
+          ]
+        },
+        {
+          "id": "reviewSelection",
+          "surface": "player",
+          "state": "playerPaused",
+          "next": [
+            "startAudio"
+          ]
+        },
+        {
+          "id": "startAudio",
+          "surface": "player",
+          "state": "playerBuffering",
+          "next": [
+            "hearAudio"
+          ]
+        },
+        {
+          "id": "hearAudio",
+          "surface": "player",
+          "state": "playerPlaying"
+        }
+      ],
+      "ends": "The selected recording is audibly playing and its elapsed position advances from the saved position; buffering or failure never appears as successful playback.",
+      "needs": [
+        "playMedia"
+      ]
+    },
+    {
+      "id": "offlineFlow",
+      "goal": "Download a recording before a commute and play it without a connection.",
+      "priority": "should",
+      "stages": [
+        {
+          "id": "choose",
+          "surface": "library",
+          "next": [
+            "transfer"
+          ]
+        },
+        {
+          "id": "transfer",
+          "surface": "downloads",
+          "state": "downloadsDownloading",
+          "next": [
+            "ready"
+          ]
+        },
+        {
+          "id": "ready",
+          "surface": "downloads",
+          "state": "downloadsDownloaded",
+          "next": [
+            "playOffline"
+          ]
+        },
+        {
+          "id": "playOffline",
+          "surface": "player",
+          "state": "playerOfflinePlaying"
+        }
+      ],
+      "ends": "The completed download plays local audio offline from the saved position; a not-downloaded selection shows a blocked player instead.",
+      "needs": [
+        "downloadMedia",
+        "playMedia"
+      ]
+    },
+    {
+      "id": "queueFlow",
+      "goal": "Choose and save the order of the next recordings.",
+      "priority": "should",
+      "stages": [
+        {
+          "id": "reorder",
+          "surface": "queue",
+          "next": [
+            "save"
+          ]
+        },
+        {
+          "id": "save",
+          "surface": "queue",
+          "state": "queueSaving",
+          "next": [
+            "saved"
+          ]
+        },
+        {
+          "id": "saved",
+          "surface": "queue",
+          "state": "queueSaved"
+        }
+      ],
+      "ends": "The player’s next-recording order matches the accepted queue and survives reopening Queue.",
+      "needs": [
+        "editQueue"
+      ]
+    },
+    {
+      "id": "preferencesFlow",
+      "goal": "Choose download conditions and how listening positions are remembered.",
+      "priority": "should",
+      "stages": [
+        {
+          "id": "edit",
+          "surface": "settings",
+          "next": [
+            "save"
+          ]
+        },
+        {
+          "id": "save",
+          "surface": "settings",
+          "state": "settingsSaving",
+          "next": [
+            "saved"
+          ]
+        },
+        {
+          "id": "saved",
+          "surface": "settings",
+          "state": "settingsSaved"
+        }
+      ],
+      "ends": "Reopening Settings retains download conditions, low-space cleanup, resume-position and visibility choices.",
+      "needs": [
+        "savePreferences"
+      ]
+    },
+    {
+      "id": "helpFlow",
+      "goal": "Understand offline eligibility and what download removal keeps.",
+      "priority": "should",
+      "stages": [
+        {
+          "id": "readOfflineRules",
+          "surface": "help"
+        }
+      ],
+      "ends": "The listener knows that only completed downloads work offline and removal preserves library entries and listening positions.",
+      "needs": []
+    },
+    {
+      "id": "newPlaylistFlow",
+      "goal": "Create a named playlist with intentional visibility and offline choices.",
+      "priority": "later",
+      "stages": [
+        {
+          "id": "name",
+          "surface": "newPlaylist",
+          "next": [
+            "create"
+          ]
+        },
+        {
+          "id": "create",
+          "surface": "newPlaylist",
+          "state": "newPlaylistSaving",
+          "next": [
+            "created"
+          ]
+        },
+        {
+          "id": "created",
+          "surface": "newPlaylist",
+          "state": "newPlaylistSaved",
+          "next": [
+            "findPlaylist"
+          ]
+        },
+        {
+          "id": "findPlaylist",
+          "surface": "library",
+          "state": "libraryCreated"
+        }
+      ],
+      "ends": "The accepted playlist appears in Library with the chosen visibility; requested downloads have their own pending and completed states.",
+      "needs": [
+        "createPlaylists"
+      ],
+      "binding": {
+        "record": "create-edit",
+        "status": "proposed",
+        "variant": "dialogForm",
+        "because": "Playlist name and visibility form a short focused creation task without interrupting the current recording."
+      }
+    },
+    {
+      "id": "discoverFlow",
+      "goal": "Learn how songs, episodes and offline playback fit one listening library.",
+      "priority": "later",
+      "stages": [
+        {
+          "id": "learn",
+          "surface": "landing",
+          "next": [
+            "choose"
+          ]
+        },
+        {
+          "id": "choose",
+          "surface": "home"
+        }
+      ],
+      "ends": "The landing action opens listening Home, while the help link explains download eligibility without claiming a transfer is complete.",
+      "needs": []
+    },
+    {
+      "id": "pushDownloadCompleteFlow",
+      "goal": "Open a recording that has actually finished downloading.",
+      "priority": "later",
+      "stages": [
+        {
+          "id": "readCompletion",
+          "surface": "pushDownloadComplete",
+          "next": [
+            "findDownloadedRecording"
+          ]
+        },
+        {
+          "id": "findDownloadedRecording",
+          "surface": "downloads",
+          "state": "downloadsDownloaded"
+        }
+      ],
+      "ends": "The notification opens the completed recording in Downloads; local playback is now available.",
+      "needs": [
+        "notifyDownloads"
+      ]
+    },
+    {
+      "id": "episodeDiscussionFlow",
+      "goal": "Ask the host about an episode while keeping its notes in view.",
+      "priority": "later",
+      "stages": [
+        {
+          "id": "hearEpisode",
+          "surface": "player",
+          "next": [
+            "readQuestions"
+          ]
+        },
+        {
+          "id": "readQuestions",
+          "surface": "episodeComments",
+          "next": [
+            "sendQuestion"
+          ]
+        },
+        {
+          "id": "sendQuestion",
+          "surface": "episodeComments",
+          "state": "episodeCommentsSending",
+          "next": [
+            "seeQuestion"
+          ]
+        },
+        {
+          "id": "seeQuestion",
+          "surface": "episodeComments",
+          "state": "episodeCommentsSent"
+        }
+      ],
+      "ends": "The accepted question stays beneath the selected episode with its author and send time; the draft remains editable after a failed send.",
+      "needs": [
+        "sendMessages"
+      ]
+    }
+  ],
+  "surfaces": [
+    {
+      "id": "home",
+      "question": "What can I pick up where I stopped?",
+      "route": "/home",
+      "binding": {
+        "record": "home",
+        "status": "proposed",
+        "variant": "continue",
+        "because": "Saved positions in episodes and albums decide what to resume.",
+        "candidates": [
+          "continue",
+          "collection"
+        ]
+      },
+      "slots": [
+        {
+          "id": "primary",
+          "data": {
+            "contract": "Media",
+            "many": true,
+            "map": {
+              "title": "title",
+              "meta": "creator",
+              "body": "description",
+              "duration": "durationSeconds",
+              "progress": "positionSeconds",
+              "shelf": "shelf"
+            }
+          },
+          "copy": {
+            "home.resume": [
+              "homeReady",
+              "homeLoading",
+              "homeLongContent"
+            ],
+            "home.featured": [
+              "homeReady",
+              "homeLoading"
+            ],
+            "home.newThisWeek": [
+              "homeReady",
+              "homeLoading"
+            ],
+            "home.play": [
+              "homeReady",
+              "homeLoading"
+            ],
+            "home.duration": [
+              "homeReady",
+              "homeLoading",
+              "homeLongContent"
+            ],
+            "home.progress": [
+              "homeReady",
+              "homeLoading",
+              "homeLongContent"
+            ]
+          }
+        },
+        {
+          "id": "state",
+          "record": "empty-states",
+          "status": "open",
+          "candidates": [
+            "compactCue",
+            "actionPanel"
+          ],
+          "copy": {
+            "home.empty.title": [
+              "homeEmpty"
+            ],
+            "home.empty.body": [
+              "homeEmpty"
+            ],
+            "home.empty.action": [
+              "homeEmpty"
+            ],
+            "home.recovery.title": [
+              "homeFailed"
+            ],
+            "home.recovery.action": [
+              "homeFailed"
+            ]
+          }
+        },
+        {
+          "id": "identity",
+          "copy": {
+            "home.title": "always",
+            "home.documentTitle": "always",
+            "shell.alt.productMark": "always"
+          }
+        },
+        {
+          "id": "navigation",
+          "copy": {
+            "nav.home": "always",
+            "nav.library": "always",
+            "nav.queue": "always",
+            "nav.downloads": "always",
+            "nav.settings": "always"
+          }
+        }
+      ],
+      "states": [
+        "homeReady",
+        "homeLoading",
+        "homeEmpty",
+        "homeFailed",
+        "homeLongContent"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "shell.aria.navigation": "always",
+        "shell.aria.main": "always",
+        "home.newPlaylist": "always"
+      }
+    },
+    {
+      "id": "library",
+      "question": "Which saved album, song or episode do I want to play?",
+      "route": "/library",
+      "slots": [
+        {
+          "id": "primary",
+          "data": {
+            "contract": "Media",
+            "many": true,
+            "map": {
+              "title": "title",
+              "creator": "creator",
+              "duration": "durationSeconds",
+              "download": "download",
+              "lastPlayed": "lastPlayedAt"
+            }
+          },
+          "copy": {
+            "library.columns.title": [
+              "libraryReady",
+              "libraryLoading",
+              "libraryLongContent",
+              "libraryCreated"
+            ],
+            "library.columns.creator": [
+              "libraryReady",
+              "libraryLoading",
+              "libraryLongContent",
+              "libraryCreated"
+            ],
+            "library.columns.duration": [
+              "libraryReady",
+              "libraryLoading",
+              "libraryLongContent",
+              "libraryCreated"
+            ],
+            "library.columns.download": [
+              "libraryReady",
+              "libraryLoading",
+              "libraryLongContent",
+              "libraryCreated"
+            ],
+            "library.columns.lastPlayed": [
+              "libraryReady",
+              "libraryLoading",
+              "libraryLongContent",
+              "libraryCreated"
+            ],
+            "library.duration": [
+              "libraryReady",
+              "libraryLoading",
+              "libraryLongContent",
+              "libraryCreated"
+            ],
+            "library.lastPlayed": [
+              "libraryReady",
+              "libraryLoading",
+              "libraryLongContent",
+              "libraryCreated"
+            ],
+            "download.status.notDownloaded": [
+              "libraryReady",
+              "libraryLoading",
+              "libraryCreated"
+            ],
+            "download.status.downloaded": [
+              "libraryReady",
+              "libraryLoading",
+              "libraryLongContent",
+              "libraryCreated"
+            ],
+            "download.status.downloading": [
+              "libraryReady",
+              "libraryLoading",
+              "libraryCreated"
+            ]
+          }
+        },
+        {
+          "id": "collections",
+          "copy": {
+            "library.playlistCount": [
+              "libraryReady",
+              "libraryLoading",
+              "libraryLongContent",
+              "libraryCreated"
+            ]
+          },
+          "data": {
+            "contract": "Playlist",
+            "many": true,
+            "map": {
+              "title": "name",
+              "count": "trackCount",
+              "visibility": "visibility"
+            }
+          }
+        }
+      ],
+      "states": [
+        "libraryReady",
+        "libraryLoading",
+        "libraryEmpty",
+        "libraryFailed",
+        "libraryLongContent",
+        "libraryCreated"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "library.title": "always",
+        "library.documentTitle": "always",
+        "shell.aria.navigation": "always",
+        "shell.aria.main": "always",
+        "shell.alt.productMark": "always",
+        "library.queryLabel": "always",
+        "library.kind.album": "always",
+        "library.kind.song": "always",
+        "library.kind.podcast": "always",
+        "library.kind.live": "always",
+        "library.kind.playlist": "always",
+        "library.empty.title": [
+          "libraryEmpty"
+        ],
+        "library.empty.body": [
+          "libraryEmpty"
+        ],
+        "library.empty.action": [
+          "libraryEmpty"
+        ],
+        "library.recovery.title": [
+          "libraryFailed"
+        ],
+        "library.recovery.action": [
+          "libraryFailed"
+        ],
+        "nav.library": "always",
+        "nav.home": "always",
+        "nav.queue": "always",
+        "nav.downloads": "always",
+        "nav.settings": "always"
+      }
+    },
+    {
+      "id": "player",
+      "question": "What is playing, and where am I in it?",
+      "route": "/player/:media",
+      "slots": [
+        {
+          "id": "primary",
+          "copy": {
+            "player.position": "always",
+            "player.duration": "always"
+          },
+          "data": {
+            "contract": "Media",
+            "many": false,
+            "map": {
+              "title": "title",
+              "creator": "creator",
+              "body": "description",
+              "duration": "durationSeconds",
+              "progress": "positionSeconds"
+            }
+          }
+        },
+        {
+          "id": "actions",
+          "copy": {
+            "player.play": [
+              "playerPaused",
+              "playerFinished",
+              "playerLongContent"
+            ],
+            "player.pause": [
+              "playerPlaying",
+              "playerOfflinePlaying",
+              "playerBuffering"
+            ],
+            "player.previous": [
+              "playerPaused",
+              "playerBuffering",
+              "playerPlaying",
+              "playerOfflinePlaying",
+              "playerFinished",
+              "playerLongContent"
+            ],
+            "player.next": [
+              "playerPaused",
+              "playerBuffering",
+              "playerPlaying",
+              "playerOfflinePlaying",
+              "playerFinished",
+              "playerLongContent"
+            ],
+            "player.seek.aria": [
+              "playerPaused",
+              "playerBuffering",
+              "playerPlaying",
+              "playerOfflinePlaying",
+              "playerFinished",
+              "playerLongContent"
+            ],
+            "player.volume.aria": [
+              "playerPaused",
+              "playerBuffering",
+              "playerPlaying",
+              "playerOfflinePlaying",
+              "playerFinished",
+              "playerLongContent"
+            ],
+            "player.playbackSpeed": [
+              "playerPaused",
+              "playerBuffering",
+              "playerPlaying",
+              "playerOfflinePlaying",
+              "playerFinished",
+              "playerLongContent"
+            ],
+            "player.queue": "always"
+          },
+          "on": [
+            {
+              "event": "playerToggleEvent",
+              "axis": "controlResponse"
+            },
+            {
+              "event": "playerStartEvent",
+              "axis": "asyncFeedback"
+            }
+          ]
+        },
+        {
+          "id": "state",
+          "copy": {
+            "player.buffering": [
+              "playerBuffering"
+            ],
+            "player.offline.title": [
+              "playerOfflineUnavailable"
+            ],
+            "player.offline.body": [
+              "playerOfflineUnavailable"
+            ],
+            "player.offline.action": [
+              "playerOfflineUnavailable"
+            ],
+            "player.offline.available": [
+              "playerOfflinePlaying"
+            ],
+            "player.recovery": [
+              "playerFailed"
+            ],
+            "player.retry": [
+              "playerFailed"
+            ],
+            "player.finished": [
+              "playerFinished"
+            ]
+          }
+        }
+      ],
+      "states": [
+        "playerPaused",
+        "playerBuffering",
+        "playerPlaying",
+        "playerOfflinePlaying",
+        "playerOfflineUnavailable",
+        "playerFailed",
+        "playerFinished",
+        "playerLongContent"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "player.title": "always",
+        "player.documentTitle": "always",
+        "shell.aria.navigation": "always",
+        "shell.aria.main": "always",
+        "shell.alt.productMark": "always",
+        "nav.home": "always",
+        "nav.library": "always",
+        "nav.queue": "always",
+        "nav.downloads": "always",
+        "nav.settings": "always"
+      }
+    },
+    {
+      "id": "downloads",
+      "question": "What can play without a connection, and what is still downloading?",
+      "route": "/downloads",
+      "slots": [
+        {
+          "id": "primary",
+          "copy": {
+            "download.status.notDownloaded": [
+              "downloadsDownloadFailed"
+            ],
+            "download.status.downloaded": [
+              "downloadsReady",
+              "downloadsDownloaded",
+              "downloadsRemoving",
+              "downloadsRemoveFailed",
+              "downloadsLongContent",
+              "downloadsConfirmSetup"
+            ],
+            "download.status.downloading": [
+              "downloadsReady",
+              "downloadsDownloading",
+              "downloadsRemoving",
+              "downloadsRemoved",
+              "downloadsRemoveFailed",
+              "downloadsConfirmSetup"
+            ],
+            "download.status.unavailable": [
+              "downloadsReady",
+              "downloadsRemoving",
+              "downloadsRemoved",
+              "downloadsRemoveFailed",
+              "downloadsConfirmSetup"
+            ],
+            "downloads.download": [
+              "downloadsReady",
+              "downloadsDownloadFailed",
+              "downloadsRemoved",
+              "downloadsRemoveFailed",
+              "downloadsConfirmSetup"
+            ],
+            "downloads.remove": [
+              "downloadsReady",
+              "downloadsDownloaded",
+              "downloadsRemoveFailed",
+              "downloadsLongContent",
+              "downloadsConfirmSetup"
+            ],
+            "downloads.duration": [
+              "downloadsReady",
+              "downloadsDownloading",
+              "downloadsDownloaded",
+              "downloadsDownloadFailed",
+              "downloadsRemoving",
+              "downloadsRemoved",
+              "downloadsRemoveFailed",
+              "downloadsLongContent",
+              "downloadsConfirmSetup"
+            ]
+          },
+          "data": {
+            "contract": "Media",
+            "many": true,
+            "map": {
+              "title": "title",
+              "creator": "creator",
+              "duration": "durationSeconds",
+              "download": "download"
+            }
+          }
+        },
+        {
+          "id": "state",
+          "record": "empty-states",
+          "status": "open",
+          "because": "Explain an empty offline library without implying streaming playback failed.",
+          "candidates": [
+            "compactCue",
+            "actionPanel"
+          ],
+          "copy": {
+            "downloads.empty.title": [
+              "downloadsEmpty"
+            ],
+            "downloads.empty.body": [
+              "downloadsEmpty"
+            ],
+            "downloads.empty.action": [
+              "downloadsEmpty"
+            ],
+            "downloads.recovery.title": [
+              "downloadsFailed"
+            ],
+            "downloads.recovery.action": [
+              "downloadsFailed"
+            ],
+            "downloads.status.transfer": [
+              "downloadsDownloading"
+            ],
+            "downloads.transfer.recovery": [
+              "downloadsDownloadFailed"
+            ],
+            "downloads.transfer.retry": [
+              "downloadsDownloadFailed"
+            ],
+            "downloads.status.removing": [
+              "downloadsRemoving"
+            ],
+            "downloads.remove.recovery": [
+              "downloadsRemoveFailed"
+            ],
+            "downloads.remove.retry": [
+              "downloadsRemoveFailed"
+            ]
+          }
+        },
+        {
+          "id": "confirmation",
+          "record": "dialogs-and-layers",
+          "status": "proposed",
+          "variant": "dialog",
+          "because": "The listener is removing local audio only; confirm the selected count and make clear that library entries and positions are kept.",
+          "data": {
+            "contract": "DownloadSelection",
+            "many": false,
+            "map": {
+              "count": "count"
+            }
+          },
+          "copy": {
+            "downloads.confirmation.title": [
+              "downloadsConfirmSetup"
+            ],
+            "downloads.confirmation.body": [
+              "downloadsConfirmSetup"
+            ],
+            "downloads.confirmation.confirm": [
+              "downloadsConfirmSetup"
+            ],
+            "downloads.confirmation.cancel": [
+              "downloadsConfirmSetup"
+            ],
+            "downloads.confirmation.close": [
+              "downloadsConfirmSetup"
+            ]
+          }
+        },
+        {
+          "id": "outcome",
+          "record": "notifications",
+          "status": "proposed",
+          "variant": "inline",
+          "because": "A completed transfer or removal remains visible in Downloads with the actual saved result.",
+          "copy": {
+            "downloads.outcome": [
+              "downloadsDownloaded"
+            ],
+            "downloads.remove.outcome": [
+              "downloadsRemoved"
+            ]
+          }
+        }
+      ],
+      "states": [
+        "downloadsReady",
+        "downloadsLoading",
+        "downloadsEmpty",
+        "downloadsFailed",
+        "downloadsLongContent",
+        "downloadsDownloading",
+        "downloadsDownloaded",
+        "downloadsDownloadFailed",
+        "downloadsRemoving",
+        "downloadsRemoved",
+        "downloadsRemoveFailed"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "downloads.title": "always",
+        "downloads.documentTitle": "always",
+        "shell.aria.navigation": "always",
+        "shell.aria.main": "always",
+        "shell.alt.productMark": "always",
+        "nav.downloads": "always",
+        "nav.home": "always",
+        "nav.library": "always",
+        "nav.queue": "always",
+        "nav.settings": "always"
+      },
+      "setups": [
+        {
+          "id": "downloadsConfirmSetup",
+          "label": "Remove selected downloads",
+          "event": "downloadsOpenDialogEvent",
+          "state": "downloadsReady"
+        }
+      ]
+    },
+    {
+      "id": "queue",
+      "question": "What plays next, and can I change the order?",
+      "route": "/queue",
+      "slots": [
+        {
+          "id": "primary",
+          "data": {
+            "contract": "Media",
+            "many": true,
+            "map": {
+              "title": "title",
+              "creator": "creator",
+              "duration": "durationSeconds"
+            }
+          },
+          "copy": {
+            "queue.moveUp": [
+              "queueReady",
+              "queueLoading",
+              "queueLongContent",
+              "queueSaving",
+              "queueSaved",
+              "queueSaveFailed"
+            ],
+            "queue.moveDown": [
+              "queueReady",
+              "queueLoading",
+              "queueLongContent",
+              "queueSaving",
+              "queueSaved",
+              "queueSaveFailed"
+            ],
+            "queue.remove": [
+              "queueReady",
+              "queueLoading",
+              "queueLongContent",
+              "queueSaving",
+              "queueSaved",
+              "queueSaveFailed"
+            ],
+            "queue.playNext": [
+              "queueReady",
+              "queueLoading",
+              "queueLongContent",
+              "queueSaving",
+              "queueSaved",
+              "queueSaveFailed"
+            ],
+            "queue.duration": [
+              "queueReady",
+              "queueLoading",
+              "queueLongContent",
+              "queueSaving",
+              "queueSaved",
+              "queueSaveFailed"
+            ]
+          }
+        },
+        {
+          "id": "state",
+          "copy": {
+            "queue.status": [
+              "queueSaving"
+            ],
+            "queue.outcome": [
+              "queueSaved"
+            ],
+            "queue.recovery": [
+              "queueSaveFailed"
+            ],
+            "queue.retry": [
+              "queueSaveFailed"
+            ]
+          },
+          "on": [
+            {
+              "event": "queueSaveEvent",
+              "axis": "asyncFeedback"
+            }
+          ]
+        }
+      ],
+      "states": [
+        "queueReady",
+        "queueLoading",
+        "queueEmpty",
+        "queueFailed",
+        "queueLongContent",
+        "queueSaving",
+        "queueSaved",
+        "queueSaveFailed"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "queue.title": "always",
+        "queue.documentTitle": "always",
+        "shell.aria.navigation": "always",
+        "shell.aria.main": "always",
+        "shell.alt.productMark": "always",
+        "queue.empty.title": [
+          "queueEmpty"
+        ],
+        "queue.empty.body": [
+          "queueEmpty"
+        ],
+        "queue.empty.action": [
+          "queueEmpty"
+        ],
+        "queue.recovery.title": [
+          "queueFailed"
+        ],
+        "queue.recovery.action": [
+          "queueFailed"
+        ],
+        "nav.queue": "always",
+        "nav.home": "always",
+        "nav.library": "always",
+        "nav.downloads": "always",
+        "nav.settings": "always"
+      }
+    },
+    {
+      "id": "newPlaylist",
+      "question": "What should this playlist be called, who can see it, and should its recordings download?",
+      "route": "/playlists/new",
+      "slots": [
+        {
+          "id": "header",
+          "copy": {
+            "newPlaylist.title": "always",
+            "newPlaylist.documentTitle": "always"
+          }
+        },
+        {
+          "id": "primary",
+          "copy": {
+            "newPlaylist.name.label": [
+              "newPlaylistDraft",
+              "newPlaylistSaving",
+              "newPlaylistFailed",
+              "newPlaylistLongContent",
+              "newPlaylistInvalidSetup"
+            ],
+            "newPlaylist.name.placeholder": [
+              "newPlaylistDraft",
+              "newPlaylistInvalidSetup"
+            ],
+            "newPlaylist.visibility.label": [
+              "newPlaylistDraft",
+              "newPlaylistSaving",
+              "newPlaylistFailed",
+              "newPlaylistLongContent",
+              "newPlaylistInvalidSetup"
+            ],
+            "newPlaylist.visibility.private": [
+              "newPlaylistDraft",
+              "newPlaylistSaving",
+              "newPlaylistFailed",
+              "newPlaylistLongContent",
+              "newPlaylistInvalidSetup"
+            ],
+            "newPlaylist.visibility.friends": [
+              "newPlaylistDraft",
+              "newPlaylistSaving",
+              "newPlaylistFailed",
+              "newPlaylistLongContent",
+              "newPlaylistInvalidSetup"
+            ],
+            "newPlaylist.visibility.public": [
+              "newPlaylistDraft",
+              "newPlaylistSaving",
+              "newPlaylistFailed",
+              "newPlaylistLongContent",
+              "newPlaylistInvalidSetup"
+            ],
+            "newPlaylist.offline.label": [
+              "newPlaylistDraft",
+              "newPlaylistSaving",
+              "newPlaylistFailed",
+              "newPlaylistLongContent",
+              "newPlaylistInvalidSetup"
+            ],
+            "newPlaylist.appendPlayed.label": [
+              "newPlaylistDraft",
+              "newPlaylistSaving",
+              "newPlaylistFailed",
+              "newPlaylistLongContent",
+              "newPlaylistInvalidSetup"
+            ]
+          },
+          "data": {
+            "contract": "PlaylistDraft",
+            "many": false,
+            "map": {
+              "name": "name",
+              "visibility": "visibility",
+              "offline": "offline",
+              "appendPlayed": "appendPlayed"
+            }
+          },
+          "on": [
+            {
+              "event": "newPlaylistSaveEvent",
+              "axis": "asyncFeedback"
+            }
+          ],
+          "states": [
+            "newPlaylistDraft",
+            "newPlaylistSaving",
+            "newPlaylistFailed",
+            "newPlaylistLongContent"
+          ]
+        },
+        {
+          "id": "commit",
+          "copy": {
+            "newPlaylist.save": [
+              "newPlaylistDraft",
+              "newPlaylistFailed",
+              "newPlaylistLongContent",
+              "newPlaylistInvalidSetup"
+            ]
+          },
+          "states": [
+            "newPlaylistDraft",
+            "newPlaylistFailed",
+            "newPlaylistLongContent"
+          ]
+        },
+        {
+          "id": "exit",
+          "copy": {
+            "newPlaylist.cancel": [
+              "newPlaylistDraft",
+              "newPlaylistSaving",
+              "newPlaylistFailed",
+              "newPlaylistLongContent",
+              "newPlaylistInvalidSetup"
+            ]
+          },
+          "states": [
+            "newPlaylistDraft",
+            "newPlaylistSaving",
+            "newPlaylistFailed",
+            "newPlaylistLongContent"
+          ]
+        },
+        {
+          "id": "state",
+          "copy": {
+            "newPlaylist.status": [
+              "newPlaylistSaving"
+            ],
+            "newPlaylist.recovery": [
+              "newPlaylistFailed"
+            ],
+            "newPlaylist.invalid": [
+              "newPlaylistInvalidSetup"
+            ]
+          }
+        },
+        {
+          "id": "result",
+          "copy": {
+            "newPlaylist.outcome": [
+              "newPlaylistSaved"
+            ],
+            "newPlaylist.openLibrary": [
+              "newPlaylistSaved"
+            ]
+          },
+          "states": [
+            "newPlaylistSaved"
+          ],
+          "data": {
+            "contract": "PlaylistDraft",
+            "many": false,
+            "map": {
+              "title": "name"
+            }
+          }
+        }
+      ],
+      "states": [
+        "newPlaylistDraft",
+        "newPlaylistSaving",
+        "newPlaylistSaved",
+        "newPlaylistFailed",
+        "newPlaylistLongContent"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "shell.aria.navigation": "always",
+        "shell.aria.main": "always",
+        "shell.alt.productMark": "always",
+        "nav.home": "always",
+        "nav.library": "always",
+        "nav.queue": "always",
+        "nav.downloads": "always",
+        "nav.settings": "always"
+      },
+      "setups": [
+        {
+          "id": "newPlaylistInvalidSetup",
+          "label": "Field invalid",
+          "event": "newPlaylistInvalidEvent",
+          "state": "newPlaylistDraft"
+        }
+      ]
+    },
+    {
+      "id": "settings",
+      "question": "When should downloads run, and how should listening positions and playlists be kept?",
+      "route": "/settings",
+      "binding": {
+        "record": "settings",
+        "status": "fixed",
+        "variant": "sections",
+        "because": "Download conditions, saved listening position and playlist visibility are persistent listener preferences, not playback controls."
+      },
+      "slots": [
+        {
+          "id": "header",
+          "copy": {
+            "settings.title": "always",
+            "settings.documentTitle": "always"
+          }
+        },
+        {
+          "id": "navigation",
+          "copy": {
+            "settings.section": "always"
+          }
+        },
+        {
+          "id": "primary",
+          "copy": {
+            "settings.downloadWifi.label": "always",
+            "settings.downloadCharging.label": "always",
+            "settings.removeFinished.label": "always",
+            "settings.rememberPosition.label": "always",
+            "settings.visibility.label": "always",
+            "settings.visibility.private": "always",
+            "settings.visibility.friends": "always",
+            "settings.visibility.public": "always"
+          },
+          "data": {
+            "contract": "ListeningPreferences",
+            "many": false,
+            "map": {
+              "downloadWifi": "downloadWifi",
+              "downloadCharging": "downloadCharging",
+              "removeFinished": "removeFinished",
+              "rememberPosition": "rememberPosition",
+              "visibility": "visibility"
+            }
+          }
+        },
+        {
+          "id": "commit",
+          "copy": {
+            "settings.save": "always",
+            "settings.cancel": "always"
+          }
+        },
+        {
+          "id": "state",
+          "copy": {
+            "settings.status.saving": [
+              "settingsSaving"
+            ],
+            "settings.status.saved": [
+              "settingsSaved"
+            ],
+            "settings.recovery": [
+              "settingsFailed"
+            ]
+          },
+          "on": [
+            {
+              "event": "savePreferencesEvent",
+              "axis": "asyncFeedback"
+            }
+          ]
+        }
+      ],
+      "states": [
+        "settingsReady",
+        "settingsSaving",
+        "settingsSaved",
+        "settingsFailed"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "shell.aria.navigation": "always",
+        "shell.aria.main": "always",
+        "shell.alt.productMark": "always",
+        "nav.settings": "always",
+        "nav.home": "always",
+        "nav.library": "always",
+        "nav.queue": "always",
+        "nav.downloads": "always"
+      }
+    },
+    {
+      "id": "help",
+      "question": "Which recordings remain playable offline, and what survives removing a download?",
+      "route": "/help",
+      "slots": [
+        {
+          "id": "primary",
+          "copy": {
+            "help.behavior": "always",
+            "help.safety": "always",
+            "nav.downloads": "always"
+          }
+        }
+      ],
+      "states": [
+        "helpReady"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "help.title": "always",
+        "help.documentTitle": "always",
+        "shell.aria.navigation": "always",
+        "shell.aria.main": "always",
+        "shell.alt.productMark": "always",
+        "nav.home": "always",
+        "nav.library": "always",
+        "nav.queue": "always",
+        "nav.settings": "always"
+      }
+    },
+    {
+      "id": "landing",
+      "question": "Can I keep songs and episodes together and resume them after a commute?",
+      "route": "/",
+      "slots": [
+        {
+          "id": "primary",
+          "copy": {
+            "landing.description": "always",
+            "landing.action": "always",
+            "landing.library.eyebrow": "always",
+            "landing.library.title": "always",
+            "landing.library.body": "always",
+            "landing.offline.eyebrow": "always",
+            "landing.offline.title": "always",
+            "landing.offline.body": "always",
+            "landing.resume.eyebrow": "always",
+            "landing.resume.title": "always",
+            "landing.resume.body": "always"
+          }
+        }
+      ],
+      "states": [
+        "landingReady"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "landing.title": "always",
+        "landing.documentTitle": "always",
+        "shell.aria.navigation": "always",
+        "shell.aria.main": "always",
+        "shell.alt.productMark": "always",
+        "landing.secondaryAction": "always",
+        "landing.footer": "always",
+        "landing.navigation.listen": "always",
+        "landing.navigation.podcasts": "always",
+        "landing.navigation.offline": "always",
+        "landing.navigation.help": "always",
+        "landing.oneLibrary.value": "always",
+        "landing.oneLibrary.label": "always",
+        "landing.savedPosition.value": "always",
+        "landing.savedPosition.label": "always",
+        "landing.offlinePlayback.value": "always",
+        "landing.offlinePlayback.label": "always",
+        "landing.ruthQuote.text": "always",
+        "landing.ruthQuote.who": "always",
+        "landing.harborlineRecords.alt": "always",
+        "landing.pineconeAudio.alt": "always",
+        "landing.tidepoolMedia.alt": "always",
+        "landing.brightwaterFm.alt": "always",
+        "landing.sablePodcasts.alt": "always",
+        "landing.northlightMusic.alt": "always"
+      }
+    },
+    {
+      "id": "pushDownloadComplete",
+      "question": "Which recording finished downloading and is now ready to play without a connection?",
+      "route": "push:pushDownloadComplete",
+      "channel": "push",
+      "slots": [
+        {
+          "id": "primary",
+          "data": {
+            "contract": "Media",
+            "many": false,
+            "map": {
+              "title": "title",
+              "creator": "creator",
+              "description": "description",
+              "duration": "durationSeconds",
+              "position": "positionSeconds",
+              "kind": "kind",
+              "download": "download"
+            }
+          },
+          "copy": {
+            "pushDownloadComplete.title": "always",
+            "pushDownloadComplete.body": "always",
+            "pushDownloadComplete.action": "always"
+          }
+        }
+      ],
+      "states": [
+        "pushDownloadCompleteReady"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {}
+    },
+    {
+      "id": "episodeComments",
+      "question": "What did listeners ask about this episode, and what should I ask its host?",
+      "route": "/episodes/:media/comments",
+      "binding": {
+        "record": "conversation",
+        "status": "proposed",
+        "variant": "context",
+        "because": "The host’s answers belong to one episode, so its title and notes must remain visible beside the listener discussion.",
+        "candidates": [
+          "bubbles",
+          "transcript",
+          "channel",
+          "context"
+        ]
+      },
+      "slots": [
+        {
+          "id": "header",
+          "copy": {
+            "episodeComments.title": "always",
+            "episodeComments.documentTitle": "always"
+          }
+        },
+        {
+          "id": "primary",
+          "data": {
+            "contract": "Message",
+            "many": true,
+            "map": {
+              "author": "author",
+              "body": "text",
+              "time": "sentAt",
+              "mine": "mine"
+            }
+          },
+          "copy": {
+            "episodeComments.timestamp": [
+              "episodeCommentsReady",
+              "episodeCommentsLoading",
+              "episodeCommentsLongContent",
+              "episodeCommentsSending",
+              "episodeCommentsSent",
+              "episodeCommentsSendFailed"
+            ]
+          }
+        },
+        {
+          "id": "composer",
+          "copy": {
+            "episodeComments.composer.placeholder": [
+              "episodeCommentsReady",
+              "episodeCommentsEmpty",
+              "episodeCommentsLongContent",
+              "episodeCommentsSent"
+            ],
+            "episodeComments.send": [
+              "episodeCommentsReady",
+              "episodeCommentsEmpty",
+              "episodeCommentsLongContent",
+              "episodeCommentsSending",
+              "episodeCommentsSent",
+              "episodeCommentsSendFailed"
+            ],
+            "episodeComments.aria.send": [
+              "episodeCommentsReady",
+              "episodeCommentsEmpty",
+              "episodeCommentsLongContent",
+              "episodeCommentsSending",
+              "episodeCommentsSent",
+              "episodeCommentsSendFailed"
+            ]
+          },
+          "on": [
+            {
+              "event": "episodeCommentsSendEvent",
+              "axis": "asyncFeedback"
+            }
+          ],
+          "states": [
+            "episodeCommentsReady",
+            "episodeCommentsEmpty",
+            "episodeCommentsLongContent",
+            "episodeCommentsSending",
+            "episodeCommentsSent",
+            "episodeCommentsSendFailed"
+          ],
+          "data": {
+            "contract": "CommentDraft",
+            "many": false,
+            "map": {
+              "body": "text"
+            }
+          }
+        },
+        {
+          "id": "context",
+          "data": {
+            "contract": "Media",
+            "many": false,
+            "map": {
+              "title": "title",
+              "creator": "creator",
+              "description": "description",
+              "duration": "durationSeconds",
+              "position": "positionSeconds",
+              "kind": "kind",
+              "download": "download"
+            }
+          },
+          "copy": {}
+        },
+        {
+          "id": "state",
+          "record": "empty-states",
+          "status": "open",
+          "candidates": [
+            "compactCue",
+            "actionPanel"
+          ],
+          "copy": {
+            "episodeComments.empty.title": [
+              "episodeCommentsEmpty"
+            ],
+            "episodeComments.empty.body": [
+              "episodeCommentsEmpty"
+            ],
+            "episodeComments.empty.action": [
+              "episodeCommentsEmpty"
+            ],
+            "episodeComments.recovery.title": [
+              "episodeCommentsFailed"
+            ],
+            "episodeComments.recovery.action": [
+              "episodeCommentsFailed"
+            ],
+            "episodeComments.status": [
+              "episodeCommentsSending"
+            ],
+            "episodeComments.sendFailure": [
+              "episodeCommentsSendFailed"
+            ],
+            "episodeComments.retry": [
+              "episodeCommentsSendFailed"
+            ],
+            "episodeComments.outcome": [
+              "episodeCommentsSent"
+            ]
+          }
+        }
+      ],
+      "states": [
+        "episodeCommentsReady",
+        "episodeCommentsLoading",
+        "episodeCommentsEmpty",
+        "episodeCommentsFailed",
+        "episodeCommentsLongContent",
+        "episodeCommentsSending",
+        "episodeCommentsSent",
+        "episodeCommentsSendFailed"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "shell.aria.navigation": "always",
+        "shell.aria.main": "always",
+        "shell.alt.productMark": "always",
+        "nav.home": "always",
+        "nav.library": "always",
+        "nav.queue": "always",
+        "nav.downloads": "always",
+        "nav.settings": "always"
+      }
+    }
+  ],
+  "files": {
+    "copy": "copy.md",
+    "fixtures": "fixtures.json"
+  },
+  "$schema": "../../../references/product-model.schema.json"
+}

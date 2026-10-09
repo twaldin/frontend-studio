@@ -1,3 +1,15 @@
+---
+id: create-edit
+scale: flow
+studio: null
+slots: {"required":["header","primary","commit","exit","state","result"],"optional":["preview","attachments","advanced","history","restore","detail","actions"]}
+variants: [{"id":"dedicatedPage","label":"Dedicated editor page"},{"id":"sidePanel","label":"Side-panel editor"},{"id":"dialogForm","label":"Focused dialog form"},{"id":"inlineEdit","label":"Inline edit"}]
+states: ["loading","newDraft","pristine","dirty","validating","saving","saved","invalid","failed","offline","conflict","permissionLost","objectGone","uploadPending","uploadFailed","outcomeUnknown"]
+copy: ["save"]
+events: ["edit","save","create","cancel","leave","discard","upload","restore"]
+renderer: variants
+---
+
 # Create and edit
 
 `id: create-edit` · scale: flow · studio: no studio step · references checked: 2026-10-08 (new primary guidance); 2026-10-06 (inherited link-only inspiration)

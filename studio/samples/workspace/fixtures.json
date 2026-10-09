@@ -1,0 +1,1243 @@
+{
+  "Service": {
+    "populated": [
+      {
+        "name": "api-gateway",
+        "status": "healthy",
+        "region": "us-east-1",
+        "latencyMs": 184,
+        "lastDeployedAt": "2026-10-08T14:02:00Z",
+        "activeArtifact": "v41"
+      },
+      {
+        "name": "billing",
+        "status": "degraded",
+        "region": "us-east-1",
+        "latencyMs": 612,
+        "lastDeployedAt": "2026-10-08T12:14:00Z",
+        "activeArtifact": "v44"
+      },
+      {
+        "name": "search",
+        "status": "healthy",
+        "region": "eu-west-1",
+        "latencyMs": 98,
+        "lastDeployedAt": "2026-10-07T14:14:00Z",
+        "activeArtifact": "v43"
+      },
+      {
+        "name": "notifications",
+        "status": "down",
+        "region": "us-west-2",
+        "latencyMs": 0,
+        "lastDeployedAt": "2026-10-05T14:14:00Z",
+        "activeArtifact": "v46"
+      },
+      {
+        "name": "worker-pool",
+        "status": "paused",
+        "region": "us-east-1",
+        "latencyMs": 0,
+        "lastDeployedAt": "2026-10-01T14:14:00Z",
+        "activeArtifact": "v45"
+      },
+      {
+        "name": "auth",
+        "status": "healthy",
+        "region": "eu-west-1",
+        "latencyMs": 76,
+        "lastDeployedAt": "2026-10-08T10:14:00Z",
+        "activeArtifact": "v46"
+      },
+      {
+        "name": "image-resizer",
+        "status": "healthy",
+        "region": "us-east-1",
+        "latencyMs": 83,
+        "lastDeployedAt": "2026-10-08T13:14:00Z",
+        "activeArtifact": "v47"
+      },
+      {
+        "name": "event-router",
+        "status": "degraded",
+        "region": "us-west-2",
+        "latencyMs": 102,
+        "lastDeployedAt": "2026-10-08T12:14:00Z",
+        "activeArtifact": "v48"
+      },
+      {
+        "name": "report-builder",
+        "status": "down",
+        "region": "eu-west-1",
+        "latencyMs": 121,
+        "lastDeployedAt": "2026-10-08T11:14:00Z",
+        "activeArtifact": "v49"
+      },
+      {
+        "name": "cache-writer",
+        "status": "paused",
+        "region": "us-east-1",
+        "latencyMs": 140,
+        "lastDeployedAt": "2026-10-08T10:14:00Z",
+        "activeArtifact": "v50"
+      },
+      {
+        "name": "task-scheduler",
+        "status": "healthy",
+        "region": "us-west-2",
+        "latencyMs": 159,
+        "lastDeployedAt": "2026-10-08T09:14:00Z",
+        "activeArtifact": "v51"
+      },
+      {
+        "name": "catalog-sync",
+        "status": "degraded",
+        "region": "eu-west-1",
+        "latencyMs": 178,
+        "lastDeployedAt": "2026-10-08T08:14:00Z",
+        "activeArtifact": "v52"
+      },
+      {
+        "name": "mail-worker",
+        "status": "down",
+        "region": "us-east-1",
+        "latencyMs": 197,
+        "lastDeployedAt": "2026-10-08T07:14:00Z",
+        "activeArtifact": "v53"
+      },
+      {
+        "name": "audit-log",
+        "status": "paused",
+        "region": "us-west-2",
+        "latencyMs": 216,
+        "lastDeployedAt": "2026-10-08T06:14:00Z",
+        "activeArtifact": "v54"
+      },
+      {
+        "name": "file-indexer",
+        "status": "healthy",
+        "region": "eu-west-1",
+        "latencyMs": 235,
+        "lastDeployedAt": "2026-10-08T05:14:00Z",
+        "activeArtifact": "v55"
+      },
+      {
+        "name": "usage-meter",
+        "status": "degraded",
+        "region": "us-east-1",
+        "latencyMs": 254,
+        "lastDeployedAt": "2026-10-08T04:14:00Z",
+        "activeArtifact": "v56"
+      },
+      {
+        "name": "preview-builder",
+        "status": "down",
+        "region": "us-west-2",
+        "latencyMs": 273,
+        "lastDeployedAt": "2026-10-08T03:14:00Z",
+        "activeArtifact": "v57"
+      },
+      {
+        "name": "session-store",
+        "status": "paused",
+        "region": "eu-west-1",
+        "latencyMs": 292,
+        "lastDeployedAt": "2026-10-08T02:14:00Z",
+        "activeArtifact": "v58"
+      },
+      {
+        "name": "invoice-worker",
+        "status": "healthy",
+        "region": "us-east-1",
+        "latencyMs": 311,
+        "lastDeployedAt": "2026-10-08T01:14:00Z",
+        "activeArtifact": "v59"
+      },
+      {
+        "name": "webhook-router",
+        "status": "degraded",
+        "region": "us-west-2",
+        "latencyMs": 330,
+        "lastDeployedAt": "2026-10-08T00:14:00Z",
+        "activeArtifact": "v60"
+      },
+      {
+        "name": "queue-reader",
+        "status": "down",
+        "region": "eu-west-1",
+        "latencyMs": 349,
+        "lastDeployedAt": "2026-10-07T23:14:00Z",
+        "activeArtifact": "v61"
+      },
+      {
+        "name": "asset-publisher",
+        "status": "paused",
+        "region": "us-east-1",
+        "latencyMs": 368,
+        "lastDeployedAt": "2026-10-07T22:14:00Z",
+        "activeArtifact": "v62"
+      },
+      {
+        "name": "backup-worker",
+        "status": "healthy",
+        "region": "us-west-2",
+        "latencyMs": 387,
+        "lastDeployedAt": "2026-10-07T21:14:00Z",
+        "activeArtifact": "v63"
+      },
+      {
+        "name": "media-processor",
+        "status": "degraded",
+        "region": "eu-west-1",
+        "latencyMs": 406,
+        "lastDeployedAt": "2026-10-07T20:14:00Z",
+        "activeArtifact": "v64"
+      }
+    ],
+    "one": [
+      {
+        "name": "api-gateway",
+        "status": "healthy",
+        "region": "us-east-1",
+        "latencyMs": 184,
+        "lastDeployedAt": "2026-10-08T14:02:00Z",
+        "activeArtifact": "v41"
+      }
+    ],
+    "long": [
+      {
+        "name": "billing-usage-reconciliation-worker-for-regional-subscriptions",
+        "status": "degraded",
+        "region": "us-east-1",
+        "latencyMs": 612,
+        "lastDeployedAt": "2026-10-08T12:14:00Z",
+        "activeArtifact": "v43"
+      }
+    ],
+    "none": [],
+    "billing": [
+      {
+        "name": "billing",
+        "status": "degraded",
+        "region": "us-east-1",
+        "latencyMs": 612,
+        "lastDeployedAt": "2026-10-08T12:14:00Z",
+        "activeArtifact": "v44"
+      }
+    ],
+    "recovered": [
+      {
+        "name": "billing",
+        "status": "healthy",
+        "region": "us-east-1",
+        "latencyMs": 112,
+        "lastDeployedAt": "2026-10-08T14:14:00Z",
+        "activeArtifact": "v45"
+      }
+    ],
+    "notifications": [
+      {
+        "name": "notifications",
+        "status": "down",
+        "region": "us-west-2",
+        "latencyMs": 0,
+        "lastDeployedAt": "2026-10-05T14:14:00Z",
+        "activeArtifact": "v46"
+      }
+    ],
+    "minutes": [
+      {
+        "name": "api-gateway",
+        "status": "healthy",
+        "region": "us-east-1",
+        "latencyMs": 184,
+        "lastDeployedAt": "2026-10-08T14:02:00Z",
+        "activeArtifact": "v41"
+      }
+    ],
+    "hours": [
+      {
+        "name": "billing",
+        "status": "degraded",
+        "region": "us-east-1",
+        "latencyMs": 612,
+        "lastDeployedAt": "2026-10-08T12:14:00Z",
+        "activeArtifact": "v44"
+      }
+    ],
+    "days": [
+      {
+        "name": "notifications",
+        "status": "down",
+        "region": "us-west-2",
+        "latencyMs": 0,
+        "lastDeployedAt": "2026-10-05T14:14:00Z",
+        "activeArtifact": "v46"
+      }
+    ],
+    "weeks": [
+      {
+        "name": "worker-pool",
+        "status": "paused",
+        "region": "us-east-1",
+        "latencyMs": 0,
+        "lastDeployedAt": "2026-10-01T14:14:00Z",
+        "activeArtifact": "v41"
+      }
+    ],
+    "rolledBack": [
+      {
+        "name": "billing",
+        "status": "healthy",
+        "region": "us-east-1",
+        "latencyMs": 112,
+        "lastDeployedAt": "2026-10-08T14:14:00Z",
+        "activeArtifact": "v43"
+      }
+    ],
+    "notificationsRecovered": [
+      {
+        "name": "notifications",
+        "status": "healthy",
+        "region": "us-west-2",
+        "latencyMs": 95,
+        "lastDeployedAt": "2026-10-05T14:14:00Z",
+        "activeArtifact": "v46"
+      }
+    ]
+  },
+  "Deploy": {
+    "populated": [
+      {
+        "service": "api-gateway",
+        "owner": "Maya",
+        "stage": "queued",
+        "artifact": "v42",
+        "progressPercent": 0,
+        "startedAt": "2026-10-08T14:02:00Z",
+        "exitCode": 0,
+        "elapsedSeconds": 0,
+        "operation": "deploy"
+      },
+      {
+        "service": "billing",
+        "owner": "Dana",
+        "stage": "building",
+        "artifact": "v44",
+        "progressPercent": 25,
+        "startedAt": "2026-10-08T14:01:00Z",
+        "exitCode": 0,
+        "elapsedSeconds": 48,
+        "operation": "deploy"
+      },
+      {
+        "service": "search",
+        "owner": "Marcus",
+        "stage": "rollingOut",
+        "artifact": "v45",
+        "progressPercent": 50,
+        "startedAt": "2026-10-08T14:00:00Z",
+        "exitCode": 0,
+        "elapsedSeconds": 48,
+        "operation": "deploy"
+      },
+      {
+        "service": "notifications",
+        "owner": "Maya",
+        "stage": "complete",
+        "artifact": "v46",
+        "progressPercent": 100,
+        "startedAt": "2026-10-08T13:59:00Z",
+        "exitCode": 0,
+        "elapsedSeconds": 48,
+        "operation": "deploy"
+      },
+      {
+        "service": "worker-pool",
+        "owner": "Dana",
+        "stage": "failed",
+        "artifact": "v47",
+        "progressPercent": 25,
+        "startedAt": "2026-10-08T13:58:00Z",
+        "exitCode": 1,
+        "elapsedSeconds": 42,
+        "operation": "deploy"
+      },
+      {
+        "service": "auth",
+        "owner": "Marcus",
+        "stage": "queued",
+        "artifact": "v48",
+        "progressPercent": 0,
+        "startedAt": "2026-10-08T13:57:00Z",
+        "exitCode": 0,
+        "elapsedSeconds": 0,
+        "operation": "deploy"
+      },
+      {
+        "service": "image-resizer",
+        "owner": "Maya",
+        "stage": "building",
+        "artifact": "v49",
+        "progressPercent": 25,
+        "startedAt": "2026-10-08T13:56:00Z",
+        "exitCode": 0,
+        "elapsedSeconds": 48,
+        "operation": "deploy"
+      },
+      {
+        "service": "event-router",
+        "owner": "Dana",
+        "stage": "rollingOut",
+        "artifact": "v50",
+        "progressPercent": 50,
+        "startedAt": "2026-10-08T13:55:00Z",
+        "exitCode": 0,
+        "elapsedSeconds": 48,
+        "operation": "deploy"
+      },
+      {
+        "service": "report-builder",
+        "owner": "Marcus",
+        "stage": "complete",
+        "artifact": "v51",
+        "progressPercent": 100,
+        "startedAt": "2026-10-08T13:54:00Z",
+        "exitCode": 0,
+        "elapsedSeconds": 48,
+        "operation": "deploy"
+      },
+      {
+        "service": "cache-writer",
+        "owner": "Maya",
+        "stage": "failed",
+        "artifact": "v52",
+        "progressPercent": 25,
+        "startedAt": "2026-10-08T13:53:00Z",
+        "exitCode": 1,
+        "elapsedSeconds": 42,
+        "operation": "deploy"
+      },
+      {
+        "service": "task-scheduler",
+        "owner": "Dana",
+        "stage": "queued",
+        "artifact": "v53",
+        "progressPercent": 0,
+        "startedAt": "2026-10-08T13:52:00Z",
+        "exitCode": 0,
+        "elapsedSeconds": 0,
+        "operation": "deploy"
+      },
+      {
+        "service": "catalog-sync",
+        "owner": "Marcus",
+        "stage": "building",
+        "artifact": "v54",
+        "progressPercent": 25,
+        "startedAt": "2026-10-08T13:51:00Z",
+        "exitCode": 0,
+        "elapsedSeconds": 48,
+        "operation": "deploy"
+      },
+      {
+        "service": "mail-worker",
+        "owner": "Maya",
+        "stage": "rollingOut",
+        "artifact": "v55",
+        "progressPercent": 50,
+        "startedAt": "2026-10-08T13:50:00Z",
+        "exitCode": 0,
+        "elapsedSeconds": 48,
+        "operation": "deploy"
+      },
+      {
+        "service": "audit-log",
+        "owner": "Dana",
+        "stage": "complete",
+        "artifact": "v56",
+        "progressPercent": 100,
+        "startedAt": "2026-10-08T13:49:00Z",
+        "exitCode": 0,
+        "elapsedSeconds": 48,
+        "operation": "deploy"
+      },
+      {
+        "service": "file-indexer",
+        "owner": "Marcus",
+        "stage": "failed",
+        "artifact": "v57",
+        "progressPercent": 25,
+        "startedAt": "2026-10-08T13:48:00Z",
+        "exitCode": 1,
+        "elapsedSeconds": 42,
+        "operation": "deploy"
+      },
+      {
+        "service": "usage-meter",
+        "owner": "Maya",
+        "stage": "queued",
+        "artifact": "v58",
+        "progressPercent": 0,
+        "startedAt": "2026-10-08T13:47:00Z",
+        "exitCode": 0,
+        "elapsedSeconds": 0,
+        "operation": "deploy"
+      },
+      {
+        "service": "preview-builder",
+        "owner": "Dana",
+        "stage": "building",
+        "artifact": "v59",
+        "progressPercent": 25,
+        "startedAt": "2026-10-08T13:46:00Z",
+        "exitCode": 0,
+        "elapsedSeconds": 48,
+        "operation": "deploy"
+      },
+      {
+        "service": "session-store",
+        "owner": "Marcus",
+        "stage": "rollingOut",
+        "artifact": "v60",
+        "progressPercent": 50,
+        "startedAt": "2026-10-08T13:45:00Z",
+        "exitCode": 0,
+        "elapsedSeconds": 48,
+        "operation": "deploy"
+      }
+    ],
+    "one": [
+      {
+        "service": "api-gateway",
+        "owner": "Maya",
+        "stage": "queued",
+        "artifact": "v42",
+        "progressPercent": 0,
+        "startedAt": "2026-10-08T14:02:00Z",
+        "exitCode": 0,
+        "elapsedSeconds": 0,
+        "operation": "deploy"
+      }
+    ],
+    "long": [
+      {
+        "service": "billing",
+        "owner": "Dana",
+        "stage": "building",
+        "artifact": "billing-connection-pool-reconciliation-release-candidate-2026-10-08",
+        "progressPercent": 25,
+        "startedAt": "2026-10-08T14:01:00Z",
+        "exitCode": 0,
+        "elapsedSeconds": 48,
+        "operation": "deploy"
+      }
+    ],
+    "none": [],
+    "queued": [
+      {
+        "artifact": "v45",
+        "service": "billing",
+        "owner": "Dana",
+        "stage": "queued",
+        "progressPercent": 0,
+        "startedAt": "2026-10-08T14:02:00Z",
+        "exitCode": 0,
+        "elapsedSeconds": 0,
+        "operation": "deploy"
+      }
+    ],
+    "active": [
+      {
+        "artifact": "v45",
+        "service": "billing",
+        "owner": "Dana",
+        "stage": "rollingOut",
+        "progressPercent": 50,
+        "startedAt": "2026-10-08T14:02:00Z",
+        "exitCode": 0,
+        "elapsedSeconds": 24,
+        "operation": "deploy"
+      }
+    ],
+    "complete": [
+      {
+        "artifact": "v45",
+        "service": "billing",
+        "owner": "Dana",
+        "stage": "complete",
+        "progressPercent": 100,
+        "startedAt": "2026-10-08T14:02:00Z",
+        "exitCode": 0,
+        "elapsedSeconds": 48,
+        "operation": "deploy"
+      }
+    ],
+    "failed": [
+      {
+        "artifact": "v45",
+        "service": "billing",
+        "owner": "Dana",
+        "stage": "failed",
+        "progressPercent": 25,
+        "startedAt": "2026-10-08T14:02:00Z",
+        "exitCode": 1,
+        "elapsedSeconds": 42,
+        "operation": "deploy"
+      }
+    ],
+    "rollback": [
+      {
+        "artifact": "v43",
+        "service": "billing",
+        "owner": "Dana",
+        "stage": "rollingOut",
+        "progressPercent": 50,
+        "startedAt": "2026-10-08T14:02:00Z",
+        "exitCode": 0,
+        "elapsedSeconds": 18,
+        "operation": "rollback"
+      }
+    ],
+    "rollbackComplete": [
+      {
+        "artifact": "v43",
+        "service": "billing",
+        "owner": "Dana",
+        "stage": "complete",
+        "progressPercent": 100,
+        "startedAt": "2026-10-08T14:02:00Z",
+        "exitCode": 0,
+        "elapsedSeconds": 48,
+        "operation": "rollback"
+      }
+    ],
+    "rollbackFailed": [
+      {
+        "artifact": "v43",
+        "service": "billing",
+        "owner": "Dana",
+        "stage": "failed",
+        "progressPercent": 25,
+        "startedAt": "2026-10-08T14:02:00Z",
+        "exitCode": 1,
+        "elapsedSeconds": 42,
+        "operation": "rollback"
+      }
+    ],
+    "restartActive": [
+      {
+        "artifact": "v46",
+        "service": "notifications",
+        "owner": "Maya",
+        "stage": "rollingOut",
+        "progressPercent": 50,
+        "startedAt": "2026-10-08T14:12:00Z",
+        "exitCode": 0,
+        "elapsedSeconds": 18,
+        "operation": "restart"
+      }
+    ],
+    "restartComplete": [
+      {
+        "artifact": "v46",
+        "service": "notifications",
+        "owner": "Maya",
+        "stage": "complete",
+        "progressPercent": 100,
+        "startedAt": "2026-10-08T14:12:00Z",
+        "exitCode": 0,
+        "elapsedSeconds": 36,
+        "operation": "restart"
+      }
+    ],
+    "restartFailed": [
+      {
+        "artifact": "v46",
+        "service": "notifications",
+        "owner": "Maya",
+        "stage": "failed",
+        "progressPercent": 50,
+        "startedAt": "2026-10-08T14:12:00Z",
+        "exitCode": 1,
+        "elapsedSeconds": 36,
+        "operation": "restart"
+      }
+    ],
+    "notificationsCurrent": [
+      {
+        "artifact": "v46",
+        "service": "notifications",
+        "owner": "Maya",
+        "stage": "complete",
+        "progressPercent": 100,
+        "startedAt": "2026-10-05T14:14:00Z",
+        "exitCode": 0,
+        "elapsedSeconds": 36,
+        "operation": "deploy"
+      }
+    ]
+  },
+  "Message": {
+    "populated": [
+      {
+        "author": "Maya",
+        "text": "billing p95 jumped right after the 14:02 deploy.",
+        "mine": "theirs",
+        "sentAt": "2026-10-08T14:09:00Z"
+      },
+      {
+        "author": "Marcus",
+        "text": "I compared the deployment diff: the connection pool changed from 40 to 10. I recommend reviewing the previous artifact before starting a rollback.",
+        "mine": "theirs",
+        "sentAt": "2026-10-08T14:09:00Z"
+      },
+      {
+        "author": "Dana",
+        "text": "I will review the previous billing artifact and start the rollback from the service record.",
+        "mine": "mine",
+        "sentAt": "2026-10-08T14:10:00Z"
+      }
+    ],
+    "one": [
+      {
+        "author": "Maya",
+        "text": "billing p95 jumped right after the 14:02 deploy.",
+        "mine": "theirs",
+        "sentAt": "2026-10-08T14:09:00Z"
+      }
+    ],
+    "long": [
+      {
+        "author": "Maya Chen, primary on-call engineer for regional billing services",
+        "text": "The latency jump begins at the same time as the connection-pool change. I checked the previous artifact against the current schema and found no migration in this rollout, so we can restore it without rebuilding. I will watch the request backlog while Dana starts the rollback. Please keep the incident open until the regional health checks pass and the backlog returns to its normal range; a successful deployment event by itself is not enough evidence of recovery.",
+        "sentAt": "2026-10-08T14:09:00Z",
+        "mine": "theirs"
+      }
+    ],
+    "none": []
+  },
+  "Configuration": {
+    "populated": [
+      {
+        "name": "relay.yaml",
+        "body": "service: api-gateway\nregion: us-east-1\nhealthcheck:\n  path: /healthz\n  interval: 10s\nrollout:\n  batch: 25%\n  pause_on_failure: true",
+        "service": "api-gateway"
+      },
+      {
+        "name": "worker.yaml",
+        "body": "service: worker-pool\nregion: eu-west-1\nrollout:\n  batch: 10%\n  pause_on_failure: true",
+        "service": "worker-pool"
+      }
+    ],
+    "one": [
+      {
+        "name": "relay.yaml",
+        "body": "service: api-gateway\nregion: us-east-1\nhealthcheck:\n  path: /healthz\n  interval: 10s\nrollout:\n  batch: 25%\n  pause_on_failure: true",
+        "service": "api-gateway"
+      }
+    ],
+    "long": [
+      {
+        "name": "billing-regional-subscription-reconciliation-production.yaml",
+        "body": "service: billing\nregion: us-east-1\nhealthcheck:\n  path: /healthz\n  interval: 10s\n  timeout: 3s\nrollout:\n  batch: 25%\n  pause_on_failure: true\n  minimum_healthy_instances: 3\nresources:\n  cpu: 2\n  memory: 2048Mi\nconnections:\n  pool_size: 40\n  idle_timeout: 30s\nnotifications:\n  incident_owner: regional-billing-on-call",
+        "service": "billing"
+      }
+    ],
+    "none": [],
+    "billing": [
+      {
+        "name": "billing.yaml",
+        "service": "billing",
+        "body": "service: billing\nregion: us-east-1\nhealthcheck:\n  path: /healthz\n  interval: 10s\nrollout:\n  batch: 25%\n  pause_on_failure: true\nconnections:\n  pool_size: 10"
+      }
+    ],
+    "billingRecovered": [
+      {
+        "name": "billing.yaml",
+        "service": "billing",
+        "body": "service: billing\nregion: us-east-1\nhealthcheck:\n  path: /healthz\n  interval: 10s\nrollout:\n  batch: 25%\n  pause_on_failure: true\nconnections:\n  pool_size: 40"
+      }
+    ],
+    "notifications": [
+      {
+        "name": "notifications.yaml",
+        "service": "notifications",
+        "body": "service: notifications\nregion: us-west-2\nhealthcheck:\n  path: /healthz\n  interval: 10s\nrollout:\n  batch: 25%\n  pause_on_failure: true\nworkers:\n  minimum_healthy_instances: 3"
+      }
+    ]
+  },
+  "MetricPoint": {
+    "populated": [
+      {
+        "metric": "requestsPerMinute",
+        "value": 31,
+        "observedAt": "2026-10-08T13:09:00Z",
+        "service": "api-gateway"
+      },
+      {
+        "metric": "requestsPerMinute",
+        "value": 33,
+        "observedAt": "2026-10-08T13:14:00Z",
+        "service": "api-gateway"
+      },
+      {
+        "metric": "requestsPerMinute",
+        "value": 35,
+        "observedAt": "2026-10-08T13:19:00Z",
+        "service": "api-gateway"
+      },
+      {
+        "metric": "requestsPerMinute",
+        "value": 34,
+        "observedAt": "2026-10-08T13:24:00Z",
+        "service": "api-gateway"
+      },
+      {
+        "metric": "requestsPerMinute",
+        "value": 38,
+        "observedAt": "2026-10-08T13:29:00Z",
+        "service": "api-gateway"
+      },
+      {
+        "metric": "requestsPerMinute",
+        "value": 41,
+        "observedAt": "2026-10-08T13:34:00Z",
+        "service": "api-gateway"
+      },
+      {
+        "metric": "requestsPerMinute",
+        "value": 40,
+        "observedAt": "2026-10-08T13:39:00Z",
+        "service": "api-gateway"
+      },
+      {
+        "metric": "requestsPerMinute",
+        "value": 44,
+        "observedAt": "2026-10-08T13:44:00Z",
+        "service": "api-gateway"
+      },
+      {
+        "metric": "requestsPerMinute",
+        "value": 43,
+        "observedAt": "2026-10-08T13:49:00Z",
+        "service": "api-gateway"
+      },
+      {
+        "metric": "requestsPerMinute",
+        "value": 47,
+        "observedAt": "2026-10-08T13:54:00Z",
+        "service": "api-gateway"
+      },
+      {
+        "metric": "requestsPerMinute",
+        "value": 46,
+        "observedAt": "2026-10-08T13:59:00Z",
+        "service": "api-gateway"
+      },
+      {
+        "metric": "requestsPerMinute",
+        "value": 45,
+        "observedAt": "2026-10-08T14:04:00Z",
+        "service": "api-gateway"
+      },
+      {
+        "metric": "requestsPerMinute",
+        "value": 49,
+        "observedAt": "2026-10-08T14:09:00Z",
+        "service": "api-gateway"
+      },
+      {
+        "metric": "requestsPerMinute",
+        "value": 48,
+        "observedAt": "2026-10-08T14:14:00Z",
+        "service": "api-gateway"
+      },
+      {
+        "metric": "latencyP95Ms",
+        "value": 1040,
+        "observedAt": "2026-10-08T13:09:00Z",
+        "service": "api-gateway"
+      },
+      {
+        "metric": "latencyP95Ms",
+        "value": 1020,
+        "observedAt": "2026-10-08T13:14:00Z",
+        "service": "api-gateway"
+      },
+      {
+        "metric": "latencyP95Ms",
+        "value": 992,
+        "observedAt": "2026-10-08T13:19:00Z",
+        "service": "api-gateway"
+      },
+      {
+        "metric": "latencyP95Ms",
+        "value": 1000,
+        "observedAt": "2026-10-08T13:24:00Z",
+        "service": "api-gateway"
+      },
+      {
+        "metric": "latencyP95Ms",
+        "value": 964,
+        "observedAt": "2026-10-08T13:29:00Z",
+        "service": "api-gateway"
+      },
+      {
+        "metric": "latencyP95Ms",
+        "value": 944,
+        "observedAt": "2026-10-08T13:34:00Z",
+        "service": "api-gateway"
+      },
+      {
+        "metric": "latencyP95Ms",
+        "value": 952,
+        "observedAt": "2026-10-08T13:39:00Z",
+        "service": "api-gateway"
+      },
+      {
+        "metric": "latencyP95Ms",
+        "value": 920,
+        "observedAt": "2026-10-08T13:44:00Z",
+        "service": "api-gateway"
+      },
+      {
+        "metric": "latencyP95Ms",
+        "value": 900,
+        "observedAt": "2026-10-08T13:49:00Z",
+        "service": "api-gateway"
+      },
+      {
+        "metric": "latencyP95Ms",
+        "value": 912,
+        "observedAt": "2026-10-08T13:54:00Z",
+        "service": "api-gateway"
+      },
+      {
+        "metric": "latencyP95Ms",
+        "value": 880,
+        "observedAt": "2026-10-08T13:59:00Z",
+        "service": "api-gateway"
+      },
+      {
+        "metric": "latencyP95Ms",
+        "value": 872,
+        "observedAt": "2026-10-08T14:04:00Z",
+        "service": "api-gateway"
+      },
+      {
+        "metric": "latencyP95Ms",
+        "value": 856,
+        "observedAt": "2026-10-08T14:09:00Z",
+        "service": "api-gateway"
+      },
+      {
+        "metric": "latencyP95Ms",
+        "value": 848,
+        "observedAt": "2026-10-08T14:14:00Z",
+        "service": "api-gateway"
+      },
+      {
+        "metric": "errorPercent",
+        "value": 0.0,
+        "observedAt": "2026-10-08T13:09:00Z",
+        "service": "api-gateway"
+      },
+      {
+        "metric": "errorPercent",
+        "value": 0.0,
+        "observedAt": "2026-10-08T13:14:00Z",
+        "service": "api-gateway"
+      },
+      {
+        "metric": "errorPercent",
+        "value": 0.0,
+        "observedAt": "2026-10-08T13:19:00Z",
+        "service": "api-gateway"
+      },
+      {
+        "metric": "errorPercent",
+        "value": 0.0,
+        "observedAt": "2026-10-08T13:24:00Z",
+        "service": "api-gateway"
+      },
+      {
+        "metric": "errorPercent",
+        "value": 0.0,
+        "observedAt": "2026-10-08T13:29:00Z",
+        "service": "api-gateway"
+      },
+      {
+        "metric": "errorPercent",
+        "value": 0.0,
+        "observedAt": "2026-10-08T13:34:00Z",
+        "service": "api-gateway"
+      },
+      {
+        "metric": "errorPercent",
+        "value": 0.0,
+        "observedAt": "2026-10-08T13:39:00Z",
+        "service": "api-gateway"
+      },
+      {
+        "metric": "errorPercent",
+        "value": 0.0,
+        "observedAt": "2026-10-08T13:44:00Z",
+        "service": "api-gateway"
+      },
+      {
+        "metric": "errorPercent",
+        "value": 0.0,
+        "observedAt": "2026-10-08T13:49:00Z",
+        "service": "api-gateway"
+      },
+      {
+        "metric": "errorPercent",
+        "value": 0.0,
+        "observedAt": "2026-10-08T13:54:00Z",
+        "service": "api-gateway"
+      },
+      {
+        "metric": "errorPercent",
+        "value": 0.0,
+        "observedAt": "2026-10-08T13:59:00Z",
+        "service": "api-gateway"
+      },
+      {
+        "metric": "errorPercent",
+        "value": 0.0,
+        "observedAt": "2026-10-08T14:04:00Z",
+        "service": "api-gateway"
+      },
+      {
+        "metric": "errorPercent",
+        "value": 0.0,
+        "observedAt": "2026-10-08T14:09:00Z",
+        "service": "api-gateway"
+      },
+      {
+        "metric": "errorPercent",
+        "value": 0.0,
+        "observedAt": "2026-10-08T14:14:00Z",
+        "service": "api-gateway"
+      },
+      {
+        "metric": "deployCount",
+        "value": 0,
+        "observedAt": "2026-10-08T13:09:00Z",
+        "service": "api-gateway"
+      },
+      {
+        "metric": "deployCount",
+        "value": 0,
+        "observedAt": "2026-10-08T13:14:00Z",
+        "service": "api-gateway"
+      },
+      {
+        "metric": "deployCount",
+        "value": 0,
+        "observedAt": "2026-10-08T13:19:00Z",
+        "service": "api-gateway"
+      },
+      {
+        "metric": "deployCount",
+        "value": 0,
+        "observedAt": "2026-10-08T13:24:00Z",
+        "service": "api-gateway"
+      },
+      {
+        "metric": "deployCount",
+        "value": 0,
+        "observedAt": "2026-10-08T13:29:00Z",
+        "service": "api-gateway"
+      },
+      {
+        "metric": "deployCount",
+        "value": 0,
+        "observedAt": "2026-10-08T13:34:00Z",
+        "service": "api-gateway"
+      },
+      {
+        "metric": "deployCount",
+        "value": 0,
+        "observedAt": "2026-10-08T13:39:00Z",
+        "service": "api-gateway"
+      },
+      {
+        "metric": "deployCount",
+        "value": 0,
+        "observedAt": "2026-10-08T13:44:00Z",
+        "service": "api-gateway"
+      },
+      {
+        "metric": "deployCount",
+        "value": 0,
+        "observedAt": "2026-10-08T13:49:00Z",
+        "service": "api-gateway"
+      },
+      {
+        "metric": "deployCount",
+        "value": 0,
+        "observedAt": "2026-10-08T13:54:00Z",
+        "service": "api-gateway"
+      },
+      {
+        "metric": "deployCount",
+        "value": 0,
+        "observedAt": "2026-10-08T13:59:00Z",
+        "service": "api-gateway"
+      },
+      {
+        "metric": "deployCount",
+        "value": 0,
+        "observedAt": "2026-10-08T14:04:00Z",
+        "service": "api-gateway"
+      },
+      {
+        "metric": "deployCount",
+        "value": 0,
+        "observedAt": "2026-10-08T14:09:00Z",
+        "service": "api-gateway"
+      },
+      {
+        "metric": "deployCount",
+        "value": 0,
+        "observedAt": "2026-10-08T14:14:00Z",
+        "service": "api-gateway"
+      }
+    ],
+    "one": [
+      {
+        "metric": "requestsPerMinute",
+        "value": 31,
+        "observedAt": "2026-10-08T13:09:00Z",
+        "service": "api-gateway"
+      }
+    ],
+    "long": [
+      {
+        "metric": "requestsPerMinute",
+        "value": 31,
+        "observedAt": "2026-10-08T13:09:00Z",
+        "service": "billing-usage-reconciliation-worker-for-regional-subscriptions"
+      }
+    ],
+    "none": []
+  },
+  "Incident": {
+    "populated": [
+      {
+        "reference": "INC-204",
+        "title": "Connection pool exhaustion after billing rollout",
+        "summary": "The on-call team linked the latency increase to a connection-pool change. Dana is comparing the previous artifact before restoring it.",
+        "service": "billing",
+        "owner": "Dana",
+        "status": "open",
+        "openedAt": "2026-10-08T14:09:00Z"
+      },
+      {
+        "reference": "INC-205",
+        "title": "Notification workers failing health checks",
+        "summary": "Maya found the worker health endpoint timing out and is checking instance replacement before restarting the service.",
+        "service": "notifications",
+        "owner": "Maya",
+        "status": "open",
+        "openedAt": "2026-10-08T09:12:00Z"
+      }
+    ],
+    "one": [
+      {
+        "reference": "INC-204",
+        "title": "Connection pool exhaustion after billing rollout",
+        "summary": "The on-call team linked the latency increase to a connection-pool change. Dana is comparing the previous artifact before restoring it.",
+        "service": "billing",
+        "owner": "Dana",
+        "status": "open",
+        "openedAt": "2026-10-08T14:09:00Z"
+      }
+    ],
+    "long": [
+      {
+        "reference": "INC-204",
+        "title": "Regional subscription reconciliation blocked by billing connection-pool exhaustion after the afternoon rollout",
+        "summary": "The on-call team compared the timing of the latency increase with the connection-pool configuration change and checked the prior artifact for schema compatibility. No migration was included in the rollout. Dana is restoring the previous artifact while Maya monitors regional health checks and the request backlog. The incident stays open until both the checks and the backlog demonstrate recovery; the team will retain the full timeline for the next handoff.",
+        "service": "billing",
+        "owner": "Dana",
+        "status": "open",
+        "openedAt": "2026-10-08T14:09:00Z"
+      }
+    ],
+    "none": [],
+    "resolved": [
+      {
+        "reference": "INC-204",
+        "title": "Connection pool exhaustion after billing rollout",
+        "summary": "The previous billing artifact is restored. Regional health checks are passing and the request backlog has returned to its usual range.",
+        "service": "billing",
+        "owner": "Dana",
+        "status": "resolved",
+        "openedAt": "2026-10-08T14:09:00Z"
+      }
+    ]
+  },
+  "ServiceDraft": {
+    "populated": [
+      {
+        "name": "catalog-sync",
+        "repository": "northwind/catalog-sync",
+        "region": "us-east-1",
+        "autoDeploy": "enabled",
+        "notifyFailure": "enabled"
+      }
+    ],
+    "one": [
+      {
+        "name": "catalog-sync",
+        "repository": "northwind/catalog-sync",
+        "region": "us-east-1",
+        "autoDeploy": "enabled",
+        "notifyFailure": "enabled"
+      }
+    ],
+    "long": [
+      {
+        "name": "regional-catalog-synchronization-worker-for-subscription-reconciliation",
+        "repository": "northwind/regional-catalog-synchronization-worker-for-subscription-reconciliation",
+        "region": "us-east-1",
+        "autoDeploy": "enabled",
+        "notifyFailure": "enabled"
+      }
+    ],
+    "none": [],
+    "blank": [
+      {
+        "name": "",
+        "repository": "",
+        "region": "us-east-1",
+        "autoDeploy": "enabled",
+        "notifyFailure": "enabled"
+      }
+    ]
+  },
+  "Artifact": {
+    "populated": [
+      {
+        "revision": "v1",
+        "service": "catalog-sync"
+      }
+    ],
+    "one": [
+      {
+        "revision": "v1",
+        "service": "catalog-sync"
+      }
+    ],
+    "long": [
+      {
+        "revision": "catalog-sync-regional-reconciliation-bootstrap-release-candidate-2026-10-08",
+        "service": "catalog-sync"
+      }
+    ],
+    "none": []
+  }
+}

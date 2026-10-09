@@ -1,6 +1,6 @@
 # Review before and after rendering
 
-Agents other than the tree's author review the options twice: as text before anything is built, and over captures before the user walks the tree. Review is the filter between a wide tree and the user's time.
+Agents other than the model or tree's author review the product definition and options before anything is built, then review captures before the user walks the tree. Review is the filter between a checked definition, a wide tree and the user's time.
 
 ## Reviewers
 
@@ -9,9 +9,20 @@ Agents other than the tree's author review the options twice: as text before any
   - **taste:** the brief's posture, the reference products, and the defaults in [options.md](options.md);
   - **domain:** whether each option serves the user's core task.
 - Use more than one model family; one family shares its blind spots.
-- Give each reviewer the brief, the copy deck, [options.md](options.md), and the tree or the captures. Each writes a file with, per step, keep, change or cut, with the reason and the evidence (an option id, a shot path).
+- Give each reviewer the brief, product model, keyed copy deck, contract/scenario fixtures, pattern bindings and the bound records' contracts, checker diagnostics, [options.md](options.md), and the planned tree or captures. Include evidence for real capabilities and confirmed fixed claims. Each writes findings with keep, change or cut, a reason and evidence: a model path, copy key, fixture scenario, binding target, option ID or shot path as appropriate.
 
 ## Before rendering
+
+On the product definition:
+
+- **Real capabilities:** every executable control and landing claim depends on real behavior; pending, success and failure evidence match the operation, and cancellation/retry/undo exist only when real. `real: false` is an explicit planned gap, not permission to imply working behavior.
+- **Fixed confirmations:** every fixed binding has a product-specific `because`, fits its data and capabilities, and any claim not supplied by the user has confirmation evidence. Proposals are not presented as fixed constraints.
+- **MVP cut:** Must-have flows form one coherent, observable core loop, ordered before supporting flows. Should-have/Later flows are a genuine cut, and deferred-only surfaces do not silently enter this round.
+- **Bindings:** required placements have meaningful records, mapped data or referenced copy, not empty stubs. Variant candidates, `sameAs`, placement/scale rules and operation records fit the product. Explicit interaction bindings are local overrides; global defaults apply only where unbound.
+- **Copy reach:** every fixed string, including accessible and outbound text, has a deck key referenced in its actual state/setup targets. Manually reason visibility: `always` means every allowed state/setup, not anywhere reachable. The canonical `Shown when` column must match, including expanded state labels for restricted slots.
+- **Disguised copy:** inspect fixture strings even when they vary. Relative-time words, count/currency/unit suffixes and fixed status or explanatory language belong in keyed placeholders; fixtures carry the dates, numbers and derived content. All contract fields, types, counts, long cases and declared state scenarios are representative.
+- **Channels:** email/push questions serve a specific recipient outcome; logical template routes and preview widths do not imply browser navigation or real delivery. Email has subject/preheader/body/actions; push has title/body/action. Studio preview labels do not enter product copy.
+- **Warnings:** resolve or explicitly account for imagined-capability, deferred-surface and possible disguised-copy warnings. A passing checker proves cross-file consistency, not product truthfulness or runtime copy coverage.
 
 On the written tree, before building any option:
 
@@ -20,7 +31,7 @@ On the written tree, before building any option:
 - Find product decisions hiding inside a style step, and product decisions with no step.
 - Check that every recommendation has a product reason.
 
-Apply the cuts and fixes, then build.
+Apply the model and tree fixes before building; every finding must be resolved or explicitly accounted for with evidence. Recheck the definition after changing model references, copy or fixtures.
 
 ## After rendering
 

@@ -1,0 +1,2039 @@
+{
+  "model": 1,
+  "product": {
+    "id": "conversation",
+    "outcome": "Send a question in a saved team conversation, approve the exact read scope when needed, and inspect the agent’s answer and tool result in that same thread.",
+    "archetype": "conversation",
+    "users": [
+      {
+        "id": "teammate",
+        "who": "A teammate on a laptop investigating a question with an agent; collaborators reading and replying on a phone.",
+        "device": "both",
+        "surfaces": [
+          "chats",
+          "thread",
+          "agents",
+          "newAgent",
+          "settings",
+          "help",
+          "landing",
+          "emailThreadShared",
+          "pushApprovalNeeded"
+        ]
+      }
+    ]
+  },
+  "entities": [
+    {
+      "id": "chat",
+      "contract": "Chat",
+      "words": [
+        "chat",
+        "thread"
+      ],
+      "never": [
+        "ticket"
+      ]
+    },
+    {
+      "id": "agent",
+      "contract": "Agent",
+      "words": [
+        "agent"
+      ],
+      "never": [
+        "bot"
+      ]
+    }
+  ],
+  "capabilities": [
+    {
+      "id": "runAgent",
+      "real": true,
+      "note": "Persist the prompt before responding; streaming, completed, stopped and failed responses remain distinguishable and retry retains the prompt."
+    },
+    {
+      "id": "runTools",
+      "real": true,
+      "note": "Read tools run only after a named scope is approved once or explicitly granted for future reads; denial does not execute the call."
+    },
+    {
+      "id": "stopAgent",
+      "real": true,
+      "note": "A stop request cancels generation; retain partial output only after cancellation is acknowledged."
+    },
+    {
+      "id": "createAgents",
+      "real": true,
+      "note": "Persist a named agent, response-speed choice and team visibility; new agents do not acquire read permission from creation."
+    },
+    {
+      "id": "shareThreads",
+      "real": true,
+      "note": "Share one saved thread with a selected teammate; only accepted sharing sends the invitation email."
+    },
+    {
+      "id": "savePreferences",
+      "real": true,
+      "note": "Persist notifications, response-speed default and private-by-default chats; tool approval is always required."
+    },
+    {
+      "id": "notifyApprovals",
+      "real": true,
+      "note": "Push only pending scope-specific approval requests and open the same saved thread."
+    }
+  ],
+  "data": {
+    "Chat": {
+      "fields": {
+        "title": "text",
+        "participants": "text",
+        "lastActiveAt": "date",
+        "kind": "enum",
+        "unread": "number"
+      },
+      "typical": 10,
+      "max": 100,
+      "long": [
+        "title",
+        "participants"
+      ],
+      "enums": {
+        "kind": [
+          "agent",
+          "team"
+        ]
+      }
+    },
+    "Message": {
+      "fields": {
+        "author": "text",
+        "text": "longText",
+        "sentAt": "date",
+        "mine": "enum"
+      },
+      "typical": 6,
+      "max": 500,
+      "long": [
+        "author",
+        "text"
+      ],
+      "enums": {
+        "mine": [
+          "mine",
+          "theirs"
+        ]
+      }
+    },
+    "Agent": {
+      "fields": {
+        "name": "text",
+        "status": "enum",
+        "runs": "number",
+        "medianReplySeconds": "number",
+        "lastActiveAt": "date"
+      },
+      "typical": 6,
+      "max": 60,
+      "long": [
+        "name"
+      ],
+      "enums": {
+        "status": [
+          "active",
+          "idle",
+          "needsAccess",
+          "failing",
+          "paused"
+        ]
+      }
+    },
+    "ToolCall": {
+      "fields": {
+        "name": "text",
+        "code": "longText",
+        "scope": "text",
+        "result": "longText"
+      },
+      "typical": 2,
+      "max": 20,
+      "long": [
+        "name",
+        "code",
+        "result"
+      ]
+    },
+    "AgentDraft": {
+      "fields": {
+        "name": "text",
+        "responseSpeed": "enum",
+        "approvalPolicy": "enum",
+        "teamVisible": "enum"
+      },
+      "typical": 1,
+      "max": 1,
+      "long": [
+        "name"
+      ],
+      "enums": {
+        "responseSpeed": [
+          "fast",
+          "balanced",
+          "thorough"
+        ],
+        "approvalPolicy": [
+          "required"
+        ],
+        "teamVisible": [
+          "on",
+          "off"
+        ]
+      }
+    },
+    "ConversationPreferences": {
+      "fields": {
+        "mentionNotifications": "enum",
+        "approvalNotifications": "enum",
+        "privateByDefault": "enum",
+        "responseSpeed": "enum"
+      },
+      "typical": 1,
+      "max": 1,
+      "enums": {
+        "mentionNotifications": [
+          "on",
+          "off"
+        ],
+        "approvalNotifications": [
+          "on",
+          "off"
+        ],
+        "privateByDefault": [
+          "on",
+          "off"
+        ],
+        "responseSpeed": [
+          "fast",
+          "balanced",
+          "thorough"
+        ]
+      }
+    },
+    "ThreadShare": {
+      "fields": {
+        "recipient": "text"
+      },
+      "typical": 1,
+      "max": 1,
+      "long": [
+        "recipient"
+      ]
+    },
+    "Prompt": {
+      "fields": {
+        "text": "longText"
+      },
+      "typical": 1,
+      "max": 1,
+      "long": [
+        "text"
+      ]
+    }
+  },
+  "states": {
+    "chatsReady": {
+      "label": "Ready",
+      "rule": "List saved chats by last activity with participants and unread counts; opening a chat restores its transcript.",
+      "kind": "data",
+      "fixtures": {
+        "Chat": "populated"
+      }
+    },
+    "chatsLoading": {
+      "label": "Loading",
+      "rule": "Keep saved chat titles visible while retrieving unread counts and the latest activity timestamps.",
+      "kind": "data",
+      "fixtures": {
+        "Chat": "populated"
+      }
+    },
+    "chatsEmpty": {
+      "label": "Empty",
+      "rule": "No saved chats exist; New chat opens an empty thread where a question can be sent to Plover.",
+      "kind": "firstRun",
+      "fixtures": {
+        "Chat": "none"
+      }
+    },
+    "chatsFailed": {
+      "label": "Failed",
+      "rule": "The chat list could not be read; keep New chat separate from a retry of existing threads.",
+      "kind": "data",
+      "fixtures": {
+        "Chat": "none"
+      }
+    },
+    "chatsLongContent": {
+      "label": "Long content",
+      "rule": "Wrap a project-length chat title and participant list without hiding unread counts.",
+      "kind": "data",
+      "fixtures": {
+        "Chat": "long"
+      }
+    },
+    "threadReady": {
+      "label": "Ready",
+      "rule": "Restore accepted earlier messages, queries and results from this saved chat; the blank prompt invites the next question without starting an operation.",
+      "kind": "data",
+      "fixtures": {
+        "Chat": "one",
+        "Message": "populated",
+        "ToolCall": "populated",
+        "ThreadShare": "one",
+        "Prompt": "blank"
+      }
+    },
+    "threadGenerating": {
+      "label": "Responding",
+      "rule": "Show the accepted prompt and streaming agent output; Stop response is available while generation is running.",
+      "kind": "operation",
+      "fixtures": {
+        "Chat": "one",
+        "Message": "pending",
+        "ToolCall": "none",
+        "ThreadShare": "one",
+        "Prompt": "blank"
+      }
+    },
+    "threadNeedsApproval": {
+      "label": "Needs approval",
+      "rule": "Pause before the read; show the exact query and scope with Allow once, Always allow this read scope and Deny; no result exists yet.",
+      "kind": "operation",
+      "fixtures": {
+        "Chat": "one",
+        "Message": "pending",
+        "ToolCall": "requested",
+        "ThreadShare": "one",
+        "Prompt": "blank"
+      }
+    },
+    "threadStopped": {
+      "label": "Response stopped",
+      "rule": "Retain acknowledged partial output, mark it incomplete, and permit a fresh prompt without pretending the interrupted answer is complete.",
+      "kind": "operation",
+      "fixtures": {
+        "Chat": "one",
+        "Message": "partial",
+        "ToolCall": "none",
+        "ThreadShare": "one",
+        "Prompt": "blank"
+      }
+    },
+    "threadFailed": {
+      "label": "Response failed",
+      "rule": "Retain the accepted prompt and earlier transcript; the failed read has no result; retry starts the same requested answer rather than duplicating the prompt.",
+      "kind": "operation",
+      "fixtures": {
+        "Chat": "one",
+        "Message": "pending",
+        "ToolCall": "failed",
+        "ThreadShare": "one",
+        "Prompt": "one"
+      }
+    },
+    "threadLongContent": {
+      "label": "Long answer",
+      "rule": "Wrap long reasoning and participant names; code scrolls in its own region without widening the whole conversation.",
+      "kind": "data",
+      "fixtures": {
+        "Chat": "long",
+        "Message": "long",
+        "ToolCall": "long",
+        "ThreadShare": "long",
+        "Prompt": "blank"
+      }
+    },
+    "agentsReady": {
+      "label": "Ready",
+      "rule": "Show named agents, their operational status, run counts and measured reply times; starting a chat does not grant tool permission.",
+      "kind": "data",
+      "fixtures": {
+        "Agent": "populated"
+      }
+    },
+    "agentsLoading": {
+      "label": "Loading",
+      "rule": "Keep agent identities visible while updating their service statuses.",
+      "kind": "data",
+      "fixtures": {
+        "Agent": "populated"
+      }
+    },
+    "agentsEmpty": {
+      "label": "Empty",
+      "rule": "No custom agents exist; offer creation of a named agent without implying tools are already authorized.",
+      "kind": "firstRun",
+      "fixtures": {
+        "Agent": "none"
+      }
+    },
+    "agentsFailed": {
+      "label": "Failed",
+      "rule": "Agent status could not be loaded; retry the status read without restarting agent runs.",
+      "kind": "data",
+      "fixtures": {
+        "Agent": "none"
+      }
+    },
+    "agentsLongContent": {
+      "label": "Long content",
+      "rule": "Wrap a specialized translator name while keeping status, run count and reply measurement aligned.",
+      "kind": "data",
+      "fixtures": {
+        "Agent": "long"
+      }
+    },
+    "newAgentDraft": {
+      "label": "Draft",
+      "rule": "Keep the agent name, response speed and team visibility editable; approval is a required policy, not an opt-out switch.",
+      "kind": "data",
+      "fixtures": {
+        "AgentDraft": "blank"
+      }
+    },
+    "newAgentSaving": {
+      "label": "Saving",
+      "rule": "Keep the agent configuration visible and prevent duplicate creation while the agent record is being saved.",
+      "kind": "operation",
+      "fixtures": {
+        "AgentDraft": "one"
+      }
+    },
+    "newAgentSaved": {
+      "label": "Saved",
+      "rule": "Show the accepted agent name and a route to Agents; its presence does not grant permission to read team data.",
+      "kind": "operation",
+      "fixtures": {
+        "AgentDraft": "one"
+      }
+    },
+    "newAgentFailed": {
+      "label": "Failed",
+      "rule": "No new agent was created; retain the exact name, speed and visibility for retry.",
+      "kind": "operation",
+      "fixtures": {
+        "AgentDraft": "one"
+      }
+    },
+    "newAgentLongContent": {
+      "label": "Long content",
+      "rule": "Keep a project-specific agent name fully editable without obscuring the approval requirement.",
+      "kind": "data",
+      "fixtures": {
+        "AgentDraft": "long"
+      }
+    },
+    "settingsReady": {
+      "label": "Ready",
+      "rule": "Show saved notification choices and private-chat default; tool read approval is mandatory and cannot be disabled.",
+      "kind": "data",
+      "fixtures": {
+        "ConversationPreferences": "one"
+      }
+    },
+    "settingsSaving": {
+      "label": "Saving",
+      "rule": "Keep the edited preference values visible and disable duplicate saves until the preference write returns.",
+      "kind": "operation",
+      "fixtures": {
+        "ConversationPreferences": "one"
+      }
+    },
+    "settingsSaved": {
+      "label": "Saved",
+      "rule": "Show the saved preference values and an inline acknowledgement; reopening this page shows the same choices.",
+      "kind": "operation",
+      "fixtures": {
+        "ConversationPreferences": "one"
+      }
+    },
+    "settingsFailed": {
+      "label": "Failed",
+      "rule": "Keep edited preference values separate from the last saved values; Save preferences retries the write, Cancel restores the saved choices.",
+      "kind": "operation",
+      "fixtures": {
+        "ConversationPreferences": "one"
+      }
+    },
+    "helpReady": {
+      "label": "Ready",
+      "rule": "Keep product help available without replacing the task.",
+      "kind": "data",
+      "fixtures": {}
+    },
+    "landingReady": {
+      "label": "Ready",
+      "rule": "Present the product explanation and a real route into the app.",
+      "kind": "data",
+      "fixtures": {}
+    },
+    "emailThreadSharedReady": {
+      "label": "Ready",
+      "rule": "Send only after sharing is accepted; name the saved chat and open that exact conversation, not the general chat list.",
+      "kind": "operation",
+      "fixtures": {
+        "Chat": "one"
+      }
+    },
+    "pushApprovalNeededReady": {
+      "label": "Ready",
+      "rule": "Notify only while this read approval is pending; open the same conversation with the query and scope ready for review.",
+      "kind": "operation",
+      "fixtures": {
+        "ToolCall": "requested"
+      }
+    },
+    "threadSending": {
+      "label": "Sending question",
+      "rule": "Keep the typed prompt visible and disable duplicate Send until the prompt is accepted into the saved chat.",
+      "kind": "operation",
+      "fixtures": {
+        "Chat": "one",
+        "Message": "populated",
+        "ToolCall": "none",
+        "ThreadShare": "one",
+        "Prompt": "one"
+      }
+    },
+    "threadToolRunning": {
+      "label": "Running approved read",
+      "rule": "Record the accepted scope permission, disable repeat approval and show execution pending with an empty tool result.",
+      "kind": "operation",
+      "fixtures": {
+        "Chat": "one",
+        "Message": "pending",
+        "ToolCall": "running",
+        "ThreadShare": "one",
+        "Prompt": "blank"
+      }
+    },
+    "threadCompleted": {
+      "label": "Answer complete",
+      "rule": "Show the completed answer and the successful tool result beside the exact call that produced it; re-enable the prompt.",
+      "kind": "operation",
+      "fixtures": {
+        "Chat": "one",
+        "Message": "completed",
+        "ToolCall": "completed",
+        "ThreadShare": "one",
+        "Prompt": "blank"
+      }
+    },
+    "threadStopping": {
+      "label": "Stopping response",
+      "rule": "Keep partial output visible while cancellation is pending; neither stopped nor complete is claimed yet.",
+      "kind": "operation",
+      "fixtures": {
+        "Chat": "one",
+        "Message": "partial",
+        "ToolCall": "none",
+        "ThreadShare": "one",
+        "Prompt": "blank"
+      }
+    },
+    "threadToolDenied": {
+      "label": "Read denied",
+      "rule": "Do not execute the denied call or fabricate a result; retain the prompt and requested scope so the teammate can ask a different question.",
+      "kind": "operation",
+      "fixtures": {
+        "Chat": "one",
+        "Message": "pending",
+        "ToolCall": "requested",
+        "ThreadShare": "one",
+        "Prompt": "blank"
+      }
+    },
+    "threadSharing": {
+      "label": "Sharing thread",
+      "rule": "Keep the chosen teammate and saved transcript visible; disable duplicate share requests until access is accepted.",
+      "kind": "operation",
+      "fixtures": {
+        "Chat": "one",
+        "Message": "completed",
+        "ToolCall": "completed",
+        "ThreadShare": "one",
+        "Prompt": "blank"
+      }
+    },
+    "threadShared": {
+      "label": "Thread shared",
+      "rule": "Show the named teammate’s accepted access beside the transcript; only now may the sharing invitation be sent.",
+      "kind": "operation",
+      "fixtures": {
+        "Chat": "one",
+        "Message": "completed",
+        "ToolCall": "completed",
+        "ThreadShare": "one",
+        "Prompt": "blank"
+      }
+    },
+    "threadShareFailed": {
+      "label": "Sharing failed",
+      "rule": "Do not claim the teammate has access; retain the chosen teammate and allow a deliberate retry of the same share.",
+      "kind": "operation",
+      "fixtures": {
+        "Chat": "one",
+        "Message": "completed",
+        "ToolCall": "completed",
+        "ThreadShare": "one",
+        "Prompt": "blank"
+      }
+    },
+    "threadNew": {
+      "label": "New conversation",
+      "rule": "Show an empty saved conversation with a blank prompt; no agent response or tool result exists before the first question is sent.",
+      "kind": "firstRun",
+      "fixtures": {
+        "Chat": "new",
+        "Message": "none",
+        "ToolCall": "none",
+        "ThreadShare": "one",
+        "Prompt": "blank"
+      }
+    },
+    "threadSendFailed": {
+      "label": "Question not sent",
+      "rule": "Keep the unsent prompt editable and separate from accepted history; retry the same send without creating a duplicate prompt.",
+      "kind": "operation",
+      "fixtures": {
+        "Chat": "one",
+        "Message": "populated",
+        "ToolCall": "populated",
+        "ThreadShare": "one",
+        "Prompt": "one"
+      }
+    },
+    "threadStopFailed": {
+      "label": "Stop failed",
+      "rule": "Cancellation was not acknowledged; retain partial output, do not claim the response is stopped, and offer another stop request while checking the running operation.",
+      "kind": "operation",
+      "fixtures": {
+        "Chat": "one",
+        "Message": "partial",
+        "ToolCall": "running",
+        "ThreadShare": "one",
+        "Prompt": "blank"
+      }
+    },
+    "agentsCreated": {
+      "label": "New agent listed",
+      "rule": "Show the accepted launch researcher in the agent list as idle with no completed runs; creation does not grant a read scope.",
+      "kind": "operation",
+      "fixtures": {
+        "Agent": "created"
+      }
+    }
+  },
+  "events": {
+    "threadSendEvent": {
+      "label": "Send a question to the agent",
+      "kind": "operation",
+      "needs": "runAgent"
+    },
+    "threadApprovalEvent": {
+      "label": "Review the requested read scope",
+      "kind": "layer",
+      "needs": "runTools"
+    },
+    "threadRunToolEvent": {
+      "label": "Run the approved read tool",
+      "kind": "operation",
+      "needs": "runTools"
+    },
+    "threadStopEvent": {
+      "label": "Stop the current response",
+      "kind": "operation",
+      "needs": "stopAgent"
+    },
+    "threadShareEvent": {
+      "label": "Share this saved thread with a teammate",
+      "kind": "operation",
+      "needs": "shareThreads"
+    },
+    "threadOpenShareEvent": {
+      "label": "Choose a teammate to share with",
+      "kind": "layer",
+      "needs": "shareThreads"
+    },
+    "newAgentSaveEvent": {
+      "label": "Create the named agent",
+      "kind": "operation",
+      "needs": "createAgents"
+    },
+    "newAgentInvalidEvent": {
+      "label": "Show missing agent name",
+      "kind": "submit"
+    },
+    "savePreferencesEvent": {
+      "label": "Save conversation preferences",
+      "kind": "operation",
+      "needs": "savePreferences"
+    }
+  },
+  "nav": {
+    "items": [
+      {
+        "surface": "chats",
+        "copy": "nav.chats"
+      },
+      {
+        "surface": "agents",
+        "copy": "nav.agents"
+      },
+      {
+        "surface": "settings",
+        "copy": "nav.settings"
+      }
+    ],
+    "inAYear": 8
+  },
+  "flows": [
+    {
+      "id": "askFlow",
+      "goal": "Send a question and inspect the agent answer after approving only the requested read scope.",
+      "priority": "must",
+      "stages": [
+        {
+          "id": "chooseThread",
+          "surface": "chats",
+          "next": [
+            "writeQuestion"
+          ]
+        },
+        {
+          "id": "writeQuestion",
+          "surface": "thread",
+          "state": "threadReady",
+          "next": [
+            "sendQuestion"
+          ]
+        },
+        {
+          "id": "sendQuestion",
+          "surface": "thread",
+          "state": "threadSending",
+          "next": [
+            "respond"
+          ]
+        },
+        {
+          "id": "respond",
+          "surface": "thread",
+          "state": "threadGenerating",
+          "next": [
+            "reviewScope"
+          ]
+        },
+        {
+          "id": "reviewScope",
+          "surface": "thread",
+          "state": "threadNeedsApproval",
+          "next": [
+            "runRead"
+          ]
+        },
+        {
+          "id": "runRead",
+          "surface": "thread",
+          "state": "threadToolRunning",
+          "next": [
+            "inspectAnswer"
+          ]
+        },
+        {
+          "id": "inspectAnswer",
+          "surface": "thread",
+          "state": "threadCompleted"
+        }
+      ],
+      "ends": "The saved thread contains the accepted prompt, approved query and scope, tool result and completed answer; denial or failure never produces a success result.",
+      "needs": [
+        "runAgent",
+        "runTools"
+      ]
+    },
+    {
+      "id": "agentSetupFlow",
+      "goal": "Choose an existing agent suited to a team question.",
+      "priority": "should",
+      "stages": [
+        {
+          "id": "chooseAgent",
+          "surface": "agents",
+          "next": [
+            "startQuestion"
+          ]
+        },
+        {
+          "id": "startQuestion",
+          "surface": "thread",
+          "state": "threadReady"
+        }
+      ],
+      "ends": "The chosen agent is named in the conversation before the first question; no read permission is implied by choosing it.",
+      "needs": [
+        "runAgent"
+      ]
+    },
+    {
+      "id": "collaborateFlow",
+      "goal": "Give a teammate access to the same saved agent reasoning.",
+      "priority": "should",
+      "stages": [
+        {
+          "id": "chooseTeammate",
+          "surface": "thread",
+          "state": "threadReady",
+          "next": [
+            "share"
+          ]
+        },
+        {
+          "id": "share",
+          "surface": "thread",
+          "state": "threadSharing",
+          "next": [
+            "shared"
+          ]
+        },
+        {
+          "id": "shared",
+          "surface": "thread",
+          "state": "threadShared"
+        }
+      ],
+      "ends": "The selected teammate has accepted access to the saved transcript and receives an invitation only after sharing succeeds.",
+      "needs": [
+        "shareThreads"
+      ]
+    },
+    {
+      "id": "preferencesFlow",
+      "goal": "Choose which conversation events notify me while keeping new chats private.",
+      "priority": "should",
+      "stages": [
+        {
+          "id": "edit",
+          "surface": "settings",
+          "next": [
+            "save"
+          ]
+        },
+        {
+          "id": "save",
+          "surface": "settings",
+          "state": "settingsSaving",
+          "next": [
+            "saved"
+          ]
+        },
+        {
+          "id": "saved",
+          "surface": "settings",
+          "state": "settingsSaved"
+        }
+      ],
+      "ends": "Saved notification, speed and chat-privacy choices survive reopening Settings; tool reads remain approval-gated.",
+      "needs": [
+        "savePreferences"
+      ]
+    },
+    {
+      "id": "helpFlow",
+      "goal": "Understand exactly what approving a read or sharing a conversation permits.",
+      "priority": "should",
+      "stages": [
+        {
+          "id": "readScopePolicy",
+          "surface": "help"
+        }
+      ],
+      "ends": "The teammate can distinguish a one-time read grant, a saved scope grant and access to a shared transcript.",
+      "needs": []
+    },
+    {
+      "id": "newAgentFlow",
+      "goal": "Create a named agent with a response speed and team visibility.",
+      "priority": "later",
+      "stages": [
+        {
+          "id": "configure",
+          "surface": "newAgent",
+          "next": [
+            "create"
+          ]
+        },
+        {
+          "id": "create",
+          "surface": "newAgent",
+          "state": "newAgentSaving",
+          "next": [
+            "created"
+          ]
+        },
+        {
+          "id": "created",
+          "surface": "newAgent",
+          "state": "newAgentSaved",
+          "next": [
+            "findAgent"
+          ]
+        },
+        {
+          "id": "findAgent",
+          "surface": "agents",
+          "state": "agentsCreated"
+        }
+      ],
+      "ends": "The accepted agent appears in Agents with its name and configuration; creating it does not authorize a tool read.",
+      "needs": [
+        "createAgents"
+      ],
+      "binding": {
+        "record": "create-edit",
+        "status": "proposed",
+        "variant": "dedicatedPage",
+        "because": "Naming an agent and choosing its answering behavior requires an explicit creation outcome separate from running it."
+      }
+    },
+    {
+      "id": "discoverFlow",
+      "goal": "Learn whether inspectable agent answers suit the team’s work.",
+      "priority": "later",
+      "stages": [
+        {
+          "id": "learn",
+          "surface": "landing",
+          "next": [
+            "openChats"
+          ]
+        },
+        {
+          "id": "openChats",
+          "surface": "chats"
+        }
+      ],
+      "ends": "The product action opens saved Chats; read-scope help explains approval without initiating a tool call.",
+      "needs": []
+    },
+    {
+      "id": "emailThreadSharedFlow",
+      "goal": "Open the saved conversation a teammate shared with me.",
+      "priority": "later",
+      "stages": [
+        {
+          "id": "readInvitation",
+          "surface": "emailThreadShared",
+          "next": [
+            "readTranscript"
+          ]
+        },
+        {
+          "id": "readTranscript",
+          "surface": "thread",
+          "state": "threadCompleted"
+        }
+      ],
+      "ends": "The invitation opens the accepted shared transcript with the same calls and results visible to the sender.",
+      "needs": [
+        "shareThreads"
+      ]
+    },
+    {
+      "id": "pushApprovalNeededFlow",
+      "goal": "Return to the exact tool read that cannot run without my decision.",
+      "priority": "later",
+      "stages": [
+        {
+          "id": "readPush",
+          "surface": "pushApprovalNeeded",
+          "next": [
+            "reviewScope"
+          ]
+        },
+        {
+          "id": "reviewScope",
+          "surface": "thread",
+          "state": "threadNeedsApproval"
+        }
+      ],
+      "ends": "The push opens the pending query and scope; the tool remains unexecuted until the teammate allows it.",
+      "needs": [
+        "notifyApprovals"
+      ]
+    }
+  ],
+  "surfaces": [
+    {
+      "id": "chats",
+      "question": "Which conversation should I resume or start?",
+      "route": "/chats",
+      "binding": {
+        "record": "home",
+        "status": "proposed",
+        "variant": "continue",
+        "because": "Existing team and agent threads hold the work to resume.",
+        "candidates": [
+          "continue",
+          "launcher"
+        ]
+      },
+      "slots": [
+        {
+          "id": "primary",
+          "data": {
+            "contract": "Chat",
+            "many": true,
+            "map": {
+              "title": "title",
+              "participants": "participants",
+              "time": "lastActiveAt",
+              "unread": "unread"
+            }
+          },
+          "copy": {
+            "chats.lastActive": [
+              "chatsReady",
+              "chatsLoading",
+              "chatsLongContent"
+            ],
+            "chats.unreadCount": [
+              "chatsReady",
+              "chatsLoading",
+              "chatsLongContent"
+            ]
+          }
+        },
+        {
+          "id": "state",
+          "record": "empty-states",
+          "status": "open",
+          "candidates": [
+            "compactCue",
+            "actionPanel"
+          ],
+          "copy": {
+            "chats.empty.title": [
+              "chatsEmpty"
+            ],
+            "chats.empty.body": [
+              "chatsEmpty"
+            ],
+            "chats.empty.action": [
+              "chatsEmpty"
+            ],
+            "chats.recovery.title": [
+              "chatsFailed"
+            ],
+            "chats.recovery.action": [
+              "chatsFailed"
+            ]
+          }
+        },
+        {
+          "id": "identity",
+          "copy": {
+            "chats.title": "always",
+            "chats.documentTitle": "always",
+            "shell.alt.productMark": "always"
+          }
+        },
+        {
+          "id": "navigation",
+          "copy": {
+            "nav.chats": "always",
+            "nav.agents": "always",
+            "nav.settings": "always"
+          }
+        }
+      ],
+      "states": [
+        "chatsReady",
+        "chatsLoading",
+        "chatsEmpty",
+        "chatsFailed",
+        "chatsLongContent"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "shell.aria.navigation": "always",
+        "shell.aria.main": "always",
+        "chats.new": "always",
+        "chats.queryLabel": "always",
+        "chats.kind.agent": "always",
+        "chats.kind.team": "always"
+      }
+    },
+    {
+      "id": "thread",
+      "question": "What did the agent do, and what should the team ask next?",
+      "route": "/chats/:chat",
+      "binding": {
+        "record": "conversation",
+        "status": "proposed",
+        "variant": "transcript",
+        "because": "Long agent explanations and exact tool calls read better as full-width turns.",
+        "candidates": [
+          "transcript",
+          "channel",
+          "context"
+        ]
+      },
+      "slots": [
+        {
+          "id": "header",
+          "copy": {
+            "thread.title": "always",
+            "thread.documentTitle": "always"
+          },
+          "data": {
+            "contract": "Chat",
+            "many": false,
+            "map": {
+              "title": "title",
+              "participants": "participants"
+            }
+          }
+        },
+        {
+          "id": "primary",
+          "copy": {
+            "thread.timestamp": [
+              "threadReady",
+              "threadSending",
+              "threadGenerating",
+              "threadNeedsApproval",
+              "threadToolRunning",
+              "threadCompleted",
+              "threadStopping",
+              "threadStopped",
+              "threadFailed",
+              "threadToolDenied",
+              "threadSharing",
+              "threadShared",
+              "threadShareFailed",
+              "threadLongContent",
+              "threadSendFailed",
+              "threadApprovalSetup",
+              "threadShareSetup",
+              "threadStopFailed"
+            ]
+          },
+          "data": {
+            "contract": "Message",
+            "many": true,
+            "map": {
+              "author": "author",
+              "body": "text",
+              "time": "sentAt",
+              "mine": "mine"
+            }
+          }
+        },
+        {
+          "id": "context",
+          "copy": {
+            "thread.tool.scope": [
+              "threadReady",
+              "threadNeedsApproval",
+              "threadToolRunning",
+              "threadCompleted",
+              "threadFailed",
+              "threadToolDenied",
+              "threadSharing",
+              "threadShared",
+              "threadShareFailed",
+              "threadLongContent",
+              "threadSendFailed",
+              "threadApprovalSetup",
+              "threadShareSetup",
+              "threadStopFailed"
+            ],
+            "thread.tool.result": [
+              "threadReady",
+              "threadCompleted",
+              "threadSharing",
+              "threadShared",
+              "threadShareFailed",
+              "threadLongContent",
+              "threadSendFailed",
+              "threadShareSetup"
+            ]
+          },
+          "data": {
+            "contract": "ToolCall",
+            "many": true,
+            "map": {
+              "title": "name",
+              "code": "code",
+              "scope": "scope",
+              "result": "result"
+            }
+          }
+        },
+        {
+          "id": "composer",
+          "copy": {
+            "thread.composer.placeholder": [
+              "threadReady",
+              "threadGenerating",
+              "threadNeedsApproval",
+              "threadToolRunning",
+              "threadCompleted",
+              "threadStopping",
+              "threadStopped",
+              "threadToolDenied",
+              "threadSharing",
+              "threadShared",
+              "threadShareFailed",
+              "threadLongContent",
+              "threadNew",
+              "threadShareSetup",
+              "threadStopFailed"
+            ],
+            "thread.send": [
+              "threadReady",
+              "threadCompleted",
+              "threadStopped",
+              "threadFailed",
+              "threadToolDenied",
+              "threadShared",
+              "threadShareFailed",
+              "threadLongContent",
+              "threadShareSetup",
+              "threadSending",
+              "threadNew",
+              "threadSendFailed"
+            ]
+          },
+          "on": [
+            {
+              "event": "threadSendEvent",
+              "axis": "asyncFeedback"
+            }
+          ],
+          "data": {
+            "contract": "Prompt",
+            "many": false,
+            "map": {
+              "body": "text"
+            }
+          }
+        },
+        {
+          "id": "confirmation",
+          "record": "dialogs-and-layers",
+          "status": "proposed",
+          "variant": "dialog",
+          "because": "The teammate must inspect the exact requested query and read scope before permitting this tool call.",
+          "copy": {
+            "thread.approval.heading": [
+              "threadNeedsApproval",
+              "threadApprovalSetup"
+            ],
+            "thread.approval.allowOnce": [
+              "threadNeedsApproval",
+              "threadApprovalSetup"
+            ],
+            "thread.approval.allowAlways": [
+              "threadNeedsApproval",
+              "threadApprovalSetup"
+            ],
+            "thread.approval.deny": [
+              "threadNeedsApproval",
+              "threadApprovalSetup"
+            ],
+            "thread.approval.close": [
+              "threadNeedsApproval",
+              "threadApprovalSetup"
+            ]
+          },
+          "on": [
+            {
+              "event": "threadApprovalEvent",
+              "axis": "layerArrival"
+            }
+          ]
+        },
+        {
+          "id": "stop",
+          "copy": {
+            "thread.stop": [
+              "threadGenerating",
+              "threadToolRunning"
+            ]
+          },
+          "on": [
+            {
+              "event": "threadStopEvent",
+              "axis": "asyncFeedback"
+            }
+          ]
+        },
+        {
+          "id": "actions",
+          "copy": {
+            "thread.share": [
+              "threadReady",
+              "threadCompleted",
+              "threadStopped",
+              "threadShared",
+              "threadShareFailed",
+              "threadLongContent",
+              "threadShareSetup"
+            ]
+          }
+        },
+        {
+          "id": "replies",
+          "copy": {
+            "thread.share.recipient": [
+              "threadShareSetup",
+              "threadSharing",
+              "threadShared",
+              "threadShareFailed"
+            ],
+            "thread.share.commit": [
+              "threadShareSetup"
+            ],
+            "thread.share.cancel": [
+              "threadShareSetup"
+            ]
+          },
+          "data": {
+            "contract": "ThreadShare",
+            "many": false,
+            "map": {
+              "recipient": "recipient"
+            }
+          },
+          "on": [
+            {
+              "event": "threadShareEvent",
+              "axis": "asyncFeedback"
+            }
+          ]
+        },
+        {
+          "id": "outcome",
+          "record": "notifications",
+          "status": "proposed",
+          "variant": "inline",
+          "because": "Sharing confirmation stays beside the saved thread and names the teammate who now has access.",
+          "copy": {
+            "thread.outcome": [
+              "threadShared"
+            ]
+          },
+          "data": {
+            "contract": "ThreadShare",
+            "many": false,
+            "map": {
+              "recipient": "recipient"
+            }
+          }
+        },
+        {
+          "id": "state",
+          "copy": {
+            "thread.status.sending": [
+              "threadSending"
+            ],
+            "thread.status.generating": [
+              "threadGenerating"
+            ],
+            "thread.status.toolRunning": [
+              "threadToolRunning"
+            ],
+            "thread.status.completed": [
+              "threadCompleted"
+            ],
+            "thread.status.stopping": [
+              "threadStopping"
+            ],
+            "thread.status.stopped": [
+              "threadStopped"
+            ],
+            "thread.recovery.heading": [
+              "threadFailed"
+            ],
+            "thread.recovery.detail": [
+              "threadFailed"
+            ],
+            "thread.recovery.action": [
+              "threadFailed"
+            ],
+            "thread.approval.denied": [
+              "threadToolDenied"
+            ],
+            "thread.status.sharing": [
+              "threadSharing"
+            ],
+            "thread.share.recovery": [
+              "threadShareFailed"
+            ],
+            "thread.share.retry": [
+              "threadShareFailed"
+            ],
+            "thread.empty": [
+              "threadNew"
+            ],
+            "thread.sendFailure": [
+              "threadSendFailed"
+            ],
+            "thread.sendRetry": [
+              "threadSendFailed"
+            ],
+            "thread.stop.recovery": [
+              "threadStopFailed"
+            ],
+            "thread.stop.retry": [
+              "threadStopFailed"
+            ]
+          }
+        }
+      ],
+      "states": [
+        "threadReady",
+        "threadSending",
+        "threadGenerating",
+        "threadNeedsApproval",
+        "threadToolRunning",
+        "threadCompleted",
+        "threadStopping",
+        "threadStopped",
+        "threadFailed",
+        "threadToolDenied",
+        "threadSharing",
+        "threadShared",
+        "threadShareFailed",
+        "threadLongContent",
+        "threadNew",
+        "threadSendFailed",
+        "threadStopFailed"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "shell.aria.navigation": "always",
+        "shell.aria.main": "always",
+        "shell.alt.productMark": "always",
+        "nav.chats": "always",
+        "nav.agents": "always",
+        "nav.settings": "always",
+        "thread.aria.messages": "always"
+      },
+      "setups": [
+        {
+          "id": "threadApprovalSetup",
+          "label": "Review read scope",
+          "event": "threadApprovalEvent",
+          "state": "threadNeedsApproval"
+        },
+        {
+          "id": "threadShareSetup",
+          "label": "Choose teammate",
+          "event": "threadOpenShareEvent",
+          "state": "threadReady"
+        }
+      ]
+    },
+    {
+      "id": "agents",
+      "question": "Which agent can handle this task, and does it need access?",
+      "route": "/agents",
+      "slots": [
+        {
+          "id": "primary",
+          "data": {
+            "contract": "Agent",
+            "many": true,
+            "map": {
+              "title": "name",
+              "status": "status",
+              "runs": "runs",
+              "latency": "medianReplySeconds",
+              "time": "lastActiveAt"
+            }
+          },
+          "copy": {
+            "agents.columns.name": [
+              "agentsReady",
+              "agentsLoading",
+              "agentsLongContent",
+              "agentsCreated"
+            ],
+            "agents.columns.status": [
+              "agentsReady",
+              "agentsLoading",
+              "agentsLongContent",
+              "agentsCreated"
+            ],
+            "agents.columns.runs": [
+              "agentsReady",
+              "agentsLoading",
+              "agentsLongContent",
+              "agentsCreated"
+            ],
+            "agents.columns.medianReply": [
+              "agentsReady",
+              "agentsLoading",
+              "agentsLongContent",
+              "agentsCreated"
+            ],
+            "agents.columns.lastActive": [
+              "agentsReady",
+              "agentsLoading",
+              "agentsLongContent",
+              "agentsCreated"
+            ],
+            "agents.status.active": [
+              "agentsReady",
+              "agentsLoading",
+              "agentsLongContent",
+              "agentsCreated"
+            ],
+            "agents.status.idle": [
+              "agentsReady",
+              "agentsLoading",
+              "agentsCreated"
+            ],
+            "agents.status.needsAccess": [
+              "agentsReady",
+              "agentsLoading",
+              "agentsCreated"
+            ],
+            "agents.status.failing": [
+              "agentsReady",
+              "agentsLoading",
+              "agentsCreated"
+            ],
+            "agents.status.paused": [
+              "agentsReady",
+              "agentsLoading",
+              "agentsCreated"
+            ],
+            "agents.replyDuration": [
+              "agentsReady",
+              "agentsLoading",
+              "agentsLongContent",
+              "agentsCreated"
+            ],
+            "agents.lastActive": [
+              "agentsReady",
+              "agentsLoading",
+              "agentsLongContent",
+              "agentsCreated"
+            ]
+          },
+          "states": [
+            "agentsReady",
+            "agentsLoading",
+            "agentsLongContent",
+            "agentsCreated"
+          ]
+        }
+      ],
+      "states": [
+        "agentsReady",
+        "agentsLoading",
+        "agentsEmpty",
+        "agentsFailed",
+        "agentsLongContent",
+        "agentsCreated"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "agents.title": "always",
+        "agents.documentTitle": "always",
+        "shell.aria.navigation": "always",
+        "shell.aria.main": "always",
+        "shell.alt.productMark": "always",
+        "agents.new": "always",
+        "agents.empty.title": [
+          "agentsEmpty"
+        ],
+        "agents.empty.body": [
+          "agentsEmpty"
+        ],
+        "agents.empty.action": [
+          "agentsEmpty"
+        ],
+        "agents.recovery.title": [
+          "agentsFailed"
+        ],
+        "agents.recovery.action": [
+          "agentsFailed"
+        ],
+        "nav.agents": "always",
+        "nav.chats": "always",
+        "nav.settings": "always"
+      }
+    },
+    {
+      "id": "newAgent",
+      "question": "What should this agent be called, how carefully should it answer, and can the team use it?",
+      "route": "/agents/new",
+      "slots": [
+        {
+          "id": "header",
+          "copy": {
+            "newAgent.title": "always",
+            "newAgent.documentTitle": "always"
+          }
+        },
+        {
+          "id": "primary",
+          "copy": {
+            "newAgent.name.label": [
+              "newAgentDraft",
+              "newAgentSaving",
+              "newAgentFailed",
+              "newAgentLongContent",
+              "newAgentInvalidSetup"
+            ],
+            "newAgent.name.placeholder": [
+              "newAgentDraft",
+              "newAgentInvalidSetup"
+            ],
+            "newAgent.responseSpeed.label": [
+              "newAgentDraft",
+              "newAgentSaving",
+              "newAgentFailed",
+              "newAgentLongContent",
+              "newAgentInvalidSetup"
+            ],
+            "newAgent.responseSpeed.fast": [
+              "newAgentDraft",
+              "newAgentSaving",
+              "newAgentFailed",
+              "newAgentLongContent",
+              "newAgentInvalidSetup"
+            ],
+            "newAgent.responseSpeed.balanced": [
+              "newAgentDraft",
+              "newAgentSaving",
+              "newAgentFailed",
+              "newAgentLongContent",
+              "newAgentInvalidSetup"
+            ],
+            "newAgent.responseSpeed.thorough": [
+              "newAgentDraft",
+              "newAgentSaving",
+              "newAgentFailed",
+              "newAgentLongContent",
+              "newAgentInvalidSetup"
+            ],
+            "newAgent.approvalPolicy.label": [
+              "newAgentDraft",
+              "newAgentSaving",
+              "newAgentFailed",
+              "newAgentLongContent",
+              "newAgentInvalidSetup"
+            ],
+            "newAgent.teamVisible.label": [
+              "newAgentDraft",
+              "newAgentSaving",
+              "newAgentFailed",
+              "newAgentLongContent",
+              "newAgentInvalidSetup"
+            ]
+          },
+          "data": {
+            "contract": "AgentDraft",
+            "many": false,
+            "map": {
+              "name": "name",
+              "responseSpeed": "responseSpeed",
+              "approvalPolicy": "approvalPolicy",
+              "teamVisible": "teamVisible"
+            }
+          },
+          "on": [
+            {
+              "event": "newAgentSaveEvent",
+              "axis": "asyncFeedback"
+            }
+          ],
+          "states": [
+            "newAgentDraft",
+            "newAgentSaving",
+            "newAgentFailed",
+            "newAgentLongContent"
+          ]
+        },
+        {
+          "id": "commit",
+          "copy": {
+            "newAgent.save": [
+              "newAgentDraft",
+              "newAgentFailed",
+              "newAgentLongContent",
+              "newAgentInvalidSetup"
+            ]
+          },
+          "states": [
+            "newAgentDraft",
+            "newAgentFailed",
+            "newAgentLongContent"
+          ]
+        },
+        {
+          "id": "exit",
+          "copy": {
+            "newAgent.cancel": [
+              "newAgentDraft",
+              "newAgentSaving",
+              "newAgentFailed",
+              "newAgentLongContent",
+              "newAgentInvalidSetup"
+            ]
+          },
+          "states": [
+            "newAgentDraft",
+            "newAgentSaving",
+            "newAgentFailed",
+            "newAgentLongContent"
+          ]
+        },
+        {
+          "id": "state",
+          "copy": {
+            "newAgent.status": [
+              "newAgentSaving"
+            ],
+            "newAgent.recovery": [
+              "newAgentFailed"
+            ],
+            "newAgent.invalid": [
+              "newAgentInvalidSetup"
+            ]
+          }
+        },
+        {
+          "id": "result",
+          "copy": {
+            "newAgent.outcome": [
+              "newAgentSaved"
+            ],
+            "newAgent.openAgents": [
+              "newAgentSaved"
+            ]
+          },
+          "states": [
+            "newAgentSaved"
+          ],
+          "data": {
+            "contract": "AgentDraft",
+            "many": false,
+            "map": {
+              "title": "name"
+            }
+          }
+        }
+      ],
+      "states": [
+        "newAgentDraft",
+        "newAgentSaving",
+        "newAgentSaved",
+        "newAgentFailed",
+        "newAgentLongContent"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "shell.aria.navigation": "always",
+        "shell.aria.main": "always",
+        "shell.alt.productMark": "always",
+        "nav.chats": "always",
+        "nav.agents": "always",
+        "nav.settings": "always"
+      },
+      "setups": [
+        {
+          "id": "newAgentInvalidSetup",
+          "label": "Field invalid",
+          "event": "newAgentInvalidEvent",
+          "state": "newAgentDraft"
+        }
+      ]
+    },
+    {
+      "id": "settings",
+      "question": "When should Plover notify me, and who can read a new conversation?",
+      "route": "/settings",
+      "binding": {
+        "record": "settings",
+        "status": "fixed",
+        "variant": "sections",
+        "because": "Notification choices and private-by-default chats can be saved together, while tool-read approval remains mandatory."
+      },
+      "slots": [
+        {
+          "id": "header",
+          "copy": {
+            "settings.title": "always",
+            "settings.documentTitle": "always"
+          }
+        },
+        {
+          "id": "navigation",
+          "copy": {
+            "settings.section": "always"
+          }
+        },
+        {
+          "id": "primary",
+          "copy": {
+            "settings.mentionNotifications.label": "always",
+            "settings.approvalNotifications.label": "always",
+            "settings.approvalPolicy.detail": "always",
+            "settings.shareByDefault.label": "always",
+            "settings.responseSpeed.label": "always",
+            "settings.responseSpeed.fast": "always",
+            "settings.responseSpeed.balanced": "always",
+            "settings.responseSpeed.thorough": "always"
+          },
+          "data": {
+            "contract": "ConversationPreferences",
+            "many": false,
+            "map": {
+              "mentionNotifications": "mentionNotifications",
+              "approvalNotifications": "approvalNotifications",
+              "privateByDefault": "privateByDefault",
+              "responseSpeed": "responseSpeed"
+            }
+          }
+        },
+        {
+          "id": "commit",
+          "copy": {
+            "settings.save": "always",
+            "settings.cancel": "always"
+          }
+        },
+        {
+          "id": "state",
+          "copy": {
+            "settings.status.saving": [
+              "settingsSaving"
+            ],
+            "settings.status.saved": [
+              "settingsSaved"
+            ],
+            "settings.recovery": [
+              "settingsFailed"
+            ]
+          },
+          "on": [
+            {
+              "event": "savePreferencesEvent",
+              "axis": "asyncFeedback"
+            }
+          ]
+        }
+      ],
+      "states": [
+        "settingsReady",
+        "settingsSaving",
+        "settingsSaved",
+        "settingsFailed"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "shell.aria.navigation": "always",
+        "shell.aria.main": "always",
+        "shell.alt.productMark": "always",
+        "nav.settings": "always",
+        "nav.chats": "always",
+        "nav.agents": "always"
+      }
+    },
+    {
+      "id": "help",
+      "question": "What exactly does a tool approval permit, and who can see its result?",
+      "route": "/help",
+      "slots": [
+        {
+          "id": "primary",
+          "copy": {
+            "help.behavior": "always",
+            "help.safety": "always"
+          }
+        }
+      ],
+      "states": [
+        "helpReady"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "help.title": "always",
+        "help.documentTitle": "always",
+        "shell.aria.navigation": "always",
+        "shell.aria.main": "always",
+        "shell.alt.productMark": "always",
+        "nav.chats": "always",
+        "nav.agents": "always",
+        "nav.settings": "always"
+      }
+    },
+    {
+      "id": "landing",
+      "question": "Can my team inspect the same agent answer and approve only the data it needs?",
+      "route": "/",
+      "slots": [
+        {
+          "id": "primary",
+          "copy": {
+            "landing.description": "always",
+            "landing.action": "always",
+            "landing.toolTrace.eyebrow": "always",
+            "landing.toolTrace.title": "always",
+            "landing.toolTrace.body": "always",
+            "landing.teamThreads.eyebrow": "always",
+            "landing.teamThreads.title": "always",
+            "landing.teamThreads.body": "always",
+            "landing.savedThreads.eyebrow": "always",
+            "landing.savedThreads.title": "always",
+            "landing.savedThreads.body": "always"
+          }
+        }
+      ],
+      "states": [
+        "landingReady"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "landing.title": "always",
+        "landing.documentTitle": "always",
+        "shell.aria.navigation": "always",
+        "shell.aria.main": "always",
+        "shell.alt.productMark": "always",
+        "landing.secondaryAction": "always",
+        "landing.footer": "always",
+        "landing.navigation.product": "always",
+        "landing.navigation.agents": "always",
+        "landing.navigation.help": "always",
+        "landing.navigation.chats": "always",
+        "landing.visibleQueries.value": "always",
+        "landing.visibleQueries.label": "always",
+        "landing.sharedResults.value": "always",
+        "landing.sharedResults.label": "always",
+        "landing.scopedApproval.value": "always",
+        "landing.scopedApproval.label": "always",
+        "landing.danaQuote.text": "always",
+        "landing.danaQuote.who": "always",
+        "landing.alderAndFinch.alt": "always",
+        "landing.brightwater.alt": "always",
+        "landing.calloway.alt": "always",
+        "landing.dunmore.alt": "always",
+        "landing.eastgate.alt": "always",
+        "landing.fernhill.alt": "always"
+      }
+    },
+    {
+      "id": "emailThreadShared",
+      "question": "Which conversation can I now read, and where are its agent calls and results?",
+      "route": "email:emailThreadShared",
+      "channel": "email",
+      "slots": [
+        {
+          "id": "primary",
+          "data": {
+            "contract": "Chat",
+            "many": false,
+            "map": {
+              "title": "title",
+              "participants": "participants",
+              "lastActive": "lastActiveAt",
+              "kind": "kind",
+              "unread": "unread"
+            }
+          },
+          "copy": {
+            "emailThreadShared.subject": "always",
+            "emailThreadShared.body": "always",
+            "emailThreadShared.action": "always",
+            "emailThreadShared.preheader": "always"
+          }
+        }
+      ],
+      "states": [
+        "emailThreadSharedReady"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {}
+    },
+    {
+      "id": "pushApprovalNeeded",
+      "question": "Which pending read is waiting for my decision before the agent can continue?",
+      "route": "push:pushApprovalNeeded",
+      "channel": "push",
+      "slots": [
+        {
+          "id": "primary",
+          "data": {
+            "contract": "ToolCall",
+            "many": false,
+            "map": {
+              "name": "name",
+              "code": "code",
+              "scope": "scope",
+              "result": "result"
+            }
+          },
+          "copy": {
+            "pushApprovalNeeded.title": "always",
+            "pushApprovalNeeded.body": "always",
+            "pushApprovalNeeded.action": "always"
+          }
+        }
+      ],
+      "states": [
+        "pushApprovalNeededReady"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {}
+    }
+  ],
+  "files": {
+    "copy": "copy.md",
+    "fixtures": "fixtures.json"
+  },
+  "$schema": "../../../references/product-model.schema.json"
+}

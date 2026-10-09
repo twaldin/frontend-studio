@@ -1,0 +1,977 @@
+{
+  "Tool": {
+    "populated": [
+      {
+        "name": "Cordless drill with two batteries",
+        "photo": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22240%22%20height%3D%22160%22%20viewBox%3D%220%200%20240%20160%22%3E%3Crect%20width%3D%22240%22%20height%3D%22160%22%20fill%3D%22hsl(0%2020%25%2090%25)%22%2F%3E%3Crect%20x%3D%2230%22%20y%3D%2255%22%20width%3D%22140%22%20height%3D%2235%22%20rx%3D%228%22%20fill%3D%22hsl(0%2025%25%2038%25)%22%2F%3E%3Ccircle%20cx%3D%22180%22%20cy%3D%22100%22%20r%3D%2218%22%20fill%3D%22hsl(0%2025%25%2038%25)%22%2F%3E%3C%2Fsvg%3E",
+        "photoAlt": "Cordless drill with two batteries",
+        "lenderName": "Nora",
+        "fee": 12,
+        "distanceMiles": 0.3,
+        "availability": "available",
+        "description": "Two charged batteries and a mixed bit set are in the case. Use the clutch for screws; return the drill with loose bits back in their labelled pockets.",
+        "lenderId": "nora",
+        "toolId": "cordless-drill-with-two-batteries"
+      },
+      {
+        "name": "Compact circular saw",
+        "photo": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22240%22%20height%3D%22160%22%20viewBox%3D%220%200%20240%20160%22%3E%3Crect%20width%3D%22240%22%20height%3D%22160%22%20fill%3D%22hsl(9%2020%25%2090%25)%22%2F%3E%3Crect%20x%3D%2236%22%20y%3D%2255%22%20width%3D%22140%22%20height%3D%2235%22%20rx%3D%228%22%20fill%3D%22hsl(9%2025%25%2038%25)%22%2F%3E%3Ccircle%20cx%3D%22180%22%20cy%3D%22100%22%20r%3D%2218%22%20fill%3D%22hsl(9%2025%25%2038%25)%22%2F%3E%3C%2Fsvg%3E",
+        "photoAlt": "Compact circular saw",
+        "lenderName": "Ellis",
+        "fee": 18,
+        "distanceMiles": 0.4,
+        "availability": "available",
+        "description": "Includes the rip guide and a blade for timber. Clamp the work, check the lower guard moves freely, and ask Ellis to demonstrate the depth adjustment at pickup.",
+        "lenderId": "ellis",
+        "toolId": "compact-circular-saw"
+      },
+      {
+        "name": "Pressure washer",
+        "photo": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22240%22%20height%3D%22160%22%20viewBox%3D%220%200%20240%20160%22%3E%3Crect%20width%3D%22240%22%20height%3D%22160%22%20fill%3D%22hsl(18%2020%25%2090%25)%22%2F%3E%3Crect%20x%3D%2242%22%20y%3D%2255%22%20width%3D%22140%22%20height%3D%2235%22%20rx%3D%228%22%20fill%3D%22hsl(18%2025%25%2038%25)%22%2F%3E%3Ccircle%20cx%3D%22180%22%20cy%3D%22100%22%20r%3D%2218%22%20fill%3D%22hsl(18%2025%25%2038%25)%22%2F%3E%3C%2Fsvg%3E",
+        "photoAlt": "Pressure washer",
+        "lenderName": "Robin",
+        "fee": 24,
+        "distanceMiles": 0.5,
+        "availability": "rented",
+        "description": "Comes with a patio nozzle and a six-meter hose. Connect the water supply before switching on; do not use the narrow jet on painted timber or loose mortar.",
+        "lenderId": "robin",
+        "toolId": "pressure-washer"
+      },
+      {
+        "name": "Extension ladder",
+        "photo": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22240%22%20height%3D%22160%22%20viewBox%3D%220%200%20240%20160%22%3E%3Crect%20width%3D%22240%22%20height%3D%22160%22%20fill%3D%22hsl(27%2020%25%2090%25)%22%2F%3E%3Crect%20x%3D%2248%22%20y%3D%2255%22%20width%3D%22140%22%20height%3D%2235%22%20rx%3D%228%22%20fill%3D%22hsl(27%2025%25%2038%25)%22%2F%3E%3Ccircle%20cx%3D%22180%22%20cy%3D%22100%22%20r%3D%2218%22%20fill%3D%22hsl(27%2025%25%2038%25)%22%2F%3E%3C%2Fsvg%3E",
+        "photoAlt": "Extension ladder",
+        "lenderName": "Jules",
+        "fee": 16,
+        "distanceMiles": 0.7,
+        "availability": "available",
+        "description": "Extends to five meters and has non-slip feet. Transport it strapped down, place it on firm level ground, and have another adult steady it during setup.",
+        "lenderId": "jules",
+        "toolId": "extension-ladder"
+      },
+      {
+        "name": "Orbital sander",
+        "photo": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22240%22%20height%3D%22160%22%20viewBox%3D%220%200%20240%20160%22%3E%3Crect%20width%3D%22240%22%20height%3D%22160%22%20fill%3D%22hsl(36%2020%25%2090%25)%22%2F%3E%3Crect%20x%3D%2254%22%20y%3D%2255%22%20width%3D%22140%22%20height%3D%2235%22%20rx%3D%228%22%20fill%3D%22hsl(36%2025%25%2038%25)%22%2F%3E%3Ccircle%20cx%3D%22180%22%20cy%3D%22100%22%20r%3D%2218%22%20fill%3D%22hsl(36%2025%25%2038%25)%22%2F%3E%3C%2Fsvg%3E",
+        "photoAlt": "Orbital sander",
+        "lenderName": "Ari",
+        "fee": 10,
+        "distanceMiles": 0.8,
+        "availability": "away",
+        "description": "Uses hook-and-loop discs; bring the grit your project needs. Empty the dust bag before returning and avoid sanding finishes that may contain lead.",
+        "lenderId": "ari",
+        "toolId": "orbital-sander"
+      },
+      {
+        "name": "Tile cutter",
+        "photo": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22240%22%20height%3D%22160%22%20viewBox%3D%220%200%20240%20160%22%3E%3Crect%20width%3D%22240%22%20height%3D%22160%22%20fill%3D%22hsl(45%2020%25%2090%25)%22%2F%3E%3Crect%20x%3D%2230%22%20y%3D%2255%22%20width%3D%22140%22%20height%3D%2235%22%20rx%3D%228%22%20fill%3D%22hsl(45%2025%25%2038%25)%22%2F%3E%3Ccircle%20cx%3D%22180%22%20cy%3D%22100%22%20r%3D%2218%22%20fill%3D%22hsl(45%2025%25%2038%25)%22%2F%3E%3C%2Fsvg%3E",
+        "photoAlt": "Tile cutter",
+        "lenderName": "Nora",
+        "fee": 20,
+        "distanceMiles": 0.9,
+        "availability": "available",
+        "description": "Manual cutter for straight cuts in ceramic wall tiles. Maximum cutting length is sixty centimeters; it is not suitable for thick stone or curved cuts.",
+        "lenderId": "nora",
+        "toolId": "tile-cutter"
+      },
+      {
+        "name": "Garden tiller",
+        "photo": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22240%22%20height%3D%22160%22%20viewBox%3D%220%200%20240%20160%22%3E%3Crect%20width%3D%22240%22%20height%3D%22160%22%20fill%3D%22hsl(54%2020%25%2090%25)%22%2F%3E%3Crect%20x%3D%2236%22%20y%3D%2255%22%20width%3D%22140%22%20height%3D%2235%22%20rx%3D%228%22%20fill%3D%22hsl(54%2025%25%2038%25)%22%2F%3E%3Ccircle%20cx%3D%22180%22%20cy%3D%22100%22%20r%3D%2218%22%20fill%3D%22hsl(54%2025%25%2038%25)%22%2F%3E%3C%2Fsvg%3E",
+        "photoAlt": "Garden tiller",
+        "lenderName": "Ellis",
+        "fee": 28,
+        "distanceMiles": 1.0,
+        "availability": "available",
+        "description": "Small electric tiller for prepared garden beds. Bring an outdoor extension lead and remove stones and buried wire before working the soil.",
+        "lenderId": "ellis",
+        "toolId": "garden-tiller"
+      },
+      {
+        "name": "Wet and dry vacuum",
+        "photo": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22240%22%20height%3D%22160%22%20viewBox%3D%220%200%20240%20160%22%3E%3Crect%20width%3D%22240%22%20height%3D%22160%22%20fill%3D%22hsl(63%2020%25%2090%25)%22%2F%3E%3Crect%20x%3D%2242%22%20y%3D%2255%22%20width%3D%22140%22%20height%3D%2235%22%20rx%3D%228%22%20fill%3D%22hsl(63%2025%25%2038%25)%22%2F%3E%3Ccircle%20cx%3D%22180%22%20cy%3D%22100%22%20r%3D%2218%22%20fill%3D%22hsl(63%2025%25%2038%25)%22%2F%3E%3C%2Fsvg%3E",
+        "photoAlt": "Wet and dry vacuum",
+        "lenderName": "Robin",
+        "fee": 14,
+        "distanceMiles": 1.1,
+        "availability": "rented",
+        "description": "Includes the wide floor head and crevice nozzle. Remove the paper bag for wet pickup, empty the tank afterward, and do not use it for hot ash.",
+        "lenderId": "robin",
+        "toolId": "wet-and-dry-vacuum"
+      },
+      {
+        "name": "Portable workbench",
+        "photo": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22240%22%20height%3D%22160%22%20viewBox%3D%220%200%20240%20160%22%3E%3Crect%20width%3D%22240%22%20height%3D%22160%22%20fill%3D%22hsl(72%2020%25%2090%25)%22%2F%3E%3Crect%20x%3D%2248%22%20y%3D%2255%22%20width%3D%22140%22%20height%3D%2235%22%20rx%3D%228%22%20fill%3D%22hsl(72%2025%25%2038%25)%22%2F%3E%3Ccircle%20cx%3D%22180%22%20cy%3D%22100%22%20r%3D%2218%22%20fill%3D%22hsl(72%2025%25%2038%25)%22%2F%3E%3C%2Fsvg%3E",
+        "photoAlt": "Portable workbench",
+        "lenderName": "Jules",
+        "fee": 12,
+        "distanceMiles": 1.3,
+        "availability": "available",
+        "description": "Folding bench with four clamping dogs. Check both legs lock before loading it; the top is suitable for small timber cuts, not standing on.",
+        "lenderId": "jules",
+        "toolId": "portable-workbench"
+      },
+      {
+        "name": "Hammer drill",
+        "photo": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22240%22%20height%3D%22160%22%20viewBox%3D%220%200%20240%20160%22%3E%3Crect%20width%3D%22240%22%20height%3D%22160%22%20fill%3D%22hsl(81%2020%25%2090%25)%22%2F%3E%3Crect%20x%3D%2254%22%20y%3D%2255%22%20width%3D%22140%22%20height%3D%2235%22%20rx%3D%228%22%20fill%3D%22hsl(81%2025%25%2038%25)%22%2F%3E%3Ccircle%20cx%3D%22180%22%20cy%3D%22100%22%20r%3D%2218%22%20fill%3D%22hsl(81%2025%25%2038%25)%22%2F%3E%3C%2Fsvg%3E",
+        "photoAlt": "Hammer drill",
+        "lenderName": "Ari",
+        "fee": 18,
+        "distanceMiles": 1.4,
+        "availability": "away",
+        "description": "Mains-powered drill with a depth stop and masonry bits. Choose hammer mode only for masonry and scan for cables and pipes before drilling.",
+        "lenderId": "ari",
+        "toolId": "hammer-drill"
+      },
+      {
+        "name": "Jigsaw",
+        "photo": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22240%22%20height%3D%22160%22%20viewBox%3D%220%200%20240%20160%22%3E%3Crect%20width%3D%22240%22%20height%3D%22160%22%20fill%3D%22hsl(90%2020%25%2090%25)%22%2F%3E%3Crect%20x%3D%2230%22%20y%3D%2255%22%20width%3D%22140%22%20height%3D%2235%22%20rx%3D%228%22%20fill%3D%22hsl(90%2025%25%2038%25)%22%2F%3E%3Ccircle%20cx%3D%22180%22%20cy%3D%22100%22%20r%3D%2218%22%20fill%3D%22hsl(90%2025%25%2038%25)%22%2F%3E%3C%2Fsvg%3E",
+        "photoAlt": "Jigsaw",
+        "lenderName": "Nora",
+        "fee": 24,
+        "distanceMiles": 1.5,
+        "availability": "available",
+        "description": "Variable-speed saw with a wood blade and dust adapter. Clamp the work and keep the shoe flat; bring the correct blade for metal or laminate.",
+        "lenderId": "nora",
+        "toolId": "jigsaw"
+      },
+      {
+        "name": "Hedge trimmer",
+        "photo": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22240%22%20height%3D%22160%22%20viewBox%3D%220%200%20240%20160%22%3E%3Crect%20width%3D%22240%22%20height%3D%22160%22%20fill%3D%22hsl(99%2020%25%2090%25)%22%2F%3E%3Crect%20x%3D%2236%22%20y%3D%2255%22%20width%3D%22140%22%20height%3D%2235%22%20rx%3D%228%22%20fill%3D%22hsl(99%2025%25%2038%25)%22%2F%3E%3Ccircle%20cx%3D%22180%22%20cy%3D%22100%22%20r%3D%2218%22%20fill%3D%22hsl(99%2025%25%2038%25)%22%2F%3E%3C%2Fsvg%3E",
+        "photoAlt": "Hedge trimmer",
+        "lenderName": "Ellis",
+        "fee": 16,
+        "distanceMiles": 1.6,
+        "availability": "available",
+        "description": "Battery trimmer with a blade cover and charger. Suitable for young hedge growth, not thick branches; check for nesting birds before cutting.",
+        "lenderId": "ellis",
+        "toolId": "hedge-trimmer"
+      },
+      {
+        "name": "Paint sprayer",
+        "photo": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22240%22%20height%3D%22160%22%20viewBox%3D%220%200%20240%20160%22%3E%3Crect%20width%3D%22240%22%20height%3D%22160%22%20fill%3D%22hsl(108%2020%25%2090%25)%22%2F%3E%3Crect%20x%3D%2242%22%20y%3D%2255%22%20width%3D%22140%22%20height%3D%2235%22%20rx%3D%228%22%20fill%3D%22hsl(108%2025%25%2038%25)%22%2F%3E%3Ccircle%20cx%3D%22180%22%20cy%3D%22100%22%20r%3D%2218%22%20fill%3D%22hsl(108%2025%25%2038%25)%22%2F%3E%3C%2Fsvg%3E",
+        "photoAlt": "Paint sprayer",
+        "lenderName": "Robin",
+        "fee": 10,
+        "distanceMiles": 1.7,
+        "availability": "rented",
+        "description": "Includes a fine-finish nozzle for water-based paint. Strain the paint before filling and flush the hose and nozzle thoroughly before return.",
+        "lenderId": "robin",
+        "toolId": "paint-sprayer"
+      },
+      {
+        "name": "Socket wrench set",
+        "photo": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22240%22%20height%3D%22160%22%20viewBox%3D%220%200%20240%20160%22%3E%3Crect%20width%3D%22240%22%20height%3D%22160%22%20fill%3D%22hsl(117%2020%25%2090%25)%22%2F%3E%3Crect%20x%3D%2248%22%20y%3D%2255%22%20width%3D%22140%22%20height%3D%2235%22%20rx%3D%228%22%20fill%3D%22hsl(117%2025%25%2038%25)%22%2F%3E%3Ccircle%20cx%3D%22180%22%20cy%3D%22100%22%20r%3D%2218%22%20fill%3D%22hsl(117%2025%25%2038%25)%22%2F%3E%3C%2Fsvg%3E",
+        "photoAlt": "Socket wrench set",
+        "lenderName": "Jules",
+        "fee": 20,
+        "distanceMiles": 1.9,
+        "availability": "available",
+        "description": "Metric sockets from eight to twenty-four millimeters, with two extensions. Return each socket to its marked space; do not use the ratchet as a breaker bar.",
+        "lenderId": "jules",
+        "toolId": "socket-wrench-set"
+      },
+      {
+        "name": "Torque wrench",
+        "photo": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22240%22%20height%3D%22160%22%20viewBox%3D%220%200%20240%20160%22%3E%3Crect%20width%3D%22240%22%20height%3D%22160%22%20fill%3D%22hsl(126%2020%25%2090%25)%22%2F%3E%3Crect%20x%3D%2254%22%20y%3D%2255%22%20width%3D%22140%22%20height%3D%2235%22%20rx%3D%228%22%20fill%3D%22hsl(126%2025%25%2038%25)%22%2F%3E%3Ccircle%20cx%3D%22180%22%20cy%3D%22100%22%20r%3D%2218%22%20fill%3D%22hsl(126%2025%25%2038%25)%22%2F%3E%3C%2Fsvg%3E",
+        "photoAlt": "Torque wrench",
+        "lenderName": "Ari",
+        "fee": 28,
+        "distanceMiles": 2.0,
+        "availability": "away",
+        "description": "Adjustable wrench with a calibration card in the case. Confirm the required torque from the equipment manual and reset the handle to its storage setting.",
+        "lenderId": "ari",
+        "toolId": "torque-wrench"
+      },
+      {
+        "name": "Post-hole digger",
+        "photo": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22240%22%20height%3D%22160%22%20viewBox%3D%220%200%20240%20160%22%3E%3Crect%20width%3D%22240%22%20height%3D%22160%22%20fill%3D%22hsl(135%2020%25%2090%25)%22%2F%3E%3Crect%20x%3D%2230%22%20y%3D%2255%22%20width%3D%22140%22%20height%3D%2235%22%20rx%3D%228%22%20fill%3D%22hsl(135%2025%25%2038%25)%22%2F%3E%3Ccircle%20cx%3D%22180%22%20cy%3D%22100%22%20r%3D%2218%22%20fill%3D%22hsl(135%2025%25%2038%25)%22%2F%3E%3C%2Fsvg%3E",
+        "photoAlt": "Post-hole digger",
+        "lenderName": "Nora",
+        "fee": 14,
+        "distanceMiles": 2.1,
+        "availability": "available",
+        "description": "Manual digger with wooden handles for fence posts. Check for underground services before starting; it works best in damp soil without large stones.",
+        "lenderId": "nora",
+        "toolId": "post-hole-digger"
+      },
+      {
+        "name": "Hand truck",
+        "photo": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22240%22%20height%3D%22160%22%20viewBox%3D%220%200%20240%20160%22%3E%3Crect%20width%3D%22240%22%20height%3D%22160%22%20fill%3D%22hsl(144%2020%25%2090%25)%22%2F%3E%3Crect%20x%3D%2236%22%20y%3D%2255%22%20width%3D%22140%22%20height%3D%2235%22%20rx%3D%228%22%20fill%3D%22hsl(144%2025%25%2038%25)%22%2F%3E%3Ccircle%20cx%3D%22180%22%20cy%3D%22100%22%20r%3D%2218%22%20fill%3D%22hsl(144%2025%25%2038%25)%22%2F%3E%3C%2Fsvg%3E",
+        "photoAlt": "Hand truck",
+        "lenderName": "Ellis",
+        "fee": 12,
+        "distanceMiles": 2.2,
+        "availability": "available",
+        "description": "Upright trolley with stair runners and a tie-down strap. Secure the load and keep it within the marked weight limit; it is not a passenger carrier.",
+        "lenderId": "ellis",
+        "toolId": "hand-truck"
+      },
+      {
+        "name": "Rotary tool",
+        "photo": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22240%22%20height%3D%22160%22%20viewBox%3D%220%200%20240%20160%22%3E%3Crect%20width%3D%22240%22%20height%3D%22160%22%20fill%3D%22hsl(153%2020%25%2090%25)%22%2F%3E%3Crect%20x%3D%2242%22%20y%3D%2255%22%20width%3D%22140%22%20height%3D%2235%22%20rx%3D%228%22%20fill%3D%22hsl(153%2025%25%2038%25)%22%2F%3E%3Ccircle%20cx%3D%22180%22%20cy%3D%22100%22%20r%3D%2218%22%20fill%3D%22hsl(153%2025%25%2038%25)%22%2F%3E%3C%2Fsvg%3E",
+        "photoAlt": "Rotary tool",
+        "lenderName": "Robin",
+        "fee": 18,
+        "distanceMiles": 2.3,
+        "availability": "rented",
+        "description": "Compact rotary tool with sanding drums and a collet key. Wear eye protection, use the correct speed for the attachment, and return unused tips in the case.",
+        "lenderId": "robin",
+        "toolId": "rotary-tool"
+      },
+      {
+        "name": "Stud finder",
+        "photo": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22240%22%20height%3D%22160%22%20viewBox%3D%220%200%20240%20160%22%3E%3Crect%20width%3D%22240%22%20height%3D%22160%22%20fill%3D%22hsl(162%2020%25%2090%25)%22%2F%3E%3Crect%20x%3D%2248%22%20y%3D%2255%22%20width%3D%22140%22%20height%3D%2235%22%20rx%3D%228%22%20fill%3D%22hsl(162%2025%25%2038%25)%22%2F%3E%3Ccircle%20cx%3D%22180%22%20cy%3D%22100%22%20r%3D%2218%22%20fill%3D%22hsl(162%2025%25%2038%25)%22%2F%3E%3C%2Fsvg%3E",
+        "photoAlt": "Stud finder",
+        "lenderName": "Jules",
+        "fee": 24,
+        "distanceMiles": 2.5,
+        "availability": "available",
+        "description": "Battery-powered finder for timber studs and live-wire warnings. Calibrate it against the wall before scanning and confirm a location before drilling.",
+        "lenderId": "jules",
+        "toolId": "stud-finder"
+      },
+      {
+        "name": "Bench vise",
+        "photo": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22240%22%20height%3D%22160%22%20viewBox%3D%220%200%20240%20160%22%3E%3Crect%20width%3D%22240%22%20height%3D%22160%22%20fill%3D%22hsl(171%2020%25%2090%25)%22%2F%3E%3Crect%20x%3D%2254%22%20y%3D%2255%22%20width%3D%22140%22%20height%3D%2235%22%20rx%3D%228%22%20fill%3D%22hsl(171%2025%25%2038%25)%22%2F%3E%3Ccircle%20cx%3D%22180%22%20cy%3D%22100%22%20r%3D%2218%22%20fill%3D%22hsl(171%2025%25%2038%25)%22%2F%3E%3C%2Fsvg%3E",
+        "photoAlt": "Bench vise",
+        "lenderName": "Ari",
+        "fee": 16,
+        "distanceMiles": 2.6,
+        "availability": "away",
+        "description": "Vise with removable soft jaws and mounting bolts. It must be bolted to a sturdy bench; use the soft jaws to avoid marking finished timber or metal.",
+        "lenderId": "ari",
+        "toolId": "bench-vise"
+      },
+      {
+        "name": "Angle grinder",
+        "photo": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22240%22%20height%3D%22160%22%20viewBox%3D%220%200%20240%20160%22%3E%3Crect%20width%3D%22240%22%20height%3D%22160%22%20fill%3D%22hsl(180%2020%25%2090%25)%22%2F%3E%3Crect%20x%3D%2230%22%20y%3D%2255%22%20width%3D%22140%22%20height%3D%2235%22%20rx%3D%228%22%20fill%3D%22hsl(180%2025%25%2038%25)%22%2F%3E%3Ccircle%20cx%3D%22180%22%20cy%3D%22100%22%20r%3D%2218%22%20fill%3D%22hsl(180%2025%25%2038%25)%22%2F%3E%3C%2Fsvg%3E",
+        "photoAlt": "Angle grinder",
+        "lenderName": "Nora",
+        "fee": 10,
+        "distanceMiles": 2.7,
+        "availability": "available",
+        "description": "Includes a guard and side handle, but no consumable discs. Fit a disc rated for the tool and task; keep sparks away from people and flammable material.",
+        "lenderId": "nora",
+        "toolId": "angle-grinder"
+      },
+      {
+        "name": "Miter saw",
+        "photo": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22240%22%20height%3D%22160%22%20viewBox%3D%220%200%20240%20160%22%3E%3Crect%20width%3D%22240%22%20height%3D%22160%22%20fill%3D%22hsl(189%2020%25%2090%25)%22%2F%3E%3Crect%20x%3D%2236%22%20y%3D%2255%22%20width%3D%22140%22%20height%3D%2235%22%20rx%3D%228%22%20fill%3D%22hsl(189%2025%25%2038%25)%22%2F%3E%3Ccircle%20cx%3D%22180%22%20cy%3D%22100%22%20r%3D%2218%22%20fill%3D%22hsl(189%2025%25%2038%25)%22%2F%3E%3C%2Fsvg%3E",
+        "photoAlt": "Miter saw",
+        "lenderName": "Ellis",
+        "fee": 20,
+        "distanceMiles": 2.8,
+        "availability": "available",
+        "description": "Sliding saw for timber trim with a dust bag and hold-down clamp. Support long boards on both sides and let the blade stop before lifting the guard.",
+        "lenderId": "ellis",
+        "toolId": "miter-saw"
+      },
+      {
+        "name": "Belt sander",
+        "photo": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22240%22%20height%3D%22160%22%20viewBox%3D%220%200%20240%20160%22%3E%3Crect%20width%3D%22240%22%20height%3D%22160%22%20fill%3D%22hsl(198%2020%25%2090%25)%22%2F%3E%3Crect%20x%3D%2242%22%20y%3D%2255%22%20width%3D%22140%22%20height%3D%2235%22%20rx%3D%228%22%20fill%3D%22hsl(198%2025%25%2038%25)%22%2F%3E%3Ccircle%20cx%3D%22180%22%20cy%3D%22100%22%20r%3D%2218%22%20fill%3D%22hsl(198%2025%25%2038%25)%22%2F%3E%3C%2Fsvg%3E",
+        "photoAlt": "Belt sander",
+        "lenderName": "Robin",
+        "fee": 28,
+        "distanceMiles": 2.9,
+        "availability": "rented",
+        "description": "Comes with a dust bag and spare belt. Start it clear of the work, keep it moving with the grain, and empty the bag away from ignition sources.",
+        "lenderId": "robin",
+        "toolId": "belt-sander"
+      },
+      {
+        "name": "Cable puller",
+        "photo": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22240%22%20height%3D%22160%22%20viewBox%3D%220%200%20240%20160%22%3E%3Crect%20width%3D%22240%22%20height%3D%22160%22%20fill%3D%22hsl(207%2020%25%2090%25)%22%2F%3E%3Crect%20x%3D%2248%22%20y%3D%2255%22%20width%3D%22140%22%20height%3D%2235%22%20rx%3D%228%22%20fill%3D%22hsl(207%2025%25%2038%25)%22%2F%3E%3Ccircle%20cx%3D%22180%22%20cy%3D%22100%22%20r%3D%2218%22%20fill%3D%22hsl(207%2025%25%2038%25)%22%2F%3E%3C%2Fsvg%3E",
+        "photoAlt": "Cable puller",
+        "lenderName": "Jules",
+        "fee": 14,
+        "distanceMiles": 3.1,
+        "availability": "available",
+        "description": "Manual puller with rated hooks for controlled tensioning. Inspect the cable before use and never use it to lift a person or suspend a load overhead.",
+        "lenderId": "jules",
+        "toolId": "cable-puller"
+      },
+      {
+        "name": "Drain auger",
+        "photo": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22240%22%20height%3D%22160%22%20viewBox%3D%220%200%20240%20160%22%3E%3Crect%20width%3D%22240%22%20height%3D%22160%22%20fill%3D%22hsl(216%2020%25%2090%25)%22%2F%3E%3Crect%20x%3D%2254%22%20y%3D%2255%22%20width%3D%22140%22%20height%3D%2235%22%20rx%3D%228%22%20fill%3D%22hsl(216%2025%25%2038%25)%22%2F%3E%3Ccircle%20cx%3D%22180%22%20cy%3D%22100%22%20r%3D%2218%22%20fill%3D%22hsl(216%2025%25%2038%25)%22%2F%3E%3C%2Fsvg%3E",
+        "photoAlt": "Drain auger",
+        "lenderName": "Ari",
+        "fee": 12,
+        "distanceMiles": 3.2,
+        "availability": "away",
+        "description": "Hand-operated cable for sinks and short waste pipes. Wear gloves, feed slowly around bends, and rinse and dry the cable before putting it back in the drum.",
+        "lenderId": "ari",
+        "toolId": "drain-auger"
+      },
+      {
+        "name": "Floor polisher",
+        "photo": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22240%22%20height%3D%22160%22%20viewBox%3D%220%200%20240%20160%22%3E%3Crect%20width%3D%22240%22%20height%3D%22160%22%20fill%3D%22hsl(225%2020%25%2090%25)%22%2F%3E%3Crect%20x%3D%2230%22%20y%3D%2255%22%20width%3D%22140%22%20height%3D%2235%22%20rx%3D%228%22%20fill%3D%22hsl(225%2025%25%2038%25)%22%2F%3E%3Ccircle%20cx%3D%22180%22%20cy%3D%22100%22%20r%3D%2218%22%20fill%3D%22hsl(225%2025%25%2038%25)%22%2F%3E%3C%2Fsvg%3E",
+        "photoAlt": "Floor polisher",
+        "lenderName": "Nora",
+        "fee": 18,
+        "distanceMiles": 3.3,
+        "availability": "available",
+        "description": "Rotary polisher with a soft pad for sealed hard floors. Clear loose rugs, start on the lowest speed, and use a finish approved for your floor.",
+        "lenderId": "nora",
+        "toolId": "floor-polisher"
+      },
+      {
+        "name": "Pruning saw",
+        "photo": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22240%22%20height%3D%22160%22%20viewBox%3D%220%200%20240%20160%22%3E%3Crect%20width%3D%22240%22%20height%3D%22160%22%20fill%3D%22hsl(234%2020%25%2090%25)%22%2F%3E%3Crect%20x%3D%2236%22%20y%3D%2255%22%20width%3D%22140%22%20height%3D%2235%22%20rx%3D%228%22%20fill%3D%22hsl(234%2025%25%2038%25)%22%2F%3E%3Ccircle%20cx%3D%22180%22%20cy%3D%22100%22%20r%3D%2218%22%20fill%3D%22hsl(234%2025%25%2038%25)%22%2F%3E%3C%2Fsvg%3E",
+        "photoAlt": "Pruning saw",
+        "lenderName": "Ellis",
+        "fee": 24,
+        "distanceMiles": 3.4,
+        "availability": "available",
+        "description": "Folding saw for small green branches. Lock the blade fully open, keep your free hand outside the cut, and wipe off sap before folding it.",
+        "lenderId": "ellis",
+        "toolId": "pruning-saw"
+      },
+      {
+        "name": "Bolt cutters",
+        "photo": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22240%22%20height%3D%22160%22%20viewBox%3D%220%200%20240%20160%22%3E%3Crect%20width%3D%22240%22%20height%3D%22160%22%20fill%3D%22hsl(243%2020%25%2090%25)%22%2F%3E%3Crect%20x%3D%2242%22%20y%3D%2255%22%20width%3D%22140%22%20height%3D%2235%22%20rx%3D%228%22%20fill%3D%22hsl(243%2025%25%2038%25)%22%2F%3E%3Ccircle%20cx%3D%22180%22%20cy%3D%22100%22%20r%3D%2218%22%20fill%3D%22hsl(243%2025%25%2038%25)%22%2F%3E%3C%2Fsvg%3E",
+        "photoAlt": "Bolt cutters",
+        "lenderName": "Robin",
+        "fee": 16,
+        "distanceMiles": 3.5,
+        "availability": "rented",
+        "description": "Long-handled cutters for soft wire and small mild-steel chain. Confirm that you own or have permission to cut the material; hardened locks may damage the jaws.",
+        "lenderId": "robin",
+        "toolId": "bolt-cutters"
+      },
+      {
+        "name": "Laser level",
+        "photo": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22240%22%20height%3D%22160%22%20viewBox%3D%220%200%20240%20160%22%3E%3Crect%20width%3D%22240%22%20height%3D%22160%22%20fill%3D%22hsl(252%2020%25%2090%25)%22%2F%3E%3Crect%20x%3D%2248%22%20y%3D%2255%22%20width%3D%22140%22%20height%3D%2235%22%20rx%3D%228%22%20fill%3D%22hsl(252%2025%25%2038%25)%22%2F%3E%3Ccircle%20cx%3D%22180%22%20cy%3D%22100%22%20r%3D%2218%22%20fill%3D%22hsl(252%2025%25%2038%25)%22%2F%3E%3C%2Fsvg%3E",
+        "photoAlt": "Laser level",
+        "lenderName": "Jules",
+        "fee": 10,
+        "distanceMiles": 3.7,
+        "availability": "available",
+        "description": "Self-leveling laser with a compact tripod. Use indoors or in shade, do not look into the beam, and lock the pendulum before transport.",
+        "lenderId": "jules",
+        "toolId": "laser-level"
+      },
+      {
+        "name": "Air compressor",
+        "photo": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22240%22%20height%3D%22160%22%20viewBox%3D%220%200%20240%20160%22%3E%3Crect%20width%3D%22240%22%20height%3D%22160%22%20fill%3D%22hsl(261%2020%25%2090%25)%22%2F%3E%3Crect%20x%3D%2254%22%20y%3D%2255%22%20width%3D%22140%22%20height%3D%2235%22%20rx%3D%228%22%20fill%3D%22hsl(261%2025%25%2038%25)%22%2F%3E%3Ccircle%20cx%3D%22180%22%20cy%3D%22100%22%20r%3D%2218%22%20fill%3D%22hsl(261%2025%25%2038%25)%22%2F%3E%3C%2Fsvg%3E",
+        "photoAlt": "Air compressor",
+        "lenderName": "Ari",
+        "fee": 20,
+        "distanceMiles": 3.8,
+        "availability": "away",
+        "description": "Portable compressor with a regulator and hose. Bring your own air tool, check its pressure rating, and drain condensation from the tank before return.",
+        "lenderId": "ari",
+        "toolId": "air-compressor"
+      },
+      {
+        "name": "Carpet cleaner",
+        "photo": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22240%22%20height%3D%22160%22%20viewBox%3D%220%200%20240%20160%22%3E%3Crect%20width%3D%22240%22%20height%3D%22160%22%20fill%3D%22hsl(270%2020%25%2090%25)%22%2F%3E%3Crect%20x%3D%2230%22%20y%3D%2255%22%20width%3D%22140%22%20height%3D%2235%22%20rx%3D%228%22%20fill%3D%22hsl(270%2025%25%2038%25)%22%2F%3E%3Ccircle%20cx%3D%22180%22%20cy%3D%22100%22%20r%3D%2218%22%20fill%3D%22hsl(270%2025%25%2038%25)%22%2F%3E%3C%2Fsvg%3E",
+        "photoAlt": "Carpet cleaner",
+        "lenderName": "Nora",
+        "fee": 28,
+        "distanceMiles": 3.9,
+        "availability": "available",
+        "description": "Includes a small upholstery head and clean-water tank. Use the recommended low-foam detergent and test an inconspicuous patch before treating a room.",
+        "lenderId": "nora",
+        "toolId": "carpet-cleaner"
+      },
+      {
+        "name": "Wallpaper steamer",
+        "photo": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22240%22%20height%3D%22160%22%20viewBox%3D%220%200%20240%20160%22%3E%3Crect%20width%3D%22240%22%20height%3D%22160%22%20fill%3D%22hsl(279%2020%25%2090%25)%22%2F%3E%3Crect%20x%3D%2236%22%20y%3D%2255%22%20width%3D%22140%22%20height%3D%2235%22%20rx%3D%228%22%20fill%3D%22hsl(279%2025%25%2038%25)%22%2F%3E%3Ccircle%20cx%3D%22180%22%20cy%3D%22100%22%20r%3D%2218%22%20fill%3D%22hsl(279%2025%25%2038%25)%22%2F%3E%3C%2Fsvg%3E",
+        "photoAlt": "Wallpaper steamer",
+        "lenderName": "Ellis",
+        "fee": 14,
+        "distanceMiles": 4.0,
+        "availability": "available",
+        "description": "Steamer with a large plate and heat-resistant hose. Protect the floor, keep the filler cap closed while hot, and let the tank cool before emptying.",
+        "lenderId": "ellis",
+        "toolId": "wallpaper-steamer"
+      },
+      {
+        "name": "Inspection camera",
+        "photo": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22240%22%20height%3D%22160%22%20viewBox%3D%220%200%20240%20160%22%3E%3Crect%20width%3D%22240%22%20height%3D%22160%22%20fill%3D%22hsl(288%2020%25%2090%25)%22%2F%3E%3Crect%20x%3D%2242%22%20y%3D%2255%22%20width%3D%22140%22%20height%3D%2235%22%20rx%3D%228%22%20fill%3D%22hsl(288%2025%25%2038%25)%22%2F%3E%3Ccircle%20cx%3D%22180%22%20cy%3D%22100%22%20r%3D%2218%22%20fill%3D%22hsl(288%2025%25%2038%25)%22%2F%3E%3C%2Fsvg%3E",
+        "photoAlt": "Inspection camera",
+        "lenderName": "Robin",
+        "fee": 12,
+        "distanceMiles": 4.1,
+        "availability": "rented",
+        "description": "Flexible camera with a small display and mirror attachment. Suitable for dry cavities; do not feed it into live electrical equipment or submerged pipes.",
+        "lenderId": "robin",
+        "toolId": "inspection-camera"
+      },
+      {
+        "name": "Soldering station",
+        "photo": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22240%22%20height%3D%22160%22%20viewBox%3D%220%200%20240%20160%22%3E%3Crect%20width%3D%22240%22%20height%3D%22160%22%20fill%3D%22hsl(297%2020%25%2090%25)%22%2F%3E%3Crect%20x%3D%2248%22%20y%3D%2255%22%20width%3D%22140%22%20height%3D%2235%22%20rx%3D%228%22%20fill%3D%22hsl(297%2025%25%2038%25)%22%2F%3E%3Ccircle%20cx%3D%22180%22%20cy%3D%22100%22%20r%3D%2218%22%20fill%3D%22hsl(297%2025%25%2038%25)%22%2F%3E%3C%2Fsvg%3E",
+        "photoAlt": "Soldering station",
+        "lenderName": "Jules",
+        "fee": 18,
+        "distanceMiles": 4.3,
+        "availability": "available",
+        "description": "Temperature-controlled iron with a stand and brass cleaning pad. Work with ventilation on a heatproof surface and let the tip cool before packing.",
+        "lenderId": "jules",
+        "toolId": "soldering-station"
+      },
+      {
+        "name": "Pipe wrench set",
+        "photo": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22240%22%20height%3D%22160%22%20viewBox%3D%220%200%20240%20160%22%3E%3Crect%20width%3D%22240%22%20height%3D%22160%22%20fill%3D%22hsl(306%2020%25%2090%25)%22%2F%3E%3Crect%20x%3D%2254%22%20y%3D%2255%22%20width%3D%22140%22%20height%3D%2235%22%20rx%3D%228%22%20fill%3D%22hsl(306%2025%25%2038%25)%22%2F%3E%3Ccircle%20cx%3D%22180%22%20cy%3D%22100%22%20r%3D%2218%22%20fill%3D%22hsl(306%2025%25%2038%25)%22%2F%3E%3C%2Fsvg%3E",
+        "photoAlt": "Pipe wrench set",
+        "lenderName": "Ari",
+        "fee": 24,
+        "distanceMiles": 4.4,
+        "availability": "away",
+        "description": "Two adjustable wrenches for threaded steel pipe. Protect nearby finishes and use a different tool for polished fittings that the serrated jaws would mark.",
+        "lenderId": "ari",
+        "toolId": "pipe-wrench-set"
+      },
+      {
+        "name": "Wood router",
+        "photo": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22240%22%20height%3D%22160%22%20viewBox%3D%220%200%20240%20160%22%3E%3Crect%20width%3D%22240%22%20height%3D%22160%22%20fill%3D%22hsl(315%2020%25%2090%25)%22%2F%3E%3Crect%20x%3D%2230%22%20y%3D%2255%22%20width%3D%22140%22%20height%3D%2235%22%20rx%3D%228%22%20fill%3D%22hsl(315%2025%25%2038%25)%22%2F%3E%3Ccircle%20cx%3D%22180%22%20cy%3D%22100%22%20r%3D%2218%22%20fill%3D%22hsl(315%2025%25%2038%25)%22%2F%3E%3C%2Fsvg%3E",
+        "photoAlt": "Wood router",
+        "lenderName": "Nora",
+        "fee": 16,
+        "distanceMiles": 4.5,
+        "availability": "available",
+        "description": "Router with a straight bit and edge guide. Secure the work, take shallow passes, and unplug the tool before changing a bit or adjusting depth.",
+        "lenderId": "nora",
+        "toolId": "wood-router"
+      },
+      {
+        "name": "Clamps for a cabinet project",
+        "photo": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22240%22%20height%3D%22160%22%20viewBox%3D%220%200%20240%20160%22%3E%3Crect%20width%3D%22240%22%20height%3D%22160%22%20fill%3D%22hsl(324%2020%25%2090%25)%22%2F%3E%3Crect%20x%3D%2236%22%20y%3D%2255%22%20width%3D%22140%22%20height%3D%2235%22%20rx%3D%228%22%20fill%3D%22hsl(324%2025%25%2038%25)%22%2F%3E%3Ccircle%20cx%3D%22180%22%20cy%3D%22100%22%20r%3D%2218%22%20fill%3D%22hsl(324%2025%25%2038%25)%22%2F%3E%3C%2Fsvg%3E",
+        "photoAlt": "Clamps for a cabinet project",
+        "lenderName": "Ellis",
+        "fee": 10,
+        "distanceMiles": 4.6,
+        "availability": "available",
+        "description": "Six bar clamps with padded jaws. Check the cabinet diagonals before tightening, distribute pressure evenly, and wipe away glue before it sets.",
+        "lenderId": "ellis",
+        "toolId": "clamps-for-a-cabinet-project"
+      },
+      {
+        "name": "Wheelbarrow",
+        "photo": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22240%22%20height%3D%22160%22%20viewBox%3D%220%200%20240%20160%22%3E%3Crect%20width%3D%22240%22%20height%3D%22160%22%20fill%3D%22hsl(333%2020%25%2090%25)%22%2F%3E%3Crect%20x%3D%2242%22%20y%3D%2255%22%20width%3D%22140%22%20height%3D%2235%22%20rx%3D%228%22%20fill%3D%22hsl(333%2025%25%2038%25)%22%2F%3E%3Ccircle%20cx%3D%22180%22%20cy%3D%22100%22%20r%3D%2218%22%20fill%3D%22hsl(333%2025%25%2038%25)%22%2F%3E%3C%2Fsvg%3E",
+        "photoAlt": "Wheelbarrow",
+        "lenderName": "Robin",
+        "fee": 20,
+        "distanceMiles": 4.7,
+        "availability": "rented",
+        "description": "Single-wheel barrow for garden soil and mulch. Check the tire before loading and keep heavy material low and balanced; rinse out soil before return.",
+        "lenderId": "robin",
+        "toolId": "wheelbarrow"
+      },
+      {
+        "name": "Lawn aerator",
+        "photo": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22240%22%20height%3D%22160%22%20viewBox%3D%220%200%20240%20160%22%3E%3Crect%20width%3D%22240%22%20height%3D%22160%22%20fill%3D%22hsl(342%2020%25%2090%25)%22%2F%3E%3Crect%20x%3D%2248%22%20y%3D%2255%22%20width%3D%22140%22%20height%3D%2235%22%20rx%3D%228%22%20fill%3D%22hsl(342%2025%25%2038%25)%22%2F%3E%3Ccircle%20cx%3D%22180%22%20cy%3D%22100%22%20r%3D%2218%22%20fill%3D%22hsl(342%2025%25%2038%25)%22%2F%3E%3C%2Fsvg%3E",
+        "photoAlt": "Lawn aerator",
+        "lenderName": "Jules",
+        "fee": 28,
+        "distanceMiles": 4.9,
+        "availability": "available",
+        "description": "Manual aerator with hollow tines. Best on damp soil; mark irrigation heads and clear the soil plugs from the tines after use.",
+        "lenderId": "jules",
+        "toolId": "lawn-aerator"
+      },
+      {
+        "name": "Concrete mixing paddle",
+        "photo": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22240%22%20height%3D%22160%22%20viewBox%3D%220%200%20240%20160%22%3E%3Crect%20width%3D%22240%22%20height%3D%22160%22%20fill%3D%22hsl(351%2020%25%2090%25)%22%2F%3E%3Crect%20x%3D%2254%22%20y%3D%2255%22%20width%3D%22140%22%20height%3D%2235%22%20rx%3D%228%22%20fill%3D%22hsl(351%2025%25%2038%25)%22%2F%3E%3Ccircle%20cx%3D%22180%22%20cy%3D%22100%22%20r%3D%2218%22%20fill%3D%22hsl(351%2025%25%2038%25)%22%2F%3E%3C%2Fsvg%3E",
+        "photoAlt": "Concrete mixing paddle",
+        "lenderName": "Ari",
+        "fee": 14,
+        "distanceMiles": 5.0,
+        "availability": "away",
+        "description": "Paddle and heavy-duty drill for small batches of mortar. Use a sturdy bucket, add material gradually, and wash the paddle before the mix hardens.",
+        "lenderId": "ari",
+        "toolId": "concrete-mixing-paddle"
+      }
+    ],
+    "one": [
+      {
+        "name": "Cordless drill with two batteries",
+        "photo": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22240%22%20height%3D%22160%22%20viewBox%3D%220%200%20240%20160%22%3E%3Crect%20width%3D%22240%22%20height%3D%22160%22%20fill%3D%22hsl(0%2020%25%2090%25)%22%2F%3E%3Crect%20x%3D%2230%22%20y%3D%2255%22%20width%3D%22140%22%20height%3D%2235%22%20rx%3D%228%22%20fill%3D%22hsl(0%2025%25%2038%25)%22%2F%3E%3Ccircle%20cx%3D%22180%22%20cy%3D%22100%22%20r%3D%2218%22%20fill%3D%22hsl(0%2025%25%2038%25)%22%2F%3E%3C%2Fsvg%3E",
+        "photoAlt": "Cordless drill with two batteries",
+        "lenderName": "Nora",
+        "fee": 12,
+        "distanceMiles": 0.3,
+        "availability": "available",
+        "description": "Two charged batteries and a mixed bit set are in the case. Use the clutch for screws; return the drill with loose bits back in their labelled pockets.",
+        "lenderId": "nora",
+        "toolId": "cordless-drill-with-two-batteries"
+      }
+    ],
+    "long": [
+      {
+        "name": "Cordless hammer drill kit with two batteries, depth stop and masonry bit case",
+        "photo": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22240%22%20height%3D%22160%22%20viewBox%3D%220%200%20240%20160%22%3E%3Crect%20width%3D%22240%22%20height%3D%22160%22%20fill%3D%22hsl(0%2020%25%2090%25)%22%2F%3E%3Crect%20x%3D%2230%22%20y%3D%2255%22%20width%3D%22140%22%20height%3D%2235%22%20rx%3D%228%22%20fill%3D%22hsl(0%2025%25%2038%25)%22%2F%3E%3Ccircle%20cx%3D%22180%22%20cy%3D%22100%22%20r%3D%2218%22%20fill%3D%22hsl(0%2025%25%2038%25)%22%2F%3E%3C%2Fsvg%3E",
+        "photoAlt": "Cordless drill with two batteries",
+        "lenderName": "Nora",
+        "fee": 12,
+        "distanceMiles": 0.3,
+        "availability": "available",
+        "description": "This hammer drill kit includes two charged batteries, a depth stop, a side handle and a labelled case of masonry bits. At pickup I will show you how to select the clutch setting and fit the side handle securely. Please scan the wall for cables and pipes before drilling, keep the ventilation slots clear of dust, and return both batteries and every bit in the case. The smallest bit is not suitable for reinforced concrete.",
+        "lenderId": "nora",
+        "toolId": "cordless-drill-with-two-batteries"
+      }
+    ],
+    "none": [],
+    "unavailable": [
+      {
+        "name": "Pressure washer",
+        "photo": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22240%22%20height%3D%22160%22%20viewBox%3D%220%200%20240%20160%22%3E%3Crect%20width%3D%22240%22%20height%3D%22160%22%20fill%3D%22hsl(18%2020%25%2090%25)%22%2F%3E%3Crect%20x%3D%2242%22%20y%3D%2255%22%20width%3D%22140%22%20height%3D%2235%22%20rx%3D%228%22%20fill%3D%22hsl(18%2025%25%2038%25)%22%2F%3E%3Ccircle%20cx%3D%22180%22%20cy%3D%22100%22%20r%3D%2218%22%20fill%3D%22hsl(18%2025%25%2038%25)%22%2F%3E%3C%2Fsvg%3E",
+        "photoAlt": "Pressure washer",
+        "lenderName": "Robin",
+        "fee": 24,
+        "distanceMiles": 0.5,
+        "availability": "rented",
+        "description": "Comes with a patio nozzle and a six-meter hose. Connect the water supply before switching on; do not use the narrow jet on painted timber or loose mortar.",
+        "lenderId": "robin",
+        "toolId": "pressure-washer"
+      }
+    ],
+    "away": [
+      {
+        "name": "Orbital sander",
+        "photo": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22240%22%20height%3D%22160%22%20viewBox%3D%220%200%20240%20160%22%3E%3Crect%20width%3D%22240%22%20height%3D%22160%22%20fill%3D%22hsl(36%2020%25%2090%25)%22%2F%3E%3Crect%20x%3D%2254%22%20y%3D%2255%22%20width%3D%22140%22%20height%3D%2235%22%20rx%3D%228%22%20fill%3D%22hsl(36%2025%25%2038%25)%22%2F%3E%3Ccircle%20cx%3D%22180%22%20cy%3D%22100%22%20r%3D%2218%22%20fill%3D%22hsl(36%2025%25%2038%25)%22%2F%3E%3C%2Fsvg%3E",
+        "photoAlt": "Orbital sander",
+        "lenderName": "Ari",
+        "fee": 10,
+        "distanceMiles": 0.8,
+        "availability": "away",
+        "description": "Uses hook-and-loop discs; bring the grit your project needs. Empty the dust bag before returning and avoid sanding finishes that may contain lead.",
+        "lenderId": "ari",
+        "toolId": "orbital-sander"
+      }
+    ]
+  },
+  "Rental": {
+    "populated": [
+      {
+        "reference": "R-4182",
+        "toolName": "Cordless drill with two batteries",
+        "lenderName": "Nora",
+        "fee": 12,
+        "total": 24,
+        "pickupDate": "2026-10-10T09:00:00Z",
+        "returnDate": "2026-10-12T18:00:00Z",
+        "status": "approved",
+        "pickupInstructions": "Meet at the front gate; the tool will be charged.",
+        "lenderId": "nora",
+        "rentalDays": 2,
+        "paymentStatus": "unpaid",
+        "toolId": "cordless-drill-with-two-batteries"
+      },
+      {
+        "reference": "R-4183",
+        "toolName": "Compact circular saw",
+        "lenderName": "Ellis",
+        "fee": 18,
+        "total": 36,
+        "pickupDate": "2026-10-11T09:00:00Z",
+        "returnDate": "2026-10-13T18:00:00Z",
+        "status": "active",
+        "pickupInstructions": "Message when you are five minutes away.",
+        "lenderId": "ellis",
+        "rentalDays": 2,
+        "paymentStatus": "paid",
+        "toolId": "compact-circular-saw"
+      },
+      {
+        "reference": "R-4184",
+        "toolName": "Pressure washer",
+        "lenderName": "Robin",
+        "fee": 24,
+        "total": 48,
+        "pickupDate": "2026-10-12T09:00:00Z",
+        "returnDate": "2026-10-14T18:00:00Z",
+        "status": "pending",
+        "pickupInstructions": "Pickup is from the covered porch after approval.",
+        "lenderId": "robin",
+        "rentalDays": 2,
+        "paymentStatus": "unpaid",
+        "toolId": "pressure-washer"
+      },
+      {
+        "reference": "R-4185",
+        "toolName": "Extension ladder",
+        "lenderName": "Jules",
+        "fee": 16,
+        "total": 32,
+        "pickupDate": "2026-10-13T09:00:00Z",
+        "returnDate": "2026-10-15T18:00:00Z",
+        "status": "returned",
+        "pickupInstructions": "Please bring a vehicle with room for the case.",
+        "lenderId": "jules",
+        "rentalDays": 2,
+        "paymentStatus": "paid",
+        "toolId": "extension-ladder"
+      },
+      {
+        "reference": "R-4186",
+        "toolName": "Orbital sander",
+        "lenderName": "Ari",
+        "fee": 10,
+        "total": 20,
+        "pickupDate": "2026-10-14T09:00:00Z",
+        "returnDate": "2026-10-16T18:00:00Z",
+        "status": "cancelled",
+        "pickupInstructions": "Meet at the front gate; the tool will be charged.",
+        "lenderId": "ari",
+        "rentalDays": 2,
+        "paymentStatus": "unpaid",
+        "toolId": "orbital-sander"
+      },
+      {
+        "reference": "R-4187",
+        "toolName": "Tile cutter",
+        "lenderName": "Nora",
+        "fee": 20,
+        "total": 40,
+        "pickupDate": "2026-10-15T09:00:00Z",
+        "returnDate": "2026-10-17T18:00:00Z",
+        "status": "approved",
+        "pickupInstructions": "Message when you are five minutes away.",
+        "lenderId": "nora",
+        "rentalDays": 2,
+        "paymentStatus": "unpaid",
+        "toolId": "tile-cutter"
+      },
+      {
+        "reference": "R-4188",
+        "toolName": "Garden tiller",
+        "lenderName": "Ellis",
+        "fee": 28,
+        "total": 56,
+        "pickupDate": "2026-10-16T09:00:00Z",
+        "returnDate": "2026-10-18T18:00:00Z",
+        "status": "active",
+        "pickupInstructions": "Pickup is from the covered porch after approval.",
+        "lenderId": "ellis",
+        "rentalDays": 2,
+        "paymentStatus": "paid",
+        "toolId": "garden-tiller"
+      },
+      {
+        "reference": "R-4189",
+        "toolName": "Wet and dry vacuum",
+        "lenderName": "Robin",
+        "fee": 14,
+        "total": 28,
+        "pickupDate": "2026-10-17T09:00:00Z",
+        "returnDate": "2026-10-19T18:00:00Z",
+        "status": "pending",
+        "pickupInstructions": "Please bring a vehicle with room for the case.",
+        "lenderId": "robin",
+        "rentalDays": 2,
+        "paymentStatus": "unpaid",
+        "toolId": "wet-and-dry-vacuum"
+      }
+    ],
+    "one": [
+      {
+        "reference": "R-4182",
+        "toolName": "Cordless drill with two batteries",
+        "lenderName": "Nora",
+        "fee": 12,
+        "total": 24,
+        "pickupDate": "2026-10-10T09:00:00Z",
+        "returnDate": "2026-10-12T18:00:00Z",
+        "status": "approved",
+        "pickupInstructions": "Meet at the front gate; the tool will be charged.",
+        "lenderId": "nora",
+        "rentalDays": 2,
+        "paymentStatus": "unpaid",
+        "toolId": "cordless-drill-with-two-batteries"
+      }
+    ],
+    "long": [
+      {
+        "reference": "R-4182",
+        "toolName": "Cordless hammer drill kit with two batteries, depth stop and masonry bit case",
+        "lenderName": "Nora",
+        "fee": 12,
+        "total": 24,
+        "pickupDate": "2026-10-10T09:00:00Z",
+        "returnDate": "2026-10-12T18:00:00Z",
+        "status": "approved",
+        "pickupInstructions": "Enter through the side gate beside the green shed and message me when you arrive; the front doorbell is unreliable. I will demonstrate the side handle and pack both charged batteries in the case. If you are delayed, let me know in this rental thread before the pickup window ends. Return the case to the same gate and wait until I have checked the batteries and bit set with you.",
+        "lenderId": "nora",
+        "rentalDays": 2,
+        "paymentStatus": "unpaid",
+        "toolId": "cordless-drill-with-two-batteries"
+      }
+    ],
+    "none": [],
+    "pending": [
+      {
+        "reference": "R-4182",
+        "toolName": "Cordless drill with two batteries",
+        "lenderName": "Nora",
+        "fee": 12,
+        "total": 24,
+        "pickupDate": "2026-10-10T09:00:00Z",
+        "returnDate": "2026-10-12T18:00:00Z",
+        "status": "pending",
+        "pickupInstructions": "Meet at the front gate; the tool will be charged.",
+        "lenderId": "nora",
+        "rentalDays": 2,
+        "paymentStatus": "unpaid",
+        "toolId": "cordless-drill-with-two-batteries"
+      }
+    ],
+    "approved": [
+      {
+        "reference": "R-4182",
+        "toolName": "Cordless drill with two batteries",
+        "lenderName": "Nora",
+        "fee": 12,
+        "total": 24,
+        "pickupDate": "2026-10-10T09:00:00Z",
+        "returnDate": "2026-10-12T18:00:00Z",
+        "status": "approved",
+        "pickupInstructions": "Meet at the front gate; the tool will be charged.",
+        "lenderId": "nora",
+        "rentalDays": 2,
+        "paymentStatus": "unpaid",
+        "toolId": "cordless-drill-with-two-batteries"
+      }
+    ],
+    "cancelled": [
+      {
+        "reference": "R-4182",
+        "toolName": "Cordless drill with two batteries",
+        "lenderName": "Nora",
+        "fee": 12,
+        "total": 24,
+        "pickupDate": "2026-10-10T09:00:00Z",
+        "returnDate": "2026-10-12T18:00:00Z",
+        "status": "cancelled",
+        "pickupInstructions": "Meet at the front gate; the tool will be charged.",
+        "lenderId": "nora",
+        "rentalDays": 2,
+        "paymentStatus": "unpaid",
+        "toolId": "cordless-drill-with-two-batteries"
+      }
+    ],
+    "active": [
+      {
+        "reference": "R-4182",
+        "toolName": "Cordless drill with two batteries",
+        "lenderName": "Nora",
+        "fee": 12,
+        "total": 24,
+        "pickupDate": "2026-10-10T09:00:00Z",
+        "returnDate": "2026-10-12T18:00:00Z",
+        "status": "approved",
+        "pickupInstructions": "Meet at the front gate; the tool will be charged.",
+        "lenderId": "nora",
+        "rentalDays": 2,
+        "paymentStatus": "unpaid",
+        "toolId": "cordless-drill-with-two-batteries"
+      },
+      {
+        "reference": "R-4183",
+        "toolName": "Compact circular saw",
+        "lenderName": "Ellis",
+        "fee": 18,
+        "total": 36,
+        "pickupDate": "2026-10-11T09:00:00Z",
+        "returnDate": "2026-10-13T18:00:00Z",
+        "status": "active",
+        "pickupInstructions": "Message when you are five minutes away.",
+        "lenderId": "ellis",
+        "rentalDays": 2,
+        "paymentStatus": "paid",
+        "toolId": "compact-circular-saw"
+      },
+      {
+        "reference": "R-4187",
+        "toolName": "Tile cutter",
+        "lenderName": "Nora",
+        "fee": 20,
+        "total": 40,
+        "pickupDate": "2026-10-15T09:00:00Z",
+        "returnDate": "2026-10-17T18:00:00Z",
+        "status": "approved",
+        "pickupInstructions": "Message when you are five minutes away.",
+        "lenderId": "nora",
+        "rentalDays": 2,
+        "paymentStatus": "unpaid",
+        "toolId": "tile-cutter"
+      },
+      {
+        "reference": "R-4188",
+        "toolName": "Garden tiller",
+        "lenderName": "Ellis",
+        "fee": 28,
+        "total": 56,
+        "pickupDate": "2026-10-16T09:00:00Z",
+        "returnDate": "2026-10-18T18:00:00Z",
+        "status": "active",
+        "pickupInstructions": "Pickup is from the covered porch after approval.",
+        "lenderId": "ellis",
+        "rentalDays": 2,
+        "paymentStatus": "paid",
+        "toolId": "garden-tiller"
+      }
+    ],
+    "handoffPending": [
+      {
+        "reference": "R-4182",
+        "toolName": "Cordless drill with two batteries",
+        "lenderName": "Nora",
+        "fee": 12,
+        "total": 24,
+        "pickupDate": "2026-10-10T09:00:00Z",
+        "returnDate": "2026-10-12T18:00:00Z",
+        "status": "approved",
+        "pickupInstructions": "Meet at the front gate; the tool will be charged.",
+        "lenderId": "nora",
+        "rentalDays": 2,
+        "paymentStatus": "pending",
+        "toolId": "cordless-drill-with-two-batteries"
+      }
+    ],
+    "declined": [
+      {
+        "reference": "R-4182",
+        "toolName": "Cordless drill with two batteries",
+        "lenderName": "Nora",
+        "fee": 12,
+        "total": 24,
+        "pickupDate": "2026-10-10T09:00:00Z",
+        "returnDate": "2026-10-12T18:00:00Z",
+        "status": "approved",
+        "pickupInstructions": "Meet at the front gate; the tool will be charged.",
+        "lenderId": "nora",
+        "rentalDays": 2,
+        "paymentStatus": "declined",
+        "toolId": "cordless-drill-with-two-batteries"
+      }
+    ],
+    "paymentUnknown": [
+      {
+        "reference": "R-4182",
+        "toolName": "Cordless drill with two batteries",
+        "lenderName": "Nora",
+        "fee": 12,
+        "total": 24,
+        "pickupDate": "2026-10-10T09:00:00Z",
+        "returnDate": "2026-10-12T18:00:00Z",
+        "status": "approved",
+        "pickupInstructions": "Meet at the front gate; the tool will be charged.",
+        "lenderId": "nora",
+        "rentalDays": 2,
+        "paymentStatus": "unknown",
+        "toolId": "cordless-drill-with-two-batteries"
+      }
+    ],
+    "paid": [
+      {
+        "reference": "R-4182",
+        "toolName": "Cordless drill with two batteries",
+        "lenderName": "Nora",
+        "fee": 12,
+        "total": 24,
+        "pickupDate": "2026-10-10T09:00:00Z",
+        "returnDate": "2026-10-12T18:00:00Z",
+        "status": "approved",
+        "pickupInstructions": "Meet at the front gate; the tool will be charged.",
+        "lenderId": "nora",
+        "rentalDays": 2,
+        "paymentStatus": "paid",
+        "toolId": "cordless-drill-with-two-batteries"
+      }
+    ],
+    "paidLong": [
+      {
+        "reference": "R-4182",
+        "toolName": "Cordless hammer drill kit with two batteries, depth stop and masonry bit case",
+        "lenderName": "Nora",
+        "fee": 12,
+        "total": 24,
+        "pickupDate": "2026-10-10T09:00:00Z",
+        "returnDate": "2026-10-12T18:00:00Z",
+        "status": "approved",
+        "pickupInstructions": "Enter through the side gate beside the green shed and message me when you arrive; the front doorbell is unreliable. I will demonstrate the side handle and pack both charged batteries in the case. If you are delayed, let me know in this rental thread before the pickup window ends. Return the case to the same gate and wait until I have checked the batteries and bit set with you.",
+        "lenderId": "nora",
+        "rentalDays": 2,
+        "paymentStatus": "paid",
+        "toolId": "cordless-drill-with-two-batteries"
+      }
+    ]
+  },
+  "Message": {
+    "populated": [
+      {
+        "author": "Nora",
+        "text": "The drill is available Saturday. What time would you like to pick it up?",
+        "sentAt": "2026-10-08T09:14:00Z",
+        "mine": "theirs"
+      },
+      {
+        "author": "Mira",
+        "text": "Around ten, if that works. Does it come with a masonry bit?",
+        "sentAt": "2026-10-08T09:16:00Z",
+        "mine": "mine"
+      },
+      {
+        "author": "Nora",
+        "text": "Ten works. I have a 6 mm masonry bit; bring any other size you need.",
+        "sentAt": "2026-10-08T09:18:00Z",
+        "mine": "theirs"
+      },
+      {
+        "author": "Mira",
+        "text": "That is the size I need. I will message before I leave.",
+        "sentAt": "2026-10-08T09:19:00Z",
+        "mine": "mine"
+      }
+    ],
+    "one": [
+      {
+        "author": "Nora",
+        "text": "The drill is available Saturday. What time would you like to pick it up?",
+        "sentAt": "2026-10-08T09:14:00Z",
+        "mine": "theirs"
+      }
+    ],
+    "long": [
+      {
+        "author": "Nora Bellweather-Keane, neighborhood workshop coordinator",
+        "text": "Saturday at ten works for me. Come through the side gate beside the green shed rather than ringing the front doorbell. I have the six-millimeter masonry bit you asked about, but please bring any other sizes needed for the brackets. I will show you the clutch and side handle before you leave. If your project runs late, message me before the return time so we can agree when you will bring both batteries and the bit case back.",
+        "sentAt": "2026-10-08T09:14:00Z",
+        "mine": "theirs"
+      }
+    ],
+    "none": [],
+    "sent": [
+      {
+        "author": "Nora",
+        "text": "The drill is available Saturday. What time would you like to pick it up?",
+        "sentAt": "2026-10-08T09:14:00Z",
+        "mine": "theirs"
+      },
+      {
+        "author": "Mira",
+        "text": "Around ten, if that works. Does it come with a masonry bit?",
+        "sentAt": "2026-10-08T09:16:00Z",
+        "mine": "mine"
+      },
+      {
+        "author": "Nora",
+        "text": "Ten works. I have a 6 mm masonry bit; bring any other size you need.",
+        "sentAt": "2026-10-08T09:18:00Z",
+        "mine": "theirs"
+      },
+      {
+        "author": "Mira",
+        "text": "That is the size I need. I will message before I leave.",
+        "sentAt": "2026-10-08T09:19:00Z",
+        "mine": "mine"
+      },
+      {
+        "author": "Mira",
+        "text": "I can collect it at ten. I will message when I reach the side gate.",
+        "sentAt": "2026-10-08T14:22:00Z",
+        "mine": "mine"
+      }
+    ]
+  }
+}

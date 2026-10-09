@@ -1,0 +1,581 @@
+{
+  "Chat": {
+    "populated": [
+      {
+        "title": "Signups by week",
+        "participants": "Ellis Morgan, Plover",
+        "kind": "agent",
+        "unread": 0,
+        "lastActiveAt": "2026-04-09T09:45:00Z"
+      },
+      {
+        "title": "Launch checklist",
+        "participants": "Priya, Marcus",
+        "kind": "team",
+        "unread": 3,
+        "lastActiveAt": "2026-04-09T09:12:00Z"
+      },
+      {
+        "title": "Rewrite the pricing FAQ",
+        "participants": "Ellis Morgan, Plover",
+        "kind": "agent",
+        "unread": 0,
+        "lastActiveAt": "2026-04-09T08:30:00Z"
+      },
+      {
+        "title": "Support queue review",
+        "participants": "Dana, Plover",
+        "kind": "team",
+        "unread": 1,
+        "lastActiveAt": "2026-04-09T08:05:00Z"
+      },
+      {
+        "title": "Churn by plan",
+        "participants": "Ellis Morgan, Plover",
+        "kind": "agent",
+        "unread": 0,
+        "lastActiveAt": "2026-04-08T16:50:00Z"
+      },
+      {
+        "title": "Board deck feedback",
+        "participants": "Marcus, Priya",
+        "kind": "team",
+        "unread": 0,
+        "lastActiveAt": "2026-04-08T15:20:00Z"
+      },
+      {
+        "title": "Draft the Q4 hiring plan",
+        "participants": "Ellis Morgan, Plover",
+        "kind": "agent",
+        "unread": 0,
+        "lastActiveAt": "2026-04-08T11:02:00Z"
+      },
+      {
+        "title": "Onboarding email copy",
+        "participants": "Ellis Morgan, Plover",
+        "kind": "agent",
+        "unread": 0,
+        "lastActiveAt": "2026-04-07T10:00:00Z"
+      },
+      {
+        "title": "Vendor contract summary",
+        "participants": "Ellis Morgan, Plover",
+        "kind": "agent",
+        "unread": 0,
+        "lastActiveAt": "2026-04-06T10:00:00Z"
+      },
+      {
+        "title": "Offsite planning",
+        "participants": "Marcus, Dana, Priya",
+        "kind": "team",
+        "unread": 0,
+        "lastActiveAt": "2026-04-06T10:00:00Z"
+      }
+    ],
+    "one": [
+      {
+        "title": "Signups by week",
+        "participants": "Ellis Morgan, Plover",
+        "kind": "agent",
+        "unread": 0,
+        "lastActiveAt": "2026-04-09T09:45:00Z"
+      }
+    ],
+    "long": [
+      {
+        "title": "Draft the fourth-quarter hiring plan for support, research and the Riverside launch",
+        "participants": "Marcus Chen, Dana Ortiz, Priya Nair, Ellis Morgan and the launch planning team",
+        "kind": "agent",
+        "unread": 0,
+        "lastActiveAt": "2026-04-09T09:45:00Z"
+      }
+    ],
+    "none": [],
+    "new": [
+      {
+        "title": "New conversation",
+        "participants": "Ellis Morgan, Plover",
+        "lastActiveAt": "2026-04-09T10:00:00Z",
+        "kind": "agent",
+        "unread": 0
+      }
+    ]
+  },
+  "Message": {
+    "populated": [
+      {
+        "author": "Ellis Morgan",
+        "text": "Pull signups by week for the last two months. I'm writing the Monday update.",
+        "mine": "mine",
+        "sentAt": "2026-04-09T09:41:00Z"
+      },
+      {
+        "author": "Plover",
+        "text": "Done. Weeks start on Monday and the counts come from the accounts table. This is the query I ran.",
+        "mine": "theirs",
+        "sentAt": "2026-04-09T09:41:00Z"
+      },
+      {
+        "author": "Plover",
+        "text": "Signups grew from 212 to 301 a week, up 42%. The biggest jump was the week the new pricing page shipped.",
+        "mine": "theirs",
+        "sentAt": "2026-04-09T09:42:00Z"
+      },
+      {
+        "author": "Priya",
+        "text": "Can you split those by plan? Finance wants the Team numbers.",
+        "mine": "theirs",
+        "sentAt": "2026-04-09T09:44:00Z"
+      },
+      {
+        "author": "Ellis Morgan",
+        "text": "@Plover yes, and add cancellations for the same weeks.",
+        "mine": "mine",
+        "sentAt": "2026-04-09T09:44:00Z"
+      },
+      {
+        "author": "Plover",
+        "text": "Splitting by plan now. I'll post the table here in a minute.",
+        "mine": "theirs",
+        "sentAt": "2026-04-09T09:45:00Z"
+      }
+    ],
+    "one": [
+      {
+        "author": "Ellis Morgan",
+        "text": "Pull signups by week for the last two months. I'm writing the Monday update.",
+        "mine": "mine",
+        "sentAt": "2026-04-09T09:41:00Z"
+      }
+    ],
+    "long": [
+      {
+        "author": "Plover research assistant for the Riverside quarterly planning team",
+        "text": "Signups increased from 212 to 301 across the eight weeks in the requested range. The largest change followed the pricing-page launch, but this query alone cannot show whether that launch caused the increase. Team-plan signups rose more slowly than personal-plan signups. I used the same Monday boundary in both queries, excluded deleted test accounts, and kept cancellations in a separate column so the team can compare acquisition with retention.",
+        "mine": "theirs",
+        "sentAt": "2026-04-09T09:41:00Z"
+      }
+    ],
+    "none": [],
+    "pending": [
+      {
+        "author": "Ellis Morgan",
+        "text": "Pull signups by week for the last two months. I'm writing the Monday update.",
+        "mine": "mine",
+        "sentAt": "2026-04-09T09:41:00Z"
+      },
+      {
+        "author": "Plover",
+        "text": "Done. Weeks start on Monday and the counts come from the accounts table. This is the query I ran.",
+        "mine": "theirs",
+        "sentAt": "2026-04-09T09:41:00Z"
+      },
+      {
+        "author": "Plover",
+        "text": "Signups grew from 212 to 301 a week, up 42%. The biggest jump was the week the new pricing page shipped.",
+        "mine": "theirs",
+        "sentAt": "2026-04-09T09:42:00Z"
+      },
+      {
+        "author": "Priya",
+        "text": "Can you split those by plan? Finance wants the Team numbers.",
+        "mine": "theirs",
+        "sentAt": "2026-04-09T09:44:00Z"
+      },
+      {
+        "author": "Ellis Morgan",
+        "text": "@Plover yes, and add cancellations for the same weeks.",
+        "mine": "mine",
+        "sentAt": "2026-04-09T09:44:00Z"
+      },
+      {
+        "author": "Plover",
+        "text": "Splitting by plan now. I'll post the table here in a minute.",
+        "mine": "theirs",
+        "sentAt": "2026-04-09T09:45:00Z"
+      },
+      {
+        "author": "Ellis Morgan",
+        "text": "Split the signup counts by plan and compare cancellations for the same weeks.",
+        "sentAt": "2026-04-09T10:00:00Z",
+        "mine": "mine"
+      }
+    ],
+    "completed": [
+      {
+        "author": "Ellis Morgan",
+        "text": "Pull signups by week for the last two months. I'm writing the Monday update.",
+        "mine": "mine",
+        "sentAt": "2026-04-09T09:41:00Z"
+      },
+      {
+        "author": "Plover",
+        "text": "Done. Weeks start on Monday and the counts come from the accounts table. This is the query I ran.",
+        "mine": "theirs",
+        "sentAt": "2026-04-09T09:41:00Z"
+      },
+      {
+        "author": "Plover",
+        "text": "Signups grew from 212 to 301 a week, up 42%. The biggest jump was the week the new pricing page shipped.",
+        "mine": "theirs",
+        "sentAt": "2026-04-09T09:42:00Z"
+      },
+      {
+        "author": "Priya",
+        "text": "Can you split those by plan? Finance wants the Team numbers.",
+        "mine": "theirs",
+        "sentAt": "2026-04-09T09:44:00Z"
+      },
+      {
+        "author": "Ellis Morgan",
+        "text": "@Plover yes, and add cancellations for the same weeks.",
+        "mine": "mine",
+        "sentAt": "2026-04-09T09:44:00Z"
+      },
+      {
+        "author": "Plover",
+        "text": "Splitting by plan now. I'll post the table here in a minute.",
+        "mine": "theirs",
+        "sentAt": "2026-04-09T09:45:00Z"
+      },
+      {
+        "author": "Ellis Morgan",
+        "text": "Split the signup counts by plan and compare cancellations for the same weeks.",
+        "sentAt": "2026-04-09T10:00:00Z",
+        "mine": "mine"
+      },
+      {
+        "author": "Plover",
+        "text": "Team-plan signups increased from 48 to 67 over the same weeks. Cancellations stayed between 8 and 14 per week; the result is in the call below.",
+        "sentAt": "2026-04-09T10:00:30Z",
+        "mine": "theirs"
+      }
+    ],
+    "partial": [
+      {
+        "author": "Ellis Morgan",
+        "text": "Pull signups by week for the last two months. I'm writing the Monday update.",
+        "mine": "mine",
+        "sentAt": "2026-04-09T09:41:00Z"
+      },
+      {
+        "author": "Plover",
+        "text": "Done. Weeks start on Monday and the counts come from the accounts table. This is the query I ran.",
+        "mine": "theirs",
+        "sentAt": "2026-04-09T09:41:00Z"
+      },
+      {
+        "author": "Plover",
+        "text": "Signups grew from 212 to 301 a week, up 42%. The biggest jump was the week the new pricing page shipped.",
+        "mine": "theirs",
+        "sentAt": "2026-04-09T09:42:00Z"
+      },
+      {
+        "author": "Priya",
+        "text": "Can you split those by plan? Finance wants the Team numbers.",
+        "mine": "theirs",
+        "sentAt": "2026-04-09T09:44:00Z"
+      },
+      {
+        "author": "Ellis Morgan",
+        "text": "@Plover yes, and add cancellations for the same weeks.",
+        "mine": "mine",
+        "sentAt": "2026-04-09T09:44:00Z"
+      },
+      {
+        "author": "Plover",
+        "text": "Splitting by plan now. I'll post the table here in a minute.",
+        "mine": "theirs",
+        "sentAt": "2026-04-09T09:45:00Z"
+      },
+      {
+        "author": "Ellis Morgan",
+        "text": "Split the signup counts by plan and compare cancellations for the same weeks.",
+        "sentAt": "2026-04-09T10:00:00Z",
+        "mine": "mine"
+      },
+      {
+        "author": "Plover",
+        "text": "I have the plan split and am checking that the cancellation weeks use the same Monday boundary.",
+        "sentAt": "2026-04-09T10:00:15Z",
+        "mine": "theirs"
+      }
+    ]
+  },
+  "Agent": {
+    "populated": [
+      {
+        "name": "analyst",
+        "status": "active",
+        "runs": 42,
+        "medianReplySeconds": 3.1,
+        "lastActiveAt": "2026-04-09T09:59:00Z"
+      },
+      {
+        "name": "writer",
+        "status": "active",
+        "runs": 27,
+        "medianReplySeconds": 5.4,
+        "lastActiveAt": "2026-04-09T09:52:00Z"
+      },
+      {
+        "name": "researcher",
+        "status": "idle",
+        "runs": 11,
+        "medianReplySeconds": 9.2,
+        "lastActiveAt": "2026-04-09T08:00:00Z"
+      },
+      {
+        "name": "triage",
+        "status": "needsAccess",
+        "runs": 6,
+        "medianReplySeconds": 2.7,
+        "lastActiveAt": "2026-04-09T07:00:00Z"
+      },
+      {
+        "name": "scheduler",
+        "status": "failing",
+        "runs": 0,
+        "medianReplySeconds": 0,
+        "lastActiveAt": "2026-04-08T10:00:00Z"
+      },
+      {
+        "name": "translator",
+        "status": "paused",
+        "runs": 0,
+        "medianReplySeconds": 0,
+        "lastActiveAt": "2026-04-02T10:00:00Z"
+      }
+    ],
+    "one": [
+      {
+        "name": "analyst",
+        "status": "active",
+        "runs": 42,
+        "medianReplySeconds": 3.1,
+        "lastActiveAt": "2026-04-09T09:59:00Z"
+      }
+    ],
+    "long": [
+      {
+        "name": "Translator for Riverside field research and customer interview transcripts",
+        "status": "active",
+        "runs": 42,
+        "medianReplySeconds": 3.1,
+        "lastActiveAt": "2026-04-09T09:59:00Z"
+      }
+    ],
+    "none": [],
+    "created": [
+      {
+        "name": "analyst",
+        "status": "active",
+        "runs": 42,
+        "medianReplySeconds": 3.1,
+        "lastActiveAt": "2026-04-09T09:59:00Z"
+      },
+      {
+        "name": "writer",
+        "status": "active",
+        "runs": 27,
+        "medianReplySeconds": 5.4,
+        "lastActiveAt": "2026-04-09T09:52:00Z"
+      },
+      {
+        "name": "researcher",
+        "status": "idle",
+        "runs": 11,
+        "medianReplySeconds": 9.2,
+        "lastActiveAt": "2026-04-09T08:00:00Z"
+      },
+      {
+        "name": "triage",
+        "status": "needsAccess",
+        "runs": 6,
+        "medianReplySeconds": 2.7,
+        "lastActiveAt": "2026-04-09T07:00:00Z"
+      },
+      {
+        "name": "scheduler",
+        "status": "failing",
+        "runs": 0,
+        "medianReplySeconds": 0,
+        "lastActiveAt": "2026-04-08T10:00:00Z"
+      },
+      {
+        "name": "translator",
+        "status": "paused",
+        "runs": 0,
+        "medianReplySeconds": 0,
+        "lastActiveAt": "2026-04-02T10:00:00Z"
+      },
+      {
+        "name": "launch researcher",
+        "status": "idle",
+        "runs": 0,
+        "medianReplySeconds": 0,
+        "lastActiveAt": "2026-04-09T10:01:00Z"
+      }
+    ]
+  },
+  "ToolCall": {
+    "populated": [
+      {
+        "name": "signups_by_week.sql",
+        "code": "select date_trunc('week', created_at) as week,\n       count(*) as signups\nfrom accounts\nwhere created_at >= now() - interval '8 weeks'\ngroup by 1\norder by 1;",
+        "scope": "accounts.created_at, accounts.plan",
+        "result": "Signups grew from 212 to 301 a week, up 42%."
+      },
+      {
+        "name": "cancellations_by_week.sql",
+        "code": "select week, plan, count(*) as cancellations\nfrom cancellation_events\ngroup by week, plan;",
+        "scope": "cancellation_events.week, cancellation_events.plan",
+        "result": "Cancellations stayed between 8 and 14 per week."
+      }
+    ],
+    "one": [
+      {
+        "name": "signups_by_week.sql",
+        "code": "select date_trunc('week', created_at) as week,\n       count(*) as signups\nfrom accounts\nwhere created_at >= now() - interval '8 weeks'\ngroup by 1\norder by 1;",
+        "scope": "accounts.created_at, accounts.plan",
+        "result": "Signups grew from 212 to 301 a week, up 42%."
+      }
+    ],
+    "long": [
+      {
+        "name": "signups_and_cancellations_by_week_for_riverside_launch.sql",
+        "code": "with weekly_signups as (\n  select date_trunc('week', created_at) as week, plan, count(*) as signups\n  from accounts\n  where created_at >= timestamp '2026-02-09 00:00:00'\n    and deleted_at is null\n  group by week, plan\n)\nselect week, plan, signups\nfrom weekly_signups\norder by week, plan;",
+        "scope": "accounts.created_at, accounts.plan and accounts.deleted_at",
+        "result": "Across eight complete Monday-to-Sunday weeks, signups increased from 212 to 301. Team-plan signups increased from 48 to 67. The result excludes deleted test accounts and does not include cancellations; compare it with the separate cancellation-events query before treating the change as net growth."
+      }
+    ],
+    "none": [],
+    "requested": [
+      {
+        "name": "cancellations_by_week.sql",
+        "code": "select week, plan, count(*) as cancellations\nfrom cancellation_events\ngroup by week, plan;",
+        "scope": "cancellation_events.week, cancellation_events.plan",
+        "result": ""
+      }
+    ],
+    "running": [
+      {
+        "name": "cancellations_by_week.sql",
+        "code": "select week, plan, count(*) as cancellations\nfrom cancellation_events\ngroup by week, plan;",
+        "scope": "cancellation_events.week, cancellation_events.plan",
+        "result": ""
+      }
+    ],
+    "failed": [
+      {
+        "name": "cancellations_by_week.sql",
+        "code": "select week, plan, count(*) as cancellations\nfrom cancellation_events\ngroup by week, plan;",
+        "scope": "cancellation_events.week, cancellation_events.plan",
+        "result": ""
+      }
+    ],
+    "completed": [
+      {
+        "name": "cancellations_by_week.sql",
+        "code": "select week, plan, count(*) as cancellations\nfrom cancellation_events\ngroup by week, plan;",
+        "scope": "cancellation_events.week, cancellation_events.plan",
+        "result": "Cancellations stayed between 8 and 14 per week."
+      }
+    ]
+  },
+  "AgentDraft": {
+    "populated": [
+      {
+        "name": "launch researcher",
+        "responseSpeed": "thorough",
+        "approvalPolicy": "required",
+        "teamVisible": "off"
+      }
+    ],
+    "one": [
+      {
+        "name": "launch researcher",
+        "responseSpeed": "thorough",
+        "approvalPolicy": "required",
+        "teamVisible": "off"
+      }
+    ],
+    "none": [],
+    "long": [
+      {
+        "name": "Research assistant for the Riverside launch and quarterly planning team",
+        "responseSpeed": "balanced",
+        "approvalPolicy": "required",
+        "teamVisible": "on"
+      }
+    ],
+    "blank": [
+      {
+        "name": "",
+        "responseSpeed": "thorough",
+        "approvalPolicy": "required",
+        "teamVisible": "off"
+      }
+    ]
+  },
+  "ConversationPreferences": {
+    "populated": [
+      {
+        "mentionNotifications": "on",
+        "approvalNotifications": "on",
+        "privateByDefault": "on",
+        "responseSpeed": "balanced"
+      }
+    ],
+    "one": [
+      {
+        "mentionNotifications": "on",
+        "approvalNotifications": "on",
+        "privateByDefault": "on",
+        "responseSpeed": "balanced"
+      }
+    ],
+    "none": []
+  },
+  "ThreadShare": {
+    "populated": [
+      {
+        "recipient": "Priya Nair"
+      }
+    ],
+    "one": [
+      {
+        "recipient": "Priya Nair"
+      }
+    ],
+    "none": [],
+    "long": [
+      {
+        "recipient": "Priya Nair from the Riverside Operations and Customer Research Team"
+      }
+    ]
+  },
+  "Prompt": {
+    "populated": [
+      {
+        "text": "Split the signup counts by plan and compare cancellations for the same weeks."
+      }
+    ],
+    "one": [
+      {
+        "text": "Split the signup counts by plan and compare cancellations for the same weeks."
+      }
+    ],
+    "none": [],
+    "blank": [
+      {
+        "text": ""
+      }
+    ],
+    "long": [
+      {
+        "text": "Split the signup counts by plan and compare cancellations for the same weeks. I also want to understand how the comparison changes if we use the same dates and conditions for each observation, so I have kept my original notes together here."
+      }
+    ]
+  }
+}

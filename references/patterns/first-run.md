@@ -1,3 +1,15 @@
+---
+id: first-run
+scale: flow
+studio: null
+slots: {"required":["purpose","actions","prerequisites","exit","result"],"optional":["example","help","progress","skip","state"]}
+variants: [{"id":"directStart","label":"Direct start"},{"id":"shortSetup","label":"Short setup sequence"},{"id":"resumableChecklist","label":"Resumable setup checklist"}]
+states: ["new","choosing","settingUp","ready","returning","partial","invalid","permissionDenied","failed","unavailable"]
+copy: ["start"]
+events: ["start","choose","submit","resume","skip","leave","requestPermission","import"]
+renderer: variants
+---
+
 # First run
 
 `id: first-run` · scale: flow · studio: no studio step · references checked: 2026-10-08 (new primary guidance); 2026-10-06 (inherited link-only inspiration)

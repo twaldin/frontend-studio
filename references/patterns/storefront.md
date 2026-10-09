@@ -1,3 +1,15 @@
+---
+id: storefront
+scale: surface
+studio: commerceLayout
+slots: {"required":["header","primary","state"],"optional":["detail","toolbar","actions","categories","featured","cart"]}
+variants: [{"id":"grid","label":"Grid"},{"id":"list","label":"List"},{"id":"shelves","label":"Shelves"},{"id":"split","label":"List and detail"}]
+states: ["loading","populated","empty","noMatches","denied","failed","detailLoading","detailUnavailable","soldOut","partial","pending","confirmed","changedTerms","paginationFailed"]
+copy: ["title","priceUnit","availability"]
+events: ["select","act","filter","paginate","return"]
+renderer: variants
+---
+
 # Storefront
 
 `id: storefront` · `scale: surface` · `studio: commerceLayout` · `references checked: 2026-10-08`
@@ -12,7 +24,7 @@ Use for products/listings with actionable availability and commercial terms. A n
 
 ## Structure and slots
 
-Required: `header` names the catalog/scope; `primary` contains products with identity, relevant comparison data, price and availability; `detail` opens sufficient purchase information; `state` explains loading/empty/error. Optional: `toolbar` search/filter/sort, category navigation, featured item, cart summary and purchase action. Bind browse-inspect-act → storefront → `toolbar` to search-filter; `detail` to object inspection; checkout → purchase `actions` to checkout. The two flow bindings share the same product and selected options.
+Required: `header` names the catalog/scope; `primary` contains products with identity, relevant comparison data, price and availability; `state` explains loading/empty/error. Optional: `detail` provides purchase information in the same surface, `toolbar` search/filter/sort, category navigation, featured item, cart summary and purchase action. Inspection may instead be a separate stage/surface: grid/list variants do not require an unused local detail panel. The split variant needs its local `detail` placement. Bind browse-inspect-act → storefront → `toolbar` to search-filter; a local `detail` or a separate detail surface to object inspection; the checkout flow owns payment. The browse flow and storefront share their composition decision, while payment is a separate binding.
 
 ## Variants
 

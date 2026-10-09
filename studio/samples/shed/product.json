@@ -1,0 +1,2716 @@
+{
+  "model": 1,
+  "product": {
+    "id": "shed",
+    "outcome": "Rent the tool you need from a neighbor this weekend.",
+    "archetype": "commerce",
+    "users": [
+      {
+        "id": "renterUser",
+        "who": "A renter on a phone on Saturday morning, with two minutes to find a nearby tool.",
+        "device": "phone",
+        "surfaces": [
+          "home",
+          "catalog",
+          "toolDetail",
+          "checkout",
+          "receipt",
+          "rentals",
+          "thread",
+          "settings",
+          "signIn",
+          "notFound",
+          "emailRentalConfirmed",
+          "pushRequestApproved",
+          "lendTool"
+        ]
+      },
+      {
+        "id": "lenderUser",
+        "who": "A neighbor listing a tool and arranging pickup in a message thread from a phone or laptop; lender approval is outside this round.",
+        "device": "both",
+        "surfaces": [
+          "home",
+          "toolDetail",
+          "thread",
+          "lendTool",
+          "settings"
+        ]
+      }
+    ]
+  },
+  "entities": [
+    {
+      "id": "tool",
+      "contract": "Tool",
+      "words": [
+        "tool"
+      ],
+      "never": [
+        "item",
+        "listing",
+        "product"
+      ]
+    },
+    {
+      "id": "rental",
+      "contract": "Rental",
+      "words": [
+        "rental",
+        "rent"
+      ],
+      "never": [
+        "booking",
+        "order"
+      ]
+    },
+    {
+      "id": "message",
+      "contract": "Message",
+      "words": [
+        "message",
+        "thread"
+      ],
+      "never": [
+        "chat",
+        "ticket"
+      ]
+    }
+  ],
+  "capabilities": [
+    {
+      "id": "emailSignIn",
+      "real": true
+    },
+    {
+      "id": "rentalRequests",
+      "real": true
+    },
+    {
+      "id": "hostedPayment",
+      "real": true,
+      "note": "A hosted provider owns collection of payment details and reports the acknowledged result."
+    },
+    {
+      "id": "cancelRental",
+      "real": true
+    },
+    {
+      "id": "sendMessages",
+      "real": true
+    },
+    {
+      "id": "savePreferences",
+      "real": true
+    },
+    {
+      "id": "approveRental",
+      "real": true
+    },
+    {
+      "id": "saveTool",
+      "real": true
+    }
+  ],
+  "data": {
+    "Tool": {
+      "fields": {
+        "name": "text",
+        "photo": "image",
+        "photoAlt": "text",
+        "lenderName": "text",
+        "fee": "money",
+        "distanceMiles": "number",
+        "availability": "enum",
+        "description": "longText",
+        "lenderId": "ref",
+        "toolId": "ref"
+      },
+      "typical": 40,
+      "max": 600,
+      "long": [
+        "name",
+        "description"
+      ],
+      "enums": {
+        "availability": [
+          "available",
+          "rented",
+          "away"
+        ]
+      }
+    },
+    "Rental": {
+      "fields": {
+        "reference": "text",
+        "toolName": "text",
+        "lenderName": "text",
+        "fee": "money",
+        "total": "money",
+        "pickupDate": "date",
+        "returnDate": "date",
+        "status": "enum",
+        "pickupInstructions": "longText",
+        "lenderId": "ref",
+        "rentalDays": "number",
+        "paymentStatus": "enum",
+        "toolId": "ref"
+      },
+      "typical": 8,
+      "max": 80,
+      "long": [
+        "toolName",
+        "pickupInstructions"
+      ],
+      "enums": {
+        "status": [
+          "pending",
+          "approved",
+          "active",
+          "returned",
+          "cancelled"
+        ],
+        "paymentStatus": [
+          "unpaid",
+          "pending",
+          "paid",
+          "declined",
+          "unknown"
+        ]
+      }
+    },
+    "Message": {
+      "fields": {
+        "author": "text",
+        "text": "longText",
+        "sentAt": "date",
+        "mine": "enum"
+      },
+      "typical": 4,
+      "max": 500,
+      "long": [
+        "author",
+        "text"
+      ],
+      "enums": {
+        "mine": [
+          "mine",
+          "theirs"
+        ]
+      }
+    }
+  },
+  "states": {
+    "homeReady": {
+      "label": "Ready",
+      "rule": "Upcoming pickup and unfinished requests lead; nearby tools remain available.",
+      "kind": "data",
+      "fixtures": {
+        "Tool": "populated",
+        "Rental": "active"
+      }
+    },
+    "homeFirstVisit": {
+      "label": "First visit",
+      "rule": "Offer browsing before a rental exists; do not fabricate recent activity.",
+      "kind": "firstRun",
+      "fixtures": {
+        "Tool": "populated",
+        "Rental": "none"
+      }
+    },
+    "homeLoading": {
+      "label": "Loading",
+      "rule": "Keep the previous rental summary while nearby tools load.",
+      "kind": "data",
+      "fixtures": {
+        "Tool": "populated",
+        "Rental": "active"
+      }
+    },
+    "homeLongContent": {
+      "label": "Long content",
+      "rule": "Wrap long tool names and pickup instructions without obscuring due dates.",
+      "kind": "data",
+      "fixtures": {
+        "Tool": "long",
+        "Rental": "long"
+      }
+    },
+    "catalogPopulated": {
+      "label": "Populated",
+      "rule": "Use real nearby-tool counts and keep name, daily fee and distance comparable.",
+      "kind": "data",
+      "fixtures": {
+        "Tool": "populated"
+      }
+    },
+    "catalogLoading": {
+      "label": "Loading",
+      "rule": "Reserve the collection layout after a short delay; keep prior results visible.",
+      "kind": "data",
+      "fixtures": {
+        "Tool": "populated"
+      }
+    },
+    "catalogNoMatches": {
+      "label": "No matches",
+      "rule": "Explain which criteria removed all results and offer to clear them.",
+      "kind": "data",
+      "fixtures": {
+        "Tool": "none"
+      }
+    },
+    "catalogNoTools": {
+      "label": "No tools",
+      "rule": "No tools are available in the current area; offer a real wider-area search.",
+      "kind": "data",
+      "fixtures": {
+        "Tool": "none"
+      }
+    },
+    "catalogFailed": {
+      "label": "Failed",
+      "rule": "Keep the query and criteria; do not show private diagnostics.",
+      "kind": "data",
+      "fixtures": {
+        "Tool": "none"
+      }
+    },
+    "catalogLongContent": {
+      "label": "Long content",
+      "rule": "Long tool names wrap; fee, distance and actions stay readable.",
+      "kind": "data",
+      "fixtures": {
+        "Tool": "long"
+      }
+    },
+    "toolDetailAvailable": {
+      "label": "Available",
+      "rule": "Show daily fee, availability and lender before requesting a rental.",
+      "kind": "data",
+      "fixtures": {
+        "Tool": "one",
+        "Rental": "none"
+      }
+    },
+    "toolDetailRequestPending": {
+      "label": "Request pending",
+      "rule": "Keep the tool and chosen dates visible; prevent duplicate requests.",
+      "kind": "operation",
+      "fixtures": {
+        "Tool": "one",
+        "Rental": "pending"
+      }
+    },
+    "toolDetailRequestSent": {
+      "label": "Request sent",
+      "rule": "Confirm the saved request; do not imply the lender has approved it.",
+      "kind": "operation",
+      "fixtures": {
+        "Tool": "one",
+        "Rental": "pending"
+      }
+    },
+    "toolDetailRequestFailed": {
+      "label": "Request failed",
+      "rule": "Preserve dates and explain that no request was saved.",
+      "kind": "operation",
+      "fixtures": {
+        "Tool": "one",
+        "Rental": "none"
+      }
+    },
+    "toolDetailUnavailable": {
+      "label": "Unavailable",
+      "rule": "Keep the tool name, photo and lender identity for a tool already rented; hide the daily-fee offer and request/date controls, and offer nearby alternatives.",
+      "kind": "data",
+      "fixtures": {
+        "Tool": "unavailable",
+        "Rental": "none"
+      }
+    },
+    "toolDetailLenderAway": {
+      "label": "Lender away",
+      "rule": "Keep the tool and lender identity while the lender is not accepting requests; hide the daily-fee offer and request/date controls, and show another browse route.",
+      "kind": "data",
+      "fixtures": {
+        "Tool": "away",
+        "Rental": "none"
+      }
+    },
+    "toolDetailLongContent": {
+      "label": "Long content",
+      "rule": "Wrap full tool names and lender notes without hiding price or dates.",
+      "kind": "data",
+      "fixtures": {
+        "Tool": "long",
+        "Rental": "long"
+      }
+    },
+    "checkoutReady": {
+      "label": "Ready",
+      "rule": "Show final daily fee, duration and total before leaving for hosted payment.",
+      "kind": "operation",
+      "fixtures": {
+        "Rental": "approved",
+        "Tool": "one"
+      }
+    },
+    "checkoutHandoffPending": {
+      "label": "Handoff pending",
+      "rule": "Keep the rental identity and avoid a second payment handoff.",
+      "kind": "operation",
+      "fixtures": {
+        "Rental": "handoffPending",
+        "Tool": "one"
+      }
+    },
+    "checkoutDeclined": {
+      "label": "Declined",
+      "rule": "Keep the rental request; the provider reports no charge was made.",
+      "kind": "operation",
+      "fixtures": {
+        "Rental": "declined",
+        "Tool": "one"
+      }
+    },
+    "checkoutUnknownResult": {
+      "label": "Unknown result",
+      "rule": "Do not invite another charge while payment status is unreconciled.",
+      "kind": "operation",
+      "fixtures": {
+        "Rental": "paymentUnknown",
+        "Tool": "one"
+      }
+    },
+    "checkoutReturnedWithoutPaying": {
+      "label": "Returned without paying",
+      "rule": "Keep the approved rental and offer a new provider handoff.",
+      "kind": "operation",
+      "fixtures": {
+        "Rental": "approved",
+        "Tool": "one"
+      }
+    },
+    "checkoutLongContent": {
+      "label": "Long content",
+      "rule": "Show long rental identity and fee terms without collapsing the final total.",
+      "kind": "data",
+      "fixtures": {
+        "Rental": "long",
+        "Tool": "long"
+      }
+    },
+    "receiptConfirmed": {
+      "label": "Confirmed",
+      "rule": "Show the acknowledged payment reference and approved pickup details.",
+      "kind": "operation",
+      "fixtures": {
+        "Rental": "paid"
+      }
+    },
+    "receiptEmailPending": {
+      "label": "Email pending",
+      "rule": "Payment success is independent of email delivery; receipt remains revisitable.",
+      "kind": "operation",
+      "fixtures": {
+        "Rental": "paid"
+      }
+    },
+    "receiptLongContent": {
+      "label": "Long content",
+      "rule": "Wrap long tool names and pickup instructions in the durable receipt.",
+      "kind": "data",
+      "fixtures": {
+        "Rental": "paidLong"
+      }
+    },
+    "rentalsActive": {
+      "label": "Active",
+      "rule": "Upcoming and active rentals lead; due dates are explicit.",
+      "kind": "data",
+      "fixtures": {
+        "Rental": "active"
+      }
+    },
+    "rentalsEmpty": {
+      "label": "Empty",
+      "rule": "No rental exists; provide the browse-tools starting route.",
+      "kind": "firstRun",
+      "fixtures": {
+        "Rental": "none"
+      }
+    },
+    "rentalsCancellationPending": {
+      "label": "Cancellation pending",
+      "rule": "Keep the rental visible and prevent a second cancellation.",
+      "kind": "operation",
+      "fixtures": {
+        "Rental": "one"
+      }
+    },
+    "rentalsCancelled": {
+      "label": "Cancelled",
+      "rule": "The acknowledged cancellation remains in history; the lender has been notified.",
+      "kind": "operation",
+      "fixtures": {
+        "Rental": "cancelled"
+      }
+    },
+    "rentalsCancellationFailed": {
+      "label": "Cancellation failed",
+      "rule": "The rental is still active; keep the confirm context and offer safe retry.",
+      "kind": "operation",
+      "fixtures": {
+        "Rental": "one"
+      }
+    },
+    "rentalsFailed": {
+      "label": "Failed",
+      "rule": "Do not fabricate due dates or rental status; offer a load retry.",
+      "kind": "data",
+      "fixtures": {
+        "Rental": "none"
+      }
+    },
+    "rentalsLongContent": {
+      "label": "Long content",
+      "rule": "Wrap long tool names and pickup notes while keeping due dates visible.",
+      "kind": "data",
+      "fixtures": {
+        "Rental": "long"
+      }
+    },
+    "threadPopulated": {
+      "label": "Populated",
+      "rule": "Keep authors and times explicit; messages remain tied to the rental.",
+      "kind": "data",
+      "fixtures": {
+        "Message": "populated",
+        "Rental": "one"
+      }
+    },
+    "threadSending": {
+      "label": "Sending",
+      "rule": "Keep the draft and distinguish the unsent message from acknowledged messages.",
+      "kind": "operation",
+      "fixtures": {
+        "Message": "populated",
+        "Rental": "one"
+      }
+    },
+    "threadFailed": {
+      "label": "Failed",
+      "rule": "Retain the message draft and offer an explicit resend.",
+      "kind": "operation",
+      "fixtures": {
+        "Message": "populated",
+        "Rental": "one"
+      }
+    },
+    "threadEmpty": {
+      "label": "Empty",
+      "rule": "A new rental thread has no messages; offer a named composer.",
+      "kind": "data",
+      "fixtures": {
+        "Message": "none",
+        "Rental": "one"
+      }
+    },
+    "threadLongContent": {
+      "label": "Long content",
+      "rule": "Wrap long pickup instructions and message bodies in readable order.",
+      "kind": "data",
+      "fixtures": {
+        "Message": "long",
+        "Rental": "long"
+      }
+    },
+    "settingsReady": {
+      "label": "Ready",
+      "rule": "Display saved preferences in two clear sections.",
+      "kind": "data",
+      "fixtures": {}
+    },
+    "settingsSaving": {
+      "label": "Saving",
+      "rule": "Keep preferences visible while they are being saved.",
+      "kind": "operation",
+      "fixtures": {}
+    },
+    "settingsSaved": {
+      "label": "Saved",
+      "rule": "Acknowledge the saved values in place.",
+      "kind": "operation",
+      "fixtures": {}
+    },
+    "settingsFailed": {
+      "label": "Failed",
+      "rule": "Retain unsaved values and explain how to retry.",
+      "kind": "operation",
+      "fixtures": {}
+    },
+    "signInAddressEntry": {
+      "label": "Address entry",
+      "rule": "Ask for an email address without displaying another person’s rentals.",
+      "kind": "auth",
+      "fixtures": {}
+    },
+    "signInCodeSent": {
+      "label": "Code sent",
+      "rule": "Explain delivery and allow code paste into one labelled field.",
+      "kind": "auth",
+      "fixtures": {}
+    },
+    "signInVerifying": {
+      "label": "Verifying",
+      "rule": "Keep the entered code visible and prevent duplicate verification.",
+      "kind": "operation",
+      "fixtures": {}
+    },
+    "signInExpired": {
+      "label": "Expired",
+      "rule": "Explain code expiry and allow a fresh code without losing the intended route.",
+      "kind": "auth",
+      "fixtures": {}
+    },
+    "signInFailed": {
+      "label": "Failed",
+      "rule": "Keep the email address and offer a new code or exit.",
+      "kind": "auth",
+      "fixtures": {}
+    },
+    "notFoundMissingDestination": {
+      "label": "Missing destination",
+      "rule": "Explain the missing address without implying a rental was deleted or a payment failed.",
+      "kind": "data",
+      "fixtures": {}
+    },
+    "emailRentalConfirmedReady": {
+      "label": "Ready",
+      "rule": "Send only after the hosted provider acknowledges payment; include the saved rental reference, pickup and return dates, lender name and receipt destination.",
+      "kind": "operation",
+      "fixtures": {
+        "Rental": "paid"
+      }
+    },
+    "pushRequestApprovedReady": {
+      "label": "Ready",
+      "rule": "Notify the renter only after the lender acknowledges approval; name the lender and tool and open the unpaid approved rental for review.",
+      "kind": "operation",
+      "fixtures": {
+        "Rental": "approved"
+      }
+    },
+    "lendToolDraft": {
+      "label": "Draft",
+      "rule": "Render editable tool name, photo, daily fee, availability and care notes with the lender’s own identity attached; keep the draft until an explicit save succeeds.",
+      "kind": "data",
+      "fixtures": {
+        "Tool": "one"
+      }
+    },
+    "lendToolSaved": {
+      "label": "Saved",
+      "rule": "Show the saved tool identity and daily fee with a route to its tool details; neighbors can request it only when its availability is available.",
+      "kind": "operation",
+      "fixtures": {
+        "Tool": "one"
+      }
+    },
+    "lendToolFailed": {
+      "label": "Failed",
+      "rule": "Retain lending-form values when saving fails.",
+      "kind": "operation",
+      "fixtures": {
+        "Tool": "one"
+      }
+    },
+    "lendToolLongContent": {
+      "label": "Long content",
+      "rule": "Allow complete tool names and care notes in the lending form.",
+      "kind": "data",
+      "fixtures": {
+        "Tool": "long"
+      }
+    },
+    "signInVerified": {
+      "label": "Signed in",
+      "rule": "Acknowledge verified email possession and offer continuation to the saved rental destination; do not ask for the code again.",
+      "kind": "auth",
+      "fixtures": {}
+    },
+    "lendToolSaving": {
+      "label": "Saving",
+      "rule": "Keep the lending draft visible, disable another save and wait for persistence to acknowledge the tool.",
+      "kind": "operation",
+      "fixtures": {
+        "Tool": "one"
+      }
+    },
+    "rentalsHistory": {
+      "label": "Rental history",
+      "rule": "Show pending, approved, active, returned and cancelled rentals with their acknowledged status; cancellation is available only on eligible pre-pickup rentals.",
+      "kind": "data",
+      "fixtures": {
+        "Rental": "populated"
+      }
+    },
+    "emailRentalConfirmedLong": {
+      "label": "Long rental details",
+      "rule": "Wrap the paid rental’s full tool identity and pickup instructions in the email without separating dates from the receipt link.",
+      "kind": "operation",
+      "fixtures": {
+        "Rental": "paidLong"
+      }
+    },
+    "pushRequestApprovedLong": {
+      "label": "Long tool name",
+      "rule": "Wrap the approved tool’s full identity and retain the review action; the notification is approval, not a payment receipt.",
+      "kind": "operation",
+      "fixtures": {
+        "Rental": "long"
+      }
+    },
+    "threadSent": {
+      "label": "Message sent",
+      "rule": "Add the acknowledged message to this rental’s thread, clear only the submitted draft and keep the composer available.",
+      "kind": "operation",
+      "fixtures": {
+        "Message": "sent",
+        "Rental": "one"
+      }
+    },
+    "signInSendingCode": {
+      "label": "Sending code",
+      "rule": "Keep the email identifier visible and disable another code request until the email service acknowledges the send.",
+      "kind": "operation",
+      "fixtures": {}
+    },
+    "signInDeliveryFailed": {
+      "label": "Code delivery failed",
+      "rule": "Keep the entered email and intended rental destination; explain that the code request failed and offer a new request or another address.",
+      "kind": "auth",
+      "fixtures": {}
+    }
+  },
+  "events": {
+    "homeAccountMenuEvent": {
+      "label": "Open account menu",
+      "kind": "layer"
+    },
+    "catalogFilterChangeEvent": {
+      "label": "Filters change",
+      "kind": "swap"
+    },
+    "catalogOpenFiltersEvent": {
+      "label": "Open filters",
+      "kind": "layer"
+    },
+    "toolDetailExpandFactsEvent": {
+      "label": "Expand tool notes",
+      "kind": "layer"
+    },
+    "toolDetailRequestEvent": {
+      "label": "Request rental",
+      "kind": "operation",
+      "needs": "rentalRequests"
+    },
+    "toolDetailShowToastEvent": {
+      "label": "Show request acknowledgement",
+      "kind": "layer"
+    },
+    "checkoutPayEvent": {
+      "label": "Open hosted payment",
+      "kind": "operation",
+      "needs": "hostedPayment"
+    },
+    "rentalsOpenCancelEvent": {
+      "label": "Open cancellation confirmation",
+      "kind": "layer"
+    },
+    "rentalsCancelEvent": {
+      "label": "Cancel rental",
+      "kind": "operation",
+      "needs": "cancelRental"
+    },
+    "threadSendEvent": {
+      "label": "Send rental message",
+      "kind": "operation",
+      "needs": "sendMessages"
+    },
+    "settingsSaveEvent": {
+      "label": "Save preferences",
+      "kind": "operation",
+      "needs": "savePreferences"
+    },
+    "signInInvalidEmailEvent": {
+      "label": "Show invalid email",
+      "kind": "submit"
+    },
+    "signInVerifyEvent": {
+      "label": "Verify sign-in code",
+      "kind": "operation",
+      "needs": "emailSignIn"
+    },
+    "browseToolsEvent": {
+      "label": "Browse nearby tools",
+      "kind": "route"
+    },
+    "lendToolSaveEvent": {
+      "label": "Save lender’s tool",
+      "kind": "operation",
+      "needs": "saveTool"
+    },
+    "checkoutCheckStatusEvent": {
+      "label": "Reconcile hosted payment result",
+      "kind": "operation",
+      "needs": "hostedPayment"
+    },
+    "signInSendCodeEvent": {
+      "label": "Send a fresh sign-in code",
+      "kind": "operation",
+      "needs": "emailSignIn"
+    }
+  },
+  "nav": {
+    "items": [
+      {
+        "surface": "home",
+        "copy": "nav.home"
+      },
+      {
+        "surface": "catalog",
+        "copy": "nav.catalog"
+      },
+      {
+        "surface": "rentals",
+        "copy": "nav.rentals"
+      },
+      {
+        "surface": "thread",
+        "copy": "nav.thread"
+      },
+      {
+        "surface": "settings",
+        "copy": "nav.settings"
+      }
+    ],
+    "inAYear": 8,
+    "menu": [
+      "settings"
+    ],
+    "globalAction": "browseToolsEvent"
+  },
+  "flows": [
+    {
+      "id": "firstRunFlow",
+      "goal": "Sign in when needed and find the first tool to rent.",
+      "priority": "must",
+      "binding": {
+        "record": "first-run",
+        "status": "open",
+        "candidates": [
+          "directStart",
+          "shortSetup"
+        ]
+      },
+      "stages": [
+        {
+          "id": "firstRunFlowStage1",
+          "surface": "signIn",
+          "next": [
+            "firstRunFlowStage2"
+          ]
+        },
+        {
+          "id": "firstRunFlowStage2",
+          "surface": "home"
+        }
+      ],
+      "ends": "The renter reaches a usable home and can browse nearby tools.",
+      "needs": [
+        "emailSignIn"
+      ]
+    },
+    {
+      "id": "signInFlow",
+      "goal": "Sign in without a password and return to the intended rental.",
+      "priority": "must",
+      "binding": {
+        "record": "sign-in",
+        "status": "fixed",
+        "variant": "emailCode",
+        "because": "Shed has no password credential; email possession is the chosen proof method."
+      },
+      "stages": [
+        {
+          "id": "signInFlowStage1",
+          "surface": "signIn"
+        }
+      ],
+      "ends": "The identity is verified and the intended task can resume.",
+      "needs": [
+        "emailSignIn"
+      ]
+    },
+    {
+      "id": "rentFlow",
+      "goal": "Find the right nearby tool and send a rental request.",
+      "priority": "must",
+      "binding": {
+        "record": "browse-inspect-act",
+        "status": "open",
+        "sameAs": "surface:catalog"
+      },
+      "stages": [
+        {
+          "id": "rentFlowStage1",
+          "surface": "catalog",
+          "next": [
+            "rentFlowStage2"
+          ]
+        },
+        {
+          "id": "rentFlowStage2",
+          "surface": "toolDetail"
+        }
+      ],
+      "ends": "The saved request appears in rentals with pending approval.",
+      "needs": [
+        "rentalRequests"
+      ]
+    },
+    {
+      "id": "payFlow",
+      "goal": "Pay the approved rental with the hosted provider and keep the receipt.",
+      "priority": "must",
+      "binding": {
+        "record": "checkout",
+        "status": "fixed",
+        "variant": "hosted",
+        "because": "The payment provider owns collection of payment details; Shed owns the total and return-status reconciliation."
+      },
+      "stages": [
+        {
+          "id": "payFlowStage1",
+          "surface": "checkout",
+          "next": [
+            "payFlowStage2"
+          ]
+        },
+        {
+          "id": "payFlowStage2",
+          "surface": "receipt",
+          "next": [
+            "payFlowStage3"
+          ]
+        },
+        {
+          "id": "payFlowStage3",
+          "surface": "emailRentalConfirmed"
+        }
+      ],
+      "ends": "The acknowledged payment has a saved receipt, independent of confirmation-email delivery.",
+      "needs": [
+        "hostedPayment"
+      ]
+    },
+    {
+      "id": "cancelFlow",
+      "goal": "Cancel a rental before pickup and know the lender was told.",
+      "priority": "must",
+      "binding": {
+        "record": "destructive-action",
+        "status": "fixed",
+        "variant": "irreversibleConfirmation",
+        "because": "Cancellation notifies the lender immediately and cannot be undone."
+      },
+      "stages": [
+        {
+          "id": "cancelFlowStage1",
+          "surface": "rentals"
+        }
+      ],
+      "ends": "The rental history acknowledges cancellation and lender notification.",
+      "needs": [
+        "cancelRental"
+      ]
+    },
+    {
+      "id": "messageFlow",
+      "goal": "Agree pickup details with the lender.",
+      "priority": "must",
+      "stages": [
+        {
+          "id": "messageFlowStage1",
+          "surface": "thread"
+        }
+      ],
+      "ends": "The acknowledged message is visible in the rental thread.",
+      "needs": [
+        "sendMessages"
+      ]
+    },
+    {
+      "id": "approvalFlow",
+      "goal": "Read the lender’s approval and review the rental before paying.",
+      "priority": "must",
+      "stages": [
+        {
+          "id": "approvalFlowStage1",
+          "surface": "pushRequestApproved",
+          "next": [
+            "approvalFlowStage2"
+          ]
+        },
+        {
+          "id": "approvalFlowStage2",
+          "surface": "rentals",
+          "next": [
+            "approvalFlowStage3"
+          ]
+        },
+        {
+          "id": "approvalFlowStage3",
+          "surface": "checkout"
+        }
+      ],
+      "ends": "The approved rental and payment action are available from the notification.",
+      "needs": [
+        "approveRental"
+      ]
+    },
+    {
+      "id": "preferencesFlow",
+      "goal": "Choose a normal search area, pickup window and rental notification channels.",
+      "priority": "should",
+      "stages": [
+        {
+          "id": "preferencesFlowStage1",
+          "surface": "settings"
+        }
+      ],
+      "ends": "The saved search, pickup and notification values remain visible and apply to later tool searches and rental updates.",
+      "needs": [
+        "savePreferences"
+      ]
+    },
+    {
+      "id": "missingAddressFlow",
+      "goal": "Recover from an unknown tool or rental address.",
+      "priority": "must",
+      "stages": [
+        {
+          "id": "missingAddressFlowStage1",
+          "surface": "notFound",
+          "next": [
+            "missingAddressFlowStage2"
+          ]
+        },
+        {
+          "id": "missingAddressFlowStage2",
+          "surface": "catalog"
+        }
+      ],
+      "ends": "The renter reaches nearby tools or their rental list without changing any rental or payment.",
+      "needs": []
+    },
+    {
+      "id": "emailRentalConfirmedFlow",
+      "goal": "Find the paid rental’s reference, dates and pickup instructions in its confirmation email.",
+      "priority": "should",
+      "stages": [
+        {
+          "id": "readReceiptEmail",
+          "surface": "emailRentalConfirmed",
+          "next": [
+            "openReceipt"
+          ]
+        },
+        {
+          "id": "openReceipt",
+          "surface": "receipt"
+        }
+      ],
+      "ends": "The email opens the durable paid rental receipt, even when the original payment tab is gone.",
+      "needs": [
+        "hostedPayment"
+      ]
+    },
+    {
+      "id": "pushRequestApprovedFlow",
+      "goal": "Notice that the lender approved a requested tool and review the unpaid rental.",
+      "priority": "should",
+      "stages": [
+        {
+          "id": "readApproval",
+          "surface": "pushRequestApproved",
+          "next": [
+            "reviewRental"
+          ]
+        },
+        {
+          "id": "reviewRental",
+          "surface": "rentals"
+        }
+      ],
+      "ends": "The approval notification opens the saved rental with its dates and hosted-payment action available.",
+      "needs": [
+        "approveRental"
+      ]
+    },
+    {
+      "id": "lendFlow",
+      "goal": "Offer a tool to neighbors with its daily fee and care notes.",
+      "priority": "should",
+      "binding": {
+        "record": "create-edit",
+        "status": "proposed",
+        "variant": "dedicatedPage",
+        "because": "A tool’s care notes and rental terms need an explicit editor page."
+      },
+      "stages": [
+        {
+          "id": "lendFlowStage1",
+          "surface": "lendTool"
+        }
+      ],
+      "ends": "The lender’s saved tool details show its daily fee, care notes and availability, and the tool can be found by neighbors when available.",
+      "needs": [
+        "saveTool"
+      ]
+    }
+  ],
+  "surfaces": [
+    {
+      "id": "home",
+      "question": "Is a pickup or rental request waiting for me, or should I find a nearby tool?",
+      "route": "/home",
+      "binding": {
+        "record": "home",
+        "status": "open",
+        "candidates": [
+          "continue",
+          "collection"
+        ]
+      },
+      "slots": [
+        {
+          "id": "primary",
+          "data": {
+            "contract": "Tool",
+            "many": true,
+            "map": {
+              "title": "name",
+              "image": "photo",
+              "imageAlt": "photoAlt",
+              "price": "fee",
+              "meta": "distanceMiles",
+              "toolId": "toolId"
+            }
+          },
+          "copy": {}
+        },
+        {
+          "id": "resume",
+          "data": {
+            "contract": "Rental",
+            "many": true,
+            "map": {
+              "title": "toolName",
+              "reference": "reference",
+              "due": "returnDate",
+              "status": "status",
+              "toolId": "toolId"
+            }
+          },
+          "copy": {}
+        },
+        {
+          "id": "state",
+          "copy": {
+            "home.firstVisit": [
+              "homeFirstVisit"
+            ]
+          }
+        },
+        {
+          "id": "identity",
+          "copy": {
+            "home.title": "always",
+            "home.documentTitle": "always",
+            "home.alt.productMark": "always"
+          }
+        },
+        {
+          "id": "navigation",
+          "copy": {
+            "nav.home": "always",
+            "nav.catalog": "always",
+            "nav.rentals": "always",
+            "nav.thread": "always",
+            "nav.settings": "always"
+          }
+        }
+      ],
+      "states": [
+        "homeReady",
+        "homeFirstVisit",
+        "homeLoading",
+        "homeLongContent"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "home.title": "always",
+        "home.documentTitle": "always",
+        "home.aria.navigation": "always",
+        "home.aria.main": "always",
+        "home.alt.productMark": "always",
+        "home.start": "always",
+        "home.upcoming": [
+          "homeReady",
+          "homeLoading",
+          "homeLongContent",
+          "homeAccountMenuSetup"
+        ],
+        "home.priceUnit": "always",
+        "home.viewRental": [
+          "homeReady",
+          "homeLoading",
+          "homeLongContent",
+          "homeAccountMenuSetup"
+        ],
+        "home.firstVisit": [
+          "homeFirstVisit"
+        ],
+        "home.account.open": "always",
+        "home.account.settings": [
+          "homeAccountMenuSetup"
+        ],
+        "home.account.signOut": [
+          "homeAccountMenuSetup"
+        ],
+        "home.account.close": [
+          "homeAccountMenuSetup"
+        ],
+        "nav.home": "always",
+        "nav.catalog": "always",
+        "nav.rentals": "always",
+        "nav.thread": "always",
+        "nav.settings": "always",
+        "rentals.status.approved": [
+          "homeReady",
+          "homeLoading",
+          "homeLongContent",
+          "homeAccountMenuSetup"
+        ],
+        "rentals.status.active": [
+          "homeReady",
+          "homeLoading",
+          "homeAccountMenuSetup"
+        ],
+        "home.returnDue": [
+          "homeReady",
+          "homeLoading",
+          "homeLongContent",
+          "homeAccountMenuSetup"
+        ]
+      },
+      "setups": [
+        {
+          "id": "homeAccountMenuSetup",
+          "label": "Account menu open",
+          "event": "homeAccountMenuEvent",
+          "state": "homeReady"
+        }
+      ]
+    },
+    {
+      "id": "catalog",
+      "question": "What can I rent near me?",
+      "route": "/tools",
+      "binding": {
+        "record": "storefront",
+        "status": "proposed",
+        "variant": "grid",
+        "because": "Tool shape and condition merit an image-led preview; distance remains visible.",
+        "candidates": [
+          "grid",
+          "list",
+          "split"
+        ]
+      },
+      "slots": [
+        {
+          "id": "header",
+          "copy": {
+            "catalog.title": "always",
+            "catalog.documentTitle": "always"
+          }
+        },
+        {
+          "id": "primary",
+          "data": {
+            "contract": "Tool",
+            "many": true,
+            "map": {
+              "title": "name",
+              "image": "photo",
+              "imageAlt": "photoAlt",
+              "price": "fee",
+              "meta": "distanceMiles",
+              "availability": "availability",
+              "toolId": "toolId"
+            }
+          },
+          "copy": {
+            "catalog.priceUnit": [
+              "catalogPopulated",
+              "catalogLoading",
+              "catalogLongContent",
+              "catalogFiltersOpenSetup"
+            ],
+            "catalog.availability.available": [
+              "catalogPopulated",
+              "catalogLoading",
+              "catalogLongContent",
+              "catalogFiltersOpenSetup"
+            ],
+            "catalog.availability.rented": [
+              "catalogPopulated",
+              "catalogLoading",
+              "catalogFiltersOpenSetup"
+            ],
+            "catalog.availability.away": [
+              "catalogPopulated",
+              "catalogLoading",
+              "catalogFiltersOpenSetup"
+            ],
+            "catalog.inspect": [
+              "catalogPopulated",
+              "catalogLoading",
+              "catalogLongContent",
+              "catalogFiltersOpenSetup"
+            ],
+            "catalog.distance": [
+              "catalogPopulated",
+              "catalogLoading",
+              "catalogLongContent",
+              "catalogFiltersOpenSetup"
+            ]
+          },
+          "on": [
+            {
+              "event": "catalogFilterChangeEvent",
+              "axis": "contentSwap"
+            }
+          ]
+        },
+        {
+          "id": "detail",
+          "data": {
+            "contract": "Tool",
+            "many": false,
+            "map": {
+              "title": "name",
+              "body": "description",
+              "price": "fee",
+              "availability": "availability",
+              "toolId": "toolId"
+            }
+          },
+          "copy": {}
+        },
+        {
+          "id": "toolbar",
+          "record": "search-filter",
+          "status": "open",
+          "candidates": [
+            "submitted",
+            "activeLocal",
+            "facetedBatch"
+          ],
+          "copy": {
+            "catalog.queryLabel": "always",
+            "catalog.search.placeholder": "always",
+            "catalog.filter.distance": [
+              "catalogFiltersOpenSetup"
+            ],
+            "catalog.filter.availability": [
+              "catalogFiltersOpenSetup"
+            ],
+            "catalog.filter.open": "always",
+            "catalog.filter.apply": [
+              "catalogFiltersOpenSetup"
+            ],
+            "catalog.filter.close": [
+              "catalogFiltersOpenSetup"
+            ],
+            "catalog.filter.clear": [
+              "catalogNoMatches",
+              "catalogFiltersOpenSetup"
+            ]
+          }
+        },
+        {
+          "id": "state",
+          "record": "empty-states",
+          "status": "open",
+          "candidates": [
+            "compactCue",
+            "actionPanel"
+          ],
+          "copy": {
+            "catalog.empty.noMatches.title": [
+              "catalogNoMatches"
+            ],
+            "catalog.empty.noMatches.body": [
+              "catalogNoMatches"
+            ],
+            "catalog.empty.noMatches.action": [
+              "catalogNoMatches"
+            ],
+            "catalog.empty.noTools.title": [
+              "catalogNoTools"
+            ],
+            "catalog.empty.noTools.body": [
+              "catalogNoTools"
+            ],
+            "catalog.empty.noTools.action": [
+              "catalogNoTools"
+            ],
+            "catalog.recovery.title": [
+              "catalogFailed"
+            ],
+            "catalog.recovery.body": [
+              "catalogFailed"
+            ],
+            "catalog.recovery.retry": [
+              "catalogFailed"
+            ]
+          }
+        }
+      ],
+      "states": [
+        "catalogPopulated",
+        "catalogLoading",
+        "catalogNoMatches",
+        "catalogNoTools",
+        "catalogFailed",
+        "catalogLongContent"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "catalog.title": "always",
+        "catalog.documentTitle": "always",
+        "catalog.aria.navigation": "always",
+        "catalog.aria.main": "always",
+        "catalog.alt.productMark": "always",
+        "nav.catalog": "always",
+        "nav.home": "always",
+        "nav.rentals": "always",
+        "nav.thread": "always",
+        "nav.settings": "always"
+      },
+      "setups": [
+        {
+          "id": "catalogFiltersOpenSetup",
+          "label": "Filters open",
+          "event": "catalogOpenFiltersEvent",
+          "state": "catalogPopulated"
+        }
+      ]
+    },
+    {
+      "id": "toolDetail",
+      "question": "Is this the right tool, and can I get it Saturday?",
+      "route": "/tools/:tool",
+      "slots": [
+        {
+          "id": "primary",
+          "data": {
+            "contract": "Tool",
+            "many": false,
+            "map": {
+              "title": "name",
+              "image": "photo",
+              "imageAlt": "photoAlt",
+              "body": "description",
+              "price": "fee",
+              "lenderName": "lenderName",
+              "availability": "availability",
+              "lenderId": "lenderId",
+              "toolId": "toolId"
+            }
+          },
+          "copy": {}
+        },
+        {
+          "id": "rental",
+          "data": {
+            "contract": "Rental",
+            "many": false,
+            "map": {
+              "reference": "reference",
+              "status": "status",
+              "pickup": "pickupDate",
+              "return": "returnDate",
+              "toolId": "toolId"
+            }
+          },
+          "copy": {}
+        },
+        {
+          "id": "facts",
+          "record": "disclosure",
+          "status": "fixed",
+          "variant": "singleDetails",
+          "because": "Optional care notes fit one in-flow details region; essential price and dates remain outside it.",
+          "data": {
+            "contract": "Tool",
+            "many": false,
+            "map": {
+              "body": "description",
+              "toolId": "toolId"
+            }
+          },
+          "copy": {
+            "toolDetail.summary": "always",
+            "toolDetail.facts.safety": [
+              "toolDetailFactsOpenSetup"
+            ],
+            "toolDetail.facts.close": [
+              "toolDetailFactsOpenSetup"
+            ]
+          }
+        },
+        {
+          "id": "outcome",
+          "record": "notifications",
+          "status": "open",
+          "candidates": [
+            "inline",
+            "toast"
+          ],
+          "copy": {
+            "toolDetail.outcome.pending": [
+              "toolDetailRequestPending"
+            ],
+            "toolDetail.outcome.sent": [
+              "toolDetailRequestSent"
+            ],
+            "toolDetail.outcome.view": [
+              "toolDetailRequestSent"
+            ],
+            "toolDetail.outcome.failed": [
+              "toolDetailRequestFailed"
+            ],
+            "toolDetail.outcome.retry": [
+              "toolDetailRequestFailed"
+            ],
+            "toolDetail.outcome.toast": [
+              "toolDetailToastSetup"
+            ],
+            "toolDetail.outcome.dismiss": [
+              "toolDetailToastSetup"
+            ]
+          },
+          "on": [
+            {
+              "event": "toolDetailRequestEvent",
+              "axis": "asyncFeedback"
+            }
+          ]
+        },
+        {
+          "id": "pending",
+          "record": "async-progress",
+          "status": "fixed",
+          "variant": "spinner",
+          "because": "The request has no measured total; an indeterminate local status is honest.",
+          "copy": {
+            "toolDetail.status": [
+              "toolDetailRequestPending"
+            ]
+          },
+          "states": [
+            "toolDetailRequestPending"
+          ]
+        }
+      ],
+      "states": [
+        "toolDetailAvailable",
+        "toolDetailRequestPending",
+        "toolDetailRequestSent",
+        "toolDetailRequestFailed",
+        "toolDetailUnavailable",
+        "toolDetailLenderAway",
+        "toolDetailLongContent"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "toolDetail.title": "always",
+        "toolDetail.documentTitle": "always",
+        "toolDetail.aria.navigation": "always",
+        "toolDetail.aria.main": "always",
+        "toolDetail.alt.productMark": "always",
+        "toolDetail.priceUnit": [
+          "toolDetailAvailable",
+          "toolDetailRequestPending",
+          "toolDetailRequestSent",
+          "toolDetailRequestFailed",
+          "toolDetailLongContent",
+          "toolDetailFactsOpenSetup",
+          "toolDetailToastSetup"
+        ],
+        "toolDetail.lender": "always",
+        "toolDetail.pickup.label": [
+          "toolDetailAvailable",
+          "toolDetailRequestPending",
+          "toolDetailRequestSent",
+          "toolDetailRequestFailed",
+          "toolDetailLongContent",
+          "toolDetailFactsOpenSetup",
+          "toolDetailToastSetup"
+        ],
+        "toolDetail.return.label": [
+          "toolDetailAvailable",
+          "toolDetailRequestPending",
+          "toolDetailRequestSent",
+          "toolDetailRequestFailed",
+          "toolDetailLongContent",
+          "toolDetailFactsOpenSetup",
+          "toolDetailToastSetup"
+        ],
+        "toolDetail.request": [
+          "toolDetailAvailable",
+          "toolDetailLongContent",
+          "toolDetailFactsOpenSetup"
+        ],
+        "toolDetail.backToResults": "always",
+        "toolDetail.message": [
+          "toolDetailRequestSent",
+          "toolDetailToastSetup"
+        ],
+        "toolDetail.unavailable": [
+          "toolDetailUnavailable"
+        ],
+        "toolDetail.away": [
+          "toolDetailLenderAway"
+        ],
+        "toolDetail.findAlternative": [
+          "toolDetailUnavailable",
+          "toolDetailLenderAway"
+        ],
+        "nav.home": "always",
+        "nav.catalog": "always",
+        "nav.rentals": "always",
+        "nav.thread": "always",
+        "nav.settings": "always"
+      },
+      "setups": [
+        {
+          "id": "toolDetailFactsOpenSetup",
+          "label": "Tool notes open",
+          "event": "toolDetailExpandFactsEvent",
+          "state": "toolDetailAvailable"
+        },
+        {
+          "id": "toolDetailToastSetup",
+          "label": "Request toast shown",
+          "event": "toolDetailShowToastEvent",
+          "state": "toolDetailRequestSent"
+        }
+      ]
+    },
+    {
+      "id": "checkout",
+      "question": "What will I pay before handing off to the payment provider?",
+      "route": "/rentals/:rental/pay",
+      "slots": [
+        {
+          "id": "summary",
+          "data": {
+            "contract": "Rental",
+            "many": false,
+            "map": {
+              "reference": "reference",
+              "title": "toolName",
+              "fee": "fee",
+              "total": "total",
+              "pickup": "pickupDate",
+              "return": "returnDate",
+              "rentalDays": "rentalDays",
+              "paymentStatus": "paymentStatus",
+              "toolId": "toolId"
+            }
+          },
+          "copy": {}
+        },
+        {
+          "id": "details",
+          "data": {
+            "contract": "Tool",
+            "many": false,
+            "map": {
+              "lenderName": "lenderName",
+              "description": "description",
+              "lenderId": "lenderId",
+              "toolId": "toolId"
+            }
+          },
+          "copy": {}
+        },
+        {
+          "id": "pending",
+          "record": "async-progress",
+          "status": "fixed",
+          "variant": "spinner",
+          "because": "Provider handoff has no measured progress total.",
+          "copy": {
+            "checkout.status": [
+              "checkoutUnknownResult"
+            ],
+            "checkout.pending": [
+              "checkoutHandoffPending"
+            ]
+          },
+          "on": [
+            {
+              "event": "checkoutPayEvent",
+              "axis": "asyncFeedback"
+            },
+            {
+              "event": "checkoutCheckStatusEvent",
+              "axis": "asyncFeedback"
+            }
+          ]
+        }
+      ],
+      "states": [
+        "checkoutReady",
+        "checkoutHandoffPending",
+        "checkoutDeclined",
+        "checkoutUnknownResult",
+        "checkoutReturnedWithoutPaying",
+        "checkoutLongContent"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "checkout.title": "always",
+        "checkout.documentTitle": "always",
+        "checkout.aria.navigation": "always",
+        "checkout.aria.main": "always",
+        "checkout.alt.productMark": "always",
+        "checkout.total": "always",
+        "checkout.priceUnit": "always",
+        "checkout.payAmount": [
+          "checkoutReady",
+          "checkoutLongContent"
+        ],
+        "checkout.paymentBoundary": "always",
+        "checkout.cancel": "always",
+        "checkout.pending": [
+          "checkoutHandoffPending"
+        ],
+        "checkout.declined": [
+          "checkoutDeclined"
+        ],
+        "checkout.retry": [
+          "checkoutDeclined",
+          "checkoutReturnedWithoutPaying"
+        ],
+        "checkout.unknown": [
+          "checkoutUnknownResult"
+        ],
+        "checkout.reconcile": [
+          "checkoutUnknownResult"
+        ],
+        "checkout.returned": [
+          "checkoutReturnedWithoutPaying"
+        ],
+        "nav.home": "always",
+        "nav.catalog": "always",
+        "nav.rentals": "always",
+        "nav.thread": "always",
+        "nav.settings": "always",
+        "checkout.duration": "always"
+      }
+    },
+    {
+      "id": "receipt",
+      "question": "Did payment work, and what happens before pickup?",
+      "route": "/rentals/:rental/receipt",
+      "binding": {
+        "record": "confirmation",
+        "status": "open",
+        "candidates": [
+          "confirmationPage",
+          "followUpReceipt"
+        ]
+      },
+      "slots": [
+        {
+          "id": "header",
+          "copy": {
+            "receipt.title": "always",
+            "receipt.documentTitle": "always"
+          }
+        },
+        {
+          "id": "result",
+          "data": {
+            "contract": "Rental",
+            "many": false,
+            "map": {
+              "reference": "reference",
+              "title": "toolName",
+              "total": "total",
+              "pickup": "pickupDate",
+              "return": "returnDate",
+              "lenderName": "lenderName",
+              "lenderId": "lenderId",
+              "toolId": "toolId"
+            }
+          },
+          "copy": {}
+        },
+        {
+          "id": "nextSteps",
+          "data": {
+            "contract": "Rental",
+            "many": false,
+            "map": {
+              "instructions": "pickupInstructions",
+              "toolId": "toolId"
+            }
+          },
+          "copy": {
+            "receipt.outcome": "always",
+            "receipt.reference": "always",
+            "receipt.nextSteps": "always",
+            "receipt.pickup": "always",
+            "receipt.return": "always"
+          }
+        },
+        {
+          "id": "record",
+          "copy": {
+            "receipt.record.open": "always",
+            "receipt.record.save": "always"
+          }
+        },
+        {
+          "id": "support",
+          "copy": {
+            "receipt.support": "always",
+            "receipt.support.action": "always"
+          }
+        }
+      ],
+      "states": [
+        "receiptConfirmed",
+        "receiptEmailPending",
+        "receiptLongContent"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "receipt.title": "always",
+        "receipt.documentTitle": "always",
+        "receipt.aria.navigation": "always",
+        "receipt.aria.main": "always",
+        "receipt.alt.productMark": "always",
+        "receipt.delivery.pending": [
+          "receiptEmailPending"
+        ],
+        "nav.home": "always",
+        "nav.catalog": "always",
+        "nav.rentals": "always",
+        "nav.thread": "always",
+        "nav.settings": "always",
+        "receipt.total": "always"
+      }
+    },
+    {
+      "id": "rentals",
+      "question": "What have I rented, and when is it due back?",
+      "route": "/rentals",
+      "slots": [
+        {
+          "id": "primary",
+          "data": {
+            "contract": "Rental",
+            "many": true,
+            "map": {
+              "title": "toolName",
+              "reference": "reference",
+              "lenderName": "lenderName",
+              "due": "returnDate",
+              "status": "status",
+              "total": "total",
+              "lenderId": "lenderId",
+              "toolId": "toolId"
+            }
+          },
+          "copy": {}
+        },
+        {
+          "id": "state",
+          "record": "empty-states",
+          "status": "open",
+          "sameAs": "slot:catalog/state",
+          "copy": {
+            "rentals.empty.title": [
+              "rentalsEmpty"
+            ],
+            "rentals.empty.body": [
+              "rentalsEmpty"
+            ],
+            "rentals.empty.action": [
+              "rentalsEmpty"
+            ],
+            "rentals.recovery.title": [
+              "rentalsFailed"
+            ],
+            "rentals.recovery.retry": [
+              "rentalsFailed"
+            ]
+          },
+          "states": [
+            "rentalsEmpty",
+            "rentalsFailed"
+          ]
+        },
+        {
+          "id": "confirmation",
+          "record": "dialogs-and-layers",
+          "status": "open",
+          "candidates": [
+            "dialog",
+            "sheet"
+          ],
+          "data": {
+            "contract": "Rental",
+            "many": false,
+            "map": {
+              "title": "toolName",
+              "reference": "reference",
+              "toolId": "toolId"
+            }
+          },
+          "copy": {
+            "rentals.confirmation.title": [
+              "rentalsCancelDialogSetup"
+            ],
+            "rentals.confirmation.impact": [
+              "rentalsCancelDialogSetup"
+            ],
+            "rentals.confirmation.confirm": [
+              "rentalsCancelDialogSetup"
+            ],
+            "rentals.confirmation.close": [
+              "rentalsCancelDialogSetup"
+            ]
+          },
+          "on": [
+            {
+              "event": "rentalsOpenCancelEvent",
+              "axis": "layerArrival"
+            }
+          ]
+        },
+        {
+          "id": "outcome",
+          "record": "notifications",
+          "status": "fixed",
+          "variant": "inline",
+          "because": "Cancellation result must persist alongside rental history, not only in a transient toast.",
+          "copy": {
+            "rentals.outcome.pending": [
+              "rentalsCancellationPending"
+            ],
+            "rentals.outcome.cancelled": [
+              "rentalsCancelled"
+            ],
+            "rentals.outcome.failed": [
+              "rentalsCancellationFailed"
+            ]
+          },
+          "on": [
+            {
+              "event": "rentalsCancelEvent",
+              "axis": "asyncFeedback"
+            }
+          ]
+        }
+      ],
+      "states": [
+        "rentalsActive",
+        "rentalsEmpty",
+        "rentalsCancellationPending",
+        "rentalsCancelled",
+        "rentalsCancellationFailed",
+        "rentalsFailed",
+        "rentalsLongContent",
+        "rentalsHistory"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "rentals.title": "always",
+        "rentals.documentTitle": "always",
+        "rentals.aria.navigation": "always",
+        "rentals.aria.main": "always",
+        "rentals.alt.productMark": "always",
+        "rentals.pickup": [
+          "rentalsActive",
+          "rentalsCancellationPending",
+          "rentalsCancelled",
+          "rentalsCancellationFailed",
+          "rentalsLongContent",
+          "rentalsHistory",
+          "rentalsCancelDialogSetup"
+        ],
+        "rentals.return": [
+          "rentalsActive",
+          "rentalsCancellationPending",
+          "rentalsCancelled",
+          "rentalsCancellationFailed",
+          "rentalsLongContent",
+          "rentalsHistory",
+          "rentalsCancelDialogSetup"
+        ],
+        "rentals.message": [
+          "rentalsActive",
+          "rentalsCancellationPending",
+          "rentalsCancelled",
+          "rentalsCancellationFailed",
+          "rentalsLongContent",
+          "rentalsHistory",
+          "rentalsCancelDialogSetup"
+        ],
+        "rentals.trigger": [
+          "rentalsActive",
+          "rentalsCancellationFailed",
+          "rentalsLongContent",
+          "rentalsHistory",
+          "rentalsCancelDialogSetup"
+        ],
+        "rentals.status.pending": [
+          "rentalsHistory"
+        ],
+        "rentals.status.approved": [
+          "rentalsActive",
+          "rentalsCancellationPending",
+          "rentalsCancellationFailed",
+          "rentalsLongContent",
+          "rentalsHistory",
+          "rentalsCancelDialogSetup"
+        ],
+        "rentals.status.active": [
+          "rentalsActive",
+          "rentalsHistory",
+          "rentalsCancelDialogSetup"
+        ],
+        "rentals.status.returned": [
+          "rentalsHistory"
+        ],
+        "rentals.status.cancelled": [
+          "rentalsCancelled",
+          "rentalsHistory"
+        ],
+        "nav.rentals": "always",
+        "nav.home": "always",
+        "nav.catalog": "always",
+        "nav.thread": "always",
+        "nav.settings": "always"
+      },
+      "setups": [
+        {
+          "id": "rentalsCancelDialogSetup",
+          "label": "Cancel rental confirmation",
+          "event": "rentalsOpenCancelEvent",
+          "state": "rentalsActive"
+        }
+      ]
+    },
+    {
+      "id": "thread",
+      "question": "What did the lender say about this rental?",
+      "route": "/rentals/:rental/thread",
+      "binding": {
+        "record": "conversation",
+        "status": "open",
+        "candidates": [
+          "bubbles",
+          "context"
+        ]
+      },
+      "slots": [
+        {
+          "id": "header",
+          "copy": {
+            "thread.title": "always",
+            "thread.documentTitle": "always"
+          }
+        },
+        {
+          "id": "primary",
+          "data": {
+            "contract": "Message",
+            "many": true,
+            "map": {
+              "author": "author",
+              "body": "text",
+              "sentAt": "sentAt",
+              "mine": "mine"
+            }
+          },
+          "copy": {
+            "thread.timestamp": [
+              "threadPopulated",
+              "threadSending",
+              "threadSent",
+              "threadFailed",
+              "threadLongContent"
+            ]
+          }
+        },
+        {
+          "id": "context",
+          "data": {
+            "contract": "Rental",
+            "many": false,
+            "map": {
+              "title": "toolName",
+              "reference": "reference",
+              "pickup": "pickupDate",
+              "return": "returnDate",
+              "toolId": "toolId"
+            }
+          },
+          "copy": {}
+        },
+        {
+          "id": "composer",
+          "copy": {
+            "thread.composer.label": "always",
+            "thread.composer.placeholder": "always",
+            "thread.send": "always",
+            "thread.aria.messages": "always",
+            "thread.pending": [
+              "threadSending"
+            ],
+            "thread.recovery": [
+              "threadFailed"
+            ],
+            "thread.retry": [
+              "threadFailed"
+            ]
+          },
+          "on": [
+            {
+              "event": "threadSendEvent",
+              "axis": "asyncFeedback"
+            }
+          ]
+        },
+        {
+          "id": "state",
+          "copy": {
+            "thread.empty": [
+              "threadEmpty"
+            ],
+            "thread.sent": [
+              "threadSent"
+            ]
+          }
+        }
+      ],
+      "states": [
+        "threadPopulated",
+        "threadSending",
+        "threadSent",
+        "threadFailed",
+        "threadEmpty",
+        "threadLongContent"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "thread.title": "always",
+        "thread.documentTitle": "always",
+        "thread.aria.navigation": "always",
+        "thread.aria.main": "always",
+        "thread.alt.productMark": "always",
+        "nav.thread": "always",
+        "nav.home": "always",
+        "nav.catalog": "always",
+        "nav.rentals": "always",
+        "nav.settings": "always"
+      }
+    },
+    {
+      "id": "settings",
+      "question": "What search distance and pickup window suit me, and how should Shed notify me about rentals?",
+      "route": "/settings",
+      "binding": {
+        "record": "settings",
+        "status": "fixed",
+        "variant": "sections",
+        "because": "Six preferences fit one sectioned page with an explicit save boundary."
+      },
+      "slots": [
+        {
+          "id": "header",
+          "copy": {
+            "settings.title": "always",
+            "settings.documentTitle": "always"
+          }
+        },
+        {
+          "id": "navigation",
+          "copy": {
+            "nav.settings": "always",
+            "nav.home": "always",
+            "nav.catalog": "always",
+            "nav.rentals": "always",
+            "nav.thread": "always"
+          }
+        },
+        {
+          "id": "primary",
+          "copy": {
+            "settings.section.rentals": "always",
+            "settings.section.notifications": "always",
+            "settings.searchDistance": "always",
+            "settings.distance.near": "always",
+            "settings.distance.wide": "always",
+            "settings.pickupWindow": "always",
+            "settings.pickup.morning": "always",
+            "settings.pickup.afternoon": "always",
+            "settings.rememberArea": "always",
+            "settings.emailConfirmation": "always",
+            "settings.pushApproval": "always",
+            "settings.pushReturn": "always"
+          },
+          "on": [
+            {
+              "event": "settingsSaveEvent",
+              "axis": "asyncFeedback"
+            }
+          ]
+        },
+        {
+          "id": "commit",
+          "copy": {
+            "settings.save": "always",
+            "settings.cancel": "always"
+          }
+        },
+        {
+          "id": "state",
+          "copy": {
+            "settings.status.saving": [
+              "settingsSaving"
+            ],
+            "settings.status.saved": [
+              "settingsSaved"
+            ],
+            "settings.recovery": [
+              "settingsFailed"
+            ]
+          }
+        }
+      ],
+      "states": [
+        "settingsReady",
+        "settingsSaving",
+        "settingsSaved",
+        "settingsFailed"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "settings.title": "always",
+        "settings.documentTitle": "always",
+        "settings.aria.navigation": "always",
+        "settings.aria.main": "always",
+        "settings.alt.productMark": "always",
+        "settings.save": "always",
+        "settings.cancel": "always",
+        "settings.status.saving": [
+          "settingsSaving"
+        ],
+        "settings.status.saved": [
+          "settingsSaved"
+        ],
+        "settings.recovery": [
+          "settingsFailed"
+        ],
+        "nav.settings": "always",
+        "nav.home": "always",
+        "nav.catalog": "always",
+        "nav.rentals": "always",
+        "nav.thread": "always"
+      }
+    },
+    {
+      "id": "signIn",
+      "question": "How do I prove my identity and return to this rental?",
+      "route": "/sign-in",
+      "binding": {
+        "record": "sign-in",
+        "status": "fixed",
+        "variant": "emailCode",
+        "because": "Shed uses possession of email and has no password sign-in."
+      },
+      "slots": [
+        {
+          "id": "header",
+          "copy": {
+            "signIn.title": "always",
+            "signIn.documentTitle": "always"
+          }
+        },
+        {
+          "id": "proof",
+          "copy": {
+            "signIn.email.label": [
+              "signInAddressEntry",
+              "signInSendingCode",
+              "signInDeliveryFailed",
+              "signInInvalidEmailSetup"
+            ],
+            "signIn.email.placeholder": [
+              "signInAddressEntry",
+              "signInSendingCode",
+              "signInDeliveryFailed",
+              "signInInvalidEmailSetup"
+            ],
+            "signIn.continue": [
+              "signInAddressEntry",
+              "signInDeliveryFailed",
+              "signInInvalidEmailSetup"
+            ],
+            "signIn.code.label": [
+              "signInCodeSent",
+              "signInVerifying",
+              "signInExpired",
+              "signInFailed"
+            ],
+            "signIn.verify": [
+              "signInCodeSent",
+              "signInFailed"
+            ],
+            "signIn.email.invalid": [
+              "signInInvalidEmailSetup"
+            ]
+          },
+          "on": [
+            {
+              "event": "signInVerifyEvent",
+              "axis": "asyncFeedback"
+            },
+            {
+              "event": "signInSendCodeEvent",
+              "axis": "asyncFeedback"
+            }
+          ]
+        },
+        {
+          "id": "status",
+          "copy": {
+            "signIn.code.sent": [
+              "signInCodeSent"
+            ],
+            "signIn.status": [
+              "signInVerifying"
+            ],
+            "signIn.verified": [
+              "signInVerified"
+            ],
+            "signIn.start": [
+              "signInVerified"
+            ],
+            "signIn.code.sending": [
+              "signInSendingCode"
+            ]
+          }
+        },
+        {
+          "id": "recovery",
+          "copy": {
+            "signIn.expired": [
+              "signInExpired"
+            ],
+            "signIn.failed": [
+              "signInFailed"
+            ],
+            "signIn.recover": [
+              "signInCodeSent",
+              "signInExpired",
+              "signInFailed",
+              "signInDeliveryFailed"
+            ],
+            "signIn.changeAddress": [
+              "signInCodeSent",
+              "signInExpired",
+              "signInFailed",
+              "signInDeliveryFailed"
+            ],
+            "signIn.exit": "always",
+            "signIn.delivery.failed": [
+              "signInDeliveryFailed"
+            ]
+          }
+        }
+      ],
+      "states": [
+        "signInAddressEntry",
+        "signInSendingCode",
+        "signInCodeSent",
+        "signInDeliveryFailed",
+        "signInVerifying",
+        "signInExpired",
+        "signInFailed",
+        "signInVerified"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "signIn.title": "always",
+        "signIn.documentTitle": "always",
+        "signIn.aria.main": "always",
+        "signIn.alt.productMark": "always"
+      },
+      "setups": [
+        {
+          "id": "signInInvalidEmailSetup",
+          "label": "Email address invalid",
+          "event": "signInInvalidEmailEvent",
+          "state": "signInAddressEntry"
+        }
+      ]
+    },
+    {
+      "id": "notFound",
+      "question": "Is this address missing, and which route gets me back to nearby tools or my unchanged rentals?",
+      "route": "/not-found",
+      "binding": {
+        "record": "error-pages",
+        "status": "fixed",
+        "variant": "missingDestination",
+        "because": "This address does not identify an existing tool or rental."
+      },
+      "slots": [
+        {
+          "id": "identity",
+          "copy": {
+            "notFound.title": "always",
+            "notFound.documentTitle": "always",
+            "notFound.alt.productMark": "always"
+          }
+        },
+        {
+          "id": "header",
+          "copy": {
+            "notFound.title": "always",
+            "notFound.documentTitle": "always"
+          }
+        },
+        {
+          "id": "facts",
+          "copy": {
+            "notFound.explanation": "always",
+            "notFound.dataStatus": "always"
+          }
+        },
+        {
+          "id": "actions",
+          "copy": {
+            "notFound.browse": "always",
+            "notFound.rentals": "always"
+          }
+        }
+      ],
+      "states": [
+        "notFoundMissingDestination"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "notFound.title": "always",
+        "notFound.documentTitle": "always",
+        "notFound.aria.main": "always",
+        "notFound.alt.productMark": "always",
+        "notFound.explanation": "always",
+        "notFound.browse": "always",
+        "notFound.rentals": "always",
+        "notFound.dataStatus": "always"
+      }
+    },
+    {
+      "id": "emailRentalConfirmed",
+      "question": "Which tool have I paid for, when is pickup and return, and where can I reopen the receipt?",
+      "route": "email:emailRentalConfirmed",
+      "channel": "email",
+      "slots": [
+        {
+          "id": "primary",
+          "data": {
+            "contract": "Rental",
+            "many": false,
+            "map": {
+              "reference": "reference",
+              "toolName": "toolName",
+              "toolId": "toolId",
+              "lenderName": "lenderName",
+              "lenderId": "lenderId",
+              "total": "total",
+              "pickupDate": "pickupDate",
+              "returnDate": "returnDate",
+              "pickupInstructions": "pickupInstructions"
+            }
+          },
+          "copy": {}
+        }
+      ],
+      "states": [
+        "emailRentalConfirmedReady",
+        "emailRentalConfirmedLong"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "emailRentalConfirmed.subject": "always",
+        "emailRentalConfirmed.body": "always",
+        "emailRentalConfirmed.action": "always",
+        "emailRentalConfirmed.preheader": "always",
+        "emailRentalConfirmed.footer": "always",
+        "emailRentalConfirmed.alt.mark": "always",
+        "emailRentalConfirmed.linkTitle": "always"
+      }
+    },
+    {
+      "id": "pushRequestApproved",
+      "question": "Which lender approved my tool request, and where can I review the dates before paying?",
+      "route": "push:pushRequestApproved",
+      "channel": "push",
+      "slots": [
+        {
+          "id": "primary",
+          "data": {
+            "contract": "Rental",
+            "many": false,
+            "map": {
+              "reference": "reference",
+              "toolName": "toolName",
+              "toolId": "toolId",
+              "lenderName": "lenderName",
+              "lenderId": "lenderId"
+            }
+          },
+          "copy": {}
+        }
+      ],
+      "states": [
+        "pushRequestApprovedReady",
+        "pushRequestApprovedLong"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "pushRequestApproved.body": "always",
+        "pushRequestApproved.action": "always",
+        "pushRequestApproved.title": "always",
+        "pushRequestApproved.aria.action": "always"
+      }
+    },
+    {
+      "id": "lendTool",
+      "question": "What tool, daily fee and care notes am I offering, and is it currently available to neighbors?",
+      "route": "/lend",
+      "slots": [
+        {
+          "id": "primary",
+          "data": {
+            "contract": "Tool",
+            "many": false,
+            "map": {
+              "title": "name",
+              "description": "description",
+              "fee": "fee",
+              "availability": "availability",
+              "photo": "photo",
+              "photoAlt": "photoAlt",
+              "lenderId": "lenderId",
+              "lenderName": "lenderName",
+              "toolId": "toolId"
+            }
+          },
+          "copy": {},
+          "on": [
+            {
+              "event": "lendToolSaveEvent",
+              "axis": "asyncFeedback"
+            }
+          ]
+        },
+        {
+          "id": "header",
+          "copy": {
+            "lendTool.title": "always",
+            "lendTool.documentTitle": "always"
+          }
+        },
+        {
+          "id": "commit",
+          "copy": {
+            "lendTool.save": "always"
+          }
+        },
+        {
+          "id": "exit",
+          "copy": {
+            "lendTool.cancel": "always"
+          }
+        },
+        {
+          "id": "state",
+          "copy": {
+            "lendTool.status": [
+              "lendToolSaving"
+            ],
+            "lendTool.recovery": [
+              "lendToolFailed"
+            ]
+          }
+        },
+        {
+          "id": "result",
+          "data": {
+            "contract": "Tool",
+            "many": false,
+            "map": {
+              "name": "name",
+              "fee": "fee",
+              "availability": "availability",
+              "toolId": "toolId"
+            }
+          },
+          "copy": {
+            "lendTool.saved": [
+              "lendToolSaved"
+            ],
+            "lendTool.open": [
+              "lendToolSaved"
+            ]
+          }
+        }
+      ],
+      "states": [
+        "lendToolDraft",
+        "lendToolSaving",
+        "lendToolSaved",
+        "lendToolFailed",
+        "lendToolLongContent"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "lendTool.title": "always",
+        "lendTool.documentTitle": "always",
+        "lendTool.aria.navigation": "always",
+        "lendTool.aria.main": "always",
+        "lendTool.alt.productMark": "always",
+        "lendTool.name.label": "always",
+        "lendTool.description.label": "always",
+        "lendTool.fee.label": "always",
+        "lendTool.availability.label": "always",
+        "lendTool.save": "always",
+        "lendTool.cancel": "always",
+        "lendTool.status": [
+          "lendToolSaving"
+        ],
+        "nav.home": "always",
+        "nav.catalog": "always",
+        "nav.rentals": "always",
+        "nav.thread": "always",
+        "nav.settings": "always",
+        "lendTool.saved": [
+          "lendToolSaved"
+        ],
+        "lendTool.recovery": [
+          "lendToolFailed"
+        ],
+        "lendTool.open": [
+          "lendToolSaved"
+        ],
+        "lendTool.photo.label": "always",
+        "lendTool.photoAlt.label": "always"
+      }
+    }
+  ],
+  "files": {
+    "copy": "copy.md",
+    "fixtures": "fixtures.json"
+  },
+  "axes": [
+    {
+      "id": "pickupCoordination",
+      "question": "How should renters and lenders agree a pickup time?",
+      "why": "A rental can be paid while the exact handoff time still needs a conversation.",
+      "surfaces": [
+        "toolDetail",
+        "thread",
+        "receipt"
+      ],
+      "options": [
+        {
+          "id": "messageFirst",
+          "label": "Arrange in messages",
+          "note": "Dates are saved, and the lender confirms the handoff time in the rental thread."
+        },
+        {
+          "id": "pickupWindow",
+          "label": "Choose a pickup window",
+          "note": "The lender supplies available windows before the request; messages remain for directions."
+        }
+      ]
+    }
+  ]
+}

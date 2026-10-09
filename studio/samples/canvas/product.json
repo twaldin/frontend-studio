@@ -1,0 +1,2984 @@
+{
+  "model": 1,
+  "product": {
+    "id": "canvas",
+    "outcome": "Draw a product flow on a shared canvas, edit its layers, and resolve comments where they belong.",
+    "archetype": "canvas",
+    "users": [
+      {
+        "id": "designer",
+        "who": "A designer editing screens on a laptop while teammates review and comment from a phone.",
+        "device": "both",
+        "surfaces": [
+          "boards",
+          "boardEditor",
+          "canvas",
+          "layerEditor",
+          "comments",
+          "settings",
+          "help",
+          "landing",
+          "emailBoardInvitation",
+          "pushCommentAdded"
+        ]
+      }
+    ]
+  },
+  "entities": [
+    {
+      "id": "canvasBoard",
+      "contract": "CanvasBoard",
+      "words": [
+        "board",
+        "canvas"
+      ],
+      "never": [
+        "document"
+      ]
+    },
+    {
+      "id": "layer",
+      "contract": "Layer",
+      "words": [
+        "layer",
+        "frame"
+      ],
+      "never": [
+        "item"
+      ]
+    }
+  ],
+  "capabilities": [
+    {
+      "id": "createBoards",
+      "real": true,
+      "note": "Create a named board only after persistence acknowledges its identity."
+    },
+    {
+      "id": "saveLayers",
+      "real": true,
+      "note": "Explicitly save layer property drafts to the current board revision."
+    },
+    {
+      "id": "syncCanvas",
+      "real": true,
+      "note": "Preserve local changes offline and acknowledge synced revisions when connected."
+    },
+    {
+      "id": "sendComments",
+      "real": true,
+      "note": "Persist pinned comments and replies with delivery acknowledgement."
+    },
+    {
+      "id": "resolveComments",
+      "real": true,
+      "note": "Persist a pinned comment’s resolved state."
+    },
+    {
+      "id": "deleteLayers",
+      "real": true,
+      "note": "Remove a confirmed frame and its child layers in one acknowledged revision."
+    },
+    {
+      "id": "shareBoards",
+      "real": true,
+      "note": "Grant access to the named board and deliver its invitation."
+    },
+    {
+      "id": "exportFrames",
+      "real": true,
+      "note": "Create a local image export of selected frames."
+    },
+    {
+      "id": "savePreferences",
+      "real": true,
+      "note": "Persist grid, guide and notification preferences."
+    },
+    {
+      "id": "sendCommentReminder",
+      "real": true,
+      "note": "Notify opted-in participants about newly persisted comments."
+    },
+    {
+      "id": "linkedComponents",
+      "real": false,
+      "note": "Linked components are unavailable; layers duplicate independently, with no component or detach controls."
+    }
+  ],
+  "data": {
+    "CanvasBoard": {
+      "fields": {
+        "name": "text",
+        "owner": "text",
+        "frames": "number",
+        "status": "enum",
+        "updatedAt": "date",
+        "revision": "number",
+        "pendingEdits": "number"
+      },
+      "typical": 48,
+      "max": 480,
+      "long": [
+        "name"
+      ],
+      "enums": {
+        "status": [
+          "shared",
+          "inReview",
+          "draft",
+          "changesRequested",
+          "archived"
+        ]
+      }
+    },
+    "Layer": {
+      "fields": {
+        "name": "text",
+        "frame": "text",
+        "description": "longText",
+        "body": "longText",
+        "kind": "enum",
+        "visibility": "enum",
+        "x": "number",
+        "y": "number",
+        "width": "number",
+        "height": "number",
+        "fontSize": "number",
+        "resizing": "enum",
+        "clipContent": "enum",
+        "includeInExport": "enum",
+        "locked": "enum"
+      },
+      "typical": 10,
+      "max": 1000,
+      "long": [
+        "name",
+        "description",
+        "body"
+      ],
+      "enums": {
+        "kind": [
+          "shape",
+          "text",
+          "image",
+          "button",
+          "input",
+          "note",
+          "connector"
+        ],
+        "visibility": [
+          "visible",
+          "hidden"
+        ],
+        "resizing": [
+          "fixed",
+          "hug",
+          "fill"
+        ],
+        "clipContent": [
+          "clip",
+          "overflow"
+        ],
+        "includeInExport": [
+          "include",
+          "exclude"
+        ],
+        "locked": [
+          "locked",
+          "unlocked"
+        ]
+      }
+    },
+    "Comment": {
+      "fields": {
+        "author": "text",
+        "text": "longText",
+        "mine": "enum",
+        "sentAt": "date",
+        "layerName": "ref",
+        "status": "enum",
+        "delivery": "enum"
+      },
+      "typical": 4,
+      "max": 500,
+      "long": [
+        "author",
+        "text"
+      ],
+      "enums": {
+        "mine": [
+          "mine",
+          "theirs"
+        ],
+        "status": [
+          "open",
+          "resolved"
+        ],
+        "delivery": [
+          "sent",
+          "pending",
+          "failed"
+        ]
+      }
+    },
+    "FrameSelection": {
+      "fields": {
+        "name": "text",
+        "layerCount": "number"
+      },
+      "typical": 1,
+      "max": 1,
+      "long": [
+        "name"
+      ]
+    },
+    "BoardInvitation": {
+      "fields": {
+        "recipientName": "text",
+        "boardName": "ref",
+        "access": "enum"
+      },
+      "enums": {
+        "access": [
+          "edit",
+          "comment"
+        ]
+      },
+      "typical": 1,
+      "max": 1,
+      "long": [
+        "recipientName"
+      ]
+    }
+  },
+  "states": {
+    "boardsReady": {
+      "label": "Recent boards",
+      "rule": "Sort saved boards by date; keep owner, frame count and review status as separate facts.",
+      "kind": "data",
+      "fixtures": {
+        "CanvasBoard": "populated"
+      }
+    },
+    "boardsLoading": {
+      "label": "Loading boards",
+      "rule": "Keep the heading and New board action while fetching saved identities.",
+      "kind": "data",
+      "fixtures": {
+        "CanvasBoard": "none"
+      }
+    },
+    "boardsEmpty": {
+      "label": "First board",
+      "rule": "Offer a named blank board; no template catalog is implied.",
+      "kind": "firstRun",
+      "fixtures": {
+        "CanvasBoard": "none"
+      }
+    },
+    "boardsFailed": {
+      "label": "Board list unavailable",
+      "rule": "Keep cached boards marked stale and retry without creating duplicates.",
+      "kind": "data",
+      "fixtures": {
+        "CanvasBoard": "populated"
+      }
+    },
+    "boardsLongContent": {
+      "label": "Long board name",
+      "rule": "Wrap the full name without covering owner or review status.",
+      "kind": "data",
+      "fixtures": {
+        "CanvasBoard": "long"
+      }
+    },
+    "boardsCreated": {
+      "label": "Board created",
+      "rule": "Show the acknowledged Autumn launch flow board with zero frames and a stable route.",
+      "kind": "operation",
+      "fixtures": {
+        "CanvasBoard": "created"
+      }
+    },
+    "boardEditorDraft": {
+      "label": "New board draft",
+      "rule": "Ask only for a name; no blank board exists until save succeeds.",
+      "kind": "data",
+      "fixtures": {
+        "CanvasBoard": "draft"
+      }
+    },
+    "boardEditorSaving": {
+      "label": "Creating board",
+      "rule": "Retain the name and prevent duplicate creation while awaiting identity.",
+      "kind": "operation",
+      "fixtures": {
+        "CanvasBoard": "draft"
+      }
+    },
+    "boardEditorSaved": {
+      "label": "Board saved",
+      "rule": "Show the acknowledged board name and open its blank canvas.",
+      "kind": "operation",
+      "fixtures": {
+        "CanvasBoard": "created"
+      }
+    },
+    "boardEditorFailed": {
+      "label": "Board not created",
+      "rule": "Retain the name; retry without opening an unsaved board.",
+      "kind": "operation",
+      "fixtures": {
+        "CanvasBoard": "draft"
+      }
+    },
+    "boardEditorLongContent": {
+      "label": "Long board draft",
+      "rule": "Keep the full team-authored board name editable.",
+      "kind": "data",
+      "fixtures": {
+        "CanvasBoard": "long"
+      }
+    },
+    "canvasEditing": {
+      "label": "Editing board",
+      "rule": "Render saved layers at their positions; layer body text is user document content, not live app controls.",
+      "kind": "data",
+      "fixtures": {
+        "CanvasBoard": "one",
+        "Layer": "populated",
+        "FrameSelection": "one",
+        "BoardInvitation": "one"
+      }
+    },
+    "canvasBlank": {
+      "label": "Blank board",
+      "rule": "Open the newly acknowledged board with no layers and offer its first shape, text or note.",
+      "kind": "firstRun",
+      "fixtures": {
+        "CanvasBoard": "created",
+        "Layer": "none",
+        "FrameSelection": "none",
+        "BoardInvitation": "none"
+      }
+    },
+    "canvasSaving": {
+      "label": "Syncing edits",
+      "rule": "Keep edited layers visible while the pending revision is sent; do not call them shared yet.",
+      "kind": "operation",
+      "fixtures": {
+        "CanvasBoard": "saving",
+        "Layer": "edited",
+        "FrameSelection": "one",
+        "BoardInvitation": "none"
+      }
+    },
+    "canvasSaved": {
+      "label": "Revision saved",
+      "rule": "Show the acknowledged revision and edited button text; these changes are now shared.",
+      "kind": "operation",
+      "fixtures": {
+        "CanvasBoard": "synced",
+        "Layer": "edited",
+        "FrameSelection": "one",
+        "BoardInvitation": "none"
+      }
+    },
+    "canvasOffline": {
+      "label": "Offline edits",
+      "rule": "Keep edits on this device and label the pending count; collaborators have not received them.",
+      "kind": "connectivity",
+      "fixtures": {
+        "CanvasBoard": "saving",
+        "Layer": "edited",
+        "FrameSelection": "one",
+        "BoardInvitation": "none"
+      }
+    },
+    "canvasFailed": {
+      "label": "Sync failed",
+      "rule": "Retain all local layer changes and retry syncing this revision.",
+      "kind": "operation",
+      "fixtures": {
+        "CanvasBoard": "saving",
+        "Layer": "edited",
+        "FrameSelection": "one",
+        "BoardInvitation": "none"
+      }
+    },
+    "canvasLongContent": {
+      "label": "Long layer text",
+      "rule": "Wrap full editable text without covering tool controls or losing layer identity.",
+      "kind": "data",
+      "fixtures": {
+        "CanvasBoard": "long",
+        "Layer": "long",
+        "FrameSelection": "one",
+        "BoardInvitation": "none"
+      }
+    },
+    "canvasDeleting": {
+      "label": "Deleting frame",
+      "rule": "Keep the selected Welcome frame visible and disable duplicate deletion until acknowledged.",
+      "kind": "operation",
+      "fixtures": {
+        "CanvasBoard": "synced",
+        "Layer": "populated",
+        "FrameSelection": "one",
+        "BoardInvitation": "none"
+      }
+    },
+    "canvasDeleted": {
+      "label": "Frame removed",
+      "rule": "Remove Welcome and its four child layers only after acknowledging the new revision.",
+      "kind": "operation",
+      "fixtures": {
+        "CanvasBoard": "deleted",
+        "Layer": "deleted",
+        "FrameSelection": "one",
+        "BoardInvitation": "none"
+      }
+    },
+    "canvasDeleteFailed": {
+      "label": "Frame not removed",
+      "rule": "Keep the frame and its children; retry without discarding unrelated edits.",
+      "kind": "operation",
+      "fixtures": {
+        "CanvasBoard": "synced",
+        "Layer": "populated",
+        "FrameSelection": "one",
+        "BoardInvitation": "none"
+      }
+    },
+    "canvasSharing": {
+      "label": "Sending invitation",
+      "rule": "Retain the board and invitation choices while access is being granted.",
+      "kind": "operation",
+      "fixtures": {
+        "CanvasBoard": "one",
+        "Layer": "populated",
+        "FrameSelection": "one",
+        "BoardInvitation": "one"
+      }
+    },
+    "canvasShared": {
+      "label": "Invitation sent",
+      "rule": "Confirm access to this board only after acknowledgement.",
+      "kind": "operation",
+      "fixtures": {
+        "CanvasBoard": "one",
+        "Layer": "populated",
+        "FrameSelection": "one",
+        "BoardInvitation": "one"
+      }
+    },
+    "canvasShareFailed": {
+      "label": "Invitation not sent",
+      "rule": "Retain the invitation draft; no new access is implied.",
+      "kind": "operation",
+      "fixtures": {
+        "CanvasBoard": "one",
+        "Layer": "populated",
+        "FrameSelection": "one",
+        "BoardInvitation": "one"
+      }
+    },
+    "canvasExporting": {
+      "label": "Preparing export",
+      "rule": "Keep the selected frames while generating the local image.",
+      "kind": "operation",
+      "fixtures": {
+        "CanvasBoard": "one",
+        "Layer": "populated",
+        "FrameSelection": "one",
+        "BoardInvitation": "none"
+      }
+    },
+    "canvasExported": {
+      "label": "Export ready",
+      "rule": "Expose the completed image download without changing the board revision.",
+      "kind": "operation",
+      "fixtures": {
+        "CanvasBoard": "one",
+        "Layer": "populated",
+        "FrameSelection": "one",
+        "BoardInvitation": "none"
+      }
+    },
+    "canvasExportFailed": {
+      "label": "Export failed",
+      "rule": "Retain selected frames and retry the local export.",
+      "kind": "operation",
+      "fixtures": {
+        "CanvasBoard": "one",
+        "Layer": "populated",
+        "FrameSelection": "one",
+        "BoardInvitation": "none"
+      }
+    },
+    "layerEditorDraft": {
+      "label": "Layer draft",
+      "rule": "Edit the selected button’s name, text, dimensions and resizing without mutating the saved layer.",
+      "kind": "data",
+      "fixtures": {
+        "Layer": "one"
+      }
+    },
+    "layerEditorSaving": {
+      "label": "Saving layer",
+      "rule": "Retain every property value and canvas context while preventing duplicate saves.",
+      "kind": "operation",
+      "fixtures": {
+        "Layer": "one"
+      }
+    },
+    "layerEditorSaved": {
+      "label": "Layer saved",
+      "rule": "Show the acknowledged button properties and return to the saved board.",
+      "kind": "operation",
+      "fixtures": {
+        "Layer": "savedLayer"
+      }
+    },
+    "layerEditorFailed": {
+      "label": "Layer not saved",
+      "rule": "Retain the property draft and retry without restoring the old canvas layer.",
+      "kind": "operation",
+      "fixtures": {
+        "Layer": "one"
+      }
+    },
+    "layerEditorLongContent": {
+      "label": "Long layer draft",
+      "rule": "Keep full names, descriptions and text editable beside the canvas.",
+      "kind": "data",
+      "fixtures": {
+        "Layer": "long"
+      }
+    },
+    "commentsReady": {
+      "label": "Pinned feedback",
+      "rule": "Keep comments tied to named layers; a reply does not silently resolve a thread.",
+      "kind": "data",
+      "fixtures": {
+        "Comment": "populated",
+        "Layer": "commentLayer"
+      }
+    },
+    "commentsLoading": {
+      "label": "Loading comments",
+      "rule": "Keep the board route while withholding unconfirmed feedback.",
+      "kind": "data",
+      "fixtures": {
+        "Comment": "none",
+        "Layer": "commentLayer"
+      }
+    },
+    "commentsEmpty": {
+      "label": "No pinned feedback",
+      "rule": "Keep the selected layer and offer its first comment.",
+      "kind": "firstRun",
+      "fixtures": {
+        "Comment": "none",
+        "Layer": "commentLayer"
+      }
+    },
+    "commentsFailed": {
+      "label": "Comments unavailable",
+      "rule": "Keep cached feedback and drafts; fetching again does not imply delivery.",
+      "kind": "data",
+      "fixtures": {
+        "Comment": "populated",
+        "Layer": "commentLayer"
+      }
+    },
+    "commentsLongContent": {
+      "label": "Long review feedback",
+      "rule": "Wrap the full author and comment text with its pinned-layer route.",
+      "kind": "data",
+      "fixtures": {
+        "Comment": "long",
+        "Layer": "commentLayerLong"
+      }
+    },
+    "commentsSending": {
+      "label": "Posting feedback",
+      "rule": "Keep the draft pending beside its layer and prevent duplicate posting.",
+      "kind": "operation",
+      "fixtures": {
+        "Comment": "sending",
+        "Layer": "commentLayer"
+      }
+    },
+    "commentsSent": {
+      "label": "Feedback posted",
+      "rule": "Mark the new pinned comment delivered only after acknowledgement.",
+      "kind": "operation",
+      "fixtures": {
+        "Comment": "populated",
+        "Layer": "commentLayer"
+      }
+    },
+    "commentsSendFailed": {
+      "label": "Feedback not posted",
+      "rule": "Keep the exact draft with a post retry next to its layer.",
+      "kind": "operation",
+      "fixtures": {
+        "Comment": "sendFailed",
+        "Layer": "commentLayer"
+      }
+    },
+    "commentsResolving": {
+      "label": "Resolving feedback",
+      "rule": "Keep the thread open until resolution is acknowledged.",
+      "kind": "operation",
+      "fixtures": {
+        "Comment": "populated",
+        "Layer": "commentLayer"
+      }
+    },
+    "commentsResolved": {
+      "label": "Feedback resolved",
+      "rule": "Retain the resolved thread’s history and pinned layer.",
+      "kind": "operation",
+      "fixtures": {
+        "Comment": "resolved",
+        "Layer": "commentLayer"
+      }
+    },
+    "commentsResolveFailed": {
+      "label": "Resolution not saved",
+      "rule": "Leave the thread open and retry without losing replies.",
+      "kind": "operation",
+      "fixtures": {
+        "Comment": "populated",
+        "Layer": "commentLayer"
+      }
+    },
+    "settingsReady": {
+      "label": "Canvas preferences",
+      "rule": "Save per-designer grid, guides, comment and export preferences explicitly.",
+      "kind": "data",
+      "fixtures": {}
+    },
+    "settingsSaving": {
+      "label": "Saving canvas preferences",
+      "rule": "Retain changed options and prevent duplicate saves.",
+      "kind": "operation",
+      "fixtures": {}
+    },
+    "settingsSaved": {
+      "label": "Canvas preferences saved",
+      "rule": "Confirm choices without changing board content or existing exports.",
+      "kind": "operation",
+      "fixtures": {}
+    },
+    "settingsFailed": {
+      "label": "Preferences not saved",
+      "rule": "Retain changed options and offer a local retry.",
+      "kind": "operation",
+      "fixtures": {}
+    },
+    "helpReady": {
+      "label": "Frames and local edits",
+      "rule": "Explain parent-relative layers, pinned comments and local-versus-shared changes; linked components are unavailable.",
+      "kind": "data",
+      "fixtures": {}
+    },
+    "landingReady": {
+      "label": "About Tilework",
+      "rule": "Explain boards, independently editable layers and pinned feedback; start at the board collection.",
+      "kind": "data",
+      "fixtures": {}
+    },
+    "emailBoardInvitationReady": {
+      "label": "Board access invitation",
+      "rule": "Name the board and inviter after access is granted; link only to that board.",
+      "kind": "operation",
+      "fixtures": {
+        "CanvasBoard": "one"
+      }
+    },
+    "pushCommentAddedReady": {
+      "label": "Pinned comment notification",
+      "rule": "Name the persisted comment’s author and layer; link to its thread.",
+      "kind": "operation",
+      "fixtures": {
+        "Comment": "one"
+      }
+    },
+    "layerEditorNewDraft": {
+      "label": "First layer draft",
+      "rule": "Create the first text layer in Autumn launch flow; its words and size stay local until saved.",
+      "kind": "data",
+      "fixtures": {
+        "Layer": "new"
+      }
+    },
+    "layerEditorCreating": {
+      "label": "Creating first layer",
+      "rule": "Retain the first-layer text and property draft while preventing duplicate insertion.",
+      "kind": "operation",
+      "fixtures": {
+        "Layer": "new"
+      }
+    },
+    "layerEditorCreated": {
+      "label": "First layer saved",
+      "rule": "Show the acknowledged first layer and return to its newly created board.",
+      "kind": "operation",
+      "fixtures": {
+        "Layer": "created"
+      }
+    },
+    "layerEditorCreateFailed": {
+      "label": "First layer not saved",
+      "rule": "Retain the first-layer draft; retry without inserting a second copy.",
+      "kind": "operation",
+      "fixtures": {
+        "Layer": "new"
+      }
+    },
+    "canvasFirstLayerSaved": {
+      "label": "First layer on board",
+      "rule": "Open Autumn launch flow at its acknowledged first text layer; tools remain available for the next layer.",
+      "kind": "operation",
+      "fixtures": {
+        "CanvasBoard": "firstLayer",
+        "Layer": "created",
+        "FrameSelection": "none",
+        "BoardInvitation": "none"
+      }
+    },
+    "layerEditorReviewDraft": {
+      "label": "Pinned layer draft",
+      "rule": "Edit the Continue button identified by the selected comment; retain its text while moving it above the keyboard.",
+      "kind": "data",
+      "fixtures": {
+        "Layer": "commentLayer"
+      }
+    },
+    "layerEditorReviewSaved": {
+      "label": "Pinned layer saved",
+      "rule": "Show the acknowledged Continue button position before returning to resolve its feedback.",
+      "kind": "operation",
+      "fixtures": {
+        "Layer": "reviewSaved"
+      }
+    },
+    "canvasReviewSaved": {
+      "label": "Pinned layer revision saved",
+      "rule": "Show the acknowledged Continue button above the keyboard before resolving its pinned feedback.",
+      "kind": "operation",
+      "fixtures": {
+        "CanvasBoard": "synced",
+        "Layer": "reviewEdited",
+        "FrameSelection": "one",
+        "BoardInvitation": "none"
+      }
+    }
+  },
+  "events": {
+    "createBoardEvent": {
+      "label": "Create named blank board",
+      "kind": "operation",
+      "needs": "createBoards"
+    },
+    "invalidBoardNameEvent": {
+      "label": "Validate board name",
+      "kind": "submit"
+    },
+    "saveLayerEvent": {
+      "label": "Save selected layer",
+      "kind": "operation",
+      "needs": "saveLayers"
+    },
+    "invalidLayerNameEvent": {
+      "label": "Validate layer name",
+      "kind": "submit"
+    },
+    "canvasSelectionEvent": {
+      "label": "Select another layer",
+      "kind": "swap"
+    },
+    "canvasLayerMenuEvent": {
+      "label": "Open layer actions",
+      "kind": "layer"
+    },
+    "canvasDeleteDialogEvent": {
+      "label": "Review frame deletion",
+      "kind": "layer"
+    },
+    "deleteFrameEvent": {
+      "label": "Delete selected frame",
+      "kind": "operation",
+      "needs": "deleteLayers"
+    },
+    "syncCanvasEvent": {
+      "label": "Sync local revision",
+      "kind": "operation",
+      "needs": "syncCanvas"
+    },
+    "openShareEvent": {
+      "label": "Open board invitation",
+      "kind": "layer"
+    },
+    "shareBoardEvent": {
+      "label": "Grant board access and send invitation",
+      "kind": "operation",
+      "needs": "shareBoards"
+    },
+    "openExportEvent": {
+      "label": "Open export options",
+      "kind": "layer"
+    },
+    "exportFrameEvent": {
+      "label": "Export selected frames",
+      "kind": "operation",
+      "needs": "exportFrames"
+    },
+    "commentsSendEvent": {
+      "label": "Post pinned feedback",
+      "kind": "operation",
+      "needs": "sendComments"
+    },
+    "resolveCommentEvent": {
+      "label": "Resolve pinned feedback",
+      "kind": "operation",
+      "needs": "resolveComments"
+    },
+    "saveCanvasPreferencesEvent": {
+      "label": "Save canvas preferences",
+      "kind": "operation",
+      "needs": "savePreferences"
+    },
+    "openLayerTypeEvent": {
+      "label": "Open layer type choices",
+      "kind": "layer"
+    },
+    "openLayerResizingEvent": {
+      "label": "Open layer resizing choices",
+      "kind": "layer"
+    },
+    "beginTextLayerEvent": {
+      "label": "Add the board’s first text layer",
+      "kind": "press",
+      "needs": "saveLayers"
+    }
+  },
+  "nav": {
+    "items": [
+      {
+        "surface": "boards",
+        "copy": "nav.boards"
+      },
+      {
+        "surface": "comments",
+        "copy": "nav.comments"
+      },
+      {
+        "surface": "settings",
+        "copy": "nav.settings"
+      }
+    ],
+    "inAYear": 8
+  },
+  "flows": [
+    {
+      "id": "createBoardFlow",
+      "goal": "Create a named board, add its first text layer and reopen the saved result.",
+      "priority": "must",
+      "stages": [
+        {
+          "id": "step1",
+          "surface": "boards",
+          "next": [
+            "step2"
+          ]
+        },
+        {
+          "id": "step2",
+          "surface": "boardEditor",
+          "next": [
+            "step3"
+          ]
+        },
+        {
+          "id": "step3",
+          "surface": "boardEditor",
+          "state": "boardEditorSaving",
+          "next": [
+            "step4"
+          ]
+        },
+        {
+          "id": "step4",
+          "surface": "boardEditor",
+          "state": "boardEditorSaved",
+          "next": [
+            "step5"
+          ]
+        },
+        {
+          "id": "step5",
+          "surface": "canvas",
+          "state": "canvasBlank",
+          "next": [
+            "step6"
+          ]
+        },
+        {
+          "id": "step6",
+          "surface": "layerEditor",
+          "state": "layerEditorNewDraft",
+          "next": [
+            "step7"
+          ]
+        },
+        {
+          "id": "step7",
+          "surface": "layerEditor",
+          "state": "layerEditorCreating",
+          "next": [
+            "step8"
+          ]
+        },
+        {
+          "id": "step8",
+          "surface": "layerEditor",
+          "state": "layerEditorCreated",
+          "next": [
+            "step9"
+          ]
+        },
+        {
+          "id": "step9",
+          "surface": "canvas",
+          "state": "canvasFirstLayerSaved"
+        }
+      ],
+      "ends": "Autumn launch flow has a saved identity and its first text layer is present in the acknowledged board revision.",
+      "needs": [
+        "createBoards",
+        "saveLayers",
+        "syncCanvas"
+      ],
+      "binding": {
+        "record": "create-edit",
+        "status": "proposed",
+        "variant": "dialogForm",
+        "because": "Naming the blank board is a bounded form; the first layer is then edited in its canvas context."
+      }
+    },
+    {
+      "id": "designFlow",
+      "goal": "Edit a layer and reopen the acknowledged board revision.",
+      "priority": "must",
+      "stages": [
+        {
+          "id": "step1",
+          "surface": "boards",
+          "next": [
+            "step2"
+          ]
+        },
+        {
+          "id": "step2",
+          "surface": "canvas",
+          "next": [
+            "step3"
+          ]
+        },
+        {
+          "id": "step3",
+          "surface": "layerEditor",
+          "next": [
+            "step4"
+          ]
+        },
+        {
+          "id": "step4",
+          "surface": "layerEditor",
+          "state": "layerEditorSaving",
+          "next": [
+            "step5"
+          ]
+        },
+        {
+          "id": "step5",
+          "surface": "layerEditor",
+          "state": "layerEditorSaved",
+          "next": [
+            "step6"
+          ]
+        },
+        {
+          "id": "step6",
+          "surface": "canvas",
+          "state": "canvasSaved"
+        }
+      ],
+      "ends": "The reopened board contains the saved button text and property changes.",
+      "needs": [
+        "saveLayers",
+        "syncCanvas"
+      ],
+      "binding": {
+        "record": "create-edit",
+        "status": "proposed",
+        "variant": "sidePanel",
+        "because": "Layer properties must stay beside the layer’s position and neighbors."
+      }
+    },
+    {
+      "id": "reviewFlow",
+      "goal": "Reply to feedback, change its layer and acknowledge resolution.",
+      "priority": "should",
+      "stages": [
+        {
+          "id": "step1",
+          "surface": "comments",
+          "next": [
+            "step2"
+          ]
+        },
+        {
+          "id": "step2",
+          "surface": "layerEditor",
+          "next": [
+            "savedPinnedLayer"
+          ],
+          "state": "layerEditorReviewDraft"
+        },
+        {
+          "id": "savedPinnedLayer",
+          "surface": "layerEditor",
+          "state": "layerEditorReviewSaved",
+          "next": [
+            "step3"
+          ]
+        },
+        {
+          "id": "step3",
+          "surface": "canvas",
+          "state": "canvasReviewSaved",
+          "next": [
+            "step4"
+          ]
+        },
+        {
+          "id": "step4",
+          "surface": "comments",
+          "state": "commentsResolved"
+        }
+      ],
+      "ends": "The corrected layer is saved and the thread is acknowledged as resolved with history retained.",
+      "needs": [
+        "sendComments",
+        "saveLayers",
+        "resolveComments"
+      ]
+    },
+    {
+      "id": "shareBoardFlow",
+      "goal": "Give a teammate access to this board, not every board.",
+      "priority": "should",
+      "stages": [
+        {
+          "id": "step1",
+          "surface": "canvas",
+          "state": "canvasSharing",
+          "next": [
+            "step2"
+          ]
+        },
+        {
+          "id": "step2",
+          "surface": "canvas",
+          "state": "canvasShared",
+          "next": [
+            "step3"
+          ]
+        },
+        {
+          "id": "step3",
+          "surface": "emailBoardInvitation"
+        }
+      ],
+      "ends": "The recipient can open the named board without gaining unrelated board access.",
+      "needs": [
+        "shareBoards"
+      ]
+    },
+    {
+      "id": "exportFramesFlow",
+      "goal": "Create a local image of selected frames.",
+      "priority": "should",
+      "stages": [
+        {
+          "id": "step1",
+          "surface": "canvas",
+          "state": "canvasExporting",
+          "next": [
+            "step2"
+          ]
+        },
+        {
+          "id": "step2",
+          "surface": "canvas",
+          "state": "canvasExported"
+        }
+      ],
+      "ends": "A complete local image is ready to download; the board revision is unchanged.",
+      "needs": [
+        "exportFrames"
+      ]
+    },
+    {
+      "id": "deleteFrameFlow",
+      "goal": "Remove an unwanted frame after reviewing its children.",
+      "priority": "should",
+      "stages": [
+        {
+          "id": "step1",
+          "surface": "canvas",
+          "state": "canvasDeleting",
+          "next": [
+            "step2"
+          ]
+        },
+        {
+          "id": "step2",
+          "surface": "canvas",
+          "state": "canvasDeleted"
+        }
+      ],
+      "ends": "The acknowledged revision no longer contains the named frame or its four child layers.",
+      "needs": [
+        "deleteLayers"
+      ]
+    },
+    {
+      "id": "preferencesFlow",
+      "goal": "Choose grid, snapping and comment notifications.",
+      "priority": "should",
+      "stages": [
+        {
+          "id": "step1",
+          "surface": "settings",
+          "next": [
+            "step2"
+          ]
+        },
+        {
+          "id": "step2",
+          "surface": "settings",
+          "state": "settingsSaved"
+        }
+      ],
+      "ends": "Reopening preferences retains the guide and notification choices.",
+      "needs": [
+        "savePreferences"
+      ]
+    },
+    {
+      "id": "helpFlow",
+      "goal": "Understand which edits are local and which teammates can see.",
+      "priority": "should",
+      "stages": [
+        {
+          "id": "step1",
+          "surface": "help",
+          "next": [
+            "step2"
+          ]
+        },
+        {
+          "id": "step2",
+          "surface": "canvas"
+        }
+      ],
+      "ends": "The designer distinguishes pending local changes from an acknowledged shared revision.",
+      "needs": []
+    },
+    {
+      "id": "discoverFlow",
+      "goal": "Understand Tilework and open the team’s board collection.",
+      "priority": "should",
+      "stages": [
+        {
+          "id": "step1",
+          "surface": "landing",
+          "next": [
+            "step2"
+          ]
+        },
+        {
+          "id": "step2",
+          "surface": "boards"
+        }
+      ],
+      "ends": "The designer reaches saved boards and the named-blank-board creation path.",
+      "needs": []
+    },
+    {
+      "id": "pushCommentAddedFlow",
+      "goal": "Open a persisted pinned comment from an opted-in notification.",
+      "priority": "later",
+      "stages": [
+        {
+          "id": "step1",
+          "surface": "pushCommentAdded",
+          "next": [
+            "step2"
+          ]
+        },
+        {
+          "id": "step2",
+          "surface": "comments"
+        }
+      ],
+      "ends": "The comment opens beside its layer with a real reply action.",
+      "needs": [
+        "sendCommentReminder"
+      ]
+    }
+  ],
+  "surfaces": [
+    {
+      "id": "boards",
+      "question": "Which shared board should I open or create?",
+      "route": "/boards",
+      "binding": {
+        "record": "home",
+        "status": "proposed",
+        "variant": "continue",
+        "because": "Recently edited shared boards are the starting point for continued design work.",
+        "candidates": [
+          "continue",
+          "collection"
+        ]
+      },
+      "slots": [
+        {
+          "id": "identity",
+          "copy": {
+            "boards.title": "always",
+            "boards.documentTitle": "always"
+          }
+        },
+        {
+          "id": "primary",
+          "copy": {
+            "boards.columns.name": [
+              "boardsReady",
+              "boardsFailed",
+              "boardsLongContent",
+              "boardsCreated"
+            ],
+            "boards.columns.owner": [
+              "boardsReady",
+              "boardsFailed",
+              "boardsLongContent",
+              "boardsCreated"
+            ],
+            "boards.columns.frames": [
+              "boardsReady",
+              "boardsFailed",
+              "boardsLongContent",
+              "boardsCreated"
+            ],
+            "boards.columns.updatedAt": [
+              "boardsReady",
+              "boardsFailed",
+              "boardsLongContent",
+              "boardsCreated"
+            ],
+            "boards.columns.status": [
+              "boardsReady",
+              "boardsFailed",
+              "boardsLongContent",
+              "boardsCreated"
+            ],
+            "boards.frameCount": [
+              "boardsReady",
+              "boardsFailed",
+              "boardsLongContent",
+              "boardsCreated"
+            ],
+            "boards.updatedAt": [
+              "boardsReady",
+              "boardsFailed",
+              "boardsLongContent",
+              "boardsCreated"
+            ]
+          },
+          "data": {
+            "contract": "CanvasBoard",
+            "many": true,
+            "map": {
+              "name": "name",
+              "owner": "owner",
+              "frames": "frames",
+              "status": "status",
+              "updatedAt": "updatedAt",
+              "revision": "revision",
+              "pendingEdits": "pendingEdits"
+            }
+          },
+          "states": [
+            "boardsReady",
+            "boardsFailed",
+            "boardsLongContent",
+            "boardsCreated"
+          ]
+        },
+        {
+          "id": "navigation",
+          "copy": {
+            "nav.boards": "always",
+            "nav.comments": "always",
+            "nav.settings": "always"
+          }
+        },
+        {
+          "id": "state",
+          "copy": {
+            "boards.empty.title": [
+              "boardsEmpty"
+            ],
+            "boards.empty.body": [
+              "boardsEmpty"
+            ],
+            "boards.empty.action": [
+              "boardsEmpty"
+            ],
+            "boards.recovery.title": [
+              "boardsFailed"
+            ],
+            "boards.recovery.action": [
+              "boardsFailed"
+            ],
+            "boards.stale": [
+              "boardsFailed"
+            ],
+            "boards.loading": [
+              "boardsLoading"
+            ]
+          }
+        }
+      ],
+      "states": [
+        "boardsReady",
+        "boardsLoading",
+        "boardsEmpty",
+        "boardsFailed",
+        "boardsLongContent",
+        "boardsCreated"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "shell.aria.main": "always",
+        "shell.alt.productMark": "always",
+        "shell.aria.navigation": "always",
+        "nav.boards": "always",
+        "nav.comments": "always",
+        "nav.settings": "always",
+        "boards.new": "always",
+        "boards.status.shared": [
+          "boardsReady",
+          "boardsFailed",
+          "boardsLongContent"
+        ],
+        "boards.status.inReview": [
+          "boardsReady",
+          "boardsFailed"
+        ],
+        "boards.status.draft": [
+          "boardsReady",
+          "boardsFailed",
+          "boardsCreated"
+        ],
+        "boards.status.changesRequested": [
+          "boardsReady",
+          "boardsFailed"
+        ],
+        "boards.status.archived": [
+          "boardsReady",
+          "boardsFailed"
+        ],
+        "boards.edited.minutes": [
+          "boardsReady",
+          "boardsFailed",
+          "boardsLongContent"
+        ],
+        "boards.edited.hours": [
+          "boardsReady",
+          "boardsFailed"
+        ],
+        "boards.edited.yesterday": [
+          "boardsReady",
+          "boardsFailed"
+        ],
+        "boards.edited.days": [
+          "boardsReady",
+          "boardsFailed"
+        ],
+        "boards.edited.weeks": [
+          "boardsReady",
+          "boardsFailed"
+        ]
+      }
+    },
+    {
+      "id": "boardEditor",
+      "question": "What should this new blank board be called?",
+      "route": "/boards/new",
+      "slots": [
+        {
+          "id": "header",
+          "copy": {
+            "boardEditor.title": "always",
+            "boardEditor.documentTitle": "always"
+          }
+        },
+        {
+          "id": "primary",
+          "copy": {
+            "boardEditor.name.label": [
+              "boardEditorDraft",
+              "boardEditorSaving",
+              "boardEditorFailed",
+              "boardEditorLongContent"
+            ],
+            "boardEditor.name.placeholder": [
+              "boardEditorDraft",
+              "boardEditorSaving",
+              "boardEditorFailed",
+              "boardEditorLongContent"
+            ]
+          },
+          "data": {
+            "contract": "CanvasBoard",
+            "many": false,
+            "map": {
+              "name": "name"
+            }
+          },
+          "states": [
+            "boardEditorDraft",
+            "boardEditorSaving",
+            "boardEditorFailed",
+            "boardEditorLongContent"
+          ]
+        },
+        {
+          "id": "commit",
+          "copy": {
+            "boardEditor.save": [
+              "boardEditorDraft",
+              "boardEditorSaving",
+              "boardEditorFailed",
+              "boardEditorLongContent"
+            ]
+          },
+          "on": [
+            {
+              "event": "createBoardEvent",
+              "axis": "asyncFeedback"
+            }
+          ]
+        },
+        {
+          "id": "exit",
+          "copy": {
+            "boardEditor.cancel": "always"
+          }
+        },
+        {
+          "id": "state",
+          "copy": {
+            "boardEditor.status.saving": [
+              "boardEditorSaving"
+            ],
+            "boardEditor.recovery": [
+              "boardEditorFailed"
+            ],
+            "boardEditor.retry": [
+              "boardEditorFailed"
+            ],
+            "boardEditor.invalid.name": [
+              "boardNameInvalidSetup"
+            ]
+          }
+        },
+        {
+          "id": "result",
+          "copy": {
+            "boardEditor.saved": [
+              "boardEditorSaved"
+            ],
+            "boardEditor.open": [
+              "boardEditorSaved"
+            ]
+          },
+          "data": {
+            "contract": "CanvasBoard",
+            "many": false,
+            "map": {
+              "name": "name"
+            }
+          },
+          "states": [
+            "boardEditorSaved"
+          ]
+        }
+      ],
+      "states": [
+        "boardEditorDraft",
+        "boardEditorSaving",
+        "boardEditorSaved",
+        "boardEditorFailed",
+        "boardEditorLongContent"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "shell.aria.main": "always",
+        "shell.alt.productMark": "always",
+        "shell.aria.navigation": "always",
+        "nav.boards": "always",
+        "nav.comments": "always",
+        "nav.settings": "always"
+      },
+      "setups": [
+        {
+          "id": "boardNameInvalidSetup",
+          "label": "Missing board name",
+          "event": "invalidBoardNameEvent",
+          "state": "boardEditorDraft"
+        }
+      ]
+    },
+    {
+      "id": "canvas",
+      "question": "How do these screens, notes and connectors form one flow?",
+      "route": "/boards/:board",
+      "slots": [
+        {
+          "id": "header",
+          "copy": {},
+          "data": {
+            "contract": "CanvasBoard",
+            "many": false,
+            "map": {
+              "name": "name",
+              "owner": "owner",
+              "frames": "frames",
+              "status": "status",
+              "updatedAt": "updatedAt",
+              "revision": "revision",
+              "pendingEdits": "pendingEdits"
+            }
+          }
+        },
+        {
+          "id": "primary",
+          "copy": {
+            "canvas.geometry": [
+              "canvasEditing",
+              "canvasSaving",
+              "canvasSaved",
+              "canvasOffline",
+              "canvasFailed",
+              "canvasLongContent",
+              "canvasDeleting",
+              "canvasDeleted",
+              "canvasDeleteFailed",
+              "canvasSharing",
+              "canvasShared",
+              "canvasShareFailed",
+              "canvasExporting",
+              "canvasExported",
+              "canvasExportFailed",
+              "canvasFirstLayerSaved",
+              "canvasReviewSaved"
+            ]
+          },
+          "data": {
+            "contract": "Layer",
+            "many": true,
+            "map": {
+              "name": "name",
+              "frame": "frame",
+              "description": "description",
+              "body": "body",
+              "kind": "kind",
+              "visibility": "visibility",
+              "x": "x",
+              "y": "y",
+              "width": "width",
+              "height": "height",
+              "fontSize": "fontSize",
+              "resizing": "resizing",
+              "clipContent": "clipContent",
+              "includeInExport": "includeInExport",
+              "locked": "locked"
+            }
+          },
+          "states": [
+            "canvasEditing",
+            "canvasSaving",
+            "canvasSaved",
+            "canvasOffline",
+            "canvasFailed",
+            "canvasLongContent",
+            "canvasDeleting",
+            "canvasDeleted",
+            "canvasDeleteFailed",
+            "canvasSharing",
+            "canvasShared",
+            "canvasShareFailed",
+            "canvasExporting",
+            "canvasExported",
+            "canvasExportFailed",
+            "canvasFirstLayerSaved",
+            "canvasReviewSaved"
+          ],
+          "on": [
+            {
+              "event": "canvasSelectionEvent",
+              "axis": "contentSwap"
+            },
+            {
+              "event": "beginTextLayerEvent",
+              "axis": "controlResponse"
+            }
+          ]
+        },
+        {
+          "id": "state",
+          "copy": {
+            "canvas.blank.title": [
+              "canvasBlank"
+            ],
+            "canvas.blank.body": [
+              "canvasBlank"
+            ],
+            "canvas.alt.emptyCanvas": [
+              "canvasBlank"
+            ],
+            "canvas.status.saving": [
+              "canvasSaving"
+            ],
+            "canvas.status.saved": [
+              "canvasSaved",
+              "canvasFirstLayerSaved",
+              "canvasReviewSaved"
+            ],
+            "canvas.offline": [
+              "canvasOffline"
+            ],
+            "canvas.recovery.heading": [
+              "canvasFailed"
+            ],
+            "canvas.recovery.detail": [
+              "canvasFailed"
+            ],
+            "canvas.recovery.action": [
+              "canvasFailed"
+            ],
+            "canvas.delete.pending": [
+              "canvasDeleting"
+            ],
+            "canvas.delete.saved": [
+              "canvasDeleted"
+            ],
+            "canvas.delete.failed": [
+              "canvasDeleteFailed"
+            ],
+            "canvas.delete.retry": [
+              "canvasDeleteFailed"
+            ],
+            "canvas.share.pending": [
+              "canvasSharing"
+            ],
+            "canvas.share.saved": [
+              "canvasShared"
+            ],
+            "canvas.share.failed": [
+              "canvasShareFailed"
+            ],
+            "canvas.share.retry": [
+              "canvasShareFailed"
+            ],
+            "canvas.export.pending": [
+              "canvasExporting"
+            ],
+            "canvas.export.saved": [
+              "canvasExported"
+            ],
+            "canvas.export.download": [
+              "canvasExported"
+            ],
+            "canvas.export.failed": [
+              "canvasExportFailed"
+            ],
+            "canvas.export.retry": [
+              "canvasExportFailed"
+            ]
+          }
+        },
+        {
+          "id": "confirmation",
+          "copy": {
+            "canvas.confirmation.title": [
+              "deleteFrameSetup"
+            ],
+            "canvas.confirmation.body": [
+              "deleteFrameSetup"
+            ],
+            "canvas.confirmation.confirm": [
+              "deleteFrameSetup"
+            ],
+            "canvas.confirmation.cancel": [
+              "deleteFrameSetup"
+            ],
+            "canvas.confirmation.close": [
+              "deleteFrameSetup"
+            ]
+          },
+          "record": "dialogs-and-layers",
+          "status": "proposed",
+          "variant": "dialog",
+          "because": "Deleting the named frame removes its child layers from the shared board; confirm that exact scope before submitting.",
+          "data": {
+            "contract": "FrameSelection",
+            "many": false,
+            "map": {
+              "name": "name",
+              "layerCount": "layerCount"
+            }
+          }
+        },
+        {
+          "id": "outcome",
+          "copy": {
+            "canvas.outcome": [
+              "canvasSaved",
+              "canvasReviewSaved"
+            ]
+          },
+          "record": "notifications",
+          "status": "proposed",
+          "variant": "inline",
+          "because": "The acknowledged revision stays beside the board rather than disappearing in a toast."
+        },
+        {
+          "id": "invitation",
+          "copy": {
+            "canvas.share.title": [
+              "shareBoardSetup"
+            ],
+            "canvas.share.recipient.label": [
+              "shareBoardSetup"
+            ],
+            "canvas.share.access.label": [
+              "shareBoardSetup"
+            ],
+            "canvas.share.access.edit": [
+              "shareBoardSetup"
+            ],
+            "canvas.share.access.comment": [
+              "shareBoardSetup"
+            ],
+            "canvas.share.send": [
+              "shareBoardSetup"
+            ],
+            "canvas.share.close": [
+              "shareBoardSetup"
+            ]
+          },
+          "data": {
+            "contract": "BoardInvitation",
+            "many": false,
+            "map": {
+              "recipientName": "recipientName",
+              "boardName": "boardName",
+              "access": "access"
+            }
+          }
+        }
+      ],
+      "states": [
+        "canvasEditing",
+        "canvasBlank",
+        "canvasSaving",
+        "canvasSaved",
+        "canvasOffline",
+        "canvasFailed",
+        "canvasLongContent",
+        "canvasDeleting",
+        "canvasDeleted",
+        "canvasDeleteFailed",
+        "canvasSharing",
+        "canvasShared",
+        "canvasShareFailed",
+        "canvasExporting",
+        "canvasExported",
+        "canvasExportFailed",
+        "canvasFirstLayerSaved",
+        "canvasReviewSaved"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "shell.aria.main": "always",
+        "shell.alt.productMark": "always",
+        "shell.aria.navigation": "always",
+        "nav.boards": "always",
+        "nav.comments": "always",
+        "nav.settings": "always",
+        "canvas.title": "always",
+        "canvas.documentTitle": "always",
+        "canvas.select": "always",
+        "canvas.draw": "always",
+        "canvas.text": "always",
+        "canvas.note": "always",
+        "canvas.connector": "always",
+        "canvas.zoom.aria": "always",
+        "canvas.zoomToFit": "always",
+        "canvas.layers": "always",
+        "canvas.comment": [
+          "canvasEditing",
+          "canvasSaving",
+          "canvasSaved",
+          "canvasOffline",
+          "canvasFailed",
+          "canvasLongContent",
+          "canvasDeleting",
+          "canvasDeleted",
+          "canvasDeleteFailed",
+          "canvasSharing",
+          "canvasShared",
+          "canvasShareFailed",
+          "canvasExporting",
+          "canvasExported",
+          "canvasExportFailed",
+          "canvasFirstLayerSaved",
+          "canvasReviewSaved"
+        ],
+        "canvas.share": [
+          "canvasEditing",
+          "canvasSaved",
+          "canvasLongContent",
+          "canvasDeleted",
+          "canvasFirstLayerSaved",
+          "canvasReviewSaved"
+        ],
+        "canvas.export": [
+          "canvasEditing",
+          "canvasSaved",
+          "canvasLongContent",
+          "canvasDeleted",
+          "canvasFirstLayerSaved",
+          "canvasReviewSaved"
+        ],
+        "canvas.layer.hidden": [
+          "canvasEditing",
+          "canvasSaving",
+          "canvasSaved",
+          "canvasOffline",
+          "canvasFailed",
+          "canvasDeleting",
+          "canvasDeleted",
+          "canvasDeleteFailed",
+          "canvasSharing",
+          "canvasShared",
+          "canvasShareFailed",
+          "canvasExporting",
+          "canvasExported",
+          "canvasExportFailed",
+          "canvasReviewSaved"
+        ],
+        "canvas.layer.locked": [
+          "canvasEditing",
+          "canvasSaving",
+          "canvasSaved",
+          "canvasOffline",
+          "canvasFailed",
+          "canvasDeleting",
+          "canvasDeleteFailed",
+          "canvasSharing",
+          "canvasShared",
+          "canvasShareFailed",
+          "canvasExporting",
+          "canvasExported",
+          "canvasExportFailed",
+          "canvasReviewSaved"
+        ],
+        "canvas.selection.aria": [
+          "canvasEditing",
+          "canvasSaving",
+          "canvasSaved",
+          "canvasOffline",
+          "canvasFailed",
+          "canvasLongContent",
+          "canvasDeleting",
+          "canvasDeleted",
+          "canvasDeleteFailed",
+          "canvasSharing",
+          "canvasShared",
+          "canvasShareFailed",
+          "canvasExporting",
+          "canvasExported",
+          "canvasExportFailed",
+          "canvasFirstLayerSaved",
+          "canvasReviewSaved"
+        ],
+        "canvas.fontSize": [
+          "canvasEditing",
+          "canvasSaving",
+          "canvasSaved",
+          "canvasOffline",
+          "canvasFailed",
+          "canvasDeleting",
+          "canvasDeleteFailed",
+          "canvasSharing",
+          "canvasShared",
+          "canvasShareFailed",
+          "canvasExporting",
+          "canvasExported",
+          "canvasExportFailed",
+          "canvasFirstLayerSaved",
+          "canvasReviewSaved"
+        ],
+        "canvas.layerMenu.rename": [
+          "canvasLayerMenuSetup"
+        ],
+        "canvas.layerMenu.duplicate": [
+          "canvasLayerMenuSetup"
+        ],
+        "canvas.layerMenu.hide": [
+          "canvasLayerMenuSetup"
+        ],
+        "canvas.layerMenu.delete": [
+          "canvasLayerMenuSetup"
+        ],
+        "canvas.layerMenu.close": [
+          "canvasLayerMenuSetup"
+        ],
+        "canvas.export.title": [
+          "frameExportSetup"
+        ],
+        "canvas.export.selection": [
+          "frameExportSetup"
+        ],
+        "canvas.export.confirm": [
+          "frameExportSetup"
+        ],
+        "canvas.export.close": [
+          "frameExportSetup"
+        ],
+        "canvas.kind.shape": [
+          "canvasEditing",
+          "canvasSaving",
+          "canvasSaved",
+          "canvasOffline",
+          "canvasFailed",
+          "canvasDeleting",
+          "canvasDeleteFailed",
+          "canvasSharing",
+          "canvasShared",
+          "canvasShareFailed",
+          "canvasExporting",
+          "canvasExported",
+          "canvasExportFailed",
+          "canvasReviewSaved"
+        ],
+        "canvas.kind.text": [
+          "canvasEditing",
+          "canvasSaving",
+          "canvasSaved",
+          "canvasOffline",
+          "canvasFailed",
+          "canvasDeleting",
+          "canvasDeleteFailed",
+          "canvasSharing",
+          "canvasShared",
+          "canvasShareFailed",
+          "canvasExporting",
+          "canvasExported",
+          "canvasExportFailed",
+          "canvasFirstLayerSaved",
+          "canvasReviewSaved"
+        ],
+        "canvas.kind.image": [
+          "canvasEditing",
+          "canvasSaving",
+          "canvasSaved",
+          "canvasOffline",
+          "canvasFailed",
+          "canvasDeleting",
+          "canvasDeleteFailed",
+          "canvasSharing",
+          "canvasShared",
+          "canvasShareFailed",
+          "canvasExporting",
+          "canvasExported",
+          "canvasExportFailed",
+          "canvasReviewSaved"
+        ],
+        "canvas.kind.button": [
+          "canvasEditing",
+          "canvasSaving",
+          "canvasSaved",
+          "canvasOffline",
+          "canvasFailed",
+          "canvasLongContent",
+          "canvasDeleting",
+          "canvasDeleted",
+          "canvasDeleteFailed",
+          "canvasSharing",
+          "canvasShared",
+          "canvasShareFailed",
+          "canvasExporting",
+          "canvasExported",
+          "canvasExportFailed",
+          "canvasReviewSaved"
+        ],
+        "canvas.kind.input": [
+          "canvasEditing",
+          "canvasSaving",
+          "canvasSaved",
+          "canvasOffline",
+          "canvasFailed",
+          "canvasDeleting",
+          "canvasDeleted",
+          "canvasDeleteFailed",
+          "canvasSharing",
+          "canvasShared",
+          "canvasShareFailed",
+          "canvasExporting",
+          "canvasExported",
+          "canvasExportFailed",
+          "canvasReviewSaved"
+        ],
+        "canvas.kind.note": [
+          "canvasEditing",
+          "canvasSaving",
+          "canvasSaved",
+          "canvasOffline",
+          "canvasFailed",
+          "canvasDeleting",
+          "canvasDeleted",
+          "canvasDeleteFailed",
+          "canvasSharing",
+          "canvasShared",
+          "canvasShareFailed",
+          "canvasExporting",
+          "canvasExported",
+          "canvasExportFailed",
+          "canvasReviewSaved"
+        ],
+        "canvas.kind.connector": [
+          "canvasEditing",
+          "canvasSaving",
+          "canvasSaved",
+          "canvasOffline",
+          "canvasFailed",
+          "canvasDeleting",
+          "canvasDeleted",
+          "canvasDeleteFailed",
+          "canvasSharing",
+          "canvasShared",
+          "canvasShareFailed",
+          "canvasExporting",
+          "canvasExported",
+          "canvasExportFailed",
+          "canvasReviewSaved"
+        ]
+      },
+      "setups": [
+        {
+          "id": "deleteFrameSetup",
+          "label": "Delete Welcome and its four layers",
+          "event": "canvasDeleteDialogEvent",
+          "state": "canvasEditing"
+        },
+        {
+          "id": "canvasLayerMenuSetup",
+          "label": "Selected layer actions",
+          "event": "canvasLayerMenuEvent",
+          "state": "canvasEditing"
+        },
+        {
+          "id": "shareBoardSetup",
+          "label": "Board invitation open",
+          "event": "openShareEvent",
+          "state": "canvasEditing"
+        },
+        {
+          "id": "frameExportSetup",
+          "label": "Frame export options",
+          "event": "openExportEvent",
+          "state": "canvasEditing"
+        }
+      ]
+    },
+    {
+      "id": "layerEditor",
+      "question": "What should change in this layer’s text, dimensions and placement?",
+      "route": "/layerEditor",
+      "slots": [
+        {
+          "id": "header",
+          "copy": {
+            "layerEditor.title": "always",
+            "layerEditor.documentTitle": "always"
+          }
+        },
+        {
+          "id": "primary",
+          "copy": {
+            "layerEditor.name.label": [
+              "layerEditorDraft",
+              "layerEditorSaving",
+              "layerEditorFailed",
+              "layerEditorLongContent",
+              "layerEditorNewDraft",
+              "layerEditorCreating",
+              "layerEditorCreateFailed",
+              "layerEditorReviewDraft"
+            ],
+            "layerEditor.name.placeholder": [
+              "layerEditorDraft",
+              "layerEditorSaving",
+              "layerEditorFailed",
+              "layerEditorLongContent",
+              "layerEditorNewDraft",
+              "layerEditorCreating",
+              "layerEditorCreateFailed",
+              "layerEditorReviewDraft"
+            ],
+            "layerEditor.resizing.label": [
+              "layerEditorDraft",
+              "layerEditorSaving",
+              "layerEditorFailed",
+              "layerEditorLongContent",
+              "layerEditorNewDraft",
+              "layerEditorCreating",
+              "layerEditorCreateFailed",
+              "layerEditorReviewDraft"
+            ],
+            "layerEditor.resizing.fixed": [
+              "layerEditorDraft",
+              "layerEditorSaving",
+              "layerEditorFailed",
+              "layerEditorLongContent",
+              "layerResizingSetup",
+              "layerEditorReviewDraft"
+            ],
+            "layerEditor.resizing.hug": [
+              "layerResizingSetup",
+              "layerEditorNewDraft",
+              "layerEditorCreating",
+              "layerEditorCreateFailed"
+            ],
+            "layerEditor.resizing.fill": [
+              "layerResizingSetup"
+            ],
+            "layerEditor.clipContent.label": [
+              "layerEditorDraft",
+              "layerEditorSaving",
+              "layerEditorFailed",
+              "layerEditorLongContent",
+              "layerEditorNewDraft",
+              "layerEditorCreating",
+              "layerEditorCreateFailed",
+              "layerEditorReviewDraft"
+            ],
+            "layerEditor.includeInExport.label": [
+              "layerEditorDraft",
+              "layerEditorSaving",
+              "layerEditorFailed",
+              "layerEditorLongContent",
+              "layerEditorNewDraft",
+              "layerEditorCreating",
+              "layerEditorCreateFailed",
+              "layerEditorReviewDraft"
+            ],
+            "layerEditor.description.label": [
+              "layerEditorDraft",
+              "layerEditorSaving",
+              "layerEditorFailed",
+              "layerEditorLongContent",
+              "layerEditorNewDraft",
+              "layerEditorCreating",
+              "layerEditorCreateFailed",
+              "layerEditorReviewDraft"
+            ],
+            "layerEditor.body.label": [
+              "layerEditorDraft",
+              "layerEditorSaving",
+              "layerEditorFailed",
+              "layerEditorLongContent",
+              "layerEditorNewDraft",
+              "layerEditorCreating",
+              "layerEditorCreateFailed",
+              "layerEditorReviewDraft"
+            ],
+            "layerEditor.width.label": [
+              "layerEditorDraft",
+              "layerEditorSaving",
+              "layerEditorFailed",
+              "layerEditorLongContent",
+              "layerEditorNewDraft",
+              "layerEditorCreating",
+              "layerEditorCreateFailed",
+              "layerEditorReviewDraft"
+            ],
+            "layerEditor.height.label": [
+              "layerEditorDraft",
+              "layerEditorSaving",
+              "layerEditorFailed",
+              "layerEditorLongContent",
+              "layerEditorNewDraft",
+              "layerEditorCreating",
+              "layerEditorCreateFailed",
+              "layerEditorReviewDraft"
+            ],
+            "layerEditor.fontSize.label": [
+              "layerEditorDraft",
+              "layerEditorSaving",
+              "layerEditorFailed",
+              "layerEditorLongContent",
+              "layerEditorNewDraft",
+              "layerEditorCreating",
+              "layerEditorCreateFailed",
+              "layerEditorReviewDraft"
+            ],
+            "layerEditor.position.x": [
+              "layerEditorDraft",
+              "layerEditorSaving",
+              "layerEditorFailed",
+              "layerEditorLongContent",
+              "layerEditorNewDraft",
+              "layerEditorCreating",
+              "layerEditorCreateFailed",
+              "layerEditorReviewDraft"
+            ],
+            "layerEditor.position.y": [
+              "layerEditorDraft",
+              "layerEditorSaving",
+              "layerEditorFailed",
+              "layerEditorLongContent",
+              "layerEditorNewDraft",
+              "layerEditorCreating",
+              "layerEditorCreateFailed",
+              "layerEditorReviewDraft"
+            ],
+            "layerEditor.kind.label": [
+              "layerEditorDraft",
+              "layerEditorSaving",
+              "layerEditorFailed",
+              "layerEditorLongContent",
+              "layerEditorNewDraft",
+              "layerEditorCreating",
+              "layerEditorCreateFailed",
+              "layerEditorReviewDraft"
+            ],
+            "layerEditor.kind.shape": [
+              "layerTypeSetup"
+            ],
+            "layerEditor.kind.text": [
+              "layerTypeSetup",
+              "layerEditorNewDraft",
+              "layerEditorCreating",
+              "layerEditorCreateFailed"
+            ],
+            "layerEditor.kind.image": [
+              "layerTypeSetup"
+            ],
+            "layerEditor.kind.button": [
+              "layerEditorDraft",
+              "layerEditorSaving",
+              "layerEditorFailed",
+              "layerEditorLongContent",
+              "layerTypeSetup",
+              "layerEditorReviewDraft"
+            ],
+            "layerEditor.kind.input": [
+              "layerTypeSetup"
+            ],
+            "layerEditor.kind.note": [
+              "layerTypeSetup"
+            ],
+            "layerEditor.kind.connector": [
+              "layerTypeSetup"
+            ]
+          },
+          "data": {
+            "contract": "Layer",
+            "many": false,
+            "map": {
+              "name": "name",
+              "frame": "frame",
+              "description": "description",
+              "body": "body",
+              "kind": "kind",
+              "visibility": "visibility",
+              "x": "x",
+              "y": "y",
+              "width": "width",
+              "height": "height",
+              "fontSize": "fontSize",
+              "resizing": "resizing",
+              "clipContent": "clipContent",
+              "includeInExport": "includeInExport",
+              "locked": "locked"
+            }
+          },
+          "states": [
+            "layerEditorDraft",
+            "layerEditorSaving",
+            "layerEditorFailed",
+            "layerEditorLongContent",
+            "layerEditorNewDraft",
+            "layerEditorCreating",
+            "layerEditorCreateFailed",
+            "layerEditorReviewDraft"
+          ]
+        },
+        {
+          "id": "commit",
+          "copy": {
+            "layerEditor.save": [
+              "layerEditorDraft",
+              "layerEditorSaving",
+              "layerEditorFailed",
+              "layerEditorLongContent",
+              "layerEditorNewDraft",
+              "layerEditorCreating",
+              "layerEditorCreateFailed",
+              "layerEditorReviewDraft"
+            ]
+          },
+          "on": [
+            {
+              "event": "saveLayerEvent",
+              "axis": "asyncFeedback"
+            }
+          ]
+        },
+        {
+          "id": "exit",
+          "copy": {
+            "layerEditor.cancel": "always"
+          }
+        },
+        {
+          "id": "state",
+          "copy": {
+            "layerEditor.status": [
+              "layerEditorSaving",
+              "layerEditorCreating"
+            ],
+            "layerEditor.recovery": [
+              "layerEditorFailed",
+              "layerEditorCreateFailed"
+            ],
+            "layerEditor.retry": [
+              "layerEditorFailed",
+              "layerEditorCreateFailed"
+            ],
+            "layerEditor.invalid.name": [
+              "layerNameInvalidSetup"
+            ]
+          }
+        },
+        {
+          "id": "result",
+          "copy": {
+            "layerEditor.saved": [
+              "layerEditorSaved",
+              "layerEditorCreated",
+              "layerEditorReviewSaved"
+            ],
+            "layerEditor.return": [
+              "layerEditorSaved",
+              "layerEditorCreated",
+              "layerEditorReviewSaved"
+            ]
+          },
+          "data": {
+            "contract": "Layer",
+            "many": false,
+            "map": {
+              "name": "name",
+              "body": "body"
+            }
+          },
+          "states": [
+            "layerEditorSaved",
+            "layerEditorCreated",
+            "layerEditorReviewSaved"
+          ]
+        }
+      ],
+      "states": [
+        "layerEditorDraft",
+        "layerEditorSaving",
+        "layerEditorSaved",
+        "layerEditorFailed",
+        "layerEditorLongContent",
+        "layerEditorNewDraft",
+        "layerEditorCreating",
+        "layerEditorCreated",
+        "layerEditorCreateFailed",
+        "layerEditorReviewDraft",
+        "layerEditorReviewSaved"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "shell.aria.main": "always",
+        "shell.alt.productMark": "always",
+        "shell.aria.navigation": "always",
+        "nav.boards": "always",
+        "nav.comments": "always",
+        "nav.settings": "always"
+      },
+      "setups": [
+        {
+          "id": "layerNameInvalidSetup",
+          "label": "Missing layer name",
+          "event": "invalidLayerNameEvent",
+          "state": "layerEditorDraft"
+        },
+        {
+          "id": "layerTypeSetup",
+          "label": "Layer type choices",
+          "event": "openLayerTypeEvent",
+          "state": "layerEditorDraft"
+        },
+        {
+          "id": "layerResizingSetup",
+          "label": "Layer resizing choices",
+          "event": "openLayerResizingEvent",
+          "state": "layerEditorDraft"
+        }
+      ]
+    },
+    {
+      "id": "comments",
+      "question": "Which layer needs feedback, and has its thread been resolved?",
+      "route": "/comments",
+      "binding": {
+        "record": "conversation",
+        "status": "proposed",
+        "variant": "context",
+        "because": "Pinned feedback must stay beside the exact layer it describes while a designer replies or resolves it.",
+        "candidates": [
+          "bubbles",
+          "transcript",
+          "channel",
+          "context"
+        ]
+      },
+      "slots": [
+        {
+          "id": "header",
+          "copy": {
+            "comments.title": "always",
+            "comments.documentTitle": "always"
+          }
+        },
+        {
+          "id": "primary",
+          "copy": {
+            "comments.time": [
+              "commentsReady",
+              "commentsFailed",
+              "commentsLongContent",
+              "commentsSending",
+              "commentsSent",
+              "commentsSendFailed",
+              "commentsResolving",
+              "commentsResolved",
+              "commentsResolveFailed"
+            ],
+            "comments.pin": [
+              "commentsReady",
+              "commentsFailed",
+              "commentsLongContent",
+              "commentsSending",
+              "commentsSent",
+              "commentsSendFailed",
+              "commentsResolving",
+              "commentsResolved",
+              "commentsResolveFailed"
+            ]
+          },
+          "data": {
+            "contract": "Comment",
+            "many": true,
+            "map": {
+              "author": "author",
+              "text": "text",
+              "mine": "mine",
+              "sentAt": "sentAt",
+              "layerName": "layerName",
+              "status": "status",
+              "delivery": "delivery"
+            }
+          },
+          "states": [
+            "commentsReady",
+            "commentsFailed",
+            "commentsLongContent",
+            "commentsSending",
+            "commentsSent",
+            "commentsSendFailed",
+            "commentsResolving",
+            "commentsResolved",
+            "commentsResolveFailed"
+          ]
+        },
+        {
+          "id": "composer",
+          "copy": {
+            "comments.composer.placeholder": [
+              "commentsReady",
+              "commentsEmpty",
+              "commentsFailed",
+              "commentsLongContent",
+              "commentsSending",
+              "commentsSent",
+              "commentsSendFailed",
+              "commentsResolving",
+              "commentsResolved",
+              "commentsResolveFailed"
+            ],
+            "comments.send": [
+              "commentsReady",
+              "commentsEmpty",
+              "commentsFailed",
+              "commentsLongContent",
+              "commentsSending",
+              "commentsSent",
+              "commentsSendFailed",
+              "commentsResolving",
+              "commentsResolved",
+              "commentsResolveFailed"
+            ],
+            "comments.aria.send": [
+              "commentsReady",
+              "commentsEmpty",
+              "commentsFailed",
+              "commentsLongContent",
+              "commentsSending",
+              "commentsSent",
+              "commentsSendFailed",
+              "commentsResolving",
+              "commentsResolved",
+              "commentsResolveFailed"
+            ],
+            "comments.composer.label": [
+              "commentsReady",
+              "commentsEmpty",
+              "commentsFailed",
+              "commentsLongContent",
+              "commentsSending",
+              "commentsSent",
+              "commentsSendFailed",
+              "commentsResolving",
+              "commentsResolved",
+              "commentsResolveFailed"
+            ]
+          },
+          "states": [
+            "commentsReady",
+            "commentsEmpty",
+            "commentsFailed",
+            "commentsLongContent",
+            "commentsSending",
+            "commentsSent",
+            "commentsSendFailed",
+            "commentsResolving",
+            "commentsResolved",
+            "commentsResolveFailed"
+          ],
+          "on": [
+            {
+              "event": "commentsSendEvent",
+              "axis": "asyncFeedback"
+            }
+          ]
+        },
+        {
+          "id": "context",
+          "copy": {},
+          "data": {
+            "contract": "Layer",
+            "many": false,
+            "map": {
+              "name": "name",
+              "frame": "frame",
+              "body": "body"
+            }
+          }
+        },
+        {
+          "id": "state",
+          "copy": {
+            "comments.loading": [
+              "commentsLoading"
+            ],
+            "comments.empty.title": [
+              "commentsEmpty"
+            ],
+            "comments.empty.body": [
+              "commentsEmpty"
+            ],
+            "comments.empty.action": [
+              "commentsEmpty"
+            ],
+            "comments.recovery.title": [
+              "commentsFailed"
+            ],
+            "comments.recovery.action": [
+              "commentsFailed"
+            ],
+            "comments.pending": [
+              "commentsSending"
+            ],
+            "comments.sent": [
+              "commentsSent"
+            ],
+            "comments.failed": [
+              "commentsSendFailed"
+            ],
+            "comments.retry": [
+              "commentsSendFailed"
+            ],
+            "comments.resolve.pending": [
+              "commentsResolving"
+            ],
+            "comments.resolve.saved": [
+              "commentsResolved"
+            ],
+            "comments.resolve.failed": [
+              "commentsResolveFailed"
+            ],
+            "comments.resolve.retry": [
+              "commentsResolveFailed"
+            ]
+          }
+        }
+      ],
+      "states": [
+        "commentsReady",
+        "commentsLoading",
+        "commentsEmpty",
+        "commentsFailed",
+        "commentsLongContent",
+        "commentsSending",
+        "commentsSent",
+        "commentsSendFailed",
+        "commentsResolving",
+        "commentsResolved",
+        "commentsResolveFailed"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "shell.aria.main": "always",
+        "shell.alt.productMark": "always",
+        "shell.aria.navigation": "always",
+        "nav.boards": "always",
+        "nav.comments": "always",
+        "nav.settings": "always",
+        "comments.reply": [
+          "commentsReady",
+          "commentsFailed",
+          "commentsLongContent",
+          "commentsSending",
+          "commentsSent",
+          "commentsSendFailed",
+          "commentsResolving",
+          "commentsResolved",
+          "commentsResolveFailed"
+        ],
+        "comments.resolve": [
+          "commentsReady",
+          "commentsLongContent",
+          "commentsSent",
+          "commentsResolveFailed"
+        ]
+      }
+    },
+    {
+      "id": "settings",
+      "question": "Which guide, comment and default export options should I keep for my boards?",
+      "route": "/settings",
+      "binding": {
+        "record": "settings",
+        "status": "fixed",
+        "variant": "sections",
+        "because": "Grid, guides and default export choices affect one designer and fit one sectioned page."
+      },
+      "slots": [
+        {
+          "id": "header",
+          "copy": {
+            "settings.title": "always",
+            "settings.documentTitle": "always"
+          }
+        },
+        {
+          "id": "navigation",
+          "copy": {
+            "settings.section": "always"
+          }
+        },
+        {
+          "id": "primary",
+          "copy": {
+            "settings.grid.label": "always",
+            "settings.snap.label": "always",
+            "settings.commentNotifications.label": "always",
+            "settings.exportScale.label": "always",
+            "settings.scale.one": "always",
+            "settings.scale.two": "always",
+            "settings.includeHidden.label": "always"
+          }
+        },
+        {
+          "id": "commit",
+          "copy": {
+            "settings.save": "always",
+            "settings.cancel": "always"
+          },
+          "on": [
+            {
+              "event": "saveCanvasPreferencesEvent",
+              "axis": "asyncFeedback"
+            }
+          ]
+        },
+        {
+          "id": "state",
+          "copy": {
+            "settings.status.saving": [
+              "settingsSaving"
+            ],
+            "settings.status.saved": [
+              "settingsSaved"
+            ],
+            "settings.recovery": [
+              "settingsFailed"
+            ],
+            "settings.retry": [
+              "settingsFailed"
+            ]
+          }
+        }
+      ],
+      "states": [
+        "settingsReady",
+        "settingsSaving",
+        "settingsSaved",
+        "settingsFailed"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "shell.aria.main": "always",
+        "shell.alt.productMark": "always",
+        "shell.aria.navigation": "always",
+        "nav.boards": "always",
+        "nav.comments": "always",
+        "nav.settings": "always"
+      }
+    },
+    {
+      "id": "help",
+      "question": "How do frames, layers and pinned comments behave when my board is offline?",
+      "route": "/help",
+      "slots": [
+        {
+          "id": "primary",
+          "copy": {
+            "help.frames.explanation": "always",
+            "help.sync.explanation": "always",
+            "help.components.limit": "always"
+          }
+        }
+      ],
+      "states": [
+        "helpReady"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "shell.aria.main": "always",
+        "shell.alt.productMark": "always",
+        "shell.aria.navigation": "always",
+        "nav.boards": "always",
+        "nav.comments": "always",
+        "nav.settings": "always",
+        "help.title": "always",
+        "help.documentTitle": "always"
+      }
+    },
+    {
+      "id": "landing",
+      "question": "Can I keep product screens, flow notes and review feedback together?",
+      "route": "/",
+      "slots": [
+        {
+          "id": "primary",
+          "copy": {
+            "landing.title": "always",
+            "landing.documentTitle": "always",
+            "landing.description": "always",
+            "landing.action": "always",
+            "landing.secondaryAction": "always",
+            "landing.footer": "always",
+            "landing.frames.eyebrow": "always",
+            "landing.frames.title": "always",
+            "landing.frames.body": "always",
+            "landing.layers.eyebrow": "always",
+            "landing.layers.title": "always",
+            "landing.layers.body": "always",
+            "landing.feedback.eyebrow": "always",
+            "landing.feedback.title": "always",
+            "landing.feedback.body": "always",
+            "landing.layerVolume.value": "always",
+            "landing.layerVolume.label": "always",
+            "landing.syncLatency.value": "always",
+            "landing.syncLatency.label": "always",
+            "landing.collaborators.value": "always",
+            "landing.collaborators.label": "always",
+            "landing.testimonial.text": "always",
+            "landing.testimonial.who": "always",
+            "landing.partners.alderFinch.alt": "always",
+            "landing.partners.brightwater.alt": "always",
+            "landing.partners.calloway.alt": "always",
+            "landing.partners.dunmore.alt": "always",
+            "landing.partners.eastgate.alt": "always",
+            "landing.partners.fernhill.alt": "always"
+          }
+        }
+      ],
+      "states": [
+        "landingReady"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "shell.aria.main": "always",
+        "shell.alt.productMark": "always",
+        "landing.title": "always",
+        "landing.documentTitle": "always"
+      }
+    },
+    {
+      "id": "emailBoardInvitation",
+      "question": "Who invited me to which board, and what does opening it grant me?",
+      "route": "email:boardInvitation",
+      "channel": "email",
+      "slots": [
+        {
+          "id": "primary",
+          "copy": {
+            "emailBoardInvitation.subject": "always",
+            "emailBoardInvitation.body": "always",
+            "emailBoardInvitation.action": "always",
+            "emailBoardInvitation.preheader": "always"
+          },
+          "data": {
+            "contract": "CanvasBoard",
+            "many": false,
+            "map": {
+              "name": "name",
+              "owner": "owner",
+              "frames": "frames",
+              "status": "status",
+              "updatedAt": "updatedAt",
+              "revision": "revision",
+              "pendingEdits": "pendingEdits"
+            }
+          }
+        }
+      ],
+      "states": [
+        "emailBoardInvitationReady"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {}
+    },
+    {
+      "id": "pushCommentAdded",
+      "question": "Who left feedback on which layer, and where can I reply?",
+      "route": "push:commentAdded",
+      "channel": "push",
+      "slots": [
+        {
+          "id": "primary",
+          "copy": {
+            "pushCommentAdded.body": "always",
+            "pushCommentAdded.action": "always",
+            "pushCommentAdded.title": "always"
+          },
+          "data": {
+            "contract": "Comment",
+            "many": false,
+            "map": {
+              "author": "author",
+              "text": "text",
+              "mine": "mine",
+              "sentAt": "sentAt",
+              "layerName": "layerName",
+              "status": "status"
+            }
+          }
+        }
+      ],
+      "states": [
+        "pushCommentAddedReady"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {}
+    }
+  ],
+  "files": {
+    "copy": "copy.md",
+    "fixtures": "fixtures.json"
+  },
+  "$schema": "../../../references/product-model.schema.json"
+}

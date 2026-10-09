@@ -1,3 +1,15 @@
+---
+id: pricing
+scale: surface
+studio: null
+slots: {"required":["header","primary","terms","state"],"optional":["period","comparison","estimator","faq","currentPlan","contact","actions"]}
+variants: [{"id":"cards","label":"Plan cards"},{"id":"matrix","label":"Comparison matrix"},{"id":"estimator","label":"Usage estimator"}]
+states: ["loading","available","unavailable","denied","failed","checkingEligibility","restricted","currentPlan","quoteExpired","priceChanged","invalid","scheduled"]
+copy: ["priceUnit","choose"]
+events: ["changePeriod","changeQuantity","select","contact","changePlan"]
+renderer: schematic
+---
+
 # Pricing
 
 `id: pricing` · `scale: surface` · `studio: no studio step` · `references checked: 2026-10-08`

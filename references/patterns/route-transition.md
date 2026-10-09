@@ -1,3 +1,15 @@
+---
+id: route-transition
+scale: interaction
+studio: routeMotion
+slots: {"required":[],"optional":["navigation","detail"]}
+variants: [{"id":"cut","label":"Cut"},{"id":"fade","label":"Fade"},{"id":"axis","label":"Shared axis"},{"id":"continuity","label":"Continuity"}]
+states: ["ready","requested","loading","failed","arrived"]
+copy: []
+events: ["navigate","back","forward","arrive","interrupt"]
+renderer: variants
+---
+
 # Route transition
 
 `id: route-transition` · `scale: interaction` · `studio: routeMotion` · `references checked: 2026-10-08`

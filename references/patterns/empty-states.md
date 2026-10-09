@@ -1,3 +1,15 @@
+---
+id: empty-states
+scale: component
+studio: null
+slots: {"required":[],"optional":["state"]}
+variants: [{"id":"compactCue","label":"Compact inline cue"},{"id":"actionPanel","label":"Action panel"},{"id":"educationalFirstUse","label":"Educational first-use"},{"id":"starterContent","label":"Starter content"}]
+states: ["loading","populated","firstUse","pending","noMatches","completed","denied","failed","configurationNeeded","partial"]
+copy: ["empty"]
+events: ["create","clearFilters","requestAccess","configure","retry"]
+renderer: variants
+---
+
 # Empty states
 
 `id: empty-states` · `scale: component` · `studio: no dedicated step; surface galleries include empty/loading examples` · `references checked: 2026-10-08`

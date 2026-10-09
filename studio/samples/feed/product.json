@@ -1,0 +1,2226 @@
+{
+  "model": 1,
+  "product": {
+    "id": "feed",
+    "outcome": "Read a maker’s post in a newest-first community feed, add a reply, and see the accepted reply under the post it answers.",
+    "archetype": "feed",
+    "users": [
+      {
+        "id": "communityMember",
+        "who": "A maker checking a chronological community feed on a phone and replying at a desk.",
+        "device": "both",
+        "surfaces": [
+          "home",
+          "following",
+          "popular",
+          "saved",
+          "postThread",
+          "newPost",
+          "settings",
+          "help",
+          "landing",
+          "emailReplyReceived",
+          "pushMentionReceived"
+        ]
+      }
+    ]
+  },
+  "entities": [
+    {
+      "id": "post",
+      "contract": "Post",
+      "words": [
+        "post"
+      ],
+      "never": [
+        "item",
+        "update"
+      ]
+    },
+    {
+      "id": "person",
+      "contract": "Person",
+      "words": [
+        "person",
+        "people"
+      ],
+      "never": [
+        "account"
+      ]
+    }
+  ],
+  "capabilities": [
+    {
+      "id": "sendMessages",
+      "real": true,
+      "note": "Replies are persisted under a post; a failed send retains the draft and retries the same reply without duplication."
+    },
+    {
+      "id": "publishPosts",
+      "real": true,
+      "note": "Publishing creates a post with a stable thread route; drafts are not added to the feed before acceptance."
+    },
+    {
+      "id": "followPeople",
+      "real": true,
+      "note": "Following a person or topic changes subsequent chronological feed results; muted topics are excluded."
+    },
+    {
+      "id": "savePosts",
+      "real": true,
+      "note": "Saving and unsaving a post updates the member’s Saved list."
+    },
+    {
+      "id": "deletePosts",
+      "real": true,
+      "note": "A member can delete their own post and its replies after an irreversible confirmation."
+    },
+    {
+      "id": "savePreferences",
+      "real": true,
+      "note": "Persist audience defaults, reply-email choice, autoplay and muted topics."
+    },
+    {
+      "id": "notifyReplies",
+      "real": true,
+      "note": "Email accepted replies to subscribed authors and push mentions to mentioned members."
+    }
+  ],
+  "data": {
+    "Post": {
+      "fields": {
+        "title": "text",
+        "body": "longText",
+        "author": "text",
+        "publishedAt": "date",
+        "topic": "text",
+        "replies": "number",
+        "media": "enum",
+        "ownership": "enum",
+        "saved": "enum",
+        "allowReplies": "enum"
+      },
+      "typical": 24,
+      "max": 240,
+      "long": [
+        "title",
+        "body"
+      ],
+      "enums": {
+        "media": [
+          "none",
+          "photo",
+          "video"
+        ],
+        "ownership": [
+          "mine",
+          "theirs"
+        ],
+        "saved": [
+          "saved",
+          "notSaved"
+        ],
+        "allowReplies": [
+          "on",
+          "off"
+        ]
+      }
+    },
+    "Person": {
+      "fields": {
+        "name": "text",
+        "specialty": "text",
+        "followers": "number",
+        "membership": "enum"
+      },
+      "typical": 3,
+      "max": 30,
+      "long": [
+        "name"
+      ],
+      "enums": {
+        "membership": [
+          "following",
+          "notFollowing"
+        ]
+      }
+    },
+    "Message": {
+      "fields": {
+        "author": "text",
+        "text": "longText",
+        "sentAt": "date",
+        "mine": "enum"
+      },
+      "typical": 4,
+      "max": 500,
+      "long": [
+        "author",
+        "text"
+      ],
+      "enums": {
+        "mine": [
+          "mine",
+          "theirs"
+        ]
+      }
+    },
+    "PostDraft": {
+      "fields": {
+        "title": "text",
+        "body": "longText",
+        "topic": "text",
+        "audience": "enum",
+        "allowReplies": "enum",
+        "replyEmail": "enum"
+      },
+      "typical": 1,
+      "max": 1,
+      "long": [
+        "title",
+        "body"
+      ],
+      "enums": {
+        "audience": [
+          "everyone",
+          "followers",
+          "friends"
+        ],
+        "allowReplies": [
+          "on",
+          "off"
+        ],
+        "replyEmail": [
+          "on",
+          "off"
+        ]
+      }
+    },
+    "FeedPreferences": {
+      "fields": {
+        "audience": "enum",
+        "replyEmail": "enum",
+        "mediaAutoplay": "enum",
+        "mutedTopics": "text"
+      },
+      "typical": 1,
+      "max": 1,
+      "enums": {
+        "audience": [
+          "everyone",
+          "followers",
+          "friends"
+        ],
+        "replyEmail": [
+          "on",
+          "off"
+        ],
+        "mediaAutoplay": [
+          "on",
+          "off"
+        ]
+      }
+    },
+    "ReplyDraft": {
+      "fields": {
+        "text": "longText"
+      },
+      "typical": 1,
+      "max": 1,
+      "long": [
+        "text"
+      ]
+    }
+  },
+  "states": {
+    "homeReady": {
+      "label": "Ready",
+      "rule": "Show complete followed-maker posts newest first; opening Reply takes the member to the post and its replies.",
+      "kind": "data",
+      "fixtures": {
+        "Post": "populated"
+      }
+    },
+    "homeLoading": {
+      "label": "Loading",
+      "rule": "Refresh the chronological feed without reordering the posts already visible.",
+      "kind": "data",
+      "fixtures": {
+        "Post": "populated"
+      }
+    },
+    "homeEmpty": {
+      "label": "Empty",
+      "rule": "No followed posts have arrived; offer the people-and-topics page, not a publishing error.",
+      "kind": "firstRun",
+      "fixtures": {
+        "Post": "none"
+      }
+    },
+    "homeFailed": {
+      "label": "Failed",
+      "rule": "The feed request failed; do not claim a member’s post failed to publish.",
+      "kind": "data",
+      "fixtures": {
+        "Post": "none"
+      }
+    },
+    "homeLongContent": {
+      "label": "Long content",
+      "rule": "Wrap the reading-group title and full post body while keeping author, date and reply action together.",
+      "kind": "data",
+      "fixtures": {
+        "Post": "long"
+      }
+    },
+    "followingReady": {
+      "label": "Ready",
+      "rule": "Show makers with specialties and follower counts, plus named topic choices; distinguish Follow from Unfollow by membership.",
+      "kind": "data",
+      "fixtures": {
+        "Person": "populated"
+      }
+    },
+    "followingLoading": {
+      "label": "Loading",
+      "rule": "Keep the last loaded maker choices visible while refreshing follow memberships.",
+      "kind": "data",
+      "fixtures": {
+        "Person": "populated"
+      }
+    },
+    "followingEmpty": {
+      "label": "Empty",
+      "rule": "No follow memberships exist; keep topic suggestions and the search field available.",
+      "kind": "firstRun",
+      "fixtures": {
+        "Person": "none"
+      }
+    },
+    "followingFailed": {
+      "label": "Failed",
+      "rule": "Following choices could not be loaded; retain existing memberships and retry the read.",
+      "kind": "data",
+      "fixtures": {
+        "Person": "none"
+      }
+    },
+    "followingLongContent": {
+      "label": "Long content",
+      "rule": "Wrap a workshop-length maker identity without dropping the specialty or follow control.",
+      "kind": "data",
+      "fixtures": {
+        "Person": "long"
+      }
+    },
+    "popularReady": {
+      "label": "Ready",
+      "rule": "Show posts ranked by this week’s reply activity with reply counts and a route to their threads.",
+      "kind": "data",
+      "fixtures": {
+        "Post": "populated"
+      }
+    },
+    "popularLoading": {
+      "label": "Loading",
+      "rule": "Keep the current weekly discussions visible while retrieving updated reply counts.",
+      "kind": "data",
+      "fixtures": {
+        "Post": "populated"
+      }
+    },
+    "popularEmpty": {
+      "label": "Empty",
+      "rule": "No discussions qualify this week; offer the chronological Home feed.",
+      "kind": "firstRun",
+      "fixtures": {
+        "Post": "none"
+      }
+    },
+    "popularFailed": {
+      "label": "Failed",
+      "rule": "Weekly discussion rankings could not be loaded; keep the period choice and retry the read.",
+      "kind": "data",
+      "fixtures": {
+        "Post": "none"
+      }
+    },
+    "popularLongContent": {
+      "label": "Long content",
+      "rule": "Allow long discussion titles to wrap; keep each title associated with its own reply count.",
+      "kind": "data",
+      "fixtures": {
+        "Post": "long"
+      }
+    },
+    "savedReady": {
+      "label": "Ready",
+      "rule": "Show posts explicitly saved by this member; opening one restores its original thread.",
+      "kind": "data",
+      "fixtures": {
+        "Post": "savedPosts"
+      }
+    },
+    "savedLoading": {
+      "label": "Loading",
+      "rule": "Keep the saved-post list visible while checking for changes.",
+      "kind": "data",
+      "fixtures": {
+        "Post": "savedPosts"
+      }
+    },
+    "savedEmpty": {
+      "label": "Empty",
+      "rule": "The member has not saved any posts; return to Home where Save post is available.",
+      "kind": "firstRun",
+      "fixtures": {
+        "Post": "none"
+      }
+    },
+    "savedFailed": {
+      "label": "Failed",
+      "rule": "Saved posts could not be retrieved; do not imply the saved markers were erased.",
+      "kind": "data",
+      "fixtures": {
+        "Post": "none"
+      }
+    },
+    "savedLongContent": {
+      "label": "Long content",
+      "rule": "Wrap saved post titles and bodies without losing their author or thread destination.",
+      "kind": "data",
+      "fixtures": {
+        "Post": "long"
+      }
+    },
+    "postThreadReady": {
+      "label": "Ready",
+      "rule": "Read replies oldest first beneath the original maker post; the reply composer addresses that post, not a private inbox.",
+      "kind": "data",
+      "fixtures": {
+        "Message": "populated",
+        "Post": "one",
+        "ReplyDraft": "blank"
+      }
+    },
+    "postThreadLoading": {
+      "label": "Loading",
+      "rule": "Keep the original post visible while loading its replies; do not enable sending until the thread read succeeds.",
+      "kind": "data",
+      "fixtures": {
+        "Message": "populated",
+        "Post": "one",
+        "ReplyDraft": "blank"
+      }
+    },
+    "postThreadEmpty": {
+      "label": "Empty",
+      "rule": "Show the original post and an empty reply list; invite the first reply in this public thread.",
+      "kind": "firstRun",
+      "fixtures": {
+        "Message": "none",
+        "Post": "one",
+        "ReplyDraft": "blank"
+      }
+    },
+    "postThreadFailed": {
+      "label": "Failed",
+      "rule": "Keep the original post but replace unavailable replies with a read-retry message; this is not a send failure.",
+      "kind": "data",
+      "fixtures": {
+        "Message": "none",
+        "Post": "one",
+        "ReplyDraft": "blank"
+      }
+    },
+    "postThreadLongContent": {
+      "label": "Long content",
+      "rule": "Wrap full bread-proof explanations and workshop-length author names in chronological reply order.",
+      "kind": "data",
+      "fixtures": {
+        "Message": "long",
+        "Post": "one",
+        "ReplyDraft": "blank"
+      }
+    },
+    "newPostDraft": {
+      "label": "Draft",
+      "rule": "Keep the title, body, topic and audience local; no post exists in the feed before Publish post.",
+      "kind": "data",
+      "fixtures": {
+        "PostDraft": "blank"
+      }
+    },
+    "newPostSaving": {
+      "label": "Publishing",
+      "rule": "Keep the whole post draft visible and disable Publish post while the publish request is pending.",
+      "kind": "operation",
+      "fixtures": {
+        "PostDraft": "one"
+      }
+    },
+    "newPostSaved": {
+      "label": "Published",
+      "rule": "Replace the editor with the accepted post identity and an Open post route; the post now appears in the chronological feed.",
+      "kind": "operation",
+      "fixtures": {
+        "PostDraft": "one"
+      }
+    },
+    "newPostFailed": {
+      "label": "Publication failed",
+      "rule": "Publishing was rejected; keep the same title, body, audience and notification choices for a deliberate retry.",
+      "kind": "operation",
+      "fixtures": {
+        "PostDraft": "one"
+      }
+    },
+    "newPostLongContent": {
+      "label": "Long post",
+      "rule": "Keep a long reading-group title and detailed maker story fully editable without hiding audience or reply choices.",
+      "kind": "data",
+      "fixtures": {
+        "PostDraft": "long"
+      }
+    },
+    "settingsReady": {
+      "label": "Ready",
+      "rule": "Show saved audience, reply email and muted-topic preferences; edits remain local until Save preferences.",
+      "kind": "data",
+      "fixtures": {
+        "FeedPreferences": "one"
+      }
+    },
+    "settingsSaving": {
+      "label": "Saving",
+      "rule": "Keep the edited preference values visible and disable duplicate saves until the preference write returns.",
+      "kind": "operation",
+      "fixtures": {
+        "FeedPreferences": "one"
+      }
+    },
+    "settingsSaved": {
+      "label": "Saved",
+      "rule": "Show the saved preference values and an inline acknowledgement; reopening this page shows the same choices.",
+      "kind": "operation",
+      "fixtures": {
+        "FeedPreferences": "one"
+      }
+    },
+    "settingsFailed": {
+      "label": "Failed",
+      "rule": "Keep edited preference values separate from the last saved values; Save preferences retries the write, Cancel restores the saved choices.",
+      "kind": "operation",
+      "fixtures": {
+        "FeedPreferences": "one"
+      }
+    },
+    "helpReady": {
+      "label": "Ready",
+      "rule": "Keep product help available without replacing the task.",
+      "kind": "data",
+      "fixtures": {}
+    },
+    "landingReady": {
+      "label": "Ready",
+      "rule": "Present the product explanation and a real route into the app.",
+      "kind": "data",
+      "fixtures": {}
+    },
+    "emailReplyReceivedReady": {
+      "label": "Ready",
+      "rule": "Send only after a reply is accepted on the subscribed member’s post; include its title and a direct link to that post’s replies.",
+      "kind": "operation",
+      "fixtures": {
+        "Post": "one"
+      }
+    },
+    "pushMentionReceivedReady": {
+      "label": "Ready",
+      "rule": "Send only after a persisted reply mentions this member; the action opens the referenced post’s reply thread.",
+      "kind": "operation",
+      "fixtures": {
+        "Post": "one"
+      }
+    },
+    "homeDeleting": {
+      "label": "Deleting post",
+      "rule": "Keep the selected post visible but disable its destructive controls while deletion is pending.",
+      "kind": "operation",
+      "fixtures": {
+        "Post": "populated"
+      }
+    },
+    "homeDeleted": {
+      "label": "Post deleted",
+      "rule": "Remove the accepted deleted post and its replies from the feed; retain an inline confirmation and the remaining newest-first posts.",
+      "kind": "operation",
+      "fixtures": {
+        "Post": "deleted"
+      }
+    },
+    "homeDeleteFailed": {
+      "label": "Deletion failed",
+      "rule": "Keep the post and replies visible because deletion was rejected; retry only the same confirmed deletion.",
+      "kind": "operation",
+      "fixtures": {
+        "Post": "populated"
+      }
+    },
+    "postThreadSending": {
+      "label": "Sending reply",
+      "rule": "Keep the reply draft and previous replies visible; disable duplicate sends until the post accepts the reply.",
+      "kind": "operation",
+      "fixtures": {
+        "Post": "one",
+        "Message": "populated",
+        "ReplyDraft": "one"
+      }
+    },
+    "postThreadSent": {
+      "label": "Reply sent",
+      "rule": "Append the accepted reply with its author and timestamp, clear only the accepted draft, and retain the post context.",
+      "kind": "operation",
+      "fixtures": {
+        "Post": "one",
+        "Message": "replySent",
+        "ReplyDraft": "blank"
+      }
+    },
+    "postThreadSendFailed": {
+      "label": "Reply not sent",
+      "rule": "Keep the unsent draft separate from accepted replies; retry the same reply without posting a duplicate.",
+      "kind": "operation",
+      "fixtures": {
+        "Post": "one",
+        "Message": "populated",
+        "ReplyDraft": "one"
+      }
+    },
+    "followingSaving": {
+      "label": "Saving follow choice",
+      "rule": "Keep the maker list visible and disable the changed membership control while the follow write is pending.",
+      "kind": "operation",
+      "fixtures": {
+        "Person": "populated"
+      }
+    },
+    "followingSaved": {
+      "label": "Follow choice saved",
+      "rule": "Show the accepted follow membership; subsequent chronological feed reads include that maker’s posts.",
+      "kind": "operation",
+      "fixtures": {
+        "Person": "followingSaved"
+      }
+    },
+    "followingSaveFailed": {
+      "label": "Follow choice failed",
+      "rule": "Keep the last accepted membership and explain that the new choice was not saved; retry the same membership change.",
+      "kind": "operation",
+      "fixtures": {
+        "Person": "populated"
+      }
+    },
+    "homeSavingPost": {
+      "label": "Saving post",
+      "rule": "Keep the selected post visible and disable repeat bookmarking until the save is accepted.",
+      "kind": "operation",
+      "fixtures": {
+        "Post": "populated"
+      }
+    },
+    "homePostSaved": {
+      "label": "Post saved",
+      "rule": "Mark the accepted saved post in the feed and retain a link to Saved where the same discussion can be reopened.",
+      "kind": "operation",
+      "fixtures": {
+        "Post": "bookmarked"
+      }
+    },
+    "homeSaveFailed": {
+      "label": "Post not saved",
+      "rule": "Keep the feed visible without a saved marker for the failed request; retry saving that same post.",
+      "kind": "operation",
+      "fixtures": {
+        "Post": "populated"
+      }
+    },
+    "postThreadRepliesClosed": {
+      "label": "Replies closed",
+      "rule": "Show the original post and accepted replies, but hide the composer because the author disabled new replies; do not imply a network or send failure.",
+      "kind": "data",
+      "fixtures": {
+        "Post": "repliesClosed",
+        "Message": "populated",
+        "ReplyDraft": "blank"
+      }
+    },
+    "homePublished": {
+      "label": "New post in feed",
+      "rule": "Place the accepted new post at the top of the chronological feed with its publication time and chosen reply policy; the draft is no longer pending.",
+      "kind": "operation",
+      "fixtures": {
+        "Post": "published"
+      }
+    }
+  },
+  "events": {
+    "openPostComposerEvent": {
+      "label": "Write a new post",
+      "kind": "route",
+      "needs": "publishPosts"
+    },
+    "homeOpenDialogEvent": {
+      "label": "Review deletion of my post",
+      "kind": "layer",
+      "needs": "deletePosts"
+    },
+    "homeDeleteEvent": {
+      "label": "Delete the confirmed post",
+      "kind": "operation",
+      "needs": "deletePosts"
+    },
+    "postThreadSendEvent": {
+      "label": "Send a reply under this post",
+      "kind": "operation",
+      "needs": "sendMessages"
+    },
+    "newPostSaveEvent": {
+      "label": "Publish this post",
+      "kind": "operation",
+      "needs": "publishPosts"
+    },
+    "newPostInvalidEvent": {
+      "label": "Show missing post title or body",
+      "kind": "submit"
+    },
+    "savePreferencesEvent": {
+      "label": "Save audience and feed preferences",
+      "kind": "operation",
+      "needs": "savePreferences"
+    },
+    "followPersonEvent": {
+      "label": "Follow or unfollow this maker or topic",
+      "kind": "operation",
+      "needs": "followPeople"
+    },
+    "savePostEvent": {
+      "label": "Save this post for later",
+      "kind": "operation",
+      "needs": "savePosts"
+    }
+  },
+  "nav": {
+    "items": [
+      {
+        "surface": "home",
+        "copy": "nav.home"
+      },
+      {
+        "surface": "popular",
+        "copy": "nav.popular"
+      },
+      {
+        "surface": "following",
+        "copy": "nav.following"
+      },
+      {
+        "surface": "saved",
+        "copy": "nav.saved"
+      },
+      {
+        "surface": "settings",
+        "copy": "nav.settings"
+      }
+    ],
+    "inAYear": 8,
+    "globalAction": "openPostComposerEvent"
+  },
+  "flows": [
+    {
+      "id": "readFeedFlow",
+      "goal": "Read a followed maker’s post and add a reply to its discussion.",
+      "priority": "must",
+      "stages": [
+        {
+          "id": "read",
+          "surface": "home",
+          "state": "homeReady",
+          "next": [
+            "openReplies"
+          ]
+        },
+        {
+          "id": "openReplies",
+          "surface": "postThread",
+          "state": "postThreadReady",
+          "next": [
+            "sendReply"
+          ]
+        },
+        {
+          "id": "sendReply",
+          "surface": "postThread",
+          "state": "postThreadSending",
+          "next": [
+            "seeReply"
+          ]
+        },
+        {
+          "id": "seeReply",
+          "surface": "postThread",
+          "state": "postThreadSent"
+        }
+      ],
+      "ends": "The accepted reply appears under the original post with the member’s name and send time; reopening the thread retains it.",
+      "needs": [
+        "sendMessages"
+      ]
+    },
+    {
+      "id": "newPostFlow",
+      "goal": "Share a maker experiment with a chosen audience.",
+      "priority": "should",
+      "stages": [
+        {
+          "id": "compose",
+          "surface": "newPost",
+          "state": "newPostDraft",
+          "next": [
+            "publish"
+          ]
+        },
+        {
+          "id": "publish",
+          "surface": "newPost",
+          "state": "newPostSaving",
+          "next": [
+            "published"
+          ]
+        },
+        {
+          "id": "published",
+          "surface": "newPost",
+          "state": "newPostSaved",
+          "next": [
+            "readPublishedPost"
+          ]
+        },
+        {
+          "id": "readPublishedPost",
+          "surface": "home",
+          "state": "homePublished"
+        }
+      ],
+      "ends": "The post receives a stable thread route and becomes visible in the chronological feed only after publication succeeds.",
+      "needs": [
+        "publishPosts"
+      ],
+      "binding": {
+        "record": "create-edit",
+        "status": "proposed",
+        "variant": "dedicatedPage",
+        "because": "A maker needs room for a post body, topic and audience choice before publishing."
+      }
+    },
+    {
+      "id": "followFlow",
+      "goal": "Choose makers and topics for the chronological feed.",
+      "priority": "should",
+      "stages": [
+        {
+          "id": "choose",
+          "surface": "following",
+          "next": [
+            "readChosenPosts"
+          ]
+        },
+        {
+          "id": "readChosenPosts",
+          "surface": "home"
+        }
+      ],
+      "ends": "Follow membership changes which makers and topics appear on Home; unrelated suggestions do not enter the feed.",
+      "needs": [
+        "followPeople"
+      ]
+    },
+    {
+      "id": "discoverPostsFlow",
+      "goal": "Find an active discussion and save it to read again.",
+      "priority": "should",
+      "stages": [
+        {
+          "id": "discover",
+          "surface": "popular",
+          "next": [
+            "revisit"
+          ]
+        },
+        {
+          "id": "revisit",
+          "surface": "saved"
+        }
+      ],
+      "ends": "The saved discussion is listed in Saved and opens the same post thread.",
+      "needs": [
+        "savePosts"
+      ]
+    },
+    {
+      "id": "preferencesFlow",
+      "goal": "Choose the default post audience and reply notifications.",
+      "priority": "should",
+      "stages": [
+        {
+          "id": "edit",
+          "surface": "settings",
+          "state": "settingsReady",
+          "next": [
+            "save"
+          ]
+        },
+        {
+          "id": "save",
+          "surface": "settings",
+          "state": "settingsSaving",
+          "next": [
+            "saved"
+          ]
+        },
+        {
+          "id": "saved",
+          "surface": "settings",
+          "state": "settingsSaved"
+        }
+      ],
+      "ends": "Reopening Settings shows the accepted audience, reply-email and muted-topic choices.",
+      "needs": [
+        "savePreferences"
+      ]
+    },
+    {
+      "id": "helpFlow",
+      "goal": "Understand reply etiquette and the impact of deleting a post.",
+      "priority": "should",
+      "stages": [
+        {
+          "id": "readRules",
+          "surface": "help"
+        }
+      ],
+      "ends": "The member can distinguish muting a topic from permanently deleting their own discussion.",
+      "needs": []
+    },
+    {
+      "id": "discoverFlow",
+      "goal": "Decide whether a chronological maker community fits how I read.",
+      "priority": "later",
+      "stages": [
+        {
+          "id": "learn",
+          "surface": "landing",
+          "next": [
+            "read"
+          ]
+        },
+        {
+          "id": "read",
+          "surface": "home"
+        }
+      ],
+      "ends": "The landing action reaches the live chronological feed, not an unimplemented sign-up form.",
+      "needs": []
+    },
+    {
+      "id": "emailReplyReceivedFlow",
+      "goal": "Read a reply notification and return to the post I wrote.",
+      "priority": "later",
+      "stages": [
+        {
+          "id": "readEmail",
+          "surface": "emailReplyReceived",
+          "next": [
+            "openReplies"
+          ]
+        },
+        {
+          "id": "openReplies",
+          "surface": "postThread"
+        }
+      ],
+      "ends": "The email opens the exact discussion containing the accepted reply.",
+      "needs": [
+        "notifyReplies"
+      ]
+    },
+    {
+      "id": "pushMentionReceivedFlow",
+      "goal": "Open the reply where another member mentioned me.",
+      "priority": "later",
+      "stages": [
+        {
+          "id": "readMention",
+          "surface": "pushMentionReceived",
+          "next": [
+            "readInContext"
+          ]
+        },
+        {
+          "id": "readInContext",
+          "surface": "postThread"
+        }
+      ],
+      "ends": "The push action opens the mentioned reply in its original post thread.",
+      "needs": [
+        "notifyReplies"
+      ]
+    }
+  ],
+  "surfaces": [
+    {
+      "id": "home",
+      "question": "What did the people and topics I follow post?",
+      "route": "/home",
+      "binding": {
+        "record": "feed",
+        "status": "proposed",
+        "variant": "timeline",
+        "because": "A chosen chronological feed should show each complete post in order.",
+        "candidates": [
+          "timeline",
+          "compact"
+        ]
+      },
+      "slots": [
+        {
+          "id": "primary",
+          "data": {
+            "contract": "Post",
+            "many": true,
+            "map": {
+              "title": "title",
+              "body": "body",
+              "author": "author",
+              "time": "publishedAt",
+              "topic": "topic",
+              "replies": "replies",
+              "media": "media",
+              "ownership": "ownership",
+              "saved": "saved",
+              "allowReplies": "allowReplies"
+            }
+          },
+          "copy": {
+            "home.reply": [
+              "homeReady",
+              "homeLoading",
+              "homeLongContent",
+              "homeDeleting",
+              "homeDeleted",
+              "homeDeleteFailed",
+              "homeSavingPost",
+              "homePostSaved",
+              "homeSaveFailed",
+              "homeConfirmSetup",
+              "homePublished"
+            ],
+            "home.save": [
+              "homeReady",
+              "homeLoading",
+              "homeLongContent",
+              "homeDeleting",
+              "homeDeleted",
+              "homeDeleteFailed",
+              "homeSavingPost",
+              "homePostSaved",
+              "homeSaveFailed",
+              "homeConfirmSetup",
+              "homePublished"
+            ],
+            "post.timestamp": [
+              "homeReady",
+              "homeLoading",
+              "homeLongContent",
+              "homeDeleting",
+              "homeDeleted",
+              "homeDeleteFailed",
+              "homeSavingPost",
+              "homePostSaved",
+              "homeSaveFailed",
+              "homeConfirmSetup",
+              "homePublished"
+            ],
+            "post.replyCount": [
+              "homeReady",
+              "homeLoading",
+              "homeLongContent",
+              "homeDeleting",
+              "homeDeleted",
+              "homeDeleteFailed",
+              "homeSavingPost",
+              "homePostSaved",
+              "homeSaveFailed",
+              "homeConfirmSetup",
+              "homePublished"
+            ],
+            "home.delete": [
+              "homeReady",
+              "homeLoading",
+              "homeDeleting",
+              "homeDeleteFailed",
+              "homeSavingPost",
+              "homePostSaved",
+              "homeSaveFailed",
+              "homeConfirmSetup",
+              "homePublished"
+            ],
+            "home.savedMarker": [
+              "homePostSaved",
+              "homeLongContent"
+            ]
+          },
+          "states": [
+            "homeReady",
+            "homeLoading",
+            "homeLongContent",
+            "homeDeleting",
+            "homeDeleted",
+            "homeDeleteFailed",
+            "homeSavingPost",
+            "homePostSaved",
+            "homeSaveFailed",
+            "homePublished"
+          ],
+          "on": [
+            {
+              "event": "savePostEvent",
+              "axis": "asyncFeedback"
+            },
+            {
+              "event": "homeDeleteEvent",
+              "axis": "asyncFeedback"
+            }
+          ]
+        },
+        {
+          "id": "state",
+          "record": "empty-states",
+          "status": "open",
+          "candidates": [
+            "compactCue",
+            "actionPanel"
+          ],
+          "copy": {
+            "home.empty.title": [
+              "homeEmpty"
+            ],
+            "home.empty.body": [
+              "homeEmpty"
+            ],
+            "home.empty.action": [
+              "homeEmpty"
+            ],
+            "home.recovery.title": [
+              "homeFailed"
+            ],
+            "home.recovery.action": [
+              "homeFailed"
+            ],
+            "home.delete.status": [
+              "homeDeleting"
+            ],
+            "home.delete.recovery": [
+              "homeDeleteFailed"
+            ],
+            "home.delete.retry": [
+              "homeDeleteFailed"
+            ],
+            "home.bookmark.status": [
+              "homeSavingPost"
+            ],
+            "home.bookmark.recovery": [
+              "homeSaveFailed"
+            ],
+            "home.bookmark.retry": [
+              "homeSaveFailed"
+            ]
+          }
+        },
+        {
+          "id": "confirmation",
+          "record": "dialogs-and-layers",
+          "status": "proposed",
+          "variant": "dialog",
+          "because": "Deleting a maker’s post also removes its replies, so the member must confirm the named post before deletion.",
+          "candidates": [
+            "dialog",
+            "sheet"
+          ],
+          "copy": {
+            "home.confirmation.title": [
+              "homeConfirmSetup"
+            ],
+            "home.confirmation.body": [
+              "homeConfirmSetup"
+            ],
+            "home.confirmation.confirm": [
+              "homeConfirmSetup"
+            ],
+            "home.confirmation.cancel": [
+              "homeConfirmSetup"
+            ],
+            "home.confirmation.close": [
+              "homeConfirmSetup"
+            ]
+          }
+        },
+        {
+          "id": "outcome",
+          "record": "notifications",
+          "status": "proposed",
+          "variant": "inline",
+          "because": "Deletion and bookmarking results remain beside the affected post in the feed, with the actual accepted outcome distinguished.",
+          "candidates": [
+            "inline",
+            "toast"
+          ],
+          "copy": {
+            "home.outcome": [
+              "homeDeleted"
+            ],
+            "home.bookmark.outcome": [
+              "homePostSaved"
+            ]
+          }
+        },
+        {
+          "id": "header",
+          "copy": {
+            "home.title": "always",
+            "home.documentTitle": "always"
+          }
+        },
+        {
+          "id": "continuation",
+          "copy": {
+            "home.pagination": [
+              "homeReady",
+              "homeLoading",
+              "homeLongContent",
+              "homeDeleting",
+              "homeDeleted",
+              "homeDeleteFailed",
+              "homeSavingPost",
+              "homePostSaved",
+              "homeSaveFailed",
+              "homeConfirmSetup",
+              "homePublished"
+            ]
+          }
+        },
+        {
+          "id": "actions",
+          "copy": {
+            "home.send": "always"
+          },
+          "on": [
+            {
+              "event": "openPostComposerEvent",
+              "axis": "routeMotion"
+            }
+          ]
+        }
+      ],
+      "states": [
+        "homeReady",
+        "homeLoading",
+        "homeEmpty",
+        "homeFailed",
+        "homeLongContent",
+        "homeDeleting",
+        "homeDeleted",
+        "homeDeleteFailed",
+        "homeSavingPost",
+        "homePostSaved",
+        "homeSaveFailed",
+        "homePublished"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "shell.aria.navigation": "always",
+        "shell.aria.main": "always",
+        "shell.alt.productMark": "always",
+        "nav.home": "always",
+        "nav.popular": "always",
+        "nav.following": "always",
+        "nav.saved": "always",
+        "nav.settings": "always"
+      },
+      "setups": [
+        {
+          "id": "homeConfirmSetup",
+          "label": "Delete my post",
+          "event": "homeOpenDialogEvent",
+          "state": "homeReady"
+        }
+      ]
+    },
+    {
+      "id": "following",
+      "question": "Who should I follow, and which topics do I want in my feed?",
+      "route": "/following",
+      "slots": [
+        {
+          "id": "primary",
+          "data": {
+            "contract": "Person",
+            "many": true,
+            "map": {
+              "title": "name",
+              "body": "specialty",
+              "followers": "followers",
+              "membership": "membership"
+            }
+          },
+          "copy": {
+            "following.follow": [
+              "followingReady",
+              "followingLoading",
+              "followingSaving",
+              "followingSaved",
+              "followingSaveFailed"
+            ],
+            "following.unfollow": [
+              "followingReady",
+              "followingLoading",
+              "followingLongContent",
+              "followingSaving",
+              "followingSaved",
+              "followingSaveFailed"
+            ],
+            "following.followerCount": [
+              "followingReady",
+              "followingLoading",
+              "followingLongContent",
+              "followingSaving",
+              "followingSaved",
+              "followingSaveFailed"
+            ]
+          },
+          "on": [
+            {
+              "event": "followPersonEvent",
+              "axis": "asyncFeedback"
+            }
+          ]
+        },
+        {
+          "id": "state",
+          "copy": {
+            "following.status": [
+              "followingSaving"
+            ],
+            "following.outcome": [
+              "followingSaved"
+            ],
+            "following.changeFailure": [
+              "followingSaveFailed"
+            ],
+            "following.retry": [
+              "followingSaveFailed"
+            ]
+          }
+        }
+      ],
+      "states": [
+        "followingReady",
+        "followingLoading",
+        "followingEmpty",
+        "followingFailed",
+        "followingLongContent",
+        "followingSaving",
+        "followingSaved",
+        "followingSaveFailed"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "following.title": "always",
+        "following.documentTitle": "always",
+        "shell.aria.navigation": "always",
+        "shell.aria.main": "always",
+        "shell.alt.productMark": "always",
+        "following.search.queryLabel": "always",
+        "following.topics.sourdough": "always",
+        "following.topics.balconyGarden": "always",
+        "following.topics.novelWriting": "always",
+        "following.topics.kilnDay": "always",
+        "following.empty.title": [
+          "followingEmpty"
+        ],
+        "following.empty.body": [
+          "followingEmpty"
+        ],
+        "following.empty.action": [
+          "followingEmpty"
+        ],
+        "following.recovery.title": [
+          "followingFailed"
+        ],
+        "following.recovery.action": [
+          "followingFailed"
+        ],
+        "nav.following": "always",
+        "nav.home": "always",
+        "nav.popular": "always",
+        "nav.saved": "always",
+        "nav.settings": "always"
+      }
+    },
+    {
+      "id": "popular",
+      "question": "Which posts have active conversations this week?",
+      "route": "/popular",
+      "binding": {
+        "record": "feed",
+        "status": "proposed",
+        "variant": "compact",
+        "because": "The person compares discussion titles and reply counts before opening one.",
+        "candidates": [
+          "timeline",
+          "compact"
+        ]
+      },
+      "slots": [
+        {
+          "id": "primary",
+          "data": {
+            "contract": "Post",
+            "many": true,
+            "map": {
+              "title": "title",
+              "body": "body",
+              "author": "author",
+              "replies": "replies",
+              "time": "publishedAt"
+            }
+          },
+          "copy": {
+            "post.timestamp": [
+              "popularReady",
+              "popularLoading",
+              "popularLongContent"
+            ],
+            "post.replyCount": [
+              "popularReady",
+              "popularLoading",
+              "popularLongContent"
+            ]
+          }
+        },
+        {
+          "id": "state",
+          "record": "empty-states",
+          "status": "open",
+          "candidates": [
+            "compactCue",
+            "actionPanel"
+          ],
+          "copy": {
+            "popular.empty.title": [
+              "popularEmpty"
+            ],
+            "popular.empty.body": [
+              "popularEmpty"
+            ],
+            "popular.empty.action": [
+              "popularEmpty"
+            ],
+            "popular.recovery.title": [
+              "popularFailed"
+            ],
+            "popular.recovery.action": [
+              "popularFailed"
+            ]
+          }
+        },
+        {
+          "id": "header",
+          "copy": {
+            "popular.title": "always",
+            "popular.documentTitle": "always"
+          }
+        },
+        {
+          "id": "continuation",
+          "copy": {
+            "popular.pagination": [
+              "popularReady",
+              "popularLoading",
+              "popularLongContent"
+            ]
+          }
+        }
+      ],
+      "states": [
+        "popularReady",
+        "popularLoading",
+        "popularEmpty",
+        "popularFailed",
+        "popularLongContent"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "shell.aria.navigation": "always",
+        "shell.aria.main": "always",
+        "shell.alt.productMark": "always",
+        "nav.popular": "always",
+        "nav.home": "always",
+        "nav.following": "always",
+        "nav.saved": "always",
+        "nav.settings": "always"
+      }
+    },
+    {
+      "id": "saved",
+      "question": "Which posts did I save to read again?",
+      "route": "/saved",
+      "slots": [
+        {
+          "id": "primary",
+          "data": {
+            "contract": "Post",
+            "many": true,
+            "map": {
+              "title": "title",
+              "body": "body",
+              "author": "author",
+              "time": "publishedAt"
+            }
+          },
+          "copy": {
+            "post.timestamp": [
+              "savedReady",
+              "savedLoading",
+              "savedLongContent"
+            ]
+          }
+        }
+      ],
+      "states": [
+        "savedReady",
+        "savedLoading",
+        "savedEmpty",
+        "savedFailed",
+        "savedLongContent"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "saved.title": "always",
+        "saved.documentTitle": "always",
+        "shell.aria.navigation": "always",
+        "shell.aria.main": "always",
+        "shell.alt.productMark": "always",
+        "saved.empty.title": [
+          "savedEmpty"
+        ],
+        "saved.empty.body": [
+          "savedEmpty"
+        ],
+        "saved.empty.action": [
+          "savedEmpty"
+        ],
+        "saved.recovery.title": [
+          "savedFailed"
+        ],
+        "saved.recovery.action": [
+          "savedFailed"
+        ],
+        "nav.saved": "always",
+        "nav.home": "always",
+        "nav.popular": "always",
+        "nav.following": "always",
+        "nav.settings": "always"
+      }
+    },
+    {
+      "id": "postThread",
+      "question": "What was said, and what should I reply?",
+      "route": "/posts/:post/replies",
+      "binding": {
+        "record": "conversation",
+        "status": "proposed",
+        "variant": "context",
+        "because": "A reply only makes sense beside the maker’s original post; keep its title and body visible above the thread.",
+        "candidates": [
+          "bubbles",
+          "transcript",
+          "channel",
+          "context"
+        ]
+      },
+      "slots": [
+        {
+          "id": "header",
+          "copy": {
+            "postThread.title": "always",
+            "postThread.documentTitle": "always"
+          }
+        },
+        {
+          "id": "primary",
+          "data": {
+            "contract": "Message",
+            "many": true,
+            "map": {
+              "author": "author",
+              "body": "text",
+              "time": "sentAt",
+              "mine": "mine"
+            }
+          },
+          "copy": {
+            "postThread.timestamp": [
+              "postThreadReady",
+              "postThreadLoading",
+              "postThreadLongContent",
+              "postThreadSending",
+              "postThreadSent",
+              "postThreadSendFailed",
+              "postThreadRepliesClosed"
+            ]
+          }
+        },
+        {
+          "id": "composer",
+          "copy": {
+            "postThread.composer.placeholder": [
+              "postThreadReady",
+              "postThreadEmpty",
+              "postThreadLongContent",
+              "postThreadSent"
+            ],
+            "postThread.send": [
+              "postThreadReady",
+              "postThreadEmpty",
+              "postThreadLongContent",
+              "postThreadSending",
+              "postThreadSent",
+              "postThreadSendFailed"
+            ],
+            "postThread.aria.send": [
+              "postThreadReady",
+              "postThreadEmpty",
+              "postThreadLongContent",
+              "postThreadSending",
+              "postThreadSent",
+              "postThreadSendFailed"
+            ]
+          },
+          "on": [
+            {
+              "event": "postThreadSendEvent",
+              "axis": "asyncFeedback"
+            }
+          ],
+          "states": [
+            "postThreadReady",
+            "postThreadEmpty",
+            "postThreadLongContent",
+            "postThreadSending",
+            "postThreadSent",
+            "postThreadSendFailed"
+          ],
+          "data": {
+            "contract": "ReplyDraft",
+            "many": false,
+            "map": {
+              "body": "text"
+            }
+          }
+        },
+        {
+          "id": "state",
+          "record": "empty-states",
+          "status": "open",
+          "candidates": [
+            "compactCue",
+            "actionPanel"
+          ],
+          "copy": {
+            "postThread.empty.title": [
+              "postThreadEmpty"
+            ],
+            "postThread.empty.body": [
+              "postThreadEmpty"
+            ],
+            "postThread.empty.action": [
+              "postThreadEmpty"
+            ],
+            "postThread.recovery.title": [
+              "postThreadFailed"
+            ],
+            "postThread.recovery.action": [
+              "postThreadFailed"
+            ],
+            "postThread.status.sending": [
+              "postThreadSending"
+            ],
+            "postThread.sendFailure": [
+              "postThreadSendFailed"
+            ],
+            "postThread.retry": [
+              "postThreadSendFailed"
+            ],
+            "postThread.repliesClosed": [
+              "postThreadRepliesClosed"
+            ]
+          }
+        },
+        {
+          "id": "context",
+          "copy": {
+            "post.timestamp": "always"
+          },
+          "data": {
+            "contract": "Post",
+            "many": false,
+            "map": {
+              "title": "title",
+              "body": "body",
+              "author": "author",
+              "time": "publishedAt",
+              "allowReplies": "allowReplies"
+            }
+          }
+        },
+        {
+          "id": "outcome",
+          "record": "notifications",
+          "status": "proposed",
+          "variant": "inline",
+          "because": "An accepted reply remains visible in its original thread instead of relying on a disappearing toast.",
+          "copy": {
+            "postThread.outcome": [
+              "postThreadSent"
+            ]
+          }
+        }
+      ],
+      "states": [
+        "postThreadReady",
+        "postThreadLoading",
+        "postThreadEmpty",
+        "postThreadFailed",
+        "postThreadLongContent",
+        "postThreadSending",
+        "postThreadSent",
+        "postThreadSendFailed",
+        "postThreadRepliesClosed"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "shell.aria.navigation": "always",
+        "shell.aria.main": "always",
+        "shell.alt.productMark": "always",
+        "nav.home": "always",
+        "nav.popular": "always",
+        "nav.following": "always",
+        "nav.saved": "always",
+        "nav.settings": "always"
+      }
+    },
+    {
+      "id": "newPost",
+      "question": "What did I make, and who should be able to read and reply to this post?",
+      "route": "/posts/new",
+      "slots": [
+        {
+          "id": "header",
+          "copy": {
+            "newPost.title": "always",
+            "newPost.documentTitle": "always"
+          }
+        },
+        {
+          "id": "primary",
+          "copy": {
+            "newPost.titleField.label": [
+              "newPostDraft",
+              "newPostSaving",
+              "newPostFailed",
+              "newPostLongContent",
+              "newPostInvalidSetup"
+            ],
+            "newPost.titleField.placeholder": [
+              "newPostDraft",
+              "newPostInvalidSetup"
+            ],
+            "newPost.audience.label": [
+              "newPostDraft",
+              "newPostSaving",
+              "newPostFailed",
+              "newPostLongContent",
+              "newPostInvalidSetup"
+            ],
+            "newPost.audience.everyone": [
+              "newPostDraft",
+              "newPostSaving",
+              "newPostFailed",
+              "newPostLongContent",
+              "newPostInvalidSetup"
+            ],
+            "newPost.audience.followers": [
+              "newPostDraft",
+              "newPostSaving",
+              "newPostFailed",
+              "newPostLongContent",
+              "newPostInvalidSetup"
+            ],
+            "newPost.audience.friends": [
+              "newPostDraft",
+              "newPostSaving",
+              "newPostFailed",
+              "newPostLongContent",
+              "newPostInvalidSetup"
+            ],
+            "newPost.allowReplies.label": [
+              "newPostDraft",
+              "newPostSaving",
+              "newPostFailed",
+              "newPostLongContent",
+              "newPostInvalidSetup"
+            ],
+            "newPost.replyEmail.label": [
+              "newPostDraft",
+              "newPostSaving",
+              "newPostFailed",
+              "newPostLongContent",
+              "newPostInvalidSetup"
+            ],
+            "newPost.body.label": [
+              "newPostDraft",
+              "newPostSaving",
+              "newPostFailed",
+              "newPostLongContent",
+              "newPostInvalidSetup"
+            ],
+            "newPost.body.placeholder": [
+              "newPostDraft",
+              "newPostInvalidSetup"
+            ],
+            "newPost.topic.label": [
+              "newPostDraft",
+              "newPostSaving",
+              "newPostFailed",
+              "newPostLongContent",
+              "newPostInvalidSetup"
+            ]
+          },
+          "data": {
+            "contract": "PostDraft",
+            "many": false,
+            "map": {
+              "title": "title",
+              "body": "body",
+              "topic": "topic",
+              "audience": "audience",
+              "allowReplies": "allowReplies",
+              "replyEmail": "replyEmail"
+            }
+          },
+          "on": [
+            {
+              "event": "newPostSaveEvent",
+              "axis": "asyncFeedback"
+            }
+          ],
+          "states": [
+            "newPostDraft",
+            "newPostSaving",
+            "newPostFailed",
+            "newPostLongContent"
+          ]
+        },
+        {
+          "id": "commit",
+          "copy": {
+            "newPost.save": [
+              "newPostDraft",
+              "newPostFailed",
+              "newPostLongContent",
+              "newPostInvalidSetup"
+            ]
+          },
+          "states": [
+            "newPostDraft",
+            "newPostFailed",
+            "newPostLongContent"
+          ]
+        },
+        {
+          "id": "exit",
+          "copy": {
+            "newPost.cancel": [
+              "newPostDraft",
+              "newPostSaving",
+              "newPostFailed",
+              "newPostLongContent",
+              "newPostInvalidSetup"
+            ]
+          },
+          "states": [
+            "newPostDraft",
+            "newPostSaving",
+            "newPostFailed",
+            "newPostLongContent"
+          ]
+        },
+        {
+          "id": "state",
+          "copy": {
+            "newPost.status": [
+              "newPostSaving"
+            ],
+            "newPost.recovery": [
+              "newPostFailed"
+            ],
+            "newPost.invalid": [
+              "newPostInvalidSetup"
+            ]
+          }
+        },
+        {
+          "id": "result",
+          "copy": {
+            "newPost.outcome": [
+              "newPostSaved"
+            ],
+            "newPost.openPost": [
+              "newPostSaved"
+            ]
+          },
+          "states": [
+            "newPostSaved"
+          ],
+          "data": {
+            "contract": "PostDraft",
+            "many": false,
+            "map": {
+              "title": "title"
+            }
+          }
+        }
+      ],
+      "states": [
+        "newPostDraft",
+        "newPostSaving",
+        "newPostSaved",
+        "newPostFailed",
+        "newPostLongContent"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "shell.aria.navigation": "always",
+        "shell.aria.main": "always",
+        "shell.alt.productMark": "always",
+        "nav.home": "always",
+        "nav.popular": "always",
+        "nav.following": "always",
+        "nav.saved": "always",
+        "nav.settings": "always"
+      },
+      "setups": [
+        {
+          "id": "newPostInvalidSetup",
+          "label": "Field invalid",
+          "event": "newPostInvalidEvent",
+          "state": "newPostDraft"
+        }
+      ]
+    },
+    {
+      "id": "settings",
+      "question": "Who can read my posts, and which replies should notify me?",
+      "route": "/settings",
+      "binding": {
+        "record": "settings",
+        "status": "fixed",
+        "variant": "sections",
+        "because": "Audience defaults, reply emails and muted topics belong together because they control who appears in a member’s feed and who sees their posts."
+      },
+      "slots": [
+        {
+          "id": "header",
+          "copy": {
+            "settings.title": "always",
+            "settings.documentTitle": "always"
+          }
+        },
+        {
+          "id": "navigation",
+          "copy": {
+            "settings.section": "always"
+          }
+        },
+        {
+          "id": "primary",
+          "copy": {
+            "settings.audience.label": "always",
+            "settings.audience.everyone": "always",
+            "settings.audience.followers": "always",
+            "settings.audience.friends": "always",
+            "settings.replyEmail.label": "always",
+            "settings.mediaAutoplay.label": "always",
+            "settings.mutedTopics.label": "always"
+          },
+          "data": {
+            "contract": "FeedPreferences",
+            "many": false,
+            "map": {
+              "audience": "audience",
+              "replyEmail": "replyEmail",
+              "mediaAutoplay": "mediaAutoplay",
+              "mutedTopics": "mutedTopics"
+            }
+          }
+        },
+        {
+          "id": "commit",
+          "copy": {
+            "settings.save": "always",
+            "settings.cancel": "always"
+          }
+        },
+        {
+          "id": "state",
+          "copy": {
+            "settings.status.saving": [
+              "settingsSaving"
+            ],
+            "settings.status.saved": [
+              "settingsSaved"
+            ],
+            "settings.recovery": [
+              "settingsFailed"
+            ]
+          },
+          "on": [
+            {
+              "event": "savePreferencesEvent",
+              "axis": "asyncFeedback"
+            }
+          ]
+        }
+      ],
+      "states": [
+        "settingsReady",
+        "settingsSaving",
+        "settingsSaved",
+        "settingsFailed"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "shell.aria.navigation": "always",
+        "shell.aria.main": "always",
+        "shell.alt.productMark": "always",
+        "nav.settings": "always",
+        "nav.home": "always",
+        "nav.popular": "always",
+        "nav.following": "always",
+        "nav.saved": "always"
+      }
+    },
+    {
+      "id": "help",
+      "question": "What keeps a discussion useful, and what can I mute?",
+      "route": "/help",
+      "slots": [
+        {
+          "id": "primary",
+          "copy": {
+            "help.behavior": "always",
+            "help.safety": "always"
+          }
+        }
+      ],
+      "states": [
+        "helpReady"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "help.title": "always",
+        "help.documentTitle": "always",
+        "shell.aria.navigation": "always",
+        "shell.aria.main": "always",
+        "shell.alt.productMark": "always",
+        "nav.home": "always",
+        "nav.popular": "always",
+        "nav.following": "always",
+        "nav.saved": "always",
+        "nav.settings": "always"
+      }
+    },
+    {
+      "id": "landing",
+      "question": "Can I follow makers without an algorithm reordering their work?",
+      "route": "/",
+      "slots": [
+        {
+          "id": "primary",
+          "copy": {
+            "landing.description": "always",
+            "landing.action": "always",
+            "landing.chronology.eyebrow": "always",
+            "landing.chronology.title": "always",
+            "landing.chronology.body": "always",
+            "landing.replies.eyebrow": "always",
+            "landing.replies.title": "always",
+            "landing.replies.body": "always",
+            "landing.topics.eyebrow": "always",
+            "landing.topics.title": "always",
+            "landing.topics.body": "always"
+          }
+        }
+      ],
+      "states": [
+        "landingReady"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "landing.title": "always",
+        "landing.documentTitle": "always",
+        "shell.aria.navigation": "always",
+        "shell.aria.main": "always",
+        "shell.alt.productMark": "always",
+        "landing.secondaryAction": "always",
+        "landing.footer": "always",
+        "landing.navigation.explore": "always",
+        "landing.navigation.topics": "always",
+        "landing.navigation.guidelines": "always",
+        "landing.navigation.feed": "always",
+        "landing.chronologicalOrder.value": "always",
+        "landing.chronologicalOrder.label": "always",
+        "landing.replyContext.value": "always",
+        "landing.replyContext.label": "always",
+        "landing.chosenTopics.value": "always",
+        "landing.chosenTopics.label": "always",
+        "landing.priyaQuote.text": "always",
+        "landing.priyaQuote.who": "always",
+        "landing.ashgrovePress.alt": "always",
+        "landing.tidewaterPottery.alt": "always",
+        "landing.larkspurCollective.alt": "always",
+        "landing.kestrelBooks.alt": "always",
+        "landing.oakhillStudio.alt": "always",
+        "landing.marrowBakery.alt": "always"
+      }
+    },
+    {
+      "id": "emailReplyReceived",
+      "question": "Which post received a reply, and where can I read the conversation?",
+      "route": "email:emailReplyReceived",
+      "channel": "email",
+      "slots": [
+        {
+          "id": "primary",
+          "data": {
+            "contract": "Post",
+            "many": false,
+            "map": {
+              "title": "title",
+              "body": "body",
+              "author": "author",
+              "time": "publishedAt",
+              "topic": "topic",
+              "replies": "replies",
+              "media": "media"
+            }
+          },
+          "copy": {
+            "emailReplyReceived.subject": "always",
+            "emailReplyReceived.body": "always",
+            "emailReplyReceived.action": "always",
+            "emailReplyReceived.preheader": "always"
+          }
+        }
+      ],
+      "states": [
+        "emailReplyReceivedReady"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {}
+    },
+    {
+      "id": "pushMentionReceived",
+      "question": "Which post’s conversation mentions me, and where can I read that reply in context?",
+      "route": "push:pushMentionReceived",
+      "channel": "push",
+      "slots": [
+        {
+          "id": "primary",
+          "data": {
+            "contract": "Post",
+            "many": false,
+            "map": {
+              "title": "title",
+              "body": "body",
+              "author": "author",
+              "time": "publishedAt",
+              "topic": "topic",
+              "replies": "replies",
+              "media": "media"
+            }
+          },
+          "copy": {
+            "pushMentionReceived.title": "always",
+            "pushMentionReceived.body": "always",
+            "pushMentionReceived.action": "always"
+          }
+        }
+      ],
+      "states": [
+        "pushMentionReceivedReady"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {}
+    }
+  ],
+  "files": {
+    "copy": "copy.md",
+    "fixtures": "fixtures.json"
+  },
+  "$schema": "../../../references/product-model.schema.json"
+}

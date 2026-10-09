@@ -1,0 +1,897 @@
+{
+  "Character": {
+    "populated": [
+      {
+        "name": "Kestrel",
+        "className": "Warden",
+        "clan": "Ashen Wardens",
+        "level": 42,
+        "power": 9120,
+        "xp": 8420,
+        "equippedWeapon": "Ash Greatsword",
+        "gold": 4200,
+        "gems": 40
+      },
+      {
+        "name": "Mirelle",
+        "className": "Ranger",
+        "clan": "Ashen Wardens",
+        "level": 40,
+        "power": 8870,
+        "xp": 7130,
+        "equippedWeapon": "Ash Greatsword",
+        "gold": 4200,
+        "gems": 40
+      }
+    ],
+    "one": [
+      {
+        "name": "Kestrel",
+        "className": "Warden",
+        "clan": "Ashen Wardens",
+        "level": 42,
+        "power": 9120,
+        "xp": 8420,
+        "equippedWeapon": "Ash Greatsword",
+        "gold": 4200,
+        "gems": 40
+      }
+    ],
+    "long": [
+      {
+        "name": "Kestrel of the lantern watch at the northern river crossing",
+        "className": "Warden",
+        "clan": "Ashen Wardens of the old watchtower beyond Hollow Reach",
+        "level": 42,
+        "power": 9120,
+        "xp": 8420,
+        "equippedWeapon": "Ash Greatsword",
+        "gold": 4200,
+        "gems": 40
+      }
+    ],
+    "none": [],
+    "equipped": [
+      {
+        "name": "Kestrel",
+        "className": "Warden",
+        "clan": "Ashen Wardens",
+        "level": 42,
+        "power": 9188,
+        "xp": 8420,
+        "equippedWeapon": "Tempered blade",
+        "gold": 4200,
+        "gems": 40
+      }
+    ],
+    "sold": [
+      {
+        "name": "Kestrel",
+        "className": "Warden",
+        "clan": "Ashen Wardens",
+        "level": 42,
+        "power": 9188,
+        "xp": 8420,
+        "equippedWeapon": "Tempered blade",
+        "gold": 8400,
+        "gems": 40
+      }
+    ]
+  },
+  "Quest": {
+    "populated": [
+      {
+        "title": "Clear the Sunken Crypt",
+        "location": "Hollow Reach",
+        "description": "Defeat the crypt guardians and clear the flooded lower chamber.",
+        "xp": 450,
+        "status": "active",
+        "goldReward": 800,
+        "gemReward": 0,
+        "rewardGear": "",
+        "completedCount": 3,
+        "targetCount": 5,
+        "resetsAt": "2026-10-09T00:00:00Z",
+        "hoursUntilReset": 6,
+        "expiresAt": "2026-10-09T00:00:00Z",
+        "hoursUntilExpiry": 6,
+        "chapter": 0,
+        "kind": "daily"
+      },
+      {
+        "title": "Collect the tempered blade",
+        "location": "Forge",
+        "description": "Return to the forge after the smith finishes tempering the blade.",
+        "xp": 150,
+        "status": "ready",
+        "goldReward": 0,
+        "gemReward": 0,
+        "rewardGear": "Tempered blade",
+        "completedCount": 1,
+        "targetCount": 1,
+        "resetsAt": "2026-10-09T00:00:00Z",
+        "hoursUntilReset": 6,
+        "expiresAt": "2026-10-09T00:00:00Z",
+        "hoursUntilExpiry": 6,
+        "chapter": 0,
+        "kind": "daily"
+      },
+      {
+        "title": "Deliver the lantern to Orrin",
+        "location": "Orrin’s refuge",
+        "description": "Carry the lantern through the marsh and deliver it to Orrin.",
+        "xp": 900,
+        "status": "active",
+        "goldReward": 0,
+        "gemReward": 0,
+        "rewardGear": "Lantern skin",
+        "completedCount": 1,
+        "targetCount": 4,
+        "resetsAt": "2026-10-09T00:00:00Z",
+        "hoursUntilReset": 6,
+        "expiresAt": "2026-10-09T18:00:00Z",
+        "hoursUntilExpiry": 24,
+        "chapter": 7,
+        "kind": "story"
+      },
+      {
+        "title": "Win 3 arena matches",
+        "location": "Arena",
+        "description": "Win matches in the evening arena before the tournament closes.",
+        "xp": 250,
+        "status": "expiring",
+        "goldReward": 0,
+        "gemReward": 40,
+        "rewardGear": "",
+        "completedCount": 1,
+        "targetCount": 3,
+        "resetsAt": "2026-10-09T00:00:00Z",
+        "hoursUntilReset": 6,
+        "expiresAt": "2026-10-08T20:00:00Z",
+        "hoursUntilExpiry": 2,
+        "chapter": 0,
+        "kind": "arena"
+      }
+    ],
+    "one": [
+      {
+        "title": "Clear the Sunken Crypt",
+        "location": "Hollow Reach",
+        "description": "Defeat the crypt guardians and clear the flooded lower chamber.",
+        "xp": 450,
+        "status": "active",
+        "goldReward": 800,
+        "gemReward": 0,
+        "rewardGear": "",
+        "completedCount": 3,
+        "targetCount": 5,
+        "resetsAt": "2026-10-09T00:00:00Z",
+        "hoursUntilReset": 6,
+        "expiresAt": "2026-10-09T00:00:00Z",
+        "hoursUntilExpiry": 6,
+        "chapter": 0,
+        "kind": "daily"
+      }
+    ],
+    "long": [
+      {
+        "title": "Carry Orrin’s lantern through the flooded paths beyond Hollow Reach",
+        "location": "Orrin’s refuge",
+        "description": "Orrin is waiting in the refuge beyond the marsh. The lantern must stay lit while you cross the flooded causeway, where the old watchtower no longer marks the safe path. Speak to the keeper before entering the reeds and return the lantern to Orrin without using the northern gate.",
+        "xp": 900,
+        "status": "active",
+        "goldReward": 0,
+        "gemReward": 0,
+        "rewardGear": "Lantern skin",
+        "completedCount": 1,
+        "targetCount": 4,
+        "resetsAt": "2026-10-09T00:00:00Z",
+        "hoursUntilReset": 6,
+        "expiresAt": "2026-10-09T18:00:00Z",
+        "hoursUntilExpiry": 24,
+        "chapter": 7,
+        "kind": "story"
+      }
+    ],
+    "none": [],
+    "ready": [
+      {
+        "title": "Collect the tempered blade",
+        "location": "Forge",
+        "description": "Return to the forge after the smith finishes tempering the blade.",
+        "xp": 150,
+        "status": "ready",
+        "goldReward": 0,
+        "gemReward": 0,
+        "rewardGear": "Tempered blade",
+        "completedCount": 1,
+        "targetCount": 1,
+        "resetsAt": "2026-10-09T00:00:00Z",
+        "hoursUntilReset": 6,
+        "expiresAt": "2026-10-09T00:00:00Z",
+        "hoursUntilExpiry": 6,
+        "chapter": 0,
+        "kind": "daily"
+      }
+    ],
+    "claimed": [
+      {
+        "title": "Collect the tempered blade",
+        "location": "Forge",
+        "description": "Return to the forge after the smith finishes tempering the blade.",
+        "xp": 150,
+        "status": "claimed",
+        "goldReward": 0,
+        "gemReward": 0,
+        "rewardGear": "Tempered blade",
+        "completedCount": 1,
+        "targetCount": 1,
+        "resetsAt": "2026-10-09T00:00:00Z",
+        "hoursUntilReset": 6,
+        "expiresAt": "2026-10-09T00:00:00Z",
+        "hoursUntilExpiry": 6,
+        "chapter": 0,
+        "kind": "daily"
+      }
+    ],
+    "expiring": [
+      {
+        "title": "Win 3 arena matches",
+        "location": "Arena",
+        "description": "Win matches in the evening arena before the tournament closes.",
+        "xp": 250,
+        "status": "expiring",
+        "goldReward": 0,
+        "gemReward": 40,
+        "rewardGear": "",
+        "completedCount": 1,
+        "targetCount": 3,
+        "resetsAt": "2026-10-09T00:00:00Z",
+        "hoursUntilReset": 6,
+        "expiresAt": "2026-10-08T20:00:00Z",
+        "hoursUntilExpiry": 2,
+        "chapter": 0,
+        "kind": "arena"
+      }
+    ],
+    "expired": [
+      {
+        "title": "Win 3 arena matches",
+        "location": "Arena",
+        "description": "Win matches in the evening arena before the tournament closes.",
+        "xp": 250,
+        "status": "expired",
+        "goldReward": 0,
+        "gemReward": 40,
+        "rewardGear": "",
+        "completedCount": 1,
+        "targetCount": 3,
+        "resetsAt": "2026-10-09T00:00:00Z",
+        "hoursUntilReset": 6,
+        "expiresAt": "2026-10-08T20:00:00Z",
+        "hoursUntilExpiry": 0,
+        "chapter": 0,
+        "kind": "arena"
+      }
+    ]
+  },
+  "Gear": {
+    "populated": [
+      {
+        "name": "Ash Greatsword",
+        "quantity": 1,
+        "rarity": "epic",
+        "power": 142,
+        "category": "weapon",
+        "lore": "A blackened blade carried by wardens of the ash road.",
+        "guard": 0,
+        "lightRadiusPercent": 0,
+        "xpBonusPercent": 0,
+        "healing": 0,
+        "dailyCrests": 0,
+        "sellGold": 4200,
+        "equipped": "equipped"
+      },
+      {
+        "name": "Wraith Lantern",
+        "quantity": 1,
+        "rarity": "legendary",
+        "power": 0,
+        "category": "trinket",
+        "lore": "A pale flame that follows the traveler through the marsh.",
+        "guard": 0,
+        "lightRadiusPercent": 8,
+        "xpBonusPercent": 0,
+        "healing": 0,
+        "dailyCrests": 0,
+        "sellGold": 1200,
+        "equipped": "stored"
+      },
+      {
+        "name": "Cinder Cloak",
+        "quantity": 1,
+        "rarity": "rare",
+        "power": 0,
+        "category": "armor",
+        "lore": "Woven from the embers left after the tower burned.",
+        "guard": 60,
+        "lightRadiusPercent": 0,
+        "xpBonusPercent": 0,
+        "healing": 0,
+        "dailyCrests": 0,
+        "sellGold": 900,
+        "equipped": "stored"
+      },
+      {
+        "name": "Ember Charm",
+        "quantity": 4,
+        "rarity": "uncommon",
+        "power": 0,
+        "category": "charm",
+        "lore": "A warm stone given to those who return from the crypt.",
+        "guard": 0,
+        "lightRadiusPercent": 0,
+        "xpBonusPercent": 5,
+        "healing": 0,
+        "dailyCrests": 0,
+        "sellGold": 100,
+        "equipped": "stored"
+      },
+      {
+        "name": "Hollow Rations",
+        "quantity": 12,
+        "rarity": "common",
+        "power": 0,
+        "category": "consumable",
+        "lore": "Dried fruit and river bread packed for a long watch.",
+        "guard": 0,
+        "lightRadiusPercent": 0,
+        "xpBonusPercent": 0,
+        "healing": 40,
+        "dailyCrests": 0,
+        "sellGold": 15,
+        "equipped": "stored"
+      },
+      {
+        "name": "Warden's Sigil",
+        "quantity": 1,
+        "rarity": "epic",
+        "power": 0,
+        "category": "relic",
+        "lore": "The old watchkeeper’s seal, recovered from the lantern room.",
+        "guard": 0,
+        "lightRadiusPercent": 0,
+        "xpBonusPercent": 0,
+        "healing": 0,
+        "dailyCrests": 12,
+        "sellGold": 800,
+        "equipped": "stored"
+      }
+    ],
+    "one": [
+      {
+        "name": "Ash Greatsword",
+        "quantity": 1,
+        "rarity": "epic",
+        "power": 142,
+        "category": "weapon",
+        "lore": "A blackened blade carried by wardens of the ash road.",
+        "guard": 0,
+        "lightRadiusPercent": 0,
+        "xpBonusPercent": 0,
+        "healing": 0,
+        "dailyCrests": 0,
+        "sellGold": 4200,
+        "equipped": "equipped"
+      }
+    ],
+    "long": [
+      {
+        "name": "Watchkeeper’s sigil from the lost lantern room above Hollow Reach",
+        "quantity": 1,
+        "rarity": "epic",
+        "power": 0,
+        "category": "relic",
+        "lore": "The keeper wore this seal through the long winters when the river crossing froze and the northern road vanished beneath the snow. Its worn face still bears the mark of the lantern watch, passed from one warden to the next whenever a new guardian took the tower.",
+        "guard": 0,
+        "lightRadiusPercent": 0,
+        "xpBonusPercent": 0,
+        "healing": 0,
+        "dailyCrests": 12,
+        "sellGold": 800,
+        "equipped": "stored"
+      }
+    ],
+    "none": [],
+    "equipped": [
+      {
+        "name": "Ash Greatsword",
+        "quantity": 1,
+        "rarity": "epic",
+        "power": 142,
+        "category": "weapon",
+        "lore": "A blackened blade carried by wardens of the ash road.",
+        "guard": 0,
+        "lightRadiusPercent": 0,
+        "xpBonusPercent": 0,
+        "healing": 0,
+        "dailyCrests": 0,
+        "sellGold": 4200,
+        "equipped": "stored"
+      },
+      {
+        "name": "Wraith Lantern",
+        "quantity": 1,
+        "rarity": "legendary",
+        "power": 0,
+        "category": "trinket",
+        "lore": "A pale flame that follows the traveler through the marsh.",
+        "guard": 0,
+        "lightRadiusPercent": 8,
+        "xpBonusPercent": 0,
+        "healing": 0,
+        "dailyCrests": 0,
+        "sellGold": 1200,
+        "equipped": "stored"
+      },
+      {
+        "name": "Cinder Cloak",
+        "quantity": 1,
+        "rarity": "rare",
+        "power": 0,
+        "category": "armor",
+        "lore": "Woven from the embers left after the tower burned.",
+        "guard": 60,
+        "lightRadiusPercent": 0,
+        "xpBonusPercent": 0,
+        "healing": 0,
+        "dailyCrests": 0,
+        "sellGold": 900,
+        "equipped": "stored"
+      },
+      {
+        "name": "Ember Charm",
+        "quantity": 4,
+        "rarity": "uncommon",
+        "power": 0,
+        "category": "charm",
+        "lore": "A warm stone given to those who return from the crypt.",
+        "guard": 0,
+        "lightRadiusPercent": 0,
+        "xpBonusPercent": 5,
+        "healing": 0,
+        "dailyCrests": 0,
+        "sellGold": 100,
+        "equipped": "stored"
+      },
+      {
+        "name": "Hollow Rations",
+        "quantity": 12,
+        "rarity": "common",
+        "power": 0,
+        "category": "consumable",
+        "lore": "Dried fruit and river bread packed for a long watch.",
+        "guard": 0,
+        "lightRadiusPercent": 0,
+        "xpBonusPercent": 0,
+        "healing": 40,
+        "dailyCrests": 0,
+        "sellGold": 15,
+        "equipped": "stored"
+      },
+      {
+        "name": "Warden's Sigil",
+        "quantity": 1,
+        "rarity": "epic",
+        "power": 0,
+        "category": "relic",
+        "lore": "The old watchkeeper’s seal, recovered from the lantern room.",
+        "guard": 0,
+        "lightRadiusPercent": 0,
+        "xpBonusPercent": 0,
+        "healing": 0,
+        "dailyCrests": 12,
+        "sellGold": 800,
+        "equipped": "stored"
+      },
+      {
+        "name": "Tempered blade",
+        "quantity": 1,
+        "rarity": "rare",
+        "power": 210,
+        "category": "weapon",
+        "lore": "Fresh from the forge, its edge catches the lantern light.",
+        "guard": 0,
+        "lightRadiusPercent": 0,
+        "xpBonusPercent": 0,
+        "healing": 0,
+        "dailyCrests": 0,
+        "sellGold": 1800,
+        "equipped": "equipped"
+      }
+    ],
+    "sold": [
+      {
+        "name": "Wraith Lantern",
+        "quantity": 1,
+        "rarity": "legendary",
+        "power": 0,
+        "category": "trinket",
+        "lore": "A pale flame that follows the traveler through the marsh.",
+        "guard": 0,
+        "lightRadiusPercent": 8,
+        "xpBonusPercent": 0,
+        "healing": 0,
+        "dailyCrests": 0,
+        "sellGold": 1200,
+        "equipped": "stored"
+      },
+      {
+        "name": "Cinder Cloak",
+        "quantity": 1,
+        "rarity": "rare",
+        "power": 0,
+        "category": "armor",
+        "lore": "Woven from the embers left after the tower burned.",
+        "guard": 60,
+        "lightRadiusPercent": 0,
+        "xpBonusPercent": 0,
+        "healing": 0,
+        "dailyCrests": 0,
+        "sellGold": 900,
+        "equipped": "stored"
+      },
+      {
+        "name": "Ember Charm",
+        "quantity": 4,
+        "rarity": "uncommon",
+        "power": 0,
+        "category": "charm",
+        "lore": "A warm stone given to those who return from the crypt.",
+        "guard": 0,
+        "lightRadiusPercent": 0,
+        "xpBonusPercent": 5,
+        "healing": 0,
+        "dailyCrests": 0,
+        "sellGold": 100,
+        "equipped": "stored"
+      },
+      {
+        "name": "Hollow Rations",
+        "quantity": 12,
+        "rarity": "common",
+        "power": 0,
+        "category": "consumable",
+        "lore": "Dried fruit and river bread packed for a long watch.",
+        "guard": 0,
+        "lightRadiusPercent": 0,
+        "xpBonusPercent": 0,
+        "healing": 40,
+        "dailyCrests": 0,
+        "sellGold": 15,
+        "equipped": "stored"
+      },
+      {
+        "name": "Warden's Sigil",
+        "quantity": 1,
+        "rarity": "epic",
+        "power": 0,
+        "category": "relic",
+        "lore": "The old watchkeeper’s seal, recovered from the lantern room.",
+        "guard": 0,
+        "lightRadiusPercent": 0,
+        "xpBonusPercent": 0,
+        "healing": 0,
+        "dailyCrests": 12,
+        "sellGold": 800,
+        "equipped": "stored"
+      },
+      {
+        "name": "Tempered blade",
+        "quantity": 1,
+        "rarity": "rare",
+        "power": 210,
+        "category": "weapon",
+        "lore": "Fresh from the forge, its edge catches the lantern light.",
+        "guard": 0,
+        "lightRadiusPercent": 0,
+        "xpBonusPercent": 0,
+        "healing": 0,
+        "dailyCrests": 0,
+        "sellGold": 1800,
+        "equipped": "equipped"
+      }
+    ],
+    "claimed": [
+      {
+        "name": "Ash Greatsword",
+        "quantity": 1,
+        "rarity": "epic",
+        "power": 142,
+        "category": "weapon",
+        "lore": "A blackened blade carried by wardens of the ash road.",
+        "guard": 0,
+        "lightRadiusPercent": 0,
+        "xpBonusPercent": 0,
+        "healing": 0,
+        "dailyCrests": 0,
+        "sellGold": 4200,
+        "equipped": "equipped"
+      },
+      {
+        "name": "Wraith Lantern",
+        "quantity": 1,
+        "rarity": "legendary",
+        "power": 0,
+        "category": "trinket",
+        "lore": "A pale flame that follows the traveler through the marsh.",
+        "guard": 0,
+        "lightRadiusPercent": 8,
+        "xpBonusPercent": 0,
+        "healing": 0,
+        "dailyCrests": 0,
+        "sellGold": 1200,
+        "equipped": "stored"
+      },
+      {
+        "name": "Cinder Cloak",
+        "quantity": 1,
+        "rarity": "rare",
+        "power": 0,
+        "category": "armor",
+        "lore": "Woven from the embers left after the tower burned.",
+        "guard": 60,
+        "lightRadiusPercent": 0,
+        "xpBonusPercent": 0,
+        "healing": 0,
+        "dailyCrests": 0,
+        "sellGold": 900,
+        "equipped": "stored"
+      },
+      {
+        "name": "Ember Charm",
+        "quantity": 4,
+        "rarity": "uncommon",
+        "power": 0,
+        "category": "charm",
+        "lore": "A warm stone given to those who return from the crypt.",
+        "guard": 0,
+        "lightRadiusPercent": 0,
+        "xpBonusPercent": 5,
+        "healing": 0,
+        "dailyCrests": 0,
+        "sellGold": 100,
+        "equipped": "stored"
+      },
+      {
+        "name": "Hollow Rations",
+        "quantity": 12,
+        "rarity": "common",
+        "power": 0,
+        "category": "consumable",
+        "lore": "Dried fruit and river bread packed for a long watch.",
+        "guard": 0,
+        "lightRadiusPercent": 0,
+        "xpBonusPercent": 0,
+        "healing": 40,
+        "dailyCrests": 0,
+        "sellGold": 15,
+        "equipped": "stored"
+      },
+      {
+        "name": "Warden's Sigil",
+        "quantity": 1,
+        "rarity": "epic",
+        "power": 0,
+        "category": "relic",
+        "lore": "The old watchkeeper’s seal, recovered from the lantern room.",
+        "guard": 0,
+        "lightRadiusPercent": 0,
+        "xpBonusPercent": 0,
+        "healing": 0,
+        "dailyCrests": 12,
+        "sellGold": 800,
+        "equipped": "stored"
+      },
+      {
+        "name": "Tempered blade",
+        "quantity": 1,
+        "rarity": "rare",
+        "power": 210,
+        "category": "weapon",
+        "lore": "Fresh from the forge, its edge catches the lantern light.",
+        "guard": 0,
+        "lightRadiusPercent": 0,
+        "xpBonusPercent": 0,
+        "healing": 0,
+        "dailyCrests": 0,
+        "sellGold": 1800,
+        "equipped": "stored"
+      }
+    ]
+  },
+  "ClanMember": {
+    "populated": [
+      {
+        "name": "Voidlark",
+        "className": "Pyromancer",
+        "rank": 1,
+        "power": 14820,
+        "presence": "inMatch",
+        "isSelf": "other"
+      },
+      {
+        "name": "Thornwick",
+        "className": "Warden",
+        "rank": 2,
+        "power": 11305,
+        "presence": "online",
+        "isSelf": "other"
+      },
+      {
+        "name": "Kestrel",
+        "className": "Warden",
+        "rank": 3,
+        "power": 9120,
+        "presence": "online",
+        "isSelf": "self"
+      },
+      {
+        "name": "Mirelle",
+        "className": "Ranger",
+        "rank": 4,
+        "power": 8870,
+        "presence": "away",
+        "isSelf": "other"
+      },
+      {
+        "name": "Quillfeather",
+        "className": "Ranger",
+        "rank": 5,
+        "power": 8210,
+        "presence": "offline",
+        "isSelf": "other"
+      },
+      {
+        "name": "Dunmarrow",
+        "className": "Pyromancer",
+        "rank": 6,
+        "power": 7940,
+        "presence": "offline",
+        "isSelf": "other"
+      }
+    ],
+    "one": [
+      {
+        "name": "Voidlark",
+        "className": "Pyromancer",
+        "rank": 1,
+        "power": 14820,
+        "presence": "inMatch",
+        "isSelf": "other"
+      }
+    ],
+    "long": [
+      {
+        "name": "Voidlark of the lantern watch beyond the northern causeway",
+        "className": "Pyromancer of the ember circle at the river crossing",
+        "rank": 1,
+        "power": 14820,
+        "presence": "inMatch",
+        "isSelf": "other"
+      }
+    ],
+    "none": []
+  },
+  "Message": {
+    "populated": [
+      {
+        "author": "Thornwick",
+        "text": "Raid starts at 20:00. We still need one healer for the Sunken Crypt.",
+        "mine": "theirs",
+        "sentAt": "2026-10-08T19:41:00Z",
+        "delivery": "sent"
+      },
+      {
+        "author": "Mirelle",
+        "text": "I can heal. What power do we need?",
+        "mine": "theirs",
+        "sentAt": "2026-10-08T19:43:00Z",
+        "delivery": "sent"
+      },
+      {
+        "author": "Thornwick",
+        "text": "9,000 or higher. Bring ember charms.",
+        "mine": "theirs",
+        "sentAt": "2026-10-08T19:44:00Z",
+        "delivery": "sent"
+      },
+      {
+        "author": "Kestrel",
+        "text": "I'm at 9,120 with two charms. See you in the lobby.",
+        "mine": "mine",
+        "sentAt": "2026-10-08T19:46:00Z",
+        "delivery": "sent"
+      }
+    ],
+    "one": [
+      {
+        "author": "Thornwick",
+        "text": "Raid starts at 20:00. We still need one healer for the Sunken Crypt.",
+        "mine": "theirs",
+        "sentAt": "2026-10-08T19:41:00Z",
+        "delivery": "sent"
+      }
+    ],
+    "long": [
+      {
+        "author": "Thornwick of the Ashen Wardens’ northern lantern watch",
+        "text": "Raid starts at 20:00. We need one healer for the Sunken Crypt and a second warden at the flooded gate. Please post your current power and whether you can carry ember charms. We will meet in the lobby ten minutes early so Mirelle can check the route before the first pull.",
+        "mine": "theirs",
+        "sentAt": "2026-10-08T19:41:00Z",
+        "delivery": "sent"
+      }
+    ],
+    "none": [],
+    "sending": [
+      {
+        "author": "Thornwick",
+        "text": "Raid starts at 20:00. We still need one healer for the Sunken Crypt.",
+        "mine": "theirs",
+        "sentAt": "2026-10-08T19:41:00Z",
+        "delivery": "sent"
+      },
+      {
+        "author": "Mirelle",
+        "text": "I can heal. What power do we need?",
+        "mine": "theirs",
+        "sentAt": "2026-10-08T19:43:00Z",
+        "delivery": "sent"
+      },
+      {
+        "author": "Thornwick",
+        "text": "9,000 or higher. Bring ember charms.",
+        "mine": "theirs",
+        "sentAt": "2026-10-08T19:44:00Z",
+        "delivery": "sent"
+      },
+      {
+        "author": "Kestrel",
+        "text": "I'm at 9,120 with two charms. See you in the lobby.",
+        "mine": "mine",
+        "sentAt": "2026-10-08T19:46:00Z",
+        "delivery": "pending"
+      }
+    ],
+    "sendFailed": [
+      {
+        "author": "Thornwick",
+        "text": "Raid starts at 20:00. We still need one healer for the Sunken Crypt.",
+        "mine": "theirs",
+        "sentAt": "2026-10-08T19:41:00Z",
+        "delivery": "sent"
+      },
+      {
+        "author": "Mirelle",
+        "text": "I can heal. What power do we need?",
+        "mine": "theirs",
+        "sentAt": "2026-10-08T19:43:00Z",
+        "delivery": "sent"
+      },
+      {
+        "author": "Thornwick",
+        "text": "9,000 or higher. Bring ember charms.",
+        "mine": "theirs",
+        "sentAt": "2026-10-08T19:44:00Z",
+        "delivery": "sent"
+      },
+      {
+        "author": "Kestrel",
+        "text": "I'm at 9,120 with two charms. See you in the lobby.",
+        "mine": "mine",
+        "sentAt": "2026-10-08T19:46:00Z",
+        "delivery": "failed"
+      }
+    ]
+  }
+}

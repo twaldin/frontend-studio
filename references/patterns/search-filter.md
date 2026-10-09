@@ -1,3 +1,15 @@
+---
+id: search-filter
+scale: flow
+studio: null
+slots: {"required":[],"optional":["toolbar","results"]}
+variants: [{"id":"submitted","label":"Submitted search with filter bar"},{"id":"activeLocal","label":"Active local search"},{"id":"facetedBatch","label":"Faceted panel with batch apply"},{"id":"scopedEscape","label":"Focused search with broader escape"}]
+states: ["initial","editing","draftFilters","pending","populated","noMatches","failed","applied","noData","partial","stale","loadingMore","facetUnavailable","denied"]
+copy: ["queryLabel"]
+events: ["submit","query","filter","apply","cancel","clear","sort","loadMore","changeScope"]
+renderer: variants
+---
+
 # Search and filter
 
 `id: search-filter` · scale: flow · studio: no studio step · references checked: 2026-10-08 (new primary guidance); 2026-10-06 (inherited link-only inspiration)

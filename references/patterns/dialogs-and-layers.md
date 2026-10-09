@@ -1,3 +1,15 @@
+---
+id: dialogs-and-layers
+scale: component
+studio: null
+slots: {"required":[],"optional":["detail","confirmation"]}
+variants: [{"id":"inline","label":"Inline region"},{"id":"popover","label":"Anchored popover"},{"id":"dialog","label":"Dialog"},{"id":"sheet","label":"Sheet"}]
+states: ["closed","open","editing","ready","validating","submitting","done","invalid","failed"]
+copy: ["close"]
+events: ["open","close","cancel","commit"]
+renderer: variants
+---
+
 # Dialogs and layers
 
 `id: dialogs-and-layers` · `scale: component` · `studio: no dedicated step; layerArrival controls appearance, not layer semantics` · `references checked: 2026-10-08`

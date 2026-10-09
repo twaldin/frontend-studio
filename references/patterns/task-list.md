@@ -1,3 +1,15 @@
+---
+id: task-list
+scale: flow
+studio: null
+slots: {"required":["header","tasks","dependencies","continuation","state"],"optional":["commit","groups","progress","due","acknowledgment"]}
+variants: [{"id":"flat","label":"Flat task list"},{"id":"grouped","label":"Grouped task list"},{"id":"dependencyLed","label":"Dependency-led task list"}]
+states: ["notStarted","inProgress","completed","blocked","needsAttention","externalWaiting","failed","offline","loading","denied","readyForReview","submitting","submitted"]
+copy: ["status"]
+events: ["enterTask","saveTask","editPrerequisite","acknowledge","resume","review","submit"]
+renderer: schematic
+---
+
 # Task list
 
 `id: task-list` · scale: flow · studio: no studio step · references checked: 2026-10-08; 2026-10-06 (inherited link-only inspiration)

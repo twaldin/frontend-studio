@@ -1,0 +1,2314 @@
+{
+  "model": 1,
+  "product": {
+    "id": "reader",
+    "outcome": "Finish a short Portuguese lesson, review fading words, and read a story at the right level.",
+    "archetype": "reader",
+    "users": [
+      {
+        "id": "learner",
+        "who": "A Portuguese learner studying for ten minutes on a phone, then reading a graded story on a tablet or laptop.",
+        "device": "both",
+        "surfaces": [
+          "learn",
+          "lesson",
+          "practice",
+          "library",
+          "story",
+          "wordList",
+          "settings",
+          "landing",
+          "emailWeeklyLearning",
+          "pushPracticeReminder"
+        ]
+      }
+    ]
+  },
+  "entities": [
+    {
+      "id": "lesson",
+      "contract": "Lesson",
+      "words": [
+        "lesson",
+        "unit"
+      ],
+      "never": [
+        "task"
+      ]
+    },
+    {
+      "id": "word",
+      "contract": "Word",
+      "words": [
+        "word",
+        "vocabulary"
+      ],
+      "never": [
+        "card"
+      ]
+    },
+    {
+      "id": "storyText",
+      "contract": "Story",
+      "words": [
+        "story",
+        "section"
+      ],
+      "never": [
+        "post"
+      ]
+    },
+    {
+      "id": "vocabularyList",
+      "contract": "WordList",
+      "words": [
+        "word list"
+      ],
+      "never": [
+        "course"
+      ]
+    }
+  ],
+  "capabilities": [
+    {
+      "id": "loadCourse",
+      "real": true,
+      "note": "The Portuguese path and graded stories are authored course content."
+    },
+    {
+      "id": "checkLessonAnswer",
+      "real": true,
+      "note": "Answers are checked against authored lesson answers; no conversation agent is implied."
+    },
+    {
+      "id": "saveLearningProgress",
+      "real": true,
+      "note": "Lesson completion, review strength and reading position require acknowledgement."
+    },
+    {
+      "id": "playLessonAudio",
+      "real": true,
+      "note": "Listening prompts have bundled course audio."
+    },
+    {
+      "id": "saveWordLists",
+      "real": true,
+      "note": "Named collections contain learner-selected vocabulary."
+    },
+    {
+      "id": "savePreferences",
+      "real": true,
+      "note": "Study goal and translation preferences persist per learner."
+    },
+    {
+      "id": "deliverLearningDigest",
+      "real": true,
+      "note": "Opted-in learners receive a weekly summary of acknowledged progress."
+    },
+    {
+      "id": "sendPracticeReminder",
+      "real": true,
+      "note": "Opted-in reminders use the saved review schedule."
+    },
+    {
+      "id": "scoreSpokenAnswers",
+      "real": false,
+      "note": "Pronunciation scoring is unavailable; speaking lessons have text prompts, not microphone or scoring controls."
+    }
+  ],
+  "data": {
+    "Lesson": {
+      "fields": {
+        "title": "text",
+        "unitNumber": "number",
+        "unitTitle": "text",
+        "duration": "number",
+        "newWords": "number",
+        "xp": "number",
+        "progress": "number",
+        "kind": "enum"
+      },
+      "typical": 10,
+      "max": 120,
+      "long": [
+        "title",
+        "unitTitle"
+      ],
+      "enums": {
+        "kind": [
+          "dialogue",
+          "vocabulary",
+          "speaking",
+          "listening",
+          "quiz",
+          "reading"
+        ]
+      }
+    },
+    "Word": {
+      "fields": {
+        "word": "text",
+        "meaning": "longText",
+        "strength": "enum",
+        "reviews": "number",
+        "nextReviewAt": "date",
+        "daysUntilReview": "number"
+      },
+      "typical": 6,
+      "max": 900,
+      "long": [
+        "word",
+        "meaning"
+      ],
+      "enums": {
+        "strength": [
+          "strong",
+          "fading",
+          "weak",
+          "new"
+        ]
+      }
+    },
+    "Story": {
+      "fields": {
+        "title": "text",
+        "body": "longText",
+        "sectionNumber": "number",
+        "sectionCount": "number",
+        "level": "enum",
+        "readingProgress": "number",
+        "translation": "longText"
+      },
+      "typical": 2,
+      "max": 20,
+      "long": [
+        "title",
+        "body"
+      ],
+      "enums": {
+        "level": [
+          "a1",
+          "a2",
+          "b1",
+          "b2"
+        ]
+      }
+    },
+    "PracticeTurn": {
+      "fields": {
+        "speaker": "enum",
+        "text": "longText",
+        "sentAt": "date"
+      },
+      "typical": 4,
+      "max": 500,
+      "long": [
+        "text"
+      ],
+      "enums": {
+        "speaker": [
+          "merchant",
+          "learner"
+        ]
+      }
+    },
+    "WordList": {
+      "fields": {
+        "name": "text",
+        "description": "longText",
+        "wordCount": "number"
+      },
+      "typical": 2,
+      "max": 80,
+      "long": [
+        "name",
+        "description"
+      ]
+    },
+    "LearningSummary": {
+      "fields": {
+        "completedLessons": "number",
+        "newWords": "number",
+        "earnedXp": "number",
+        "dueCount": "number",
+        "periodStart": "date",
+        "periodEnd": "date"
+      },
+      "typical": 1,
+      "max": 1
+    }
+  },
+  "states": {
+    "learnReady": {
+      "label": "Course path",
+      "rule": "Lead with the unfinished weights-and-quantities lesson; completed lessons stay marked and future units retain their order.",
+      "kind": "data",
+      "fixtures": {
+        "Lesson": "populated"
+      }
+    },
+    "learnLoading": {
+      "label": "Loading course",
+      "rule": "Keep the heading and navigation while reserving the path; do not expose an unconfirmed Continue target.",
+      "kind": "data",
+      "fixtures": {
+        "Lesson": "none"
+      }
+    },
+    "learnEmpty": {
+      "label": "First lesson",
+      "rule": "No progress exists yet; offer the first Portuguese lesson, not a course-selection capability.",
+      "kind": "firstRun",
+      "fixtures": {
+        "Lesson": "none"
+      }
+    },
+    "learnFailed": {
+      "label": "Course unavailable",
+      "rule": "Keep navigation and reload the unavailable path without changing saved progress.",
+      "kind": "data",
+      "fixtures": {
+        "Lesson": "none"
+      }
+    },
+    "learnLongContent": {
+      "label": "Long lesson names",
+      "rule": "Wrap lesson and unit titles independently without hiding unit numbers or progress.",
+      "kind": "data",
+      "fixtures": {
+        "Lesson": "long"
+      }
+    },
+    "learnUpdated": {
+      "label": "Progress updated",
+      "rule": "Show the completed listening lesson and next unfinished lesson after acknowledgement.",
+      "kind": "operation",
+      "fixtures": {
+        "Lesson": "updated"
+      }
+    },
+    "lessonReady": {
+      "label": "Answering",
+      "rule": "Show the authored market dialogue and answer input; checking an answer is not messaging a person.",
+      "kind": "data",
+      "fixtures": {
+        "Lesson": "one",
+        "PracticeTurn": "populated"
+      }
+    },
+    "lessonLoading": {
+      "label": "Loading lesson",
+      "rule": "Keep identity and return route; hide answer and audio controls until the prompt is loaded.",
+      "kind": "data",
+      "fixtures": {
+        "Lesson": "none",
+        "PracticeTurn": "none"
+      }
+    },
+    "lessonEmpty": {
+      "label": "Lesson unavailable",
+      "rule": "Return to Learn when a lesson is removed; do not create a blank chat.",
+      "kind": "data",
+      "fixtures": {
+        "Lesson": "none",
+        "PracticeTurn": "none"
+      }
+    },
+    "lessonFailed": {
+      "label": "Prompt unavailable",
+      "rule": "Preserve any entered answer and reload the unavailable prompt.",
+      "kind": "data",
+      "fixtures": {
+        "Lesson": "one",
+        "PracticeTurn": "populated"
+      }
+    },
+    "lessonLongContent": {
+      "label": "Long dialogue",
+      "rule": "Wrap the complete Portuguese prompt; keep the answer input after its prompt in reading order.",
+      "kind": "data",
+      "fixtures": {
+        "Lesson": "long",
+        "PracticeTurn": "long"
+      }
+    },
+    "lessonChecking": {
+      "label": "Checking answer",
+      "rule": "Retain the submitted answer and prevent another check while its result is pending.",
+      "kind": "operation",
+      "fixtures": {
+        "Lesson": "one",
+        "PracticeTurn": "populated"
+      }
+    },
+    "lessonCorrect": {
+      "label": "Answer accepted",
+      "rule": "Mark this answer correct and allow the next prompt; completion still requires all answers.",
+      "kind": "operation",
+      "fixtures": {
+        "Lesson": "one",
+        "PracticeTurn": "populated"
+      }
+    },
+    "lessonRetry": {
+      "label": "Answer needs revision",
+      "rule": "Keep the answer editable; no XP is awarded for a rejected answer.",
+      "kind": "operation",
+      "fixtures": {
+        "Lesson": "one",
+        "PracticeTurn": "populated"
+      }
+    },
+    "lessonSaving": {
+      "label": "Saving completion",
+      "rule": "Keep the final answer visible while course progress is being saved.",
+      "kind": "operation",
+      "fixtures": {
+        "Lesson": "completed",
+        "PracticeTurn": "populated"
+      }
+    },
+    "lessonCompleted": {
+      "label": "Lesson complete",
+      "rule": "After acknowledgement show earned XP and return to the updated course path.",
+      "kind": "operation",
+      "fixtures": {
+        "Lesson": "completed",
+        "PracticeTurn": "populated"
+      }
+    },
+    "lessonSaveFailed": {
+      "label": "Completion not saved",
+      "rule": "Keep accepted answers and retry only the progress save, not the whole lesson.",
+      "kind": "operation",
+      "fixtures": {
+        "Lesson": "completed",
+        "PracticeTurn": "populated"
+      }
+    },
+    "lessonListening": {
+      "label": "Listening prompt",
+      "rule": "Show the weights-and-quantities prompt with audio; no speech-scoring control is offered.",
+      "kind": "data",
+      "fixtures": {
+        "Lesson": "listening",
+        "PracticeTurn": "populated"
+      }
+    },
+    "practiceReady": {
+      "label": "Review schedule",
+      "rule": "Show due dates and strengths; the fading and weak words are due today.",
+      "kind": "data",
+      "fixtures": {
+        "Word": "populated"
+      }
+    },
+    "practiceLoading": {
+      "label": "Loading vocabulary",
+      "rule": "Withhold Review now until due vocabulary is confirmed.",
+      "kind": "data",
+      "fixtures": {
+        "Word": "none"
+      }
+    },
+    "practiceEmpty": {
+      "label": "Nothing due",
+      "rule": "Explain that no review is due and return to the course path.",
+      "kind": "data",
+      "fixtures": {
+        "Word": "none"
+      }
+    },
+    "practiceFailed": {
+      "label": "Schedule unavailable",
+      "rule": "Retry the schedule fetch without resetting word strength.",
+      "kind": "data",
+      "fixtures": {
+        "Word": "none"
+      }
+    },
+    "practiceLongContent": {
+      "label": "Long vocabulary",
+      "rule": "Wrap the entire expression and explanation without ellipses.",
+      "kind": "data",
+      "fixtures": {
+        "Word": "long"
+      }
+    },
+    "practiceReviewed": {
+      "label": "Review saved",
+      "rule": "Show reviewed words as strong with acknowledged next-review dates.",
+      "kind": "operation",
+      "fixtures": {
+        "Word": "reviewed"
+      }
+    },
+    "libraryReady": {
+      "label": "Graded stories",
+      "rule": "Open the A2 baker story at its saved section.",
+      "kind": "data",
+      "fixtures": {
+        "Story": "populated"
+      }
+    },
+    "libraryLoading": {
+      "label": "Loading stories",
+      "rule": "Keep the heading while fetching the graded catalog.",
+      "kind": "data",
+      "fixtures": {
+        "Story": "none"
+      }
+    },
+    "libraryEmpty": {
+      "label": "No matching stories",
+      "rule": "Reset the level filter rather than claiming a story can be created.",
+      "kind": "data",
+      "fixtures": {
+        "Story": "none"
+      }
+    },
+    "libraryFailed": {
+      "label": "Library unavailable",
+      "rule": "Reload the catalog without losing course progress.",
+      "kind": "data",
+      "fixtures": {
+        "Story": "none"
+      }
+    },
+    "libraryLongContent": {
+      "label": "Long story title",
+      "rule": "Wrap the full story title and keep its level visible.",
+      "kind": "data",
+      "fixtures": {
+        "Story": "long"
+      }
+    },
+    "storyReady": {
+      "label": "Reading",
+      "rule": "Restore section one of the A2 baker story; translation is hidden until requested.",
+      "kind": "data",
+      "fixtures": {
+        "Story": "one",
+        "Word": "one"
+      }
+    },
+    "storyLoading": {
+      "label": "Loading story",
+      "rule": "Retain the Library return route; progress is hidden until the section arrives.",
+      "kind": "data",
+      "fixtures": {
+        "Story": "none",
+        "Word": "none"
+      }
+    },
+    "storyEmpty": {
+      "label": "Story unavailable",
+      "rule": "Offer the Library rather than a nonfunctional Next section action.",
+      "kind": "data",
+      "fixtures": {
+        "Story": "none",
+        "Word": "none"
+      }
+    },
+    "storyFailed": {
+      "label": "Story load failed",
+      "rule": "Keep saved position and retry loading the same story.",
+      "kind": "data",
+      "fixtures": {
+        "Story": "one",
+        "Word": "one"
+      }
+    },
+    "storyLongContent": {
+      "label": "Long story",
+      "rule": "Reflow at a readable measure; keep vocabulary beside the selected sentence.",
+      "kind": "data",
+      "fixtures": {
+        "Story": "long",
+        "Word": "long"
+      }
+    },
+    "storySaving": {
+      "label": "Saving reading position",
+      "rule": "Retain the current section while waiting for save acknowledgement.",
+      "kind": "operation",
+      "fixtures": {
+        "Story": "completed",
+        "Word": "one"
+      }
+    },
+    "storyCompleted": {
+      "label": "Reading saved",
+      "rule": "The final section is acknowledged; offer another story and retain the saved position.",
+      "kind": "operation",
+      "fixtures": {
+        "Story": "completed",
+        "Word": "one"
+      }
+    },
+    "storySaveFailed": {
+      "label": "Position not saved",
+      "rule": "Retry saving the visible section without advancing the story.",
+      "kind": "operation",
+      "fixtures": {
+        "Story": "completed",
+        "Word": "one"
+      }
+    },
+    "storyWordSaving": {
+      "label": "Saving vocabulary",
+      "rule": "Keep the selected meaning open until vocabulary is saved.",
+      "kind": "operation",
+      "fixtures": {
+        "Story": "one",
+        "Word": "one"
+      }
+    },
+    "storyWordSaved": {
+      "label": "Vocabulary saved",
+      "rule": "Mark the word as saved to practice only after acknowledgement.",
+      "kind": "operation",
+      "fixtures": {
+        "Story": "one",
+        "Word": "one"
+      }
+    },
+    "storyWordFailed": {
+      "label": "Vocabulary not saved",
+      "rule": "Retain the selected meaning and retry its save without closing the story.",
+      "kind": "operation",
+      "fixtures": {
+        "Story": "one",
+        "Word": "one"
+      }
+    },
+    "wordListDraft": {
+      "label": "List draft",
+      "rule": "Edit collection name and description; select saved vocabulary rather than editing preferences.",
+      "kind": "data",
+      "fixtures": {
+        "WordList": "one",
+        "Word": "populated"
+      }
+    },
+    "wordListSaving": {
+      "label": "Saving list",
+      "rule": "Retain the name, description and vocabulary while preventing duplicate creation.",
+      "kind": "operation",
+      "fixtures": {
+        "WordList": "one",
+        "Word": "populated"
+      }
+    },
+    "wordListSaved": {
+      "label": "List saved",
+      "rule": "Show acknowledged list identity and word count with a route to Practice.",
+      "kind": "operation",
+      "fixtures": {
+        "WordList": "one",
+        "Word": "populated"
+      }
+    },
+    "wordListFailed": {
+      "label": "List not saved",
+      "rule": "Retain the entire draft and retry the same save.",
+      "kind": "operation",
+      "fixtures": {
+        "WordList": "one",
+        "Word": "populated"
+      }
+    },
+    "wordListLongContent": {
+      "label": "Long list draft",
+      "rule": "Keep the full learner-authored name and description editable.",
+      "kind": "data",
+      "fixtures": {
+        "WordList": "long",
+        "Word": "long"
+      }
+    },
+    "settingsReady": {
+      "label": "Study preferences",
+      "rule": "Daily goal, reminder opt-in and translations require an explicit save.",
+      "kind": "data",
+      "fixtures": {}
+    },
+    "settingsSaving": {
+      "label": "Saving study preferences",
+      "rule": "Keep controls visible; disable duplicate saves until acknowledged.",
+      "kind": "operation",
+      "fixtures": {}
+    },
+    "settingsSaved": {
+      "label": "Study preferences saved",
+      "rule": "Confirm the new goal without restarting a lesson or moving reading position.",
+      "kind": "operation",
+      "fixtures": {}
+    },
+    "settingsFailed": {
+      "label": "Preferences not saved",
+      "rule": "Retain the changed goal and opt-ins; offer a save retry.",
+      "kind": "operation",
+      "fixtures": {}
+    },
+    "landingReady": {
+      "label": "About Tessel",
+      "rule": "Explain course, spaced review and graded reading; the primary action enters Learn.",
+      "kind": "data",
+      "fixtures": {}
+    },
+    "emailWeeklyLearningReady": {
+      "label": "Weekly progress digest",
+      "rule": "Summarize only acknowledged lessons and XP for the stated week; link to Learn.",
+      "kind": "operation",
+      "fixtures": {
+        "LearningSummary": "one"
+      }
+    },
+    "pushPracticeReminderReady": {
+      "label": "Review due reminder",
+      "rule": "Notify only opted-in learners with due vocabulary; link to the saved review schedule.",
+      "kind": "operation",
+      "fixtures": {
+        "LearningSummary": "one"
+      }
+    },
+    "lessonCheckFailed": {
+      "label": "Answer check failed",
+      "rule": "Retain the submitted answer; retry the authored answer check without saving XP or advancing the prompt.",
+      "kind": "operation",
+      "fixtures": {
+        "Lesson": "one",
+        "PracticeTurn": "populated"
+      }
+    }
+  },
+  "events": {
+    "checkAnswerEvent": {
+      "label": "Check Portuguese answer",
+      "kind": "operation",
+      "needs": "checkLessonAnswer"
+    },
+    "saveLessonEvent": {
+      "label": "Save completed lesson",
+      "kind": "operation",
+      "needs": "saveLearningProgress"
+    },
+    "leaveLessonEvent": {
+      "label": "Review leaving the lesson",
+      "kind": "layer"
+    },
+    "listenPromptEvent": {
+      "label": "Play listening prompt",
+      "kind": "press",
+      "needs": "playLessonAudio"
+    },
+    "lookupWordEvent": {
+      "label": "Open word meaning",
+      "kind": "layer"
+    },
+    "showTranslationEvent": {
+      "label": "Show story translation",
+      "kind": "layer"
+    },
+    "saveReadingEvent": {
+      "label": "Save reading position",
+      "kind": "operation",
+      "needs": "saveLearningProgress"
+    },
+    "saveVocabularyEvent": {
+      "label": "Save selected word",
+      "kind": "operation",
+      "needs": "saveLearningProgress"
+    },
+    "saveWordListEvent": {
+      "label": "Save vocabulary collection",
+      "kind": "operation",
+      "needs": "saveWordLists"
+    },
+    "invalidWordListEvent": {
+      "label": "Validate collection name",
+      "kind": "submit"
+    },
+    "saveStudyPreferencesEvent": {
+      "label": "Save study preferences",
+      "kind": "operation",
+      "needs": "savePreferences"
+    },
+    "chooseStoryLevelEvent": {
+      "label": "Choose reading level",
+      "kind": "layer"
+    }
+  },
+  "nav": {
+    "items": [
+      {
+        "surface": "learn",
+        "copy": "nav.learn"
+      },
+      {
+        "surface": "practice",
+        "copy": "nav.practice"
+      },
+      {
+        "surface": "library",
+        "copy": "nav.library"
+      },
+      {
+        "surface": "settings",
+        "copy": "nav.settings"
+      }
+    ],
+    "inAYear": 8
+  },
+  "flows": [
+    {
+      "id": "learnFlow",
+      "goal": "Finish the next Portuguese lesson and resume from the acknowledged course path.",
+      "priority": "must",
+      "stages": [
+        {
+          "id": "step1",
+          "surface": "learn",
+          "next": [
+            "step2"
+          ]
+        },
+        {
+          "id": "step2",
+          "surface": "lesson",
+          "state": "lessonReady",
+          "next": [
+            "step3"
+          ]
+        },
+        {
+          "id": "step3",
+          "surface": "lesson",
+          "state": "lessonChecking",
+          "next": [
+            "step4"
+          ]
+        },
+        {
+          "id": "step4",
+          "surface": "lesson",
+          "state": "lessonSaving",
+          "next": [
+            "step5"
+          ]
+        },
+        {
+          "id": "step5",
+          "surface": "lesson",
+          "state": "lessonCompleted",
+          "next": [
+            "step6"
+          ]
+        },
+        {
+          "id": "step6",
+          "surface": "learn",
+          "state": "learnUpdated"
+        }
+      ],
+      "ends": "The completed lesson is marked on the path, its XP is saved, and the next unfinished lesson is available.",
+      "needs": [
+        "loadCourse",
+        "checkLessonAnswer",
+        "saveLearningProgress"
+      ]
+    },
+    {
+      "id": "readStoryFlow",
+      "goal": "Read the baker story at the saved section and keep the final reading position.",
+      "priority": "must",
+      "stages": [
+        {
+          "id": "step1",
+          "surface": "library",
+          "next": [
+            "step2"
+          ]
+        },
+        {
+          "id": "step2",
+          "surface": "story",
+          "state": "storyReady",
+          "next": [
+            "step3"
+          ]
+        },
+        {
+          "id": "step3",
+          "surface": "story",
+          "state": "storySaving",
+          "next": [
+            "step4"
+          ]
+        },
+        {
+          "id": "step4",
+          "surface": "story",
+          "state": "storyCompleted"
+        }
+      ],
+      "ends": "Reopening the baker story restores its acknowledged final section and completion.",
+      "needs": [
+        "loadCourse",
+        "saveLearningProgress"
+      ]
+    },
+    {
+      "id": "reviewFlow",
+      "goal": "Strengthen fading words before their next review date.",
+      "priority": "should",
+      "stages": [
+        {
+          "id": "step1",
+          "surface": "practice",
+          "next": [
+            "step2"
+          ]
+        },
+        {
+          "id": "step2",
+          "surface": "lesson",
+          "state": "lessonReady",
+          "next": [
+            "step3"
+          ]
+        },
+        {
+          "id": "step3",
+          "surface": "lesson",
+          "state": "lessonCompleted",
+          "next": [
+            "step4"
+          ]
+        },
+        {
+          "id": "step4",
+          "surface": "practice",
+          "state": "practiceReviewed"
+        }
+      ],
+      "ends": "Reviewed words become strong and their next review dates move to the saved schedule.",
+      "needs": [
+        "checkLessonAnswer",
+        "saveLearningProgress"
+      ]
+    },
+    {
+      "id": "saveVocabularyFlow",
+      "goal": "Keep an unfamiliar story word in a named practice collection.",
+      "priority": "should",
+      "stages": [
+        {
+          "id": "step1",
+          "surface": "story",
+          "state": "storyReady",
+          "next": [
+            "step2"
+          ]
+        },
+        {
+          "id": "step2",
+          "surface": "story",
+          "state": "storyWordSaved",
+          "next": [
+            "step3"
+          ]
+        },
+        {
+          "id": "step3",
+          "surface": "wordList",
+          "next": [
+            "step4"
+          ]
+        },
+        {
+          "id": "step4",
+          "surface": "wordList",
+          "state": "wordListSaved",
+          "next": [
+            "step5"
+          ]
+        },
+        {
+          "id": "step5",
+          "surface": "practice"
+        }
+      ],
+      "ends": "The selected word appears in the saved collection and remains available for review.",
+      "needs": [
+        "saveLearningProgress",
+        "saveWordLists"
+      ],
+      "binding": {
+        "record": "create-edit",
+        "status": "proposed",
+        "variant": "dedicatedPage",
+        "because": "Naming a collection and selecting its words needs room beyond the narrow word-meaning panel."
+      }
+    },
+    {
+      "id": "preferencesFlow",
+      "goal": "Choose a study goal and opt into reminders without changing reading progress.",
+      "priority": "should",
+      "stages": [
+        {
+          "id": "step1",
+          "surface": "settings",
+          "next": [
+            "step2"
+          ]
+        },
+        {
+          "id": "step2",
+          "surface": "settings",
+          "state": "settingsSaved"
+        }
+      ],
+      "ends": "The daily goal, reminder opt-in and translation preference remain selected when Settings is reopened.",
+      "needs": [
+        "savePreferences"
+      ]
+    },
+    {
+      "id": "discoverFlow",
+      "goal": "Understand Tessel and open the first useful Portuguese lesson.",
+      "priority": "should",
+      "stages": [
+        {
+          "id": "step1",
+          "surface": "landing",
+          "next": [
+            "step2"
+          ]
+        },
+        {
+          "id": "step2",
+          "surface": "learn"
+        }
+      ],
+      "ends": "The learner enters the course path rather than an email signup with no learning result.",
+      "needs": []
+    },
+    {
+      "id": "emailWeeklyLearningFlow",
+      "goal": "See this week’s saved study progress and continue the next lesson.",
+      "priority": "later",
+      "stages": [
+        {
+          "id": "step1",
+          "surface": "emailWeeklyLearning",
+          "next": [
+            "step2"
+          ]
+        },
+        {
+          "id": "step2",
+          "surface": "learn"
+        }
+      ],
+      "ends": "The digest opens Learn at the acknowledged course path.",
+      "needs": [
+        "deliverLearningDigest"
+      ]
+    },
+    {
+      "id": "pushPracticeReminderFlow",
+      "goal": "Review due vocabulary when an opted-in reminder arrives.",
+      "priority": "later",
+      "stages": [
+        {
+          "id": "step1",
+          "surface": "pushPracticeReminder",
+          "next": [
+            "step2"
+          ]
+        },
+        {
+          "id": "step2",
+          "surface": "practice"
+        }
+      ],
+      "ends": "The reminder opens the due-word schedule without claiming unsaved study progress.",
+      "needs": [
+        "sendPracticeReminder"
+      ]
+    }
+  ],
+  "surfaces": [
+    {
+      "id": "learn",
+      "question": "What is the next lesson on my course path?",
+      "route": "/learn",
+      "binding": {
+        "record": "home",
+        "status": "proposed",
+        "variant": "continue",
+        "because": "Saved lesson progress determines the next useful lesson.",
+        "candidates": [
+          "continue",
+          "collection"
+        ]
+      },
+      "slots": [
+        {
+          "id": "primary",
+          "copy": {
+            "learn.continue": [
+              "learnReady",
+              "learnLongContent",
+              "learnUpdated"
+            ],
+            "learn.reward": [
+              "learnReady",
+              "learnLongContent",
+              "learnUpdated"
+            ],
+            "learn.duration": [
+              "learnReady",
+              "learnLongContent",
+              "learnUpdated"
+            ],
+            "learn.progress": [
+              "learnReady",
+              "learnLongContent",
+              "learnUpdated"
+            ],
+            "learn.unit": [
+              "learnReady",
+              "learnLongContent",
+              "learnUpdated"
+            ],
+            "learn.kind.dialogue": [
+              "learnReady",
+              "learnUpdated"
+            ],
+            "learn.kind.vocabulary": [
+              "learnReady",
+              "learnUpdated"
+            ],
+            "learn.kind.speaking": [
+              "learnReady",
+              "learnUpdated"
+            ],
+            "learn.kind.listening": [
+              "learnReady",
+              "learnUpdated",
+              "learnLongContent"
+            ],
+            "learn.kind.quiz": [
+              "learnReady",
+              "learnUpdated"
+            ],
+            "learn.kind.reading": [
+              "learnReady",
+              "learnUpdated"
+            ]
+          },
+          "data": {
+            "contract": "Lesson",
+            "many": true,
+            "map": {
+              "title": "title",
+              "unitNumber": "unitNumber",
+              "unitTitle": "unitTitle",
+              "duration": "duration",
+              "progress": "progress",
+              "xp": "xp"
+            }
+          },
+          "states": [
+            "learnReady",
+            "learnLongContent",
+            "learnUpdated"
+          ]
+        },
+        {
+          "id": "state",
+          "copy": {
+            "learn.empty.title": [
+              "learnEmpty"
+            ],
+            "learn.empty.body": [
+              "learnEmpty"
+            ],
+            "learn.empty.action": [
+              "learnEmpty"
+            ],
+            "learn.recovery.title": [
+              "learnFailed"
+            ],
+            "learn.recovery.action": [
+              "learnFailed"
+            ],
+            "learn.loading": [
+              "learnLoading"
+            ]
+          }
+        },
+        {
+          "id": "identity",
+          "copy": {
+            "learn.title": "always",
+            "learn.documentTitle": "always"
+          }
+        },
+        {
+          "id": "navigation",
+          "copy": {
+            "nav.learn": "always",
+            "nav.practice": "always",
+            "nav.library": "always",
+            "nav.settings": "always"
+          }
+        }
+      ],
+      "states": [
+        "learnReady",
+        "learnLoading",
+        "learnEmpty",
+        "learnFailed",
+        "learnLongContent",
+        "learnUpdated"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "shell.aria.main": "always",
+        "shell.alt.productMark": "always",
+        "shell.aria.navigation": "always",
+        "nav.learn": "always",
+        "nav.practice": "always",
+        "nav.library": "always",
+        "nav.settings": "always",
+        "learn.review": [
+          "learnReady",
+          "learnLongContent",
+          "learnUpdated"
+        ],
+        "learn.firstLesson": [
+          "learnEmpty"
+        ]
+      }
+    },
+    {
+      "id": "lesson",
+      "question": "How do I answer this Portuguese prompt and finish the lesson with saved progress?",
+      "route": "/lesson",
+      "slots": [
+        {
+          "id": "header",
+          "copy": {
+            "lesson.title": "always",
+            "lesson.documentTitle": "always"
+          }
+        },
+        {
+          "id": "primary",
+          "copy": {
+            "lesson.speaker.merchant": [
+              "lessonReady",
+              "lessonChecking",
+              "lessonCorrect",
+              "lessonRetry",
+              "lessonFailed",
+              "lessonListening",
+              "lessonSaving",
+              "lessonCompleted",
+              "lessonSaveFailed",
+              "lessonCheckFailed"
+            ],
+            "lesson.speaker.learner": [
+              "lessonReady",
+              "lessonChecking",
+              "lessonCorrect",
+              "lessonRetry",
+              "lessonFailed",
+              "lessonListening",
+              "lessonSaving",
+              "lessonCompleted",
+              "lessonSaveFailed",
+              "lessonCheckFailed"
+            ]
+          },
+          "data": {
+            "contract": "PracticeTurn",
+            "many": true,
+            "map": {
+              "speaker": "speaker",
+              "body": "text",
+              "sentAt": "sentAt"
+            }
+          },
+          "states": [
+            "lessonReady",
+            "lessonLongContent",
+            "lessonChecking",
+            "lessonCorrect",
+            "lessonRetry",
+            "lessonFailed",
+            "lessonListening",
+            "lessonSaving",
+            "lessonCompleted",
+            "lessonSaveFailed",
+            "lessonCheckFailed"
+          ]
+        },
+        {
+          "id": "answer",
+          "copy": {
+            "lesson.answer.label": [
+              "lessonReady",
+              "lessonLongContent",
+              "lessonChecking",
+              "lessonCorrect",
+              "lessonRetry",
+              "lessonFailed",
+              "lessonListening",
+              "lessonCheckFailed"
+            ],
+            "lesson.composer.placeholder": [
+              "lessonReady",
+              "lessonLongContent",
+              "lessonChecking",
+              "lessonCorrect",
+              "lessonRetry",
+              "lessonFailed",
+              "lessonListening",
+              "lessonCheckFailed"
+            ],
+            "lesson.send": [
+              "lessonReady",
+              "lessonLongContent",
+              "lessonChecking",
+              "lessonCorrect",
+              "lessonRetry",
+              "lessonFailed",
+              "lessonListening",
+              "lessonCheckFailed"
+            ],
+            "lesson.aria.check": [
+              "lessonReady",
+              "lessonLongContent",
+              "lessonChecking",
+              "lessonCorrect",
+              "lessonRetry",
+              "lessonFailed",
+              "lessonListening",
+              "lessonCheckFailed"
+            ]
+          },
+          "states": [
+            "lessonReady",
+            "lessonLongContent",
+            "lessonChecking",
+            "lessonCorrect",
+            "lessonRetry",
+            "lessonFailed",
+            "lessonListening",
+            "lessonCheckFailed"
+          ],
+          "on": [
+            {
+              "event": "checkAnswerEvent",
+              "axis": "asyncFeedback"
+            }
+          ]
+        },
+        {
+          "id": "context",
+          "copy": {},
+          "data": {
+            "contract": "Lesson",
+            "many": false,
+            "map": {
+              "title": "title",
+              "unitNumber": "unitNumber",
+              "unitTitle": "unitTitle",
+              "duration": "duration",
+              "newWords": "newWords",
+              "xp": "xp",
+              "progress": "progress",
+              "kind": "kind"
+            }
+          },
+          "states": [
+            "lessonReady",
+            "lessonLongContent",
+            "lessonChecking",
+            "lessonCorrect",
+            "lessonRetry",
+            "lessonFailed",
+            "lessonListening",
+            "lessonSaving",
+            "lessonCompleted",
+            "lessonSaveFailed",
+            "lessonCheckFailed"
+          ]
+        },
+        {
+          "id": "state",
+          "copy": {
+            "lesson.checking": [
+              "lessonChecking"
+            ],
+            "lesson.answer.correct": [
+              "lessonCorrect"
+            ],
+            "lesson.answer.retry": [
+              "lessonRetry"
+            ],
+            "lesson.answer.next": [
+              "lessonCorrect"
+            ],
+            "lesson.status.saving": [
+              "lessonSaving"
+            ],
+            "lesson.recovery.title": [
+              "lessonFailed"
+            ],
+            "lesson.recovery.action": [
+              "lessonFailed"
+            ],
+            "lesson.saveRecovery": [
+              "lessonSaveFailed"
+            ],
+            "lesson.retrySave": [
+              "lessonSaveFailed"
+            ],
+            "lesson.unavailable": [
+              "lessonEmpty"
+            ],
+            "lesson.checkFailed": [
+              "lessonCheckFailed"
+            ],
+            "lesson.checkRetry": [
+              "lessonCheckFailed"
+            ]
+          }
+        },
+        {
+          "id": "confirmation",
+          "copy": {
+            "lesson.confirmation.title": [
+              "leaveLessonSetup"
+            ],
+            "lesson.confirmation.body": [
+              "leaveLessonSetup"
+            ],
+            "lesson.confirmation.confirm": [
+              "leaveLessonSetup"
+            ],
+            "lesson.confirmation.cancel": [
+              "leaveLessonSetup"
+            ],
+            "lesson.confirmation.close": [
+              "leaveLessonSetup"
+            ]
+          },
+          "record": "dialogs-and-layers",
+          "status": "proposed",
+          "variant": "dialog",
+          "because": "Leaving before completion abandons the current answer sequence but never erases saved course progress."
+        },
+        {
+          "id": "outcome",
+          "copy": {
+            "lesson.outcome": [
+              "lessonCompleted"
+            ],
+            "lesson.return": [
+              "lessonCompleted"
+            ]
+          },
+          "record": "notifications",
+          "status": "proposed",
+          "variant": "inline",
+          "because": "Earned XP and return to the path remain next to the acknowledged lesson result."
+        }
+      ],
+      "states": [
+        "lessonReady",
+        "lessonLoading",
+        "lessonEmpty",
+        "lessonFailed",
+        "lessonLongContent",
+        "lessonChecking",
+        "lessonCorrect",
+        "lessonRetry",
+        "lessonSaving",
+        "lessonCompleted",
+        "lessonSaveFailed",
+        "lessonListening",
+        "lessonCheckFailed"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "shell.aria.main": "always",
+        "shell.alt.productMark": "always",
+        "shell.aria.navigation": "always",
+        "nav.learn": "always",
+        "nav.practice": "always",
+        "nav.library": "always",
+        "nav.settings": "always",
+        "lesson.audio.play": [
+          "lessonListening"
+        ],
+        "lesson.audio.aria": [
+          "lessonListening"
+        ]
+      },
+      "setups": [
+        {
+          "id": "leaveLessonSetup",
+          "label": "Leave unfinished lesson",
+          "event": "leaveLessonEvent",
+          "state": "lessonReady"
+        }
+      ]
+    },
+    {
+      "id": "practice",
+      "question": "Which words need a review today?",
+      "route": "/practice",
+      "slots": [
+        {
+          "id": "primary",
+          "copy": {
+            "practice.columns.word": [
+              "practiceReady",
+              "practiceLongContent",
+              "practiceReviewed"
+            ],
+            "practice.columns.meaning": [
+              "practiceReady",
+              "practiceLongContent",
+              "practiceReviewed"
+            ],
+            "practice.columns.strength": [
+              "practiceReady",
+              "practiceLongContent",
+              "practiceReviewed"
+            ],
+            "practice.columns.reviews": [
+              "practiceReady",
+              "practiceLongContent",
+              "practiceReviewed"
+            ],
+            "practice.columns.nextReview": [
+              "practiceReady",
+              "practiceLongContent",
+              "practiceReviewed"
+            ],
+            "practice.reviewCount": [
+              "practiceReady",
+              "practiceLongContent",
+              "practiceReviewed"
+            ],
+            "practice.nextReview.date": [
+              "practiceReady",
+              "practiceLongContent",
+              "practiceReviewed"
+            ]
+          },
+          "data": {
+            "contract": "Word",
+            "many": true,
+            "map": {
+              "word": "word",
+              "meaning": "meaning",
+              "strength": "strength",
+              "reviews": "reviews",
+              "nextReviewAt": "nextReviewAt",
+              "daysUntilReview": "daysUntilReview"
+            }
+          },
+          "states": [
+            "practiceReady",
+            "practiceLongContent",
+            "practiceReviewed"
+          ]
+        }
+      ],
+      "states": [
+        "practiceReady",
+        "practiceLoading",
+        "practiceEmpty",
+        "practiceFailed",
+        "practiceLongContent",
+        "practiceReviewed"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "shell.aria.main": "always",
+        "shell.alt.productMark": "always",
+        "shell.aria.navigation": "always",
+        "nav.learn": "always",
+        "nav.practice": "always",
+        "nav.library": "always",
+        "nav.settings": "always",
+        "practice.title": "always",
+        "practice.documentTitle": "always",
+        "practice.start": [
+          "practiceReady",
+          "practiceLongContent"
+        ],
+        "practice.loading": [
+          "practiceLoading"
+        ],
+        "practice.nextReview.today": [
+          "practiceReady",
+          "practiceLongContent"
+        ],
+        "practice.nextReview.tomorrow": [
+          "practiceReady"
+        ],
+        "practice.nextReview.days": [
+          "practiceReady",
+          "practiceReviewed"
+        ],
+        "practice.strength.strong": [
+          "practiceReady",
+          "practiceReviewed"
+        ],
+        "practice.strength.fading": [
+          "practiceReady"
+        ],
+        "practice.strength.weak": [
+          "practiceReady",
+          "practiceLongContent"
+        ],
+        "practice.strength.new": [
+          "practiceReady"
+        ],
+        "practice.empty.title": [
+          "practiceEmpty"
+        ],
+        "practice.empty.body": [
+          "practiceEmpty"
+        ],
+        "practice.empty.action": [
+          "practiceEmpty"
+        ],
+        "practice.recovery.title": [
+          "practiceFailed"
+        ],
+        "practice.recovery.action": [
+          "practiceFailed"
+        ]
+      }
+    },
+    {
+      "id": "library",
+      "question": "Which story can I read at my level?",
+      "route": "/library",
+      "slots": [
+        {
+          "id": "primary",
+          "copy": {
+            "library.open": [
+              "libraryReady",
+              "libraryLongContent"
+            ]
+          },
+          "data": {
+            "contract": "Story",
+            "many": true,
+            "map": {
+              "title": "title",
+              "preview": "body",
+              "level": "level"
+            }
+          },
+          "states": [
+            "libraryReady",
+            "libraryLongContent"
+          ]
+        }
+      ],
+      "states": [
+        "libraryReady",
+        "libraryLoading",
+        "libraryEmpty",
+        "libraryFailed",
+        "libraryLongContent"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "shell.aria.main": "always",
+        "shell.alt.productMark": "always",
+        "shell.aria.navigation": "always",
+        "nav.learn": "always",
+        "nav.practice": "always",
+        "nav.library": "always",
+        "nav.settings": "always",
+        "library.title": "always",
+        "library.documentTitle": "always",
+        "library.queryLabel": "always",
+        "library.level.label": "always",
+        "library.loading": [
+          "libraryLoading"
+        ],
+        "library.empty.title": [
+          "libraryEmpty"
+        ],
+        "library.empty.body": [
+          "libraryEmpty"
+        ],
+        "library.empty.action": [
+          "libraryEmpty"
+        ],
+        "library.recovery.title": [
+          "libraryFailed"
+        ],
+        "library.recovery.action": [
+          "libraryFailed"
+        ],
+        "library.level.a1": [
+          "readingLevelSetup"
+        ],
+        "library.level.a2": [
+          "readingLevelSetup"
+        ],
+        "library.level.b1": [
+          "readingLevelSetup"
+        ],
+        "library.level.b2": [
+          "readingLevelSetup"
+        ]
+      },
+      "setups": [
+        {
+          "id": "readingLevelSetup",
+          "label": "Reading level choices",
+          "event": "chooseStoryLevelEvent",
+          "state": "libraryReady"
+        }
+      ]
+    },
+    {
+      "id": "story",
+      "question": "Can I follow this story and save words I do not know?",
+      "route": "/library/:story",
+      "binding": {
+        "record": "reader",
+        "status": "proposed",
+        "variant": "margin",
+        "because": "Vocabulary explanations should stay beside the sentence being read.",
+        "candidates": [
+          "column",
+          "margin"
+        ]
+      },
+      "slots": [
+        {
+          "id": "header",
+          "copy": {
+            "story.title": "always",
+            "story.documentTitle": "always"
+          }
+        },
+        {
+          "id": "primary",
+          "copy": {},
+          "data": {
+            "contract": "Story",
+            "many": false,
+            "map": {
+              "title": "title",
+              "body": "body",
+              "sectionNumber": "sectionNumber",
+              "sectionCount": "sectionCount",
+              "level": "level",
+              "readingProgress": "readingProgress",
+              "translation": "translation"
+            }
+          },
+          "states": [
+            "storyReady",
+            "storyLongContent",
+            "storySaving",
+            "storyCompleted",
+            "storySaveFailed",
+            "storyWordSaving",
+            "storyWordSaved",
+            "storyWordFailed",
+            "storyFailed"
+          ]
+        },
+        {
+          "id": "notes",
+          "copy": {},
+          "data": {
+            "contract": "Word",
+            "many": false,
+            "map": {
+              "word": "word",
+              "meaning": "meaning"
+            }
+          },
+          "states": [
+            "storyReady",
+            "storyLongContent",
+            "storySaving",
+            "storyCompleted",
+            "storySaveFailed",
+            "storyWordSaving",
+            "storyWordSaved",
+            "storyWordFailed",
+            "storyFailed"
+          ]
+        },
+        {
+          "id": "position",
+          "copy": {
+            "story.position": [
+              "storyReady",
+              "storyLongContent",
+              "storySaving",
+              "storyCompleted",
+              "storySaveFailed",
+              "storyWordSaving",
+              "storyWordSaved",
+              "storyWordFailed",
+              "storyFailed"
+            ]
+          },
+          "states": [
+            "storyReady",
+            "storyLongContent",
+            "storySaving",
+            "storyCompleted",
+            "storySaveFailed",
+            "storyWordSaving",
+            "storyWordSaved",
+            "storyWordFailed",
+            "storyFailed"
+          ]
+        },
+        {
+          "id": "state",
+          "copy": {
+            "story.empty.title": [
+              "storyEmpty"
+            ],
+            "story.empty.body": [
+              "storyEmpty"
+            ],
+            "story.empty.action": [
+              "storyEmpty"
+            ],
+            "story.recovery.title": [
+              "storyFailed"
+            ],
+            "story.recovery.action": [
+              "storyFailed"
+            ],
+            "story.loading": [
+              "storyLoading"
+            ],
+            "story.status.saving": [
+              "storySaving"
+            ],
+            "story.status.saved": [
+              "storyCompleted"
+            ],
+            "story.positionRecovery": [
+              "storySaveFailed"
+            ],
+            "story.retryPosition": [
+              "storySaveFailed"
+            ],
+            "story.word.saving": [
+              "storyWordSaving"
+            ],
+            "story.word.saved": [
+              "storyWordSaved"
+            ],
+            "story.word.failed": [
+              "storyWordFailed"
+            ],
+            "story.word.retry": [
+              "storyWordFailed"
+            ]
+          }
+        }
+      ],
+      "states": [
+        "storyReady",
+        "storyLoading",
+        "storyEmpty",
+        "storyFailed",
+        "storyLongContent",
+        "storySaving",
+        "storyCompleted",
+        "storySaveFailed",
+        "storyWordSaving",
+        "storyWordSaved",
+        "storyWordFailed"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "shell.aria.main": "always",
+        "shell.alt.productMark": "always",
+        "shell.aria.navigation": "always",
+        "nav.learn": "always",
+        "nav.practice": "always",
+        "nav.library": "always",
+        "nav.settings": "always",
+        "story.next": [
+          "storyReady",
+          "storyLongContent"
+        ],
+        "story.previous": [
+          "storySaving",
+          "storyCompleted",
+          "storySaveFailed"
+        ],
+        "story.savePosition": [
+          "storyReady",
+          "storyLongContent"
+        ],
+        "story.translation.show": [
+          "storyReady",
+          "storyLongContent"
+        ],
+        "story.translation.hide": [
+          "storyTranslationSetup"
+        ],
+        "story.saveWord": [
+          "storyWordLookupSetup"
+        ],
+        "story.lookup.title": [
+          "storyWordLookupSetup",
+          "storyWordSaving",
+          "storyWordSaved",
+          "storyWordFailed"
+        ],
+        "story.lookup.close": [
+          "storyWordLookupSetup",
+          "storyWordSaving",
+          "storyWordSaved",
+          "storyWordFailed"
+        ]
+      },
+      "setups": [
+        {
+          "id": "storyWordLookupSetup",
+          "label": "Word meaning open",
+          "event": "lookupWordEvent",
+          "state": "storyReady"
+        },
+        {
+          "id": "storyTranslationSetup",
+          "label": "Translation visible",
+          "event": "showTranslationEvent",
+          "state": "storyReady"
+        }
+      ]
+    },
+    {
+      "id": "wordList",
+      "question": "Which saved words belong in this named vocabulary collection?",
+      "route": "/wordList",
+      "slots": [
+        {
+          "id": "header",
+          "copy": {
+            "wordList.title": "always",
+            "wordList.documentTitle": "always"
+          }
+        },
+        {
+          "id": "primary",
+          "copy": {
+            "wordList.name.label": [
+              "wordListDraft",
+              "wordListSaving",
+              "wordListFailed",
+              "wordListLongContent"
+            ],
+            "wordList.name.placeholder": [
+              "wordListDraft",
+              "wordListSaving",
+              "wordListFailed",
+              "wordListLongContent"
+            ],
+            "wordList.description.label": [
+              "wordListDraft",
+              "wordListSaving",
+              "wordListFailed",
+              "wordListLongContent"
+            ]
+          },
+          "data": {
+            "contract": "WordList",
+            "many": false,
+            "map": {
+              "name": "name",
+              "description": "description",
+              "wordCount": "wordCount"
+            }
+          },
+          "states": [
+            "wordListDraft",
+            "wordListSaving",
+            "wordListFailed",
+            "wordListLongContent"
+          ]
+        },
+        {
+          "id": "vocabulary",
+          "copy": {
+            "wordList.words.label": [
+              "wordListDraft",
+              "wordListSaving",
+              "wordListFailed",
+              "wordListLongContent"
+            ]
+          },
+          "data": {
+            "contract": "Word",
+            "many": true,
+            "map": {
+              "word": "word",
+              "meaning": "meaning"
+            }
+          },
+          "states": [
+            "wordListDraft",
+            "wordListSaving",
+            "wordListFailed",
+            "wordListLongContent"
+          ]
+        },
+        {
+          "id": "commit",
+          "copy": {
+            "wordList.save": [
+              "wordListDraft",
+              "wordListSaving",
+              "wordListFailed",
+              "wordListLongContent"
+            ]
+          },
+          "on": [
+            {
+              "event": "saveWordListEvent",
+              "axis": "asyncFeedback"
+            }
+          ]
+        },
+        {
+          "id": "exit",
+          "copy": {
+            "wordList.cancel": "always"
+          }
+        },
+        {
+          "id": "state",
+          "copy": {
+            "wordList.status": [
+              "wordListSaving"
+            ],
+            "wordList.recovery": [
+              "wordListFailed"
+            ],
+            "wordList.invalid.name": [
+              "wordListInvalidSetup"
+            ]
+          }
+        },
+        {
+          "id": "result",
+          "copy": {
+            "wordList.saved": [
+              "wordListSaved"
+            ],
+            "wordList.wordCount": [
+              "wordListSaved"
+            ],
+            "wordList.open": [
+              "wordListSaved"
+            ]
+          },
+          "data": {
+            "contract": "WordList",
+            "many": false,
+            "map": {
+              "name": "name",
+              "wordCount": "wordCount"
+            }
+          },
+          "states": [
+            "wordListSaved"
+          ]
+        }
+      ],
+      "states": [
+        "wordListDraft",
+        "wordListSaving",
+        "wordListSaved",
+        "wordListFailed",
+        "wordListLongContent"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "shell.aria.main": "always",
+        "shell.alt.productMark": "always",
+        "shell.aria.navigation": "always",
+        "nav.learn": "always",
+        "nav.practice": "always",
+        "nav.library": "always",
+        "nav.settings": "always"
+      },
+      "setups": [
+        {
+          "id": "wordListInvalidSetup",
+          "label": "Missing collection name",
+          "event": "invalidWordListEvent",
+          "state": "wordListDraft"
+        }
+      ]
+    },
+    {
+      "id": "settings",
+      "question": "What daily goal, reminders and reading translations do I want?",
+      "route": "/settings",
+      "binding": {
+        "record": "settings",
+        "status": "fixed",
+        "variant": "sections",
+        "because": "The daily goal, reminder opt-in and reading translations affect one learner and fit a single study-preferences page."
+      },
+      "slots": [
+        {
+          "id": "header",
+          "copy": {
+            "settings.title": "always",
+            "settings.documentTitle": "always"
+          }
+        },
+        {
+          "id": "navigation",
+          "copy": {
+            "settings.section": "always"
+          }
+        },
+        {
+          "id": "primary",
+          "copy": {
+            "settings.dailyGoal.label": "always",
+            "settings.goal.short": "always",
+            "settings.goal.regular": "always",
+            "settings.goal.extended": "always",
+            "settings.goal.long": "always",
+            "settings.reminder.label": "always",
+            "settings.translations.label": "always"
+          }
+        },
+        {
+          "id": "commit",
+          "copy": {
+            "settings.save": "always",
+            "settings.cancel": "always"
+          },
+          "on": [
+            {
+              "event": "saveStudyPreferencesEvent",
+              "axis": "asyncFeedback"
+            }
+          ]
+        },
+        {
+          "id": "state",
+          "copy": {
+            "settings.status.saving": [
+              "settingsSaving"
+            ],
+            "settings.status.saved": [
+              "settingsSaved"
+            ],
+            "settings.recovery": [
+              "settingsFailed"
+            ],
+            "settings.retry": [
+              "settingsFailed"
+            ]
+          }
+        }
+      ],
+      "states": [
+        "settingsReady",
+        "settingsSaving",
+        "settingsSaved",
+        "settingsFailed"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "shell.aria.main": "always",
+        "shell.alt.productMark": "always",
+        "shell.aria.navigation": "always",
+        "nav.learn": "always",
+        "nav.practice": "always",
+        "nav.library": "always",
+        "nav.settings": "always"
+      }
+    },
+    {
+      "id": "landing",
+      "question": "Will these short Portuguese lessons and graded stories fit the way I study?",
+      "route": "/",
+      "slots": [
+        {
+          "id": "primary",
+          "copy": {
+            "landing.title": "always",
+            "landing.documentTitle": "always",
+            "landing.description": "always",
+            "landing.action": "always",
+            "landing.secondaryAction": "always",
+            "landing.footer": "always",
+            "landing.lessons.eyebrow": "always",
+            "landing.lessons.title": "always",
+            "landing.lessons.body": "always",
+            "landing.review.eyebrow": "always",
+            "landing.review.title": "always",
+            "landing.review.body": "always",
+            "landing.stories.eyebrow": "always",
+            "landing.stories.title": "always",
+            "landing.stories.body": "always",
+            "landing.lessonVolume.value": "always",
+            "landing.lessonVolume.label": "always",
+            "landing.studyTime.value": "always",
+            "landing.studyTime.label": "always",
+            "landing.retention.value": "always",
+            "landing.retention.label": "always",
+            "landing.testimonial.text": "always",
+            "landing.testimonial.who": "always",
+            "landing.partners.harborSchool.alt": "always",
+            "landing.partners.fernwoodAcademy.alt": "always",
+            "landing.partners.alderInstitute.alt": "always",
+            "landing.partners.marlowCollege.alt": "always",
+            "landing.partners.brightwaterLibrary.alt": "always",
+            "landing.partners.kestrelLab.alt": "always"
+          }
+        }
+      ],
+      "states": [
+        "landingReady"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "shell.aria.main": "always",
+        "shell.alt.productMark": "always"
+      }
+    },
+    {
+      "id": "emailWeeklyLearning",
+      "question": "How many lessons and new words did I finish this week, and which lesson is next?",
+      "route": "email:weeklyLearning",
+      "channel": "email",
+      "slots": [
+        {
+          "id": "primary",
+          "copy": {
+            "emailWeeklyLearning.subject": "always",
+            "emailWeeklyLearning.body": "always",
+            "emailWeeklyLearning.action": "always",
+            "emailWeeklyLearning.preheader": "always"
+          },
+          "data": {
+            "contract": "LearningSummary",
+            "many": false,
+            "map": {
+              "completedLessons": "completedLessons",
+              "newWords": "newWords",
+              "earnedXp": "earnedXp",
+              "dueCount": "dueCount",
+              "periodStart": "periodStart",
+              "periodEnd": "periodEnd"
+            }
+          }
+        }
+      ],
+      "states": [
+        "emailWeeklyLearningReady"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {}
+    },
+    {
+      "id": "pushPracticeReminder",
+      "question": "Which vocabulary is due now, and where do I start its review?",
+      "route": "push:practiceReminder",
+      "channel": "push",
+      "slots": [
+        {
+          "id": "primary",
+          "copy": {
+            "pushPracticeReminder.body": "always",
+            "pushPracticeReminder.action": "always",
+            "pushPracticeReminder.title": "always"
+          },
+          "data": {
+            "contract": "LearningSummary",
+            "many": false,
+            "map": {
+              "completedLessons": "completedLessons",
+              "newWords": "newWords",
+              "earnedXp": "earnedXp",
+              "dueCount": "dueCount",
+              "periodStart": "periodStart",
+              "periodEnd": "periodEnd"
+            }
+          }
+        }
+      ],
+      "states": [
+        "pushPracticeReminderReady"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {}
+    }
+  ],
+  "files": {
+    "copy": "copy.md",
+    "fixtures": "fixtures.json"
+  },
+  "$schema": "../../../references/product-model.schema.json"
+}

@@ -1,3 +1,15 @@
+---
+id: async-progress
+scale: interaction
+studio: asyncFeedback
+slots: {"required":[],"optional":["pending","status","outcome"]}
+variants: [{"id":"spinner","label":"Inline spinner"},{"id":"skeleton","label":"Skeleton"},{"id":"progress","label":"Progress bar"},{"id":"steps","label":"Step list"}]
+states: ["idle","queued","active","succeeded","partial","failed","cancelled","blocked","cancelling","unknown"]
+copy: ["status"]
+events: ["start","progress","complete","fail","cancel","retry"]
+renderer: variants
+---
+
 # Async progress
 
 `id: async-progress` · `scale: interaction` · `studio: asyncFeedback` · `references checked: 2026-10-08`

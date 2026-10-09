@@ -1,3 +1,15 @@
+---
+id: agent-activity
+scale: surface
+studio: null
+slots: {"required":["header","primary","result","intervention","state"],"optional":["steps","history","input","timestamps","resources","detail"]}
+variants: [{"id":"runSummary","label":"Run summary"},{"id":"stepLedger","label":"Step ledger"},{"id":"eventTimeline","label":"Event timeline"}]
+states: ["created","queued","running","awaitingInput","awaitingApproval","resumed","completed","partial","failed","cancelled","stopping","unknown","reconnecting","approvalPending","approvalAccepted","approvalRejected","approvalExpired"]
+copy: ["status"]
+events: ["update","approve","revise","stop","retry","restart"]
+renderer: schematic
+---
+
 # Agent activity
 
 `id: agent-activity` · `scale: surface` · `studio: no dedicated step; asyncFeedback “Step list” renders a progress slot` · `references checked: 2026-10-08`

@@ -1,0 +1,673 @@
+{
+  "Media": {
+    "populated": [
+      {
+        "title": "Night Shift",
+        "creator": "Mirabel Ashe",
+        "description": "Slow synth pieces recorded between midnight and four, with field recordings from the loading dock next door.",
+        "kind": "album",
+        "download": "notDownloaded",
+        "durationSeconds": 2520,
+        "positionSeconds": 0,
+        "lastPlayedAt": "2026-04-08T18:30:00Z",
+        "shelf": "featured"
+      },
+      {
+        "title": "Salt Flats",
+        "creator": "The Quiet Harbors",
+        "description": "A spare guitar song built around the sound of wind crossing a dry salt lake.",
+        "kind": "song",
+        "download": "downloaded",
+        "durationSeconds": 252,
+        "positionSeconds": 96,
+        "lastPlayedAt": "2026-04-08T18:30:00Z",
+        "shelf": "continue"
+      },
+      {
+        "title": "Field Notes, Ep. 31",
+        "creator": "Dr. Imani Cole",
+        "description": "Imani visits the tide pools at first light and explains how small creatures wait out the changing water.",
+        "kind": "podcast",
+        "download": "downloading",
+        "durationSeconds": 2300,
+        "positionSeconds": 1656,
+        "lastPlayedAt": "2026-04-08T18:30:00Z",
+        "shelf": "continue"
+      },
+      {
+        "title": "Low Tide Sessions",
+        "creator": "Oko & Fern",
+        "description": "Oko and Fern recorded these acoustic improvisations in a harbor warehouse as the tide went out.",
+        "kind": "album",
+        "download": "notDownloaded",
+        "durationSeconds": 3120,
+        "positionSeconds": 468,
+        "lastPlayedAt": "2026-04-08T18:30:00Z",
+        "shelf": "continue"
+      },
+      {
+        "title": "The Long Way Round",
+        "creator": "Ruth Adeyemi",
+        "description": "Ruth follows an old coastal road and talks with the people keeping its ferries, shops and walking paths open.",
+        "kind": "podcast",
+        "download": "downloaded",
+        "durationSeconds": 2770,
+        "positionSeconds": 2493,
+        "lastPlayedAt": "2026-04-08T18:30:00Z",
+        "shelf": "continue"
+      },
+      {
+        "title": "Paper Lanterns",
+        "creator": "Juno Vasquez",
+        "description": "Soft piano and layered voices from Juno’s winter recording sessions above a neighborhood print shop.",
+        "kind": "album",
+        "download": "downloading",
+        "durationSeconds": 2235,
+        "positionSeconds": 1118,
+        "lastPlayedAt": "2026-04-08T18:30:00Z",
+        "shelf": "continue"
+      },
+      {
+        "title": "Glass Orchard",
+        "creator": "Mirabel Ashe",
+        "description": "Mirabel pairs bowed glass with field recordings from an abandoned greenhouse.",
+        "kind": "album",
+        "download": "notDownloaded",
+        "durationSeconds": 2460,
+        "positionSeconds": 0,
+        "lastPlayedAt": "2026-04-08T18:30:00Z",
+        "shelf": "new"
+      },
+      {
+        "title": "Open Door Policy",
+        "creator": "Tomás Reyes",
+        "description": "Tomás speaks with workshop owners about the first project they trusted a stranger to help finish.",
+        "kind": "podcast",
+        "download": "downloaded",
+        "durationSeconds": 3480,
+        "positionSeconds": 0,
+        "lastPlayedAt": "2026-04-08T18:30:00Z",
+        "shelf": "featured"
+      },
+      {
+        "title": "Sundial",
+        "creator": "Oko & Fern",
+        "description": "A short instrumental for an unhurried walk, with fingerpicked guitar and brushed percussion.",
+        "kind": "song",
+        "download": "downloading",
+        "durationSeconds": 206,
+        "positionSeconds": 0,
+        "lastPlayedAt": "2026-04-08T18:30:00Z",
+        "shelf": "new"
+      },
+      {
+        "title": "Harbor Lights Live",
+        "creator": "The Quiet Harbors",
+        "description": "The Quiet Harbors recorded this set at the final outdoor concert before the winter rains.",
+        "kind": "live",
+        "download": "notDownloaded",
+        "durationSeconds": 4350,
+        "positionSeconds": 0,
+        "lastPlayedAt": "2026-04-08T18:30:00Z",
+        "shelf": "featured"
+      },
+      {
+        "title": "Slow Mornings",
+        "creator": "Ellis Morgan",
+        "description": "Songs Ellis collected for baking, reading and the first train out of the harbor.",
+        "kind": "playlist",
+        "download": "downloaded",
+        "durationSeconds": 5760,
+        "positionSeconds": 0,
+        "lastPlayedAt": "2026-04-08T18:30:00Z",
+        "shelf": "featured"
+      }
+    ],
+    "one": [
+      {
+        "title": "Night Shift",
+        "creator": "Mirabel Ashe",
+        "description": "Slow synth pieces recorded between midnight and four, with field recordings from the loading dock next door.",
+        "kind": "album",
+        "download": "notDownloaded",
+        "durationSeconds": 2520,
+        "positionSeconds": 0,
+        "lastPlayedAt": "2026-04-08T18:30:00Z",
+        "shelf": "featured"
+      }
+    ],
+    "long": [
+      {
+        "title": "Field Notes, Episode 31: The tide pools between the first light and the returning water",
+        "creator": "Dr. Imani Cole",
+        "description": "Imani returns to the same stretch of rocks across three low tides, comparing the creatures visible before sunrise with those that appear when the water begins to warm. The episode follows a small pool from its deepest shadow to the first wave that reconnects it with the sea. Along the way she explains why visitors should watch from the dry rock, leave shells where they find them, and give the birds room to feed.",
+        "kind": "podcast",
+        "download": "downloaded",
+        "durationSeconds": 2520,
+        "positionSeconds": 720,
+        "lastPlayedAt": "2026-04-08T18:30:00Z",
+        "shelf": "continue"
+      }
+    ],
+    "none": [],
+    "selected": [
+      {
+        "title": "Field Notes, Ep. 31",
+        "creator": "Dr. Imani Cole",
+        "description": "Imani visits the tide pools at first light and explains how small creatures wait out the changing water.",
+        "kind": "podcast",
+        "download": "notDownloaded",
+        "durationSeconds": 2300,
+        "positionSeconds": 1656,
+        "lastPlayedAt": "2026-04-08T18:30:00Z",
+        "shelf": "continue"
+      }
+    ],
+    "offlineUnavailable": [
+      {
+        "title": "Paper Lanterns",
+        "creator": "Juno Vasquez",
+        "description": "Soft piano and layered voices from Juno’s winter recording sessions above a neighborhood print shop.",
+        "kind": "album",
+        "download": "notDownloaded",
+        "durationSeconds": 2235,
+        "positionSeconds": 1118,
+        "lastPlayedAt": "2026-04-08T18:30:00Z",
+        "shelf": "continue"
+      }
+    ],
+    "offlinePlayable": [
+      {
+        "title": "Field Notes, Ep. 31",
+        "creator": "Dr. Imani Cole",
+        "description": "Imani visits the tide pools at first light and explains how small creatures wait out the changing water.",
+        "kind": "podcast",
+        "download": "downloaded",
+        "durationSeconds": 2300,
+        "positionSeconds": 1656,
+        "lastPlayedAt": "2026-04-08T18:30:00Z",
+        "shelf": "continue"
+      }
+    ],
+    "downloading": [
+      {
+        "title": "Field Notes, Ep. 31",
+        "creator": "Dr. Imani Cole",
+        "description": "Imani visits the tide pools at first light and explains how small creatures wait out the changing water.",
+        "kind": "podcast",
+        "download": "downloading",
+        "durationSeconds": 2300,
+        "positionSeconds": 1656,
+        "lastPlayedAt": "2026-04-08T18:30:00Z",
+        "shelf": "continue"
+      }
+    ],
+    "downloadComplete": [
+      {
+        "title": "Field Notes, Ep. 31",
+        "creator": "Dr. Imani Cole",
+        "description": "Imani visits the tide pools at first light and explains how small creatures wait out the changing water.",
+        "kind": "podcast",
+        "download": "downloaded",
+        "durationSeconds": 2300,
+        "positionSeconds": 1656,
+        "lastPlayedAt": "2026-04-08T18:30:00Z",
+        "shelf": "continue"
+      }
+    ],
+    "downloadFailed": [
+      {
+        "title": "Field Notes, Ep. 31",
+        "creator": "Dr. Imani Cole",
+        "description": "Imani visits the tide pools at first light and explains how small creatures wait out the changing water.",
+        "kind": "podcast",
+        "download": "notDownloaded",
+        "durationSeconds": 2300,
+        "positionSeconds": 1656,
+        "lastPlayedAt": "2026-04-08T18:30:00Z",
+        "shelf": "continue"
+      }
+    ],
+    "downloadRows": [
+      {
+        "title": "Salt Flats",
+        "creator": "The Quiet Harbors",
+        "description": "A spare guitar song built around the sound of wind crossing a dry salt lake.",
+        "kind": "song",
+        "download": "downloaded",
+        "durationSeconds": 252,
+        "positionSeconds": 96,
+        "lastPlayedAt": "2026-04-08T18:30:00Z",
+        "shelf": "continue"
+      },
+      {
+        "title": "Field Notes, Ep. 31",
+        "creator": "Dr. Imani Cole",
+        "description": "Imani visits the tide pools at first light and explains how small creatures wait out the changing water.",
+        "kind": "podcast",
+        "download": "downloading",
+        "durationSeconds": 2300,
+        "positionSeconds": 1656,
+        "lastPlayedAt": "2026-04-08T18:30:00Z",
+        "shelf": "continue"
+      },
+      {
+        "title": "The Long Way Round",
+        "creator": "Ruth Adeyemi",
+        "description": "Ruth follows an old coastal road and talks with the people keeping its ferries, shops and walking paths open.",
+        "kind": "podcast",
+        "download": "downloaded",
+        "durationSeconds": 2770,
+        "positionSeconds": 2493,
+        "lastPlayedAt": "2026-04-08T18:30:00Z",
+        "shelf": "continue"
+      },
+      {
+        "title": "Night Shift",
+        "creator": "Mirabel Ashe",
+        "description": "Slow synth pieces recorded between midnight and four, with field recordings from the loading dock next door.",
+        "kind": "album",
+        "download": "unavailable",
+        "durationSeconds": 2520,
+        "positionSeconds": 0,
+        "lastPlayedAt": "2026-04-08T18:30:00Z",
+        "shelf": "featured"
+      }
+    ],
+    "downloadsRemoved": [
+      {
+        "title": "Field Notes, Ep. 31",
+        "creator": "Dr. Imani Cole",
+        "description": "Imani visits the tide pools at first light and explains how small creatures wait out the changing water.",
+        "kind": "podcast",
+        "download": "downloading",
+        "durationSeconds": 2300,
+        "positionSeconds": 1656,
+        "lastPlayedAt": "2026-04-08T18:30:00Z",
+        "shelf": "continue"
+      },
+      {
+        "title": "Night Shift",
+        "creator": "Mirabel Ashe",
+        "description": "Slow synth pieces recorded between midnight and four, with field recordings from the loading dock next door.",
+        "kind": "album",
+        "download": "unavailable",
+        "durationSeconds": 2520,
+        "positionSeconds": 0,
+        "lastPlayedAt": "2026-04-08T18:30:00Z",
+        "shelf": "featured"
+      }
+    ],
+    "finished": [
+      {
+        "title": "Field Notes, Ep. 31",
+        "creator": "Dr. Imani Cole",
+        "description": "Imani visits the tide pools at first light and explains how small creatures wait out the changing water.",
+        "kind": "podcast",
+        "download": "notDownloaded",
+        "durationSeconds": 2300,
+        "positionSeconds": 2300,
+        "lastPlayedAt": "2026-04-08T18:30:00Z",
+        "shelf": "continue"
+      }
+    ],
+    "reorderedQueue": [
+      {
+        "title": "Night Shift",
+        "creator": "Mirabel Ashe",
+        "description": "Slow synth pieces recorded between midnight and four, with field recordings from the loading dock next door.",
+        "kind": "album",
+        "download": "notDownloaded",
+        "durationSeconds": 2520,
+        "positionSeconds": 0,
+        "lastPlayedAt": "2026-04-08T18:30:00Z",
+        "shelf": "featured"
+      },
+      {
+        "title": "Field Notes, Ep. 31",
+        "creator": "Dr. Imani Cole",
+        "description": "Imani visits the tide pools at first light and explains how small creatures wait out the changing water.",
+        "kind": "podcast",
+        "download": "downloading",
+        "durationSeconds": 2300,
+        "positionSeconds": 1656,
+        "lastPlayedAt": "2026-04-08T18:30:00Z",
+        "shelf": "continue"
+      },
+      {
+        "title": "Salt Flats",
+        "creator": "The Quiet Harbors",
+        "description": "A spare guitar song built around the sound of wind crossing a dry salt lake.",
+        "kind": "song",
+        "download": "downloaded",
+        "durationSeconds": 252,
+        "positionSeconds": 96,
+        "lastPlayedAt": "2026-04-08T18:30:00Z",
+        "shelf": "continue"
+      },
+      {
+        "title": "Low Tide Sessions",
+        "creator": "Oko & Fern",
+        "description": "Oko and Fern recorded these acoustic improvisations in a harbor warehouse as the tide went out.",
+        "kind": "album",
+        "download": "notDownloaded",
+        "durationSeconds": 3120,
+        "positionSeconds": 468,
+        "lastPlayedAt": "2026-04-08T18:30:00Z",
+        "shelf": "continue"
+      },
+      {
+        "title": "The Long Way Round",
+        "creator": "Ruth Adeyemi",
+        "description": "Ruth follows an old coastal road and talks with the people keeping its ferries, shops and walking paths open.",
+        "kind": "podcast",
+        "download": "downloaded",
+        "durationSeconds": 2770,
+        "positionSeconds": 2493,
+        "lastPlayedAt": "2026-04-08T18:30:00Z",
+        "shelf": "continue"
+      },
+      {
+        "title": "Paper Lanterns",
+        "creator": "Juno Vasquez",
+        "description": "Soft piano and layered voices from Juno’s winter recording sessions above a neighborhood print shop.",
+        "kind": "album",
+        "download": "downloading",
+        "durationSeconds": 2235,
+        "positionSeconds": 1118,
+        "lastPlayedAt": "2026-04-08T18:30:00Z",
+        "shelf": "continue"
+      },
+      {
+        "title": "Glass Orchard",
+        "creator": "Mirabel Ashe",
+        "description": "Mirabel pairs bowed glass with field recordings from an abandoned greenhouse.",
+        "kind": "album",
+        "download": "notDownloaded",
+        "durationSeconds": 2460,
+        "positionSeconds": 0,
+        "lastPlayedAt": "2026-04-08T18:30:00Z",
+        "shelf": "new"
+      },
+      {
+        "title": "Open Door Policy",
+        "creator": "Tomás Reyes",
+        "description": "Tomás speaks with workshop owners about the first project they trusted a stranger to help finish.",
+        "kind": "podcast",
+        "download": "downloaded",
+        "durationSeconds": 3480,
+        "positionSeconds": 0,
+        "lastPlayedAt": "2026-04-08T18:30:00Z",
+        "shelf": "featured"
+      },
+      {
+        "title": "Sundial",
+        "creator": "Oko & Fern",
+        "description": "A short instrumental for an unhurried walk, with fingerpicked guitar and brushed percussion.",
+        "kind": "song",
+        "download": "downloading",
+        "durationSeconds": 206,
+        "positionSeconds": 0,
+        "lastPlayedAt": "2026-04-08T18:30:00Z",
+        "shelf": "new"
+      },
+      {
+        "title": "Harbor Lights Live",
+        "creator": "The Quiet Harbors",
+        "description": "The Quiet Harbors recorded this set at the final outdoor concert before the winter rains.",
+        "kind": "live",
+        "download": "notDownloaded",
+        "durationSeconds": 4350,
+        "positionSeconds": 0,
+        "lastPlayedAt": "2026-04-08T18:30:00Z",
+        "shelf": "featured"
+      },
+      {
+        "title": "Slow Mornings",
+        "creator": "Ellis Morgan",
+        "description": "Songs Ellis collected for baking, reading and the first train out of the harbor.",
+        "kind": "playlist",
+        "download": "downloaded",
+        "durationSeconds": 5760,
+        "positionSeconds": 0,
+        "lastPlayedAt": "2026-04-08T18:30:00Z",
+        "shelf": "featured"
+      }
+    ]
+  },
+  "Playlist": {
+    "populated": [
+      {
+        "name": "Slow mornings",
+        "trackCount": 24,
+        "visibility": "private"
+      },
+      {
+        "name": "Low tide walks",
+        "trackCount": 18,
+        "visibility": "friends"
+      },
+      {
+        "name": "Studio after midnight",
+        "trackCount": 31,
+        "visibility": "public"
+      },
+      {
+        "name": "Field Notes in order",
+        "trackCount": 6,
+        "visibility": "private"
+      }
+    ],
+    "one": [
+      {
+        "name": "Slow mornings",
+        "trackCount": 24,
+        "visibility": "private"
+      }
+    ],
+    "long": [
+      {
+        "name": "Studio after midnight, quiet train rides and the long walk home by the harbor",
+        "trackCount": 24,
+        "visibility": "private"
+      }
+    ],
+    "none": [],
+    "created": [
+      {
+        "name": "Slow mornings",
+        "trackCount": 24,
+        "visibility": "private"
+      },
+      {
+        "name": "Low tide walks",
+        "trackCount": 18,
+        "visibility": "friends"
+      },
+      {
+        "name": "Studio after midnight",
+        "trackCount": 31,
+        "visibility": "public"
+      },
+      {
+        "name": "Field Notes in order",
+        "trackCount": 6,
+        "visibility": "private"
+      },
+      {
+        "name": "Low tide afternoons",
+        "trackCount": 0,
+        "visibility": "private"
+      }
+    ]
+  },
+  "Message": {
+    "populated": [
+      {
+        "author": "Dana",
+        "text": "The tide pool section is the best twenty minutes of the series.",
+        "mine": "theirs",
+        "sentAt": "2026-04-07T10:00:00Z"
+      },
+      {
+        "author": "Dr. Imani Cole",
+        "text": "Thank you. The recording took three low tides to get.",
+        "mine": "theirs",
+        "sentAt": "2026-04-07T10:00:00Z"
+      },
+      {
+        "author": "Ellis Morgan",
+        "text": "Is there a list of the species you mention in part two?",
+        "mine": "mine",
+        "sentAt": "2026-04-08T10:00:00Z"
+      },
+      {
+        "author": "Dr. Imani Cole",
+        "text": "Yes, it's linked in the episode notes.",
+        "mine": "theirs",
+        "sentAt": "2026-04-08T10:00:00Z"
+      }
+    ],
+    "one": [
+      {
+        "author": "Dana",
+        "text": "The tide pool section is the best twenty minutes of the series.",
+        "mine": "theirs",
+        "sentAt": "2026-04-07T10:00:00Z"
+      }
+    ],
+    "long": [
+      {
+        "author": "Dr. Imani Cole from the Riverside Coastal Field Research Station",
+        "text": "The species list includes the common shore crab, beadlet anemone and several kinds of periwinkle. I added notes on which animals were visible at each tide because the same pool looked quite different before sunrise. The episode notes also include the survey dates and the field guide we used to distinguish young shore crabs from the smaller swimming crabs. Please leave the animals in the water if you visit the site yourself.",
+        "mine": "theirs",
+        "sentAt": "2026-04-07T10:00:00Z"
+      }
+    ],
+    "none": [],
+    "commentSent": [
+      {
+        "author": "Dana",
+        "text": "The tide pool section is the best twenty minutes of the series.",
+        "mine": "theirs",
+        "sentAt": "2026-04-07T10:00:00Z"
+      },
+      {
+        "author": "Dr. Imani Cole",
+        "text": "Thank you. The recording took three low tides to get.",
+        "mine": "theirs",
+        "sentAt": "2026-04-07T10:00:00Z"
+      },
+      {
+        "author": "Ellis Morgan",
+        "text": "Is there a list of the species you mention in part two?",
+        "mine": "mine",
+        "sentAt": "2026-04-08T10:00:00Z"
+      },
+      {
+        "author": "Dr. Imani Cole",
+        "text": "Yes, it's linked in the episode notes.",
+        "mine": "theirs",
+        "sentAt": "2026-04-08T10:00:00Z"
+      },
+      {
+        "author": "Ellis Morgan",
+        "text": "Thank you for linking the species list. I will take it on our next low-tide walk.",
+        "sentAt": "2026-04-09T10:00:00Z",
+        "mine": "mine"
+      }
+    ]
+  },
+  "PlaylistDraft": {
+    "populated": [
+      {
+        "name": "Low tide afternoons",
+        "visibility": "private",
+        "offline": "off",
+        "appendPlayed": "off"
+      }
+    ],
+    "one": [
+      {
+        "name": "Low tide afternoons",
+        "visibility": "private",
+        "offline": "off",
+        "appendPlayed": "off"
+      }
+    ],
+    "none": [],
+    "long": [
+      {
+        "name": "Studio after midnight, quiet train rides and the long walk home by the harbor",
+        "visibility": "friends",
+        "offline": "on",
+        "appendPlayed": "off"
+      }
+    ],
+    "blank": [
+      {
+        "name": "",
+        "visibility": "private",
+        "offline": "off",
+        "appendPlayed": "off"
+      }
+    ]
+  },
+  "ListeningPreferences": {
+    "populated": [
+      {
+        "downloadWifi": "on",
+        "downloadCharging": "off",
+        "removeFinished": "off",
+        "rememberPosition": "on",
+        "visibility": "private"
+      }
+    ],
+    "one": [
+      {
+        "downloadWifi": "on",
+        "downloadCharging": "off",
+        "removeFinished": "off",
+        "rememberPosition": "on",
+        "visibility": "private"
+      }
+    ],
+    "none": []
+  },
+  "DownloadSelection": {
+    "populated": [
+      {
+        "count": 2
+      }
+    ],
+    "one": [
+      {
+        "count": 2
+      }
+    ],
+    "none": []
+  },
+  "CommentDraft": {
+    "populated": [
+      {
+        "text": "Thank you for linking the species list. I will take it on our next low-tide walk."
+      }
+    ],
+    "one": [
+      {
+        "text": "Thank you for linking the species list. I will take it on our next low-tide walk."
+      }
+    ],
+    "none": [],
+    "blank": [
+      {
+        "text": ""
+      }
+    ],
+    "long": [
+      {
+        "text": "Thank you for linking the species list. I will take it on our next low-tide walk. I also want to understand how the comparison changes if we use the same dates and conditions for each observation, so I have kept my original notes together here."
+      }
+    ]
+  }
+}

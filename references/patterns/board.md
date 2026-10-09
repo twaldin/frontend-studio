@@ -1,3 +1,15 @@
+---
+id: board
+scale: surface
+studio: boardLayout
+slots: {"required":["header","primary","state"],"optional":["toolbar","lanes","limits","detail","create","activity","actions"]}
+variants: [{"id":"columns","label":"Columns"},{"id":"swimlanes","label":"Swimlanes"},{"id":"grouped","label":"Grouped list"},{"id":"pipeline","label":"Pipeline"}]
+states: ["loading","populated","empty","emptyStage","noMatches","denied","failed","pending","confirmed","rejected","conflict","partial"]
+copy: ["title","move"]
+events: ["select","move","filter","create","cancel"]
+renderer: variants
+---
+
 # Board
 
 `id: board` · `scale: surface` · `studio: boardLayout` · `references checked: 2026-10-08`

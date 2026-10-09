@@ -1,3 +1,15 @@
+---
+id: question-pages
+scale: flow
+studio: null
+slots: {"required":["back","header","primary","actions","state"],"optional":["progress","context","save","leave","detail"]}
+variants: [{"id":"singleQuestion","label":"One question per page"},{"id":"questionGroup","label":"Related question group"},{"id":"branching","label":"Branching sequence"}]
+states: ["unanswered","editing","saving","validating","ready","invalid","partiallySaved","branchChanged","failed","offline","denied","unsuitable","resumed","submitted"]
+copy: ["back","continue"]
+events: ["edit","continue","back","save","leave","resume"]
+renderer: schematic
+---
+
 # Question pages
 
 `id: question-pages` · scale: flow · studio: no studio step · references checked: 2026-10-08

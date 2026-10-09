@@ -1,0 +1,1524 @@
+{
+  "CanvasBoard": {
+    "populated": [
+      {
+        "name": "Onboarding flow",
+        "owner": "Priya",
+        "frames": 12,
+        "status": "shared",
+        "updatedAt": "2026-10-08T11:58:00Z",
+        "revision": 18,
+        "pendingEdits": 0
+      },
+      {
+        "name": "Pricing page",
+        "owner": "Marcus",
+        "frames": 6,
+        "status": "inReview",
+        "updatedAt": "2026-10-08T11:00:00Z",
+        "revision": 18,
+        "pendingEdits": 0
+      },
+      {
+        "name": "Settings redesign",
+        "owner": "Dana",
+        "frames": 9,
+        "status": "draft",
+        "updatedAt": "2026-10-07T12:00:00Z",
+        "revision": 18,
+        "pendingEdits": 0
+      },
+      {
+        "name": "Checkout v2",
+        "owner": "Ines",
+        "frames": 14,
+        "status": "changesRequested",
+        "updatedAt": "2026-10-07T12:00:00Z",
+        "revision": 18,
+        "pendingEdits": 0
+      },
+      {
+        "name": "Icon set",
+        "owner": "Priya",
+        "frames": 3,
+        "status": "shared",
+        "updatedAt": "2026-10-05T12:00:00Z",
+        "revision": 18,
+        "pendingEdits": 0
+      },
+      {
+        "name": "Offsite brainstorm",
+        "owner": "Marcus",
+        "frames": 1,
+        "status": "archived",
+        "updatedAt": "2026-10-01T12:00:00Z",
+        "revision": 18,
+        "pendingEdits": 0
+      },
+      {
+        "name": "Welcome variants",
+        "owner": "Dana",
+        "frames": 12,
+        "status": "shared",
+        "updatedAt": "2026-10-01T12:00:00Z",
+        "revision": 18,
+        "pendingEdits": 0
+      },
+      {
+        "name": "Mobile account recovery",
+        "owner": "Ines",
+        "frames": 6,
+        "status": "inReview",
+        "updatedAt": "2026-09-30T12:00:00Z",
+        "revision": 18,
+        "pendingEdits": 0
+      },
+      {
+        "name": "Navigation concepts",
+        "owner": "Priya",
+        "frames": 9,
+        "status": "draft",
+        "updatedAt": "2026-09-29T12:00:00Z",
+        "revision": 18,
+        "pendingEdits": 0
+      },
+      {
+        "name": "Release notes layout",
+        "owner": "Marcus",
+        "frames": 14,
+        "status": "changesRequested",
+        "updatedAt": "2026-09-28T12:00:00Z",
+        "revision": 18,
+        "pendingEdits": 0
+      },
+      {
+        "name": "Search empty states",
+        "owner": "Dana",
+        "frames": 3,
+        "status": "shared",
+        "updatedAt": "2026-09-27T12:00:00Z",
+        "revision": 18,
+        "pendingEdits": 0
+      },
+      {
+        "name": "Team invite flow",
+        "owner": "Ines",
+        "frames": 1,
+        "status": "archived",
+        "updatedAt": "2026-09-26T12:00:00Z",
+        "revision": 18,
+        "pendingEdits": 0
+      },
+      {
+        "name": "Component audit",
+        "owner": "Priya",
+        "frames": 12,
+        "status": "shared",
+        "updatedAt": "2026-09-25T12:00:00Z",
+        "revision": 18,
+        "pendingEdits": 0
+      },
+      {
+        "name": "Notifications map",
+        "owner": "Marcus",
+        "frames": 6,
+        "status": "inReview",
+        "updatedAt": "2026-09-24T12:00:00Z",
+        "revision": 18,
+        "pendingEdits": 0
+      },
+      {
+        "name": "Support handoff",
+        "owner": "Dana",
+        "frames": 9,
+        "status": "draft",
+        "updatedAt": "2026-09-23T12:00:00Z",
+        "revision": 18,
+        "pendingEdits": 0
+      },
+      {
+        "name": "Data import journey",
+        "owner": "Ines",
+        "frames": 14,
+        "status": "changesRequested",
+        "updatedAt": "2026-09-22T12:00:00Z",
+        "revision": 18,
+        "pendingEdits": 0
+      },
+      {
+        "name": "Accessibility review",
+        "owner": "Priya",
+        "frames": 3,
+        "status": "shared",
+        "updatedAt": "2026-09-21T12:00:00Z",
+        "revision": 18,
+        "pendingEdits": 0
+      },
+      {
+        "name": "Tablet layouts",
+        "owner": "Marcus",
+        "frames": 1,
+        "status": "archived",
+        "updatedAt": "2026-09-20T12:00:00Z",
+        "revision": 18,
+        "pendingEdits": 0
+      },
+      {
+        "name": "Billing statements",
+        "owner": "Dana",
+        "frames": 12,
+        "status": "shared",
+        "updatedAt": "2026-09-19T12:00:00Z",
+        "revision": 18,
+        "pendingEdits": 0
+      },
+      {
+        "name": "Reading progress",
+        "owner": "Ines",
+        "frames": 6,
+        "status": "inReview",
+        "updatedAt": "2026-09-18T12:00:00Z",
+        "revision": 18,
+        "pendingEdits": 0
+      },
+      {
+        "name": "Content outline",
+        "owner": "Priya",
+        "frames": 9,
+        "status": "draft",
+        "updatedAt": "2026-09-17T12:00:00Z",
+        "revision": 18,
+        "pendingEdits": 0
+      },
+      {
+        "name": "Purchase receipts",
+        "owner": "Marcus",
+        "frames": 14,
+        "status": "changesRequested",
+        "updatedAt": "2026-09-16T12:00:00Z",
+        "revision": 18,
+        "pendingEdits": 0
+      },
+      {
+        "name": "Status indicators",
+        "owner": "Dana",
+        "frames": 3,
+        "status": "shared",
+        "updatedAt": "2026-09-15T12:00:00Z",
+        "revision": 18,
+        "pendingEdits": 0
+      },
+      {
+        "name": "Filter interactions",
+        "owner": "Ines",
+        "frames": 1,
+        "status": "archived",
+        "updatedAt": "2026-09-14T12:00:00Z",
+        "revision": 18,
+        "pendingEdits": 0
+      },
+      {
+        "name": "Profile controls",
+        "owner": "Priya",
+        "frames": 12,
+        "status": "shared",
+        "updatedAt": "2026-09-13T12:00:00Z",
+        "revision": 18,
+        "pendingEdits": 0
+      },
+      {
+        "name": "Export options",
+        "owner": "Marcus",
+        "frames": 6,
+        "status": "inReview",
+        "updatedAt": "2026-09-12T12:00:00Z",
+        "revision": 18,
+        "pendingEdits": 0
+      },
+      {
+        "name": "Localization checks",
+        "owner": "Dana",
+        "frames": 9,
+        "status": "draft",
+        "updatedAt": "2026-09-11T12:00:00Z",
+        "revision": 18,
+        "pendingEdits": 0
+      },
+      {
+        "name": "Permissions map",
+        "owner": "Ines",
+        "frames": 14,
+        "status": "changesRequested",
+        "updatedAt": "2026-09-10T12:00:00Z",
+        "revision": 18,
+        "pendingEdits": 0
+      },
+      {
+        "name": "Archive management",
+        "owner": "Priya",
+        "frames": 3,
+        "status": "shared",
+        "updatedAt": "2026-09-09T12:00:00Z",
+        "revision": 18,
+        "pendingEdits": 0
+      },
+      {
+        "name": "Shared components",
+        "owner": "Marcus",
+        "frames": 1,
+        "status": "archived",
+        "updatedAt": "2026-09-08T12:00:00Z",
+        "revision": 18,
+        "pendingEdits": 0
+      },
+      {
+        "name": "New user checklist",
+        "owner": "Dana",
+        "frames": 12,
+        "status": "shared",
+        "updatedAt": "2026-09-07T12:00:00Z",
+        "revision": 18,
+        "pendingEdits": 0
+      },
+      {
+        "name": "Offline behavior",
+        "owner": "Ines",
+        "frames": 6,
+        "status": "inReview",
+        "updatedAt": "2026-09-06T12:00:00Z",
+        "revision": 18,
+        "pendingEdits": 0
+      },
+      {
+        "name": "Keyboard actions",
+        "owner": "Priya",
+        "frames": 9,
+        "status": "draft",
+        "updatedAt": "2026-09-05T12:00:00Z",
+        "revision": 18,
+        "pendingEdits": 0
+      },
+      {
+        "name": "Project templates",
+        "owner": "Marcus",
+        "frames": 14,
+        "status": "changesRequested",
+        "updatedAt": "2026-09-04T12:00:00Z",
+        "revision": 18,
+        "pendingEdits": 0
+      },
+      {
+        "name": "Comments overview",
+        "owner": "Dana",
+        "frames": 3,
+        "status": "shared",
+        "updatedAt": "2026-09-03T12:00:00Z",
+        "revision": 18,
+        "pendingEdits": 0
+      },
+      {
+        "name": "Form field library",
+        "owner": "Ines",
+        "frames": 1,
+        "status": "archived",
+        "updatedAt": "2026-09-02T12:00:00Z",
+        "revision": 18,
+        "pendingEdits": 0
+      },
+      {
+        "name": "Layer naming pass",
+        "owner": "Priya",
+        "frames": 12,
+        "status": "shared",
+        "updatedAt": "2026-09-01T12:00:00Z",
+        "revision": 18,
+        "pendingEdits": 0
+      },
+      {
+        "name": "Contrast study",
+        "owner": "Marcus",
+        "frames": 6,
+        "status": "inReview",
+        "updatedAt": "2026-08-31T12:00:00Z",
+        "revision": 18,
+        "pendingEdits": 0
+      },
+      {
+        "name": "Motion storyboard",
+        "owner": "Dana",
+        "frames": 9,
+        "status": "draft",
+        "updatedAt": "2026-08-30T12:00:00Z",
+        "revision": 18,
+        "pendingEdits": 0
+      },
+      {
+        "name": "Launch review",
+        "owner": "Ines",
+        "frames": 14,
+        "status": "changesRequested",
+        "updatedAt": "2026-08-29T12:00:00Z",
+        "revision": 18,
+        "pendingEdits": 0
+      },
+      {
+        "name": "Docs navigation",
+        "owner": "Priya",
+        "frames": 3,
+        "status": "shared",
+        "updatedAt": "2026-08-28T12:00:00Z",
+        "revision": 18,
+        "pendingEdits": 0
+      },
+      {
+        "name": "Pricing comparison",
+        "owner": "Marcus",
+        "frames": 1,
+        "status": "archived",
+        "updatedAt": "2026-08-27T12:00:00Z",
+        "revision": 18,
+        "pendingEdits": 0
+      },
+      {
+        "name": "Help center structure",
+        "owner": "Dana",
+        "frames": 12,
+        "status": "shared",
+        "updatedAt": "2026-08-26T12:00:00Z",
+        "revision": 18,
+        "pendingEdits": 0
+      },
+      {
+        "name": "Long content stress cases",
+        "owner": "Ines",
+        "frames": 6,
+        "status": "inReview",
+        "updatedAt": "2026-08-25T12:00:00Z",
+        "revision": 18,
+        "pendingEdits": 0
+      },
+      {
+        "name": "Catalog browsing",
+        "owner": "Priya",
+        "frames": 9,
+        "status": "draft",
+        "updatedAt": "2026-08-24T12:00:00Z",
+        "revision": 18,
+        "pendingEdits": 0
+      },
+      {
+        "name": "Account preferences",
+        "owner": "Marcus",
+        "frames": 14,
+        "status": "changesRequested",
+        "updatedAt": "2026-08-23T12:00:00Z",
+        "revision": 18,
+        "pendingEdits": 0
+      },
+      {
+        "name": "Toolbar arrangements",
+        "owner": "Dana",
+        "frames": 3,
+        "status": "shared",
+        "updatedAt": "2026-08-22T12:00:00Z",
+        "revision": 18,
+        "pendingEdits": 0
+      },
+      {
+        "name": "Phone landscape review",
+        "owner": "Ines",
+        "frames": 1,
+        "status": "archived",
+        "updatedAt": "2026-08-21T12:00:00Z",
+        "revision": 18,
+        "pendingEdits": 0
+      }
+    ],
+    "one": [
+      {
+        "name": "Onboarding flow",
+        "owner": "Priya",
+        "frames": 12,
+        "status": "shared",
+        "updatedAt": "2026-10-08T11:58:00Z",
+        "revision": 18,
+        "pendingEdits": 0
+      }
+    ],
+    "long": [
+      {
+        "name": "Onboarding and account recovery for the neighborhood planning service",
+        "owner": "Priya",
+        "frames": 12,
+        "status": "shared",
+        "updatedAt": "2026-10-08T11:58:00Z",
+        "revision": 18,
+        "pendingEdits": 0
+      }
+    ],
+    "none": [],
+    "draft": [
+      {
+        "name": "Autumn launch flow",
+        "owner": "Priya",
+        "frames": 0,
+        "status": "draft",
+        "updatedAt": "2026-10-08T11:58:00Z",
+        "revision": 0,
+        "pendingEdits": 0
+      }
+    ],
+    "created": [
+      {
+        "name": "Autumn launch flow",
+        "owner": "Priya",
+        "frames": 0,
+        "status": "draft",
+        "updatedAt": "2026-10-08T12:00:00Z",
+        "revision": 1,
+        "pendingEdits": 0
+      }
+    ],
+    "saving": [
+      {
+        "name": "Onboarding flow",
+        "owner": "Priya",
+        "frames": 12,
+        "status": "shared",
+        "updatedAt": "2026-10-08T11:58:00Z",
+        "revision": 18,
+        "pendingEdits": 3
+      }
+    ],
+    "synced": [
+      {
+        "name": "Onboarding flow",
+        "owner": "Priya",
+        "frames": 12,
+        "status": "shared",
+        "updatedAt": "2026-10-08T12:00:00Z",
+        "revision": 19,
+        "pendingEdits": 0
+      }
+    ],
+    "deleted": [
+      {
+        "name": "Onboarding flow",
+        "owner": "Priya",
+        "frames": 11,
+        "status": "shared",
+        "updatedAt": "2026-10-08T12:00:00Z",
+        "revision": 20,
+        "pendingEdits": 0
+      }
+    ],
+    "firstLayer": [
+      {
+        "name": "Autumn launch flow",
+        "owner": "Priya",
+        "frames": 1,
+        "status": "draft",
+        "updatedAt": "2026-10-08T12:00:00Z",
+        "revision": 2,
+        "pendingEdits": 0
+      }
+    ]
+  },
+  "Layer": {
+    "populated": [
+      {
+        "name": "Logo",
+        "frame": "Welcome",
+        "description": "The small geometric mark anchors the Welcome frame.",
+        "body": "",
+        "kind": "shape",
+        "visibility": "visible",
+        "x": 0,
+        "y": 0,
+        "width": 40,
+        "height": 40,
+        "fontSize": 16,
+        "resizing": "fixed",
+        "clipContent": "clip",
+        "includeInExport": "include",
+        "locked": "locked"
+      },
+      {
+        "name": "Headline",
+        "frame": "Welcome",
+        "description": "The headline introduces the weekly planning service.",
+        "body": "Plan your week, together.",
+        "kind": "text",
+        "visibility": "visible",
+        "x": 180,
+        "y": 0,
+        "width": 342,
+        "height": 64,
+        "fontSize": 26,
+        "resizing": "hug",
+        "clipContent": "clip",
+        "includeInExport": "include",
+        "locked": "unlocked"
+      },
+      {
+        "name": "Hero art",
+        "frame": "Welcome",
+        "description": "The illustration gives the welcome screen a quiet focal point.",
+        "body": "",
+        "kind": "image",
+        "visibility": "visible",
+        "x": 360,
+        "y": 0,
+        "width": 342,
+        "height": 220,
+        "fontSize": 16,
+        "resizing": "fixed",
+        "clipContent": "clip",
+        "includeInExport": "include",
+        "locked": "unlocked"
+      },
+      {
+        "name": "Get started button",
+        "frame": "Welcome",
+        "description": "The primary action sits after the welcome explanation.",
+        "body": "Get started",
+        "kind": "button",
+        "visibility": "visible",
+        "x": 540,
+        "y": 0,
+        "width": 342,
+        "height": 52,
+        "fontSize": 16,
+        "resizing": "fixed",
+        "clipContent": "clip",
+        "includeInExport": "include",
+        "locked": "unlocked"
+      },
+      {
+        "name": "Email field",
+        "frame": "Sign in",
+        "description": "The email input aligns with the password input below.",
+        "body": "",
+        "kind": "input",
+        "visibility": "visible",
+        "x": 0,
+        "y": 240,
+        "width": 342,
+        "height": 48,
+        "fontSize": 16,
+        "resizing": "fixed",
+        "clipContent": "clip",
+        "includeInExport": "include",
+        "locked": "unlocked"
+      },
+      {
+        "name": "Password field",
+        "frame": "Sign in",
+        "description": "The password input uses the same spacing as the email input.",
+        "body": "",
+        "kind": "input",
+        "visibility": "visible",
+        "x": 180,
+        "y": 240,
+        "width": 342,
+        "height": 48,
+        "fontSize": 16,
+        "resizing": "fixed",
+        "clipContent": "clip",
+        "includeInExport": "include",
+        "locked": "unlocked"
+      },
+      {
+        "name": "Continue button",
+        "frame": "Sign in",
+        "description": "The continuation action remains reachable above the keyboard.",
+        "body": "Continue",
+        "kind": "button",
+        "visibility": "visible",
+        "x": 360,
+        "y": 240,
+        "width": 342,
+        "height": 52,
+        "fontSize": 16,
+        "resizing": "fixed",
+        "clipContent": "clip",
+        "includeInExport": "include",
+        "locked": "unlocked"
+      },
+      {
+        "name": "Returning users",
+        "frame": "Flow notes",
+        "description": "This note explains the shorter route for returning members.",
+        "body": "Skip this screen for returning users.",
+        "kind": "note",
+        "visibility": "visible",
+        "x": 540,
+        "y": 240,
+        "width": 160,
+        "height": 96,
+        "fontSize": 16,
+        "resizing": "hug",
+        "clipContent": "overflow",
+        "includeInExport": "exclude",
+        "locked": "unlocked"
+      },
+      {
+        "name": "Notifications",
+        "frame": "Flow notes",
+        "description": "This note delays notifications until a useful moment.",
+        "body": "Ask for notifications after day 7.",
+        "kind": "note",
+        "visibility": "hidden",
+        "x": 0,
+        "y": 480,
+        "width": 160,
+        "height": 96,
+        "fontSize": 16,
+        "resizing": "hug",
+        "clipContent": "overflow",
+        "includeInExport": "exclude",
+        "locked": "unlocked"
+      },
+      {
+        "name": "Link to Sign in",
+        "frame": "Flow notes",
+        "description": "This connector links the welcome route to the sign-in frame.",
+        "body": "",
+        "kind": "connector",
+        "visibility": "visible",
+        "x": 180,
+        "y": 480,
+        "width": 180,
+        "height": 2,
+        "fontSize": 16,
+        "resizing": "fixed",
+        "clipContent": "clip",
+        "includeInExport": "include",
+        "locked": "unlocked"
+      }
+    ],
+    "one": [
+      {
+        "name": "Get started button",
+        "frame": "Welcome",
+        "description": "The primary action sits after the welcome explanation.",
+        "body": "Get started",
+        "kind": "button",
+        "visibility": "visible",
+        "x": 540,
+        "y": 0,
+        "width": 342,
+        "height": 52,
+        "fontSize": 16,
+        "resizing": "fixed",
+        "clipContent": "clip",
+        "includeInExport": "include",
+        "locked": "unlocked"
+      }
+    ],
+    "long": [
+      {
+        "name": "Get started with a shared plan for the autumn neighborhood gathering",
+        "frame": "Welcome",
+        "description": "This action opens the first planning step after the visitor has read the welcome explanation. Keep it in the same place on the narrowest screen, and preserve enough room for a translated label to wrap without covering the illustration.",
+        "body": "Start planning the autumn gathering with everyone in your neighborhood",
+        "kind": "button",
+        "visibility": "visible",
+        "x": 540,
+        "y": 0,
+        "width": 342,
+        "height": 52,
+        "fontSize": 16,
+        "resizing": "fixed",
+        "clipContent": "clip",
+        "includeInExport": "include",
+        "locked": "unlocked"
+      }
+    ],
+    "none": [],
+    "edited": [
+      {
+        "name": "Logo",
+        "frame": "Welcome",
+        "description": "The small geometric mark anchors the Welcome frame.",
+        "body": "",
+        "kind": "shape",
+        "visibility": "visible",
+        "x": 0,
+        "y": 0,
+        "width": 40,
+        "height": 40,
+        "fontSize": 16,
+        "resizing": "fixed",
+        "clipContent": "clip",
+        "includeInExport": "include",
+        "locked": "locked"
+      },
+      {
+        "name": "Headline",
+        "frame": "Welcome",
+        "description": "The headline introduces the weekly planning service.",
+        "body": "Plan your week, together.",
+        "kind": "text",
+        "visibility": "visible",
+        "x": 180,
+        "y": 0,
+        "width": 342,
+        "height": 64,
+        "fontSize": 26,
+        "resizing": "hug",
+        "clipContent": "clip",
+        "includeInExport": "include",
+        "locked": "unlocked"
+      },
+      {
+        "name": "Hero art",
+        "frame": "Welcome",
+        "description": "The illustration gives the welcome screen a quiet focal point.",
+        "body": "",
+        "kind": "image",
+        "visibility": "visible",
+        "x": 360,
+        "y": 0,
+        "width": 342,
+        "height": 220,
+        "fontSize": 16,
+        "resizing": "fixed",
+        "clipContent": "clip",
+        "includeInExport": "include",
+        "locked": "unlocked"
+      },
+      {
+        "name": "Get started button",
+        "frame": "Welcome",
+        "description": "The primary action sits after the welcome explanation.",
+        "body": "Plan your first week",
+        "kind": "button",
+        "visibility": "visible",
+        "x": 540,
+        "y": 0,
+        "width": 342,
+        "height": 52,
+        "fontSize": 16,
+        "resizing": "fixed",
+        "clipContent": "clip",
+        "includeInExport": "include",
+        "locked": "unlocked"
+      },
+      {
+        "name": "Email field",
+        "frame": "Sign in",
+        "description": "The email input aligns with the password input below.",
+        "body": "",
+        "kind": "input",
+        "visibility": "visible",
+        "x": 0,
+        "y": 240,
+        "width": 342,
+        "height": 48,
+        "fontSize": 16,
+        "resizing": "fixed",
+        "clipContent": "clip",
+        "includeInExport": "include",
+        "locked": "unlocked"
+      },
+      {
+        "name": "Password field",
+        "frame": "Sign in",
+        "description": "The password input uses the same spacing as the email input.",
+        "body": "",
+        "kind": "input",
+        "visibility": "visible",
+        "x": 180,
+        "y": 240,
+        "width": 342,
+        "height": 48,
+        "fontSize": 16,
+        "resizing": "fixed",
+        "clipContent": "clip",
+        "includeInExport": "include",
+        "locked": "unlocked"
+      },
+      {
+        "name": "Continue button",
+        "frame": "Sign in",
+        "description": "The continuation action remains reachable above the keyboard.",
+        "body": "Continue",
+        "kind": "button",
+        "visibility": "visible",
+        "x": 360,
+        "y": 240,
+        "width": 342,
+        "height": 52,
+        "fontSize": 16,
+        "resizing": "fixed",
+        "clipContent": "clip",
+        "includeInExport": "include",
+        "locked": "unlocked"
+      },
+      {
+        "name": "Returning users",
+        "frame": "Flow notes",
+        "description": "This note explains the shorter route for returning members.",
+        "body": "Skip this screen for returning users.",
+        "kind": "note",
+        "visibility": "visible",
+        "x": 540,
+        "y": 240,
+        "width": 160,
+        "height": 96,
+        "fontSize": 16,
+        "resizing": "hug",
+        "clipContent": "overflow",
+        "includeInExport": "exclude",
+        "locked": "unlocked"
+      },
+      {
+        "name": "Notifications",
+        "frame": "Flow notes",
+        "description": "This note delays notifications until a useful moment.",
+        "body": "Ask for notifications after day 7.",
+        "kind": "note",
+        "visibility": "hidden",
+        "x": 0,
+        "y": 480,
+        "width": 160,
+        "height": 96,
+        "fontSize": 16,
+        "resizing": "hug",
+        "clipContent": "overflow",
+        "includeInExport": "exclude",
+        "locked": "unlocked"
+      },
+      {
+        "name": "Link to Sign in",
+        "frame": "Flow notes",
+        "description": "This connector links the welcome route to the sign-in frame.",
+        "body": "",
+        "kind": "connector",
+        "visibility": "visible",
+        "x": 180,
+        "y": 480,
+        "width": 180,
+        "height": 2,
+        "fontSize": 16,
+        "resizing": "fixed",
+        "clipContent": "clip",
+        "includeInExport": "include",
+        "locked": "unlocked"
+      }
+    ],
+    "savedLayer": [
+      {
+        "name": "Get started button",
+        "frame": "Welcome",
+        "description": "The primary action sits after the welcome explanation.",
+        "body": "Plan your first week",
+        "kind": "button",
+        "visibility": "visible",
+        "x": 540,
+        "y": 0,
+        "width": 342,
+        "height": 52,
+        "fontSize": 16,
+        "resizing": "fixed",
+        "clipContent": "clip",
+        "includeInExport": "include",
+        "locked": "unlocked"
+      }
+    ],
+    "deleted": [
+      {
+        "name": "Email field",
+        "frame": "Sign in",
+        "description": "The email input aligns with the password input below.",
+        "body": "",
+        "kind": "input",
+        "visibility": "visible",
+        "x": 0,
+        "y": 240,
+        "width": 342,
+        "height": 48,
+        "fontSize": 16,
+        "resizing": "fixed",
+        "clipContent": "clip",
+        "includeInExport": "include",
+        "locked": "unlocked"
+      },
+      {
+        "name": "Password field",
+        "frame": "Sign in",
+        "description": "The password input uses the same spacing as the email input.",
+        "body": "",
+        "kind": "input",
+        "visibility": "visible",
+        "x": 180,
+        "y": 240,
+        "width": 342,
+        "height": 48,
+        "fontSize": 16,
+        "resizing": "fixed",
+        "clipContent": "clip",
+        "includeInExport": "include",
+        "locked": "unlocked"
+      },
+      {
+        "name": "Continue button",
+        "frame": "Sign in",
+        "description": "The continuation action remains reachable above the keyboard.",
+        "body": "Continue",
+        "kind": "button",
+        "visibility": "visible",
+        "x": 360,
+        "y": 240,
+        "width": 342,
+        "height": 52,
+        "fontSize": 16,
+        "resizing": "fixed",
+        "clipContent": "clip",
+        "includeInExport": "include",
+        "locked": "unlocked"
+      },
+      {
+        "name": "Returning users",
+        "frame": "Flow notes",
+        "description": "This note explains the shorter route for returning members.",
+        "body": "Skip this screen for returning users.",
+        "kind": "note",
+        "visibility": "visible",
+        "x": 540,
+        "y": 240,
+        "width": 160,
+        "height": 96,
+        "fontSize": 16,
+        "resizing": "hug",
+        "clipContent": "overflow",
+        "includeInExport": "exclude",
+        "locked": "unlocked"
+      },
+      {
+        "name": "Notifications",
+        "frame": "Flow notes",
+        "description": "This note delays notifications until a useful moment.",
+        "body": "Ask for notifications after day 7.",
+        "kind": "note",
+        "visibility": "hidden",
+        "x": 0,
+        "y": 480,
+        "width": 160,
+        "height": 96,
+        "fontSize": 16,
+        "resizing": "hug",
+        "clipContent": "overflow",
+        "includeInExport": "exclude",
+        "locked": "unlocked"
+      },
+      {
+        "name": "Link to Sign in",
+        "frame": "Flow notes",
+        "description": "This connector links the welcome route to the sign-in frame.",
+        "body": "",
+        "kind": "connector",
+        "visibility": "visible",
+        "x": 180,
+        "y": 480,
+        "width": 180,
+        "height": 2,
+        "fontSize": 16,
+        "resizing": "fixed",
+        "clipContent": "clip",
+        "includeInExport": "include",
+        "locked": "unlocked"
+      }
+    ],
+    "new": [
+      {
+        "name": "First screen",
+        "frame": "Autumn launch flow",
+        "description": "The opening screen for the autumn neighborhood gathering.",
+        "body": "Plan the autumn gathering together.",
+        "kind": "text",
+        "visibility": "visible",
+        "x": 540,
+        "y": 0,
+        "width": 342,
+        "height": 80,
+        "fontSize": 16,
+        "resizing": "hug",
+        "clipContent": "clip",
+        "includeInExport": "include",
+        "locked": "unlocked"
+      }
+    ],
+    "created": [
+      {
+        "name": "First screen",
+        "frame": "Autumn launch flow",
+        "description": "The opening screen for the autumn neighborhood gathering.",
+        "body": "Plan the autumn gathering together.",
+        "kind": "text",
+        "visibility": "visible",
+        "x": 540,
+        "y": 0,
+        "width": 342,
+        "height": 80,
+        "fontSize": 16,
+        "resizing": "hug",
+        "clipContent": "clip",
+        "includeInExport": "include",
+        "locked": "unlocked"
+      }
+    ],
+    "commentLayer": [
+      {
+        "name": "Continue button",
+        "frame": "Sign in",
+        "description": "The continuation action remains reachable above the keyboard.",
+        "body": "Continue",
+        "kind": "button",
+        "visibility": "visible",
+        "x": 360,
+        "y": 240,
+        "width": 342,
+        "height": 52,
+        "fontSize": 16,
+        "resizing": "fixed",
+        "clipContent": "clip",
+        "includeInExport": "include",
+        "locked": "unlocked"
+      }
+    ],
+    "commentLayerLong": [
+      {
+        "name": "Continue to the neighborhood plan after entering your sign-in details",
+        "frame": "Sign in",
+        "description": "Keep the continuation action above the on-screen keyboard so a member can submit their sign-in details without scrolling away from the fields. Preserve room for an error message directly below each input.",
+        "body": "Continue to the neighborhood’s shared autumn gathering plan",
+        "kind": "button",
+        "visibility": "visible",
+        "x": 360,
+        "y": 240,
+        "width": 342,
+        "height": 52,
+        "fontSize": 16,
+        "resizing": "fixed",
+        "clipContent": "clip",
+        "includeInExport": "include",
+        "locked": "unlocked"
+      }
+    ],
+    "reviewSaved": [
+      {
+        "name": "Continue button",
+        "frame": "Sign in",
+        "description": "The continuation action remains reachable above the keyboard.",
+        "body": "Continue",
+        "kind": "button",
+        "visibility": "visible",
+        "x": 360,
+        "y": 196,
+        "width": 342,
+        "height": 52,
+        "fontSize": 16,
+        "resizing": "fixed",
+        "clipContent": "clip",
+        "includeInExport": "include",
+        "locked": "unlocked"
+      }
+    ],
+    "reviewEdited": [
+      {
+        "name": "Logo",
+        "frame": "Welcome",
+        "description": "The small geometric mark anchors the Welcome frame.",
+        "body": "",
+        "kind": "shape",
+        "visibility": "visible",
+        "x": 0,
+        "y": 0,
+        "width": 40,
+        "height": 40,
+        "fontSize": 16,
+        "resizing": "fixed",
+        "clipContent": "clip",
+        "includeInExport": "include",
+        "locked": "locked"
+      },
+      {
+        "name": "Headline",
+        "frame": "Welcome",
+        "description": "The headline introduces the weekly planning service.",
+        "body": "Plan your week, together.",
+        "kind": "text",
+        "visibility": "visible",
+        "x": 180,
+        "y": 0,
+        "width": 342,
+        "height": 64,
+        "fontSize": 26,
+        "resizing": "hug",
+        "clipContent": "clip",
+        "includeInExport": "include",
+        "locked": "unlocked"
+      },
+      {
+        "name": "Hero art",
+        "frame": "Welcome",
+        "description": "The illustration gives the welcome screen a quiet focal point.",
+        "body": "",
+        "kind": "image",
+        "visibility": "visible",
+        "x": 360,
+        "y": 0,
+        "width": 342,
+        "height": 220,
+        "fontSize": 16,
+        "resizing": "fixed",
+        "clipContent": "clip",
+        "includeInExport": "include",
+        "locked": "unlocked"
+      },
+      {
+        "name": "Get started button",
+        "frame": "Welcome",
+        "description": "The primary action sits after the welcome explanation.",
+        "body": "Get started",
+        "kind": "button",
+        "visibility": "visible",
+        "x": 540,
+        "y": 0,
+        "width": 342,
+        "height": 52,
+        "fontSize": 16,
+        "resizing": "fixed",
+        "clipContent": "clip",
+        "includeInExport": "include",
+        "locked": "unlocked"
+      },
+      {
+        "name": "Email field",
+        "frame": "Sign in",
+        "description": "The email input aligns with the password input below.",
+        "body": "",
+        "kind": "input",
+        "visibility": "visible",
+        "x": 0,
+        "y": 240,
+        "width": 342,
+        "height": 48,
+        "fontSize": 16,
+        "resizing": "fixed",
+        "clipContent": "clip",
+        "includeInExport": "include",
+        "locked": "unlocked"
+      },
+      {
+        "name": "Password field",
+        "frame": "Sign in",
+        "description": "The password input uses the same spacing as the email input.",
+        "body": "",
+        "kind": "input",
+        "visibility": "visible",
+        "x": 180,
+        "y": 240,
+        "width": 342,
+        "height": 48,
+        "fontSize": 16,
+        "resizing": "fixed",
+        "clipContent": "clip",
+        "includeInExport": "include",
+        "locked": "unlocked"
+      },
+      {
+        "name": "Continue button",
+        "frame": "Sign in",
+        "description": "The continuation action remains reachable above the keyboard.",
+        "body": "Continue",
+        "kind": "button",
+        "visibility": "visible",
+        "x": 360,
+        "y": 196,
+        "width": 342,
+        "height": 52,
+        "fontSize": 16,
+        "resizing": "fixed",
+        "clipContent": "clip",
+        "includeInExport": "include",
+        "locked": "unlocked"
+      },
+      {
+        "name": "Returning users",
+        "frame": "Flow notes",
+        "description": "This note explains the shorter route for returning members.",
+        "body": "Skip this screen for returning users.",
+        "kind": "note",
+        "visibility": "visible",
+        "x": 540,
+        "y": 240,
+        "width": 160,
+        "height": 96,
+        "fontSize": 16,
+        "resizing": "hug",
+        "clipContent": "overflow",
+        "includeInExport": "exclude",
+        "locked": "unlocked"
+      },
+      {
+        "name": "Notifications",
+        "frame": "Flow notes",
+        "description": "This note delays notifications until a useful moment.",
+        "body": "Ask for notifications after day 7.",
+        "kind": "note",
+        "visibility": "hidden",
+        "x": 0,
+        "y": 480,
+        "width": 160,
+        "height": 96,
+        "fontSize": 16,
+        "resizing": "hug",
+        "clipContent": "overflow",
+        "includeInExport": "exclude",
+        "locked": "unlocked"
+      },
+      {
+        "name": "Link to Sign in",
+        "frame": "Flow notes",
+        "description": "This connector links the welcome route to the sign-in frame.",
+        "body": "",
+        "kind": "connector",
+        "visibility": "visible",
+        "x": 180,
+        "y": 480,
+        "width": 180,
+        "height": 2,
+        "fontSize": 16,
+        "resizing": "fixed",
+        "clipContent": "clip",
+        "includeInExport": "include",
+        "locked": "unlocked"
+      }
+    ]
+  },
+  "Comment": {
+    "populated": [
+      {
+        "author": "Priya",
+        "text": "Can the continue button stay visible when the keyboard opens?",
+        "mine": "theirs",
+        "sentAt": "2026-10-08T10:12:00Z",
+        "layerName": "Continue button",
+        "status": "open",
+        "delivery": "sent"
+      },
+      {
+        "author": "Ines",
+        "text": "Good catch. I'll pin it to the bottom of the frame.",
+        "mine": "mine",
+        "sentAt": "2026-10-08T10:14:00Z",
+        "layerName": "Continue button",
+        "status": "open",
+        "delivery": "sent"
+      },
+      {
+        "author": "Marcus",
+        "text": "The hero crops at 320 px wide. Should it scale instead?",
+        "mine": "theirs",
+        "sentAt": "2026-10-08T10:20:00Z",
+        "layerName": "Hero art",
+        "status": "open",
+        "delivery": "sent"
+      },
+      {
+        "author": "Ines",
+        "text": "It scales now. Take another look at the Welcome frame.",
+        "mine": "mine",
+        "sentAt": "2026-10-08T10:31:00Z",
+        "layerName": "Hero art",
+        "status": "open",
+        "delivery": "sent"
+      }
+    ],
+    "one": [
+      {
+        "author": "Priya",
+        "text": "Can the continue button stay visible when the keyboard opens?",
+        "mine": "theirs",
+        "sentAt": "2026-10-08T10:12:00Z",
+        "layerName": "Continue button",
+        "status": "open",
+        "delivery": "sent"
+      }
+    ],
+    "long": [
+      {
+        "author": "Priya of the neighborhood planning accessibility review group",
+        "text": "Can the continue button stay visible when the keyboard opens on a narrow phone? The current frame gives the email and password fields enough room, but the primary action moves below the visible area. Please keep the action reachable without hiding either field or moving the error message away from its input.",
+        "mine": "theirs",
+        "sentAt": "2026-10-08T10:12:00Z",
+        "layerName": "Continue to the neighborhood plan after entering your sign-in details",
+        "status": "open",
+        "delivery": "sent"
+      }
+    ],
+    "none": [],
+    "resolved": [
+      {
+        "author": "Priya",
+        "text": "Can the continue button stay visible when the keyboard opens?",
+        "mine": "theirs",
+        "sentAt": "2026-10-08T10:12:00Z",
+        "layerName": "Continue button",
+        "status": "resolved",
+        "delivery": "sent"
+      },
+      {
+        "author": "Ines",
+        "text": "Good catch. I'll pin it to the bottom of the frame.",
+        "mine": "mine",
+        "sentAt": "2026-10-08T10:14:00Z",
+        "layerName": "Continue button",
+        "status": "resolved",
+        "delivery": "sent"
+      },
+      {
+        "author": "Marcus",
+        "text": "The hero crops at 320 px wide. Should it scale instead?",
+        "mine": "theirs",
+        "sentAt": "2026-10-08T10:20:00Z",
+        "layerName": "Hero art",
+        "status": "open",
+        "delivery": "sent"
+      },
+      {
+        "author": "Ines",
+        "text": "It scales now. Take another look at the Welcome frame.",
+        "mine": "mine",
+        "sentAt": "2026-10-08T10:31:00Z",
+        "layerName": "Hero art",
+        "status": "open",
+        "delivery": "sent"
+      }
+    ],
+    "sending": [
+      {
+        "author": "Priya",
+        "text": "Can the continue button stay visible when the keyboard opens?",
+        "mine": "theirs",
+        "sentAt": "2026-10-08T10:12:00Z",
+        "layerName": "Continue button",
+        "status": "open",
+        "delivery": "sent"
+      },
+      {
+        "author": "Ines",
+        "text": "Good catch. I'll pin it to the bottom of the frame.",
+        "mine": "mine",
+        "sentAt": "2026-10-08T10:14:00Z",
+        "layerName": "Continue button",
+        "status": "open",
+        "delivery": "sent"
+      },
+      {
+        "author": "Marcus",
+        "text": "The hero crops at 320 px wide. Should it scale instead?",
+        "mine": "theirs",
+        "sentAt": "2026-10-08T10:20:00Z",
+        "layerName": "Hero art",
+        "status": "open",
+        "delivery": "sent"
+      },
+      {
+        "author": "Ines",
+        "text": "It scales now. Take another look at the Welcome frame.",
+        "mine": "mine",
+        "sentAt": "2026-10-08T10:31:00Z",
+        "layerName": "Hero art",
+        "status": "open",
+        "delivery": "pending"
+      }
+    ],
+    "sendFailed": [
+      {
+        "author": "Priya",
+        "text": "Can the continue button stay visible when the keyboard opens?",
+        "mine": "theirs",
+        "sentAt": "2026-10-08T10:12:00Z",
+        "layerName": "Continue button",
+        "status": "open",
+        "delivery": "sent"
+      },
+      {
+        "author": "Ines",
+        "text": "Good catch. I'll pin it to the bottom of the frame.",
+        "mine": "mine",
+        "sentAt": "2026-10-08T10:14:00Z",
+        "layerName": "Continue button",
+        "status": "open",
+        "delivery": "sent"
+      },
+      {
+        "author": "Marcus",
+        "text": "The hero crops at 320 px wide. Should it scale instead?",
+        "mine": "theirs",
+        "sentAt": "2026-10-08T10:20:00Z",
+        "layerName": "Hero art",
+        "status": "open",
+        "delivery": "sent"
+      },
+      {
+        "author": "Ines",
+        "text": "It scales now. Take another look at the Welcome frame.",
+        "mine": "mine",
+        "sentAt": "2026-10-08T10:31:00Z",
+        "layerName": "Hero art",
+        "status": "open",
+        "delivery": "failed"
+      }
+    ]
+  },
+  "FrameSelection": {
+    "populated": [
+      {
+        "name": "Welcome",
+        "layerCount": 4
+      }
+    ],
+    "one": [
+      {
+        "name": "Welcome",
+        "layerCount": 4
+      }
+    ],
+    "long": [
+      {
+        "name": "Welcome and orientation for the autumn neighborhood gathering",
+        "layerCount": 4
+      }
+    ],
+    "none": []
+  },
+  "BoardInvitation": {
+    "populated": [
+      {
+        "recipientName": "Dana",
+        "boardName": "Onboarding flow",
+        "access": "comment"
+      }
+    ],
+    "one": [
+      {
+        "recipientName": "Dana",
+        "boardName": "Onboarding flow",
+        "access": "comment"
+      }
+    ],
+    "long": [
+      {
+        "recipientName": "Dana of the neighborhood planning accessibility review group",
+        "boardName": "Onboarding flow",
+        "access": "comment"
+      }
+    ],
+    "none": []
+  }
+}

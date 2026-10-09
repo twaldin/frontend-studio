@@ -1,3 +1,15 @@
+---
+id: layer-arrival
+scale: interaction
+studio: layerArrival
+slots: {"required":[],"optional":["detail","confirmation","menu"]}
+variants: [{"id":"cut","label":"Cut"},{"id":"fade","label":"Fade"},{"id":"anchored","label":"Grow from the trigger"},{"id":"rise","label":"Rise"},{"id":"reveal","label":"Reveal"}]
+states: ["closed","opening","open","closing"]
+copy: []
+events: ["open","close","interrupt"]
+renderer: variants
+---
+
 # Layer arrival
 
 `id: layer-arrival` · `scale: interaction` · `studio: layerArrival` · `references checked: 2026-10-08`

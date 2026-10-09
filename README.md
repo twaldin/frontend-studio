@@ -4,10 +4,12 @@ A reusable agent skill and live React studio for defining or rebuilding a produc
 
 Frontend Studio supports two paths:
 
-- **New product:** product grill → MVP cut → copy deck → visual grill → build.
-- **Existing frontend:** product recovery → MVP cut → live audit → copy rebuild → visual grill → clean rebuild.
+- **New product:** product grill → checked model and MVP cut → keyed copy and fixtures → visual grill → build.
+- **Existing frontend:** product recovery → checked model and MVP cut → live audit → copy/fixture rebuild → visual grill → clean rebuild.
 
 The studio renders every visual choice against the product's real content. The walk opens with the product's archetype (workspace, feed, store, course or reader, media library, game companion, editor, conversation or utility), which sets the home surface and sample content; then a reference and a look, followed by frame, surfaces, tokens, components, interaction and landing. Each decision is a step with a few composable options; the user confirms or departs from the defaults, records what no option offers, and exports theme variables, selected patterns, next-round notes and component configuration. Reference presets are decision systems based on structural product patterns, not templates or branded copies.
+
+**Model tooling, current studio:** The product model, pattern headers, checker, sample definitions and grill workflow define and check product files. The current studio still uses its fixed catalog, `content.json` input and saved walks. It does not load product models, generate their walk, edit deck keys in Copy mode or provide a model-driven **Every screen** page. Capture and export are not model-aware. Follow the current content-loading and export instructions below.
 
 ## Install
 
@@ -22,9 +24,12 @@ Or keep the clone anywhere and tell the agent to read `SKILL.md` before any desi
 ## Repository layout
 
 - `SKILL.md`: agent workflow and completion contract.
-- `references/product-grill.md`: product question tree.
-- `references/mvp-scope.md`: Must have / Should have / Later cut.
-- `references/copy-rubric.md`: checks for the copy deck and landing copy.
+- `references/product-grill.md`: product question tree, answer-to-field map and binding pass.
+- `references/brief-template.md`: intent, voice and reference choices alongside the model.
+- `references/mvp-scope.md`: Must have / Should have / Later cut, recorded as flow priorities.
+- `references/copy-rubric.md`: complete fixed-copy inventory and writing checks.
+- `references/product-model.md`: model fields, bindings, keyed deck, fixtures and checker commands.
+- `references/product-model.schema.json`: generated JSON Schema for editor support.
 - `references/audit-checklist.md`: evidence-first live frontend review.
 - `references/products.md`: researched reference profiles and preset anchors.
 - `references/decision-tree.md`: generated visual decision tree.
@@ -34,10 +39,38 @@ Or keep the clone anywhere and tell the agent to read `SKILL.md` before any desi
 - `references/rounds.md`: serving the walk, recording it, and locking in between rounds.
 - `references/in-app-studio.md`: building the studio into the product for product-specific decisions.
 - `studio/`: interactive React gallery, exports, capture and audit tooling.
+- `studio/samples/`: meaningful invented-product starting points, with self-contained models, keyed decks and fixtures for nine archetypes plus the Shed example; separate from runtime-loaded studio content.
+
+## Define and check a product
+
+Run the [product grill](references/product-grill.md), make the [MVP cut](references/mvp-scope.md), and write:
+
+- `docs/product.json`: users, entities, real capabilities, navigation, prioritized flows, surfaces, states, setups, events and pattern bindings;
+- `docs/copy.md`: keyed fixed strings with model-derived `Shown when` targets, including accessible names, page titles, alt text, emails and pushes;
+- `docs/product.fixtures.json`: derived content in contract/scenario row arrays, with realistic counts and state/long cases;
+- `docs/brief.md`: intent, voice, reference choices and headline candidates.
+
+From `studio/`, using **Bun 1.3.14 or newer** for the pattern-header loader's `Bun.YAML` API, after `bun install`:
+
+```sh
+bun run model:check /absolute/path/to/product/docs/product.json
+bun run model:check samples/shed/product.json
+bun run model:check --samples
+```
+
+The checker validates schema, references, bindings, copy, states, events and data, and rejects stale deck targets. When references or labels change, regenerate only the deck's `Shown when` column with:
+
+```sh
+bun run model:check /absolute/path/to/product/docs/product.json --write-shown-when
+```
+
+This is a guarded mutation: the checker validates the model, bindings, deck and fixtures with the candidate reach before writing. Other validation errors leave the deck untouched. Successful updates preserve chosen copy, prose, row order, line endings and escaped generated labels.
+
+See [product-model.md](references/product-model.md) for the [JSON Schema](references/product-model.schema.json), file-path rules, pattern metadata, diagnostics and sample usage. A passing check establishes a consistent definition; it does not load a model into the current studio or implement its flows.
 
 ## Run the studio
 
-Requirements: Bun and a Chromium-based browser. Vite's default Node runner needs Node.js 20.19+ (20.x) or 22.12+. Alternatively, `bun run --bun dev` and `bun run --bun build` use Bun's own runtime.
+Requirements: Bun 1.3.14+ and a Chromium-based browser. The minimum Bun version supplies `Bun.YAML` for model tooling. Vite's default Node runner needs Node.js 20.19+ (20.x) or 22.12+. Alternatively, `bun run --bun dev` and `bun run --bun build` use Bun's own runtime.
 
 ```sh
 cd studio
@@ -142,10 +175,12 @@ The suite checks the saved walk, keyboard selection, copy editing, reset, refere
 
 ## Add an archetype
 
-1. Add it to `Archetype` in `studio/src/tree/types.ts`, as an option of the archetype step, and its starting reference in `ARCHETYPE_REFERENCE` (`studio/src/tree/steps.ts`).
-2. Write its sample content in `studio/src/content/archetypes/<id>.ts` and register it in `studio/src/content/default.ts`.
+1. Add its ID to `Archetype` in `studio/src/tree/types.ts` and `archetypeSchema` in `studio/src/model/schema.ts`. Add an option of the archetype step and its starting reference in `ARCHETYPE_REFERENCE` (`studio/src/tree/steps.ts`).
+2. Write its runtime sample content in `studio/src/content/archetypes/<id>.ts` and register it in `studio/src/content/default.ts`.
 3. Write its home surface in `studio/src/gallery/app/homes/<Name>.tsx`: the main object first, built from the shared kit (`kit.tsx`, `sections.tsx`) so every step still changes it. Register it and its nav icons in `homes/index.ts`.
-4. Run `bun run tree:md` and `bun run capture --step archetype`, and check the new home isn't flagged.
+4. Add `studio/samples/<id>/` with a meaningful invented-product `product.json`, keyed `copy.md` and contract/scenario `fixtures.json`. Use local companion paths, a coherent Must-have loop, a genuine Should-have/Later cut, truthful capabilities, semantic fields/keys and state/setup-specific copy reach. The model sample and runtime content remain separate.
+5. From `studio/`, run `bun run model:schema` to regenerate `references/product-model.schema.json`, then `bun run model:check samples/<id>/product.json` and `bun run model:check --samples`.
+6. Run `bun run tree:md` and `bun run capture --step archetype`, and check the new home isn't flagged.
 
 ## Outputs
 

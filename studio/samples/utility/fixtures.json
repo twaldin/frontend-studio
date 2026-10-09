@@ -1,0 +1,319 @@
+{
+  "Conversion": {
+    "populated": [
+      {
+        "amount": 250,
+        "fromUnit": "USD",
+        "toUnit": "EUR",
+        "result": 230.58,
+        "source": "live",
+        "convertedAt": "2026-10-08T14:00:00Z"
+      },
+      {
+        "amount": 12.5,
+        "fromUnit": "mi",
+        "toUnit": "km",
+        "result": 20.12,
+        "source": "exact",
+        "convertedAt": "2026-10-08T13:48:00Z"
+      },
+      {
+        "amount": 3,
+        "fromUnit": "cup",
+        "toUnit": "ml",
+        "result": 709.76,
+        "source": "exact",
+        "convertedAt": "2026-10-08T13:02:00Z"
+      },
+      {
+        "amount": 1000,
+        "fromUnit": "JPY",
+        "toUnit": "USD",
+        "result": 6.61,
+        "source": "cached",
+        "convertedAt": "2026-10-07T17:20:00Z"
+      },
+      {
+        "amount": 180,
+        "fromUnit": "lb",
+        "toUnit": "kg",
+        "result": 81.65,
+        "source": "exact",
+        "convertedAt": "2026-10-07T11:45:00Z"
+      },
+      {
+        "amount": 5,
+        "fromUnit": "gal",
+        "toUnit": "L",
+        "result": 18.93,
+        "source": "exact",
+        "convertedAt": "2026-10-06T09:30:00Z"
+      }
+    ],
+    "one": [
+      {
+        "amount": 250,
+        "fromUnit": "USD",
+        "toUnit": "EUR",
+        "result": 230.58,
+        "source": "live",
+        "convertedAt": "2026-10-08T14:00:00Z"
+      }
+    ],
+    "long": [
+      {
+        "amount": 250,
+        "fromUnit": "USD",
+        "toUnit": "EUR",
+        "result": 230.58,
+        "source": "live",
+        "convertedAt": "2026-10-08T14:00:00Z"
+      }
+    ],
+    "none": [],
+    "live": [
+      {
+        "amount": 250,
+        "fromUnit": "USD",
+        "toUnit": "EUR",
+        "result": 230.58,
+        "source": "live",
+        "convertedAt": "2026-10-08T14:00:00Z"
+      }
+    ],
+    "exact": [
+      {
+        "amount": 12.5,
+        "fromUnit": "mi",
+        "toUnit": "km",
+        "result": 20.12,
+        "source": "exact",
+        "convertedAt": "2026-10-08T13:48:00Z"
+      }
+    ],
+    "cached": [
+      {
+        "amount": 1000,
+        "fromUnit": "JPY",
+        "toUnit": "USD",
+        "result": 6.61,
+        "source": "cached",
+        "convertedAt": "2026-10-08T14:02:00Z"
+      }
+    ]
+  },
+  "Favorite": {
+    "populated": [
+      {
+        "name": "Euro purchase",
+        "fromUnit": "USD",
+        "toUnit": "EUR",
+        "category": "currency",
+        "pinned": "pinned",
+        "refreshRates": "enabled"
+      },
+      {
+        "name": "Distance on the trail",
+        "fromUnit": "mi",
+        "toUnit": "km",
+        "category": "length",
+        "pinned": "pinned",
+        "refreshRates": "disabled"
+      },
+      {
+        "name": "Packing weight",
+        "fromUnit": "lb",
+        "toUnit": "kg",
+        "category": "weight",
+        "pinned": "pinned",
+        "refreshRates": "disabled"
+      },
+      {
+        "name": "Flour, cups to milliliters",
+        "fromUnit": "cup",
+        "toUnit": "ml",
+        "category": "volume",
+        "pinned": "unpinned",
+        "refreshRates": "disabled"
+      },
+      {
+        "name": "Travel cash",
+        "fromUnit": "GBP",
+        "toUnit": "USD",
+        "category": "currency",
+        "pinned": "unpinned",
+        "refreshRates": "enabled"
+      },
+      {
+        "name": "Recipe portions",
+        "fromUnit": "oz",
+        "toUnit": "g",
+        "category": "weight",
+        "pinned": "unpinned",
+        "refreshRates": "disabled"
+      }
+    ],
+    "one": [
+      {
+        "name": "Euro purchase",
+        "fromUnit": "USD",
+        "toUnit": "EUR",
+        "category": "currency",
+        "pinned": "pinned",
+        "refreshRates": "enabled"
+      }
+    ],
+    "long": [
+      {
+        "name": "Flour for the large weekend baking batch, cups to milliliters",
+        "fromUnit": "cup",
+        "toUnit": "ml",
+        "category": "volume",
+        "pinned": "pinned",
+        "refreshRates": "disabled"
+      }
+    ],
+    "none": []
+  },
+  "Rate": {
+    "populated": [
+      {
+        "fromUnit": "EUR",
+        "toUnit": "USD",
+        "rate": 1.0842,
+        "updatedAt": "2026-10-08T14:00:00Z"
+      },
+      {
+        "fromUnit": "GBP",
+        "toUnit": "USD",
+        "rate": 1.2631,
+        "updatedAt": "2026-10-08T14:00:00Z"
+      },
+      {
+        "fromUnit": "USD",
+        "toUnit": "JPY",
+        "rate": 151.4,
+        "updatedAt": "2026-10-08T14:00:00Z"
+      }
+    ],
+    "one": [
+      {
+        "fromUnit": "USD",
+        "toUnit": "EUR",
+        "rate": 0.92232,
+        "updatedAt": "2026-10-08T14:00:00Z"
+      }
+    ],
+    "long": [
+      {
+        "fromUnit": "USD",
+        "toUnit": "EUR",
+        "rate": 0.92232,
+        "updatedAt": "2026-10-08T14:00:00Z"
+      }
+    ],
+    "none": [],
+    "cached": [
+      {
+        "fromUnit": "EUR",
+        "toUnit": "USD",
+        "rate": 1.0842,
+        "updatedAt": "2026-10-07T14:00:00Z"
+      },
+      {
+        "fromUnit": "GBP",
+        "toUnit": "USD",
+        "rate": 1.2631,
+        "updatedAt": "2026-10-07T14:00:00Z"
+      },
+      {
+        "fromUnit": "USD",
+        "toUnit": "JPY",
+        "rate": 151.4,
+        "updatedAt": "2026-10-07T14:00:00Z"
+      }
+    ],
+    "cachedPair": [
+      {
+        "fromUnit": "JPY",
+        "toUnit": "USD",
+        "rate": 0.00661,
+        "updatedAt": "2026-10-07T14:00:00Z"
+      }
+    ]
+  },
+  "HistorySummary": {
+    "populated": [
+      {
+        "conversionCount": 6
+      }
+    ],
+    "one": [
+      {
+        "conversionCount": 1
+      }
+    ],
+    "long": [
+      {
+        "conversionCount": 1
+      }
+    ],
+    "none": [],
+    "empty": [
+      {
+        "conversionCount": 0
+      }
+    ]
+  },
+  "ConversionDraft": {
+    "populated": [
+      {
+        "expression": "250 USD in EUR",
+        "amountText": "250",
+        "fromUnit": "USD",
+        "toUnit": "EUR"
+      }
+    ],
+    "one": [
+      {
+        "expression": "250 USD in EUR",
+        "amountText": "250",
+        "fromUnit": "USD",
+        "toUnit": "EUR"
+      }
+    ],
+    "exact": [
+      {
+        "expression": "12.5 miles in kilometers",
+        "amountText": "12.5",
+        "fromUnit": "mi",
+        "toUnit": "km"
+      }
+    ],
+    "cached": [
+      {
+        "expression": "1000 JPY in USD",
+        "amountText": "1000",
+        "fromUnit": "JPY",
+        "toUnit": "USD"
+      }
+    ],
+    "invalid": [
+      {
+        "expression": "two hundred USD in EUR",
+        "amountText": "two hundred",
+        "fromUnit": "USD",
+        "toUnit": "EUR"
+      }
+    ],
+    "long": [
+      {
+        "expression": "250 United States dollars in European Union euros",
+        "amountText": "250",
+        "fromUnit": "USD",
+        "toUnit": "EUR"
+      }
+    ],
+    "none": []
+  }
+}
