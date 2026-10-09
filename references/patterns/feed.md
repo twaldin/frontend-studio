@@ -1,3 +1,15 @@
+---
+id: feed
+scale: surface
+studio: feedLayout
+slots: {"required":["header","primary","state","continuation"],"optional":["toolbar","composer","media","topics","unread","detail","aside","actions","confirmation","outcome"]}
+variants: [{"id":"timeline","label":"Timeline"},{"id":"cards","label":"Cards"},{"id":"compact","label":"Compact list"},{"id":"digest","label":"Digest"}]
+states: ["loading","populated","firstUse","noMatches","denied","failed","loadingMore","newEntries","pending","confirmed","removed","end","paginationFailed"]
+copy: ["title","pagination"]
+events: ["loadMore","refresh","open","reply","save","filter"]
+renderer: variants
+---
+
 # Feed
 
 `id: feed` · `scale: surface` · `studio: feedLayout` · `references checked: 2026-10-08`
@@ -13,6 +25,8 @@ Use for a changing stream where recency or editorial grouping matters. Do not us
 ## Structure and slots
 
 Required: `header` identifies stream/scope; `primary` contains ordered entries; each entry has identity, content and its permitted actions; `state` explains loading/empty/failure; `continuation` provides a real next-page/end boundary. Optional: `toolbar` for sort/filter, `composer`, media, topic headings, unread boundary and detail/replies. Bind browse-inspect-act → feed → `toolbar` to [search-filter](search-filter.md), and `state` to [empty-states](empty-states.md). A composer is absent when posting is not a capability.
+
+Optional task-level `confirmation` and `outcome` placements support actual consequential entry actions and their acknowledged results. Bind a delete/leave decision to dialogs-and-layers and a publish/share/completion result to notifications only when those capabilities exist; they are child placements, not nested regions inside an entry.
 
 ## Variants
 

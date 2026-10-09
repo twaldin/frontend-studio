@@ -1,3 +1,15 @@
+---
+id: destructive-action
+scale: flow
+studio: null
+slots: {"required":["trigger","impact","decision","status","destination"],"optional":["undo","acknowledgment","batch","confirmation","actions","state"]}
+variants: [{"id":"directUndo","label":"Direct removal with real undo"},{"id":"irreversibleConfirmation","label":"Irreversible confirmation"},{"id":"batchReview","label":"Batch impact review"}]
+states: ["idle","requested","impactLoading","ready","cancelled","committing","removed","discarded","failed","stale","denied","blocked","outcomeUnknown","partial","undoAvailable","restoring","restored","restoreFailed","undoExpired","alreadyGone"]
+copy: ["trigger","impact"]
+events: ["request","cancel","commit","checkStatus","undo","restore"]
+renderer: variants
+---
+
 # Destructive action
 
 `id: destructive-action` · scale: flow · studio: no studio step · references checked: 2026-10-08

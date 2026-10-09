@@ -1,0 +1,2032 @@
+{
+  "version": 1,
+  "records": [
+    {
+      "id": "agent-activity",
+      "scale": "surface",
+      "studio": null,
+      "slots": {
+        "required": [
+          "header",
+          "primary",
+          "result",
+          "intervention",
+          "state"
+        ],
+        "optional": [
+          "steps",
+          "history",
+          "input",
+          "timestamps",
+          "resources",
+          "detail"
+        ]
+      },
+      "variants": [
+        {
+          "id": "runSummary",
+          "label": "Run summary"
+        },
+        {
+          "id": "stepLedger",
+          "label": "Step ledger"
+        },
+        {
+          "id": "eventTimeline",
+          "label": "Event timeline"
+        }
+      ],
+      "states": [
+        "created",
+        "queued",
+        "running",
+        "awaitingInput",
+        "awaitingApproval",
+        "resumed",
+        "completed",
+        "partial",
+        "failed",
+        "cancelled",
+        "stopping",
+        "unknown",
+        "reconnecting",
+        "approvalPending",
+        "approvalAccepted",
+        "approvalRejected",
+        "approvalExpired"
+      ],
+      "copy": [
+        "status"
+      ],
+      "events": [
+        "update",
+        "approve",
+        "revise",
+        "stop",
+        "retry",
+        "restart"
+      ],
+      "renderer": "schematic"
+    },
+    {
+      "id": "async-progress",
+      "scale": "interaction",
+      "studio": "asyncFeedback",
+      "slots": {
+        "required": [],
+        "optional": [
+          "pending",
+          "status",
+          "outcome"
+        ]
+      },
+      "variants": [
+        {
+          "id": "spinner",
+          "label": "Inline spinner"
+        },
+        {
+          "id": "skeleton",
+          "label": "Skeleton"
+        },
+        {
+          "id": "progress",
+          "label": "Progress bar"
+        },
+        {
+          "id": "steps",
+          "label": "Step list"
+        }
+      ],
+      "states": [
+        "idle",
+        "queued",
+        "active",
+        "succeeded",
+        "partial",
+        "failed",
+        "cancelled",
+        "blocked",
+        "cancelling",
+        "unknown"
+      ],
+      "copy": [
+        "status"
+      ],
+      "events": [
+        "start",
+        "progress",
+        "complete",
+        "fail",
+        "cancel",
+        "retry"
+      ],
+      "renderer": "variants"
+    },
+    {
+      "id": "board",
+      "scale": "surface",
+      "studio": "boardLayout",
+      "slots": {
+        "required": [
+          "header",
+          "primary",
+          "state"
+        ],
+        "optional": [
+          "toolbar",
+          "lanes",
+          "limits",
+          "detail",
+          "create",
+          "activity",
+          "actions"
+        ]
+      },
+      "variants": [
+        {
+          "id": "columns",
+          "label": "Columns"
+        },
+        {
+          "id": "swimlanes",
+          "label": "Swimlanes"
+        },
+        {
+          "id": "grouped",
+          "label": "Grouped list"
+        },
+        {
+          "id": "pipeline",
+          "label": "Pipeline"
+        }
+      ],
+      "states": [
+        "loading",
+        "populated",
+        "empty",
+        "emptyStage",
+        "noMatches",
+        "denied",
+        "failed",
+        "pending",
+        "confirmed",
+        "rejected",
+        "conflict",
+        "partial"
+      ],
+      "copy": [
+        "title",
+        "move"
+      ],
+      "events": [
+        "select",
+        "move",
+        "filter",
+        "create",
+        "cancel"
+      ],
+      "renderer": "variants"
+    },
+    {
+      "id": "browse-inspect-act",
+      "scale": "flow",
+      "studio": "commerceLayout",
+      "slots": {
+        "required": [
+          "collection",
+          "selection",
+          "detail",
+          "actions",
+          "return",
+          "outcome"
+        ],
+        "optional": [
+          "compare",
+          "save",
+          "media",
+          "facts"
+        ]
+      },
+      "variants": [
+        {
+          "id": "grid",
+          "label": "Grid"
+        },
+        {
+          "id": "list",
+          "label": "List"
+        },
+        {
+          "id": "shelves",
+          "label": "Shelves"
+        },
+        {
+          "id": "split",
+          "label": "List and detail"
+        }
+      ],
+      "states": [
+        "loading",
+        "populated",
+        "empty",
+        "noMatches",
+        "failed",
+        "selecting",
+        "detailLoading",
+        "ready",
+        "unavailable",
+        "deleted",
+        "denied",
+        "available",
+        "acting",
+        "succeeded",
+        "changedTerms",
+        "outcomeUnknown",
+        "removed",
+        "bulkSelected"
+      ],
+      "copy": [
+        "inspect",
+        "backToResults"
+      ],
+      "events": [
+        "select",
+        "inspect",
+        "act",
+        "return",
+        "filter"
+      ],
+      "renderer": "schematic",
+      "sharesVariants": "storefront"
+    },
+    {
+      "id": "check-answers",
+      "scale": "flow",
+      "studio": null,
+      "slots": {
+        "required": [
+          "header",
+          "answers",
+          "corrections",
+          "commit",
+          "state"
+        ],
+        "optional": [
+          "objects",
+          "back",
+          "save",
+          "leave"
+        ]
+      },
+      "variants": [
+        {
+          "id": "finalReview",
+          "label": "Single final review"
+        },
+        {
+          "id": "sectionReview",
+          "label": "Section review plus final commitment"
+        },
+        {
+          "id": "repeatedObjects",
+          "label": "Repeated-object summary"
+        }
+      ],
+      "states": [
+        "loading",
+        "ready",
+        "committing",
+        "committed",
+        "editing",
+        "invalid",
+        "stale",
+        "failed",
+        "outcomeUnknown",
+        "alreadyCommitted"
+      ],
+      "copy": [
+        "change",
+        "commitAction"
+      ],
+      "events": [
+        "change",
+        "commit",
+        "save",
+        "leave"
+      ],
+      "renderer": "schematic"
+    },
+    {
+      "id": "checkout",
+      "scale": "flow",
+      "studio": null,
+      "slots": {
+        "required": [
+          "summary",
+          "total",
+          "details",
+          "payment",
+          "commit",
+          "recovery"
+        ],
+        "optional": [
+          "promotion",
+          "account",
+          "express",
+          "state"
+        ]
+      },
+      "variants": [
+        {
+          "id": "onePage",
+          "label": "One page"
+        },
+        {
+          "id": "staged",
+          "label": "Staged checkout"
+        },
+        {
+          "id": "hosted",
+          "label": "Hosted or express handoff"
+        }
+      ],
+      "states": [
+        "loading",
+        "editable",
+        "reviewing",
+        "submitting",
+        "challenge",
+        "pending",
+        "paid",
+        "accepted",
+        "quoteChanged",
+        "empty",
+        "unavailable",
+        "invalid",
+        "declined",
+        "cancelled",
+        "expired",
+        "outcomeUnknown",
+        "fulfillmentPending",
+        "receiptFailed",
+        "alreadyPaid",
+        "offline",
+        "denied"
+      ],
+      "copy": [
+        "total",
+        "payAmount"
+      ],
+      "events": [
+        "editCart",
+        "changeDetails",
+        "pay",
+        "challenge",
+        "cancel",
+        "checkStatus",
+        "resume"
+      ],
+      "renderer": "schematic"
+    },
+    {
+      "id": "command-palette",
+      "scale": "component",
+      "studio": null,
+      "slots": {
+        "required": [],
+        "optional": [
+          "commands"
+        ]
+      },
+      "variants": [
+        {
+          "id": "flatSearch",
+          "label": "Flat command search"
+        },
+        {
+          "id": "scoped",
+          "label": "Scoped palette"
+        },
+        {
+          "id": "preview",
+          "label": "Search with preview"
+        }
+      ],
+      "states": [
+        "closed",
+        "open",
+        "idle",
+        "results",
+        "searching",
+        "noMatches",
+        "failed",
+        "pending",
+        "denied",
+        "unavailable"
+      ],
+      "copy": [
+        "query"
+      ],
+      "events": [
+        "open",
+        "query",
+        "select",
+        "execute",
+        "changeScope",
+        "close"
+      ],
+      "renderer": "schematic"
+    },
+    {
+      "id": "confirmation",
+      "scale": "flow",
+      "studio": null,
+      "slots": {
+        "required": [
+          "header",
+          "result",
+          "nextSteps",
+          "record",
+          "support"
+        ],
+        "optional": [
+          "delivery",
+          "actions",
+          "feedback",
+          "state"
+        ]
+      },
+      "variants": [
+        {
+          "id": "confirmationPage",
+          "label": "Confirmation page"
+        },
+        {
+          "id": "inContext",
+          "label": "Persistent in-context result"
+        },
+        {
+          "id": "followUpReceipt",
+          "label": "Submitted-with-follow-up receipt"
+        }
+      ],
+      "states": [
+        "checking",
+        "confirmed",
+        "pending",
+        "deliveryPending",
+        "deliveryFailed",
+        "revisited",
+        "accessRequired",
+        "expired",
+        "unavailable",
+        "outcomeUnknown",
+        "failed"
+      ],
+      "copy": [
+        "outcome",
+        "nextSteps"
+      ],
+      "events": [
+        "checkStatus",
+        "saveRecord",
+        "viewResult",
+        "resend",
+        "startNew"
+      ],
+      "renderer": "variants"
+    },
+    {
+      "id": "content-swap",
+      "scale": "interaction",
+      "studio": "contentSwap",
+      "slots": {
+        "required": [],
+        "optional": [
+          "primary",
+          "detail",
+          "results"
+        ]
+      },
+      "variants": [
+        {
+          "id": "cut",
+          "label": "Cut"
+        },
+        {
+          "id": "crossfade",
+          "label": "Crossfade"
+        },
+        {
+          "id": "slide",
+          "label": "Slide by direction"
+        },
+        {
+          "id": "resize",
+          "label": "Resize and settle"
+        }
+      ],
+      "states": [
+        "ready",
+        "requested",
+        "loading",
+        "empty",
+        "failed",
+        "stale",
+        "settled"
+      ],
+      "copy": [],
+      "events": [
+        "select",
+        "query",
+        "replace",
+        "interrupt"
+      ],
+      "renderer": "variants"
+    },
+    {
+      "id": "control-response",
+      "scale": "interaction",
+      "studio": "controlResponse",
+      "slots": {
+        "required": [],
+        "optional": [
+          "actions",
+          "composer",
+          "commit"
+        ]
+      },
+      "variants": [
+        {
+          "id": "tone",
+          "label": "Tone"
+        },
+        {
+          "id": "press",
+          "label": "Press in"
+        },
+        {
+          "id": "sink",
+          "label": "Sink"
+        },
+        {
+          "id": "ink",
+          "label": "Ink"
+        }
+      ],
+      "states": [
+        "rest",
+        "held",
+        "disabled",
+        "readOnly",
+        "pending"
+      ],
+      "copy": [],
+      "events": [
+        "press",
+        "release",
+        "cancel"
+      ],
+      "renderer": "variants"
+    },
+    {
+      "id": "conversation",
+      "scale": "surface",
+      "studio": "conversationLayout",
+      "slots": {
+        "required": [
+          "header",
+          "primary",
+          "composer",
+          "state"
+        ],
+        "optional": [
+          "attachments",
+          "replies",
+          "navigation",
+          "timestamps",
+          "stop",
+          "context",
+          "actions",
+          "confirmation",
+          "outcome"
+        ]
+      },
+      "variants": [
+        {
+          "id": "bubbles",
+          "label": "Bubbles"
+        },
+        {
+          "id": "transcript",
+          "label": "Transcript"
+        },
+        {
+          "id": "channel",
+          "label": "Channel"
+        },
+        {
+          "id": "context",
+          "label": "With context"
+        }
+      ],
+      "states": [
+        "loading",
+        "empty",
+        "populated",
+        "partial",
+        "denied",
+        "failed",
+        "draft",
+        "sending",
+        "sent",
+        "unread",
+        "queued",
+        "streaming",
+        "awaitingInput",
+        "stopped",
+        "completed",
+        "uploadPending",
+        "uploadFailed",
+        "reconnecting"
+      ],
+      "copy": [
+        "composer",
+        "send"
+      ],
+      "events": [
+        "send",
+        "receive",
+        "retry",
+        "stop",
+        "upload",
+        "removeAttachment",
+        "reconnect"
+      ],
+      "renderer": "variants"
+    },
+    {
+      "id": "create-edit",
+      "scale": "flow",
+      "studio": null,
+      "slots": {
+        "required": [
+          "header",
+          "primary",
+          "commit",
+          "exit",
+          "state",
+          "result"
+        ],
+        "optional": [
+          "preview",
+          "attachments",
+          "advanced",
+          "history",
+          "restore",
+          "detail",
+          "actions"
+        ]
+      },
+      "variants": [
+        {
+          "id": "dedicatedPage",
+          "label": "Dedicated editor page"
+        },
+        {
+          "id": "sidePanel",
+          "label": "Side-panel editor"
+        },
+        {
+          "id": "dialogForm",
+          "label": "Focused dialog form"
+        },
+        {
+          "id": "inlineEdit",
+          "label": "Inline edit"
+        }
+      ],
+      "states": [
+        "loading",
+        "newDraft",
+        "pristine",
+        "dirty",
+        "validating",
+        "saving",
+        "saved",
+        "invalid",
+        "failed",
+        "offline",
+        "conflict",
+        "permissionLost",
+        "objectGone",
+        "uploadPending",
+        "uploadFailed",
+        "outcomeUnknown"
+      ],
+      "copy": [
+        "save"
+      ],
+      "events": [
+        "edit",
+        "save",
+        "create",
+        "cancel",
+        "leave",
+        "discard",
+        "upload",
+        "restore"
+      ],
+      "renderer": "variants"
+    },
+    {
+      "id": "destructive-action",
+      "scale": "flow",
+      "studio": null,
+      "slots": {
+        "required": [
+          "trigger",
+          "impact",
+          "decision",
+          "status",
+          "destination"
+        ],
+        "optional": [
+          "undo",
+          "acknowledgment",
+          "batch",
+          "confirmation",
+          "actions",
+          "state"
+        ]
+      },
+      "variants": [
+        {
+          "id": "directUndo",
+          "label": "Direct removal with real undo"
+        },
+        {
+          "id": "irreversibleConfirmation",
+          "label": "Irreversible confirmation"
+        },
+        {
+          "id": "batchReview",
+          "label": "Batch impact review"
+        }
+      ],
+      "states": [
+        "idle",
+        "requested",
+        "impactLoading",
+        "ready",
+        "cancelled",
+        "committing",
+        "removed",
+        "discarded",
+        "failed",
+        "stale",
+        "denied",
+        "blocked",
+        "outcomeUnknown",
+        "partial",
+        "undoAvailable",
+        "restoring",
+        "restored",
+        "restoreFailed",
+        "undoExpired",
+        "alreadyGone"
+      ],
+      "copy": [
+        "trigger",
+        "impact"
+      ],
+      "events": [
+        "request",
+        "cancel",
+        "commit",
+        "checkStatus",
+        "undo",
+        "restore"
+      ],
+      "renderer": "variants"
+    },
+    {
+      "id": "dialogs-and-layers",
+      "scale": "component",
+      "studio": null,
+      "slots": {
+        "required": [],
+        "optional": [
+          "detail",
+          "confirmation"
+        ]
+      },
+      "variants": [
+        {
+          "id": "inline",
+          "label": "Inline region"
+        },
+        {
+          "id": "popover",
+          "label": "Anchored popover"
+        },
+        {
+          "id": "dialog",
+          "label": "Dialog"
+        },
+        {
+          "id": "sheet",
+          "label": "Sheet"
+        }
+      ],
+      "states": [
+        "closed",
+        "open",
+        "editing",
+        "ready",
+        "validating",
+        "submitting",
+        "done",
+        "invalid",
+        "failed"
+      ],
+      "copy": [
+        "close"
+      ],
+      "events": [
+        "open",
+        "close",
+        "cancel",
+        "commit"
+      ],
+      "renderer": "variants"
+    },
+    {
+      "id": "disclosure",
+      "scale": "component",
+      "studio": null,
+      "slots": {
+        "required": [],
+        "optional": [
+          "facts",
+          "detail",
+          "notes",
+          "help"
+        ]
+      },
+      "variants": [
+        {
+          "id": "singleDetails",
+          "label": "Single details region"
+        },
+        {
+          "id": "accordion",
+          "label": "Accordion"
+        },
+        {
+          "id": "contextPopover",
+          "label": "Context popover"
+        }
+      ],
+      "states": [
+        "closed",
+        "open",
+        "loading",
+        "available",
+        "empty",
+        "denied",
+        "failed"
+      ],
+      "copy": [
+        "summary"
+      ],
+      "events": [
+        "expand",
+        "collapse",
+        "load",
+        "deepLink"
+      ],
+      "renderer": "schematic"
+    },
+    {
+      "id": "empty-states",
+      "scale": "component",
+      "studio": null,
+      "slots": {
+        "required": [],
+        "optional": [
+          "state"
+        ]
+      },
+      "variants": [
+        {
+          "id": "compactCue",
+          "label": "Compact inline cue"
+        },
+        {
+          "id": "actionPanel",
+          "label": "Action panel"
+        },
+        {
+          "id": "educationalFirstUse",
+          "label": "Educational first-use"
+        },
+        {
+          "id": "starterContent",
+          "label": "Starter content"
+        }
+      ],
+      "states": [
+        "loading",
+        "populated",
+        "firstUse",
+        "pending",
+        "noMatches",
+        "completed",
+        "denied",
+        "failed",
+        "configurationNeeded",
+        "partial"
+      ],
+      "copy": [
+        "empty"
+      ],
+      "events": [
+        "create",
+        "clearFilters",
+        "requestAccess",
+        "configure",
+        "retry"
+      ],
+      "renderer": "variants"
+    },
+    {
+      "id": "error-pages",
+      "scale": "flow",
+      "studio": null,
+      "slots": {
+        "required": [
+          "identity",
+          "header",
+          "facts",
+          "actions"
+        ],
+        "optional": [
+          "dataStatus",
+          "support",
+          "reference",
+          "search",
+          "state"
+        ]
+      },
+      "variants": [
+        {
+          "id": "missingDestination",
+          "label": "Missing destination"
+        },
+        {
+          "id": "serviceFailure",
+          "label": "Unexpected service failure"
+        },
+        {
+          "id": "deliberateUnavailability",
+          "label": "Deliberate unavailability"
+        }
+      ],
+      "states": [
+        "missing",
+        "failed",
+        "unavailable",
+        "saved",
+        "partiallySaved",
+        "notSaved",
+        "saveStatusUnknown",
+        "checking",
+        "recovered",
+        "resumed",
+        "permanentlyClosed"
+      ],
+      "copy": [
+        "explanation"
+      ],
+      "events": [
+        "retry",
+        "checkStatus",
+        "resume",
+        "findContent",
+        "contact"
+      ],
+      "renderer": "schematic"
+    },
+    {
+      "id": "feed",
+      "scale": "surface",
+      "studio": "feedLayout",
+      "slots": {
+        "required": [
+          "header",
+          "primary",
+          "state",
+          "continuation"
+        ],
+        "optional": [
+          "toolbar",
+          "composer",
+          "media",
+          "topics",
+          "unread",
+          "detail",
+          "aside",
+          "actions",
+          "confirmation",
+          "outcome"
+        ]
+      },
+      "variants": [
+        {
+          "id": "timeline",
+          "label": "Timeline"
+        },
+        {
+          "id": "cards",
+          "label": "Cards"
+        },
+        {
+          "id": "compact",
+          "label": "Compact list"
+        },
+        {
+          "id": "digest",
+          "label": "Digest"
+        }
+      ],
+      "states": [
+        "loading",
+        "populated",
+        "firstUse",
+        "noMatches",
+        "denied",
+        "failed",
+        "loadingMore",
+        "newEntries",
+        "pending",
+        "confirmed",
+        "removed",
+        "end",
+        "paginationFailed"
+      ],
+      "copy": [
+        "title",
+        "pagination"
+      ],
+      "events": [
+        "loadMore",
+        "refresh",
+        "open",
+        "reply",
+        "save",
+        "filter"
+      ],
+      "renderer": "variants"
+    },
+    {
+      "id": "first-run",
+      "scale": "flow",
+      "studio": null,
+      "slots": {
+        "required": [
+          "purpose",
+          "actions",
+          "prerequisites",
+          "exit",
+          "result"
+        ],
+        "optional": [
+          "example",
+          "help",
+          "progress",
+          "skip",
+          "state"
+        ]
+      },
+      "variants": [
+        {
+          "id": "directStart",
+          "label": "Direct start"
+        },
+        {
+          "id": "shortSetup",
+          "label": "Short setup sequence"
+        },
+        {
+          "id": "resumableChecklist",
+          "label": "Resumable setup checklist"
+        }
+      ],
+      "states": [
+        "new",
+        "choosing",
+        "settingUp",
+        "ready",
+        "returning",
+        "partial",
+        "invalid",
+        "permissionDenied",
+        "failed",
+        "unavailable"
+      ],
+      "copy": [
+        "start"
+      ],
+      "events": [
+        "start",
+        "choose",
+        "submit",
+        "resume",
+        "skip",
+        "leave",
+        "requestPermission",
+        "import"
+      ],
+      "renderer": "variants"
+    },
+    {
+      "id": "home",
+      "scale": "surface",
+      "studio": null,
+      "slots": {
+        "required": [
+          "identity",
+          "primary",
+          "navigation",
+          "state"
+        ],
+        "optional": [
+          "resume",
+          "secondary",
+          "summary",
+          "help",
+          "header",
+          "actions"
+        ]
+      },
+      "variants": [
+        {
+          "id": "launcher",
+          "label": "Action launcher"
+        },
+        {
+          "id": "continue",
+          "label": "Continue work"
+        },
+        {
+          "id": "collection",
+          "label": "Collection landing"
+        },
+        {
+          "id": "status",
+          "label": "Status overview"
+        }
+      ],
+      "states": [
+        "loading",
+        "firstUse",
+        "populated",
+        "failed",
+        "resumable",
+        "partial",
+        "denied",
+        "stale"
+      ],
+      "copy": [
+        "title"
+      ],
+      "events": [
+        "start",
+        "resume",
+        "complete",
+        "refresh",
+        "navigate"
+      ],
+      "renderer": "variants"
+    },
+    {
+      "id": "layer-arrival",
+      "scale": "interaction",
+      "studio": "layerArrival",
+      "slots": {
+        "required": [],
+        "optional": [
+          "detail",
+          "confirmation",
+          "menu"
+        ]
+      },
+      "variants": [
+        {
+          "id": "cut",
+          "label": "Cut"
+        },
+        {
+          "id": "fade",
+          "label": "Fade"
+        },
+        {
+          "id": "anchored",
+          "label": "Grow from the trigger"
+        },
+        {
+          "id": "rise",
+          "label": "Rise"
+        },
+        {
+          "id": "reveal",
+          "label": "Reveal"
+        }
+      ],
+      "states": [
+        "closed",
+        "opening",
+        "open",
+        "closing"
+      ],
+      "copy": [],
+      "events": [
+        "open",
+        "close",
+        "interrupt"
+      ],
+      "renderer": "variants"
+    },
+    {
+      "id": "motion-language",
+      "scale": "motion",
+      "studio": "motion",
+      "slots": {
+        "required": [],
+        "optional": [
+          "interaction"
+        ]
+      },
+      "variants": [
+        {
+          "id": "still",
+          "label": "Still"
+        },
+        {
+          "id": "snappy",
+          "label": "Snappy"
+        },
+        {
+          "id": "anchored",
+          "label": "Anchored"
+        },
+        {
+          "id": "tactile",
+          "label": "Tactile"
+        },
+        {
+          "id": "material",
+          "label": "Material"
+        }
+      ],
+      "states": [
+        "idle",
+        "responding",
+        "entering",
+        "changing",
+        "exiting",
+        "settled"
+      ],
+      "copy": [],
+      "events": [
+        "press",
+        "local",
+        "layer",
+        "swap",
+        "route",
+        "theme",
+        "interrupt"
+      ],
+      "renderer": "variants"
+    },
+    {
+      "id": "notifications",
+      "scale": "component",
+      "studio": null,
+      "slots": {
+        "required": [],
+        "optional": [
+          "outcome",
+          "notice"
+        ]
+      },
+      "variants": [
+        {
+          "id": "inline",
+          "label": "Inline"
+        },
+        {
+          "id": "toast",
+          "label": "Toast"
+        },
+        {
+          "id": "banner",
+          "label": "Banner"
+        },
+        {
+          "id": "notificationCenter",
+          "label": "Notification center"
+        }
+      ],
+      "states": [
+        "visible",
+        "unread",
+        "read",
+        "pending",
+        "resolved",
+        "dismissed",
+        "failed",
+        "expired"
+      ],
+      "copy": [
+        "outcome"
+      ],
+      "events": [
+        "notify",
+        "read",
+        "act",
+        "resolve",
+        "dismiss",
+        "expire"
+      ],
+      "renderer": "variants"
+    },
+    {
+      "id": "pricing",
+      "scale": "surface",
+      "studio": null,
+      "slots": {
+        "required": [
+          "header",
+          "primary",
+          "terms",
+          "state"
+        ],
+        "optional": [
+          "period",
+          "comparison",
+          "estimator",
+          "faq",
+          "currentPlan",
+          "contact",
+          "actions"
+        ]
+      },
+      "variants": [
+        {
+          "id": "cards",
+          "label": "Plan cards"
+        },
+        {
+          "id": "matrix",
+          "label": "Comparison matrix"
+        },
+        {
+          "id": "estimator",
+          "label": "Usage estimator"
+        }
+      ],
+      "states": [
+        "loading",
+        "available",
+        "unavailable",
+        "denied",
+        "failed",
+        "checkingEligibility",
+        "restricted",
+        "currentPlan",
+        "quoteExpired",
+        "priceChanged",
+        "invalid",
+        "scheduled"
+      ],
+      "copy": [
+        "priceUnit",
+        "choose"
+      ],
+      "events": [
+        "changePeriod",
+        "changeQuantity",
+        "select",
+        "contact",
+        "changePlan"
+      ],
+      "renderer": "schematic"
+    },
+    {
+      "id": "question-pages",
+      "scale": "flow",
+      "studio": null,
+      "slots": {
+        "required": [
+          "back",
+          "header",
+          "primary",
+          "actions",
+          "state"
+        ],
+        "optional": [
+          "progress",
+          "context",
+          "save",
+          "leave",
+          "detail"
+        ]
+      },
+      "variants": [
+        {
+          "id": "singleQuestion",
+          "label": "One question per page"
+        },
+        {
+          "id": "questionGroup",
+          "label": "Related question group"
+        },
+        {
+          "id": "branching",
+          "label": "Branching sequence"
+        }
+      ],
+      "states": [
+        "unanswered",
+        "editing",
+        "saving",
+        "validating",
+        "ready",
+        "invalid",
+        "partiallySaved",
+        "branchChanged",
+        "failed",
+        "offline",
+        "denied",
+        "unsuitable",
+        "resumed",
+        "submitted"
+      ],
+      "copy": [
+        "back",
+        "continue"
+      ],
+      "events": [
+        "edit",
+        "continue",
+        "back",
+        "save",
+        "leave",
+        "resume"
+      ],
+      "renderer": "schematic"
+    },
+    {
+      "id": "reader",
+      "scale": "surface",
+      "studio": "readerLayout",
+      "slots": {
+        "required": [
+          "header",
+          "primary",
+          "position",
+          "state"
+        ],
+        "optional": [
+          "outline",
+          "notes",
+          "glossary",
+          "savedPosition",
+          "completion",
+          "navigation",
+          "media",
+          "related",
+          "actions"
+        ]
+      },
+      "variants": [
+        {
+          "id": "column",
+          "label": "Single column"
+        },
+        {
+          "id": "outline",
+          "label": "With outline"
+        },
+        {
+          "id": "margin",
+          "label": "Margin notes"
+        },
+        {
+          "id": "paged",
+          "label": "Paged"
+        }
+      ],
+      "states": [
+        "loading",
+        "readable",
+        "missing",
+        "denied",
+        "failed",
+        "restored",
+        "mediaUnavailable",
+        "saveFailed",
+        "positionMoved",
+        "pending",
+        "confirmed"
+      ],
+      "copy": [
+        "position"
+      ],
+      "events": [
+        "navigateSection",
+        "changePage",
+        "restorePosition",
+        "savePosition",
+        "complete"
+      ],
+      "renderer": "variants"
+    },
+    {
+      "id": "route-transition",
+      "scale": "interaction",
+      "studio": "routeMotion",
+      "slots": {
+        "required": [],
+        "optional": [
+          "navigation",
+          "detail"
+        ]
+      },
+      "variants": [
+        {
+          "id": "cut",
+          "label": "Cut"
+        },
+        {
+          "id": "fade",
+          "label": "Fade"
+        },
+        {
+          "id": "axis",
+          "label": "Shared axis"
+        },
+        {
+          "id": "continuity",
+          "label": "Continuity"
+        }
+      ],
+      "states": [
+        "ready",
+        "requested",
+        "loading",
+        "failed",
+        "arrived"
+      ],
+      "copy": [],
+      "events": [
+        "navigate",
+        "back",
+        "forward",
+        "arrive",
+        "interrupt"
+      ],
+      "renderer": "variants"
+    },
+    {
+      "id": "search-filter",
+      "scale": "flow",
+      "studio": null,
+      "slots": {
+        "required": [],
+        "optional": [
+          "toolbar",
+          "results"
+        ]
+      },
+      "variants": [
+        {
+          "id": "submitted",
+          "label": "Submitted search with filter bar"
+        },
+        {
+          "id": "activeLocal",
+          "label": "Active local search"
+        },
+        {
+          "id": "facetedBatch",
+          "label": "Faceted panel with batch apply"
+        },
+        {
+          "id": "scopedEscape",
+          "label": "Focused search with broader escape"
+        }
+      ],
+      "states": [
+        "initial",
+        "editing",
+        "draftFilters",
+        "pending",
+        "populated",
+        "noMatches",
+        "failed",
+        "applied",
+        "noData",
+        "partial",
+        "stale",
+        "loadingMore",
+        "facetUnavailable",
+        "denied"
+      ],
+      "copy": [
+        "queryLabel"
+      ],
+      "events": [
+        "submit",
+        "query",
+        "filter",
+        "apply",
+        "cancel",
+        "clear",
+        "sort",
+        "loadMore",
+        "changeScope"
+      ],
+      "renderer": "variants"
+    },
+    {
+      "id": "settings",
+      "scale": "surface",
+      "studio": null,
+      "slots": {
+        "required": [
+          "header",
+          "navigation",
+          "primary",
+          "commit",
+          "state"
+        ],
+        "optional": [
+          "toolbar",
+          "reset",
+          "unsaved",
+          "billing",
+          "security",
+          "help",
+          "actions"
+        ]
+      },
+      "variants": [
+        {
+          "id": "sections",
+          "label": "Sectioned page"
+        },
+        {
+          "id": "categories",
+          "label": "Category navigation"
+        },
+        {
+          "id": "search",
+          "label": "Search-led settings"
+        }
+      ],
+      "states": [
+        "loading",
+        "editable",
+        "readOnly",
+        "denied",
+        "failed",
+        "dirty",
+        "validating",
+        "saving",
+        "saved",
+        "invalid",
+        "pending",
+        "confirmed",
+        "reverted",
+        "conflict",
+        "partial"
+      ],
+      "copy": [
+        "save"
+      ],
+      "events": [
+        "edit",
+        "save",
+        "reset",
+        "leave",
+        "discard",
+        "search",
+        "navigate"
+      ],
+      "renderer": "variants"
+    },
+    {
+      "id": "sign-in",
+      "scale": "flow",
+      "studio": null,
+      "slots": {
+        "required": [
+          "header",
+          "proof",
+          "status",
+          "recovery"
+        ],
+        "optional": [
+          "accountCreation",
+          "factor",
+          "remembered",
+          "actions",
+          "state"
+        ]
+      },
+      "variants": [
+        {
+          "id": "password",
+          "label": "Password form"
+        },
+        {
+          "id": "emailCode",
+          "label": "Email link or code"
+        },
+        {
+          "id": "deviceFederated",
+          "label": "Device or federated sign-in"
+        }
+      ],
+      "states": [
+        "signedOut",
+        "entering",
+        "choosing",
+        "verifying",
+        "signedIn",
+        "invalid",
+        "rejected",
+        "challengeSent",
+        "expired",
+        "cancelled",
+        "factorRequired",
+        "limited",
+        "providerUnavailable",
+        "sessionExpired",
+        "denied"
+      ],
+      "copy": [
+        "continue",
+        "recover"
+      ],
+      "events": [
+        "submit",
+        "chooseMethod",
+        "resend",
+        "recover",
+        "createAccount",
+        "switchAccount",
+        "cancel"
+      ],
+      "renderer": "variants"
+    },
+    {
+      "id": "storefront",
+      "scale": "surface",
+      "studio": "commerceLayout",
+      "slots": {
+        "required": [
+          "header",
+          "primary",
+          "state"
+        ],
+        "optional": [
+          "detail",
+          "toolbar",
+          "actions",
+          "categories",
+          "featured",
+          "cart"
+        ]
+      },
+      "variants": [
+        {
+          "id": "grid",
+          "label": "Grid"
+        },
+        {
+          "id": "list",
+          "label": "List"
+        },
+        {
+          "id": "shelves",
+          "label": "Shelves"
+        },
+        {
+          "id": "split",
+          "label": "List and detail"
+        }
+      ],
+      "states": [
+        "loading",
+        "populated",
+        "empty",
+        "noMatches",
+        "denied",
+        "failed",
+        "detailLoading",
+        "detailUnavailable",
+        "soldOut",
+        "partial",
+        "pending",
+        "confirmed",
+        "changedTerms",
+        "paginationFailed"
+      ],
+      "copy": [
+        "title",
+        "priceUnit",
+        "availability"
+      ],
+      "events": [
+        "select",
+        "act",
+        "filter",
+        "paginate",
+        "return"
+      ],
+      "renderer": "variants"
+    },
+    {
+      "id": "task-list",
+      "scale": "flow",
+      "studio": null,
+      "slots": {
+        "required": [
+          "header",
+          "tasks",
+          "dependencies",
+          "continuation",
+          "state"
+        ],
+        "optional": [
+          "commit",
+          "groups",
+          "progress",
+          "due",
+          "acknowledgment"
+        ]
+      },
+      "variants": [
+        {
+          "id": "flat",
+          "label": "Flat task list"
+        },
+        {
+          "id": "grouped",
+          "label": "Grouped task list"
+        },
+        {
+          "id": "dependencyLed",
+          "label": "Dependency-led task list"
+        }
+      ],
+      "states": [
+        "notStarted",
+        "inProgress",
+        "completed",
+        "blocked",
+        "needsAttention",
+        "externalWaiting",
+        "failed",
+        "offline",
+        "loading",
+        "denied",
+        "readyForReview",
+        "submitting",
+        "submitted"
+      ],
+      "copy": [
+        "status"
+      ],
+      "events": [
+        "enterTask",
+        "saveTask",
+        "editPrerequisite",
+        "acknowledge",
+        "resume",
+        "review",
+        "submit"
+      ],
+      "renderer": "schematic"
+    },
+    {
+      "id": "theme-transition",
+      "scale": "interaction",
+      "studio": "themeMotion",
+      "slots": {
+        "required": [],
+        "optional": [
+          "appearance"
+        ]
+      },
+      "variants": [
+        {
+          "id": "cut",
+          "label": "Cut"
+        },
+        {
+          "id": "fade",
+          "label": "Crossfade"
+        },
+        {
+          "id": "circle",
+          "label": "Circular reveal"
+        },
+        {
+          "id": "wipe",
+          "label": "Wipe"
+        }
+      ],
+      "states": [
+        "current",
+        "selected",
+        "applied",
+        "persisted",
+        "failed",
+        "system"
+      ],
+      "copy": [
+        "theme"
+      ],
+      "events": [
+        "selectTheme",
+        "systemThemeChange",
+        "persist",
+        "interrupt"
+      ],
+      "renderer": "variants"
+    },
+    {
+      "id": "validation",
+      "scale": "flow",
+      "studio": null,
+      "slots": {
+        "required": [
+          "form",
+          "summary",
+          "messages",
+          "values",
+          "actions",
+          "state"
+        ],
+        "optional": [
+          "feedback"
+        ]
+      },
+      "variants": [
+        {
+          "id": "submitErrors",
+          "label": "Submit-time summary and inline errors"
+        },
+        {
+          "id": "fieldCheck",
+          "label": "Explicit field check"
+        },
+        {
+          "id": "preventativeFeedback",
+          "label": "Bounded preventative feedback"
+        }
+      ],
+      "states": [
+        "pristine",
+        "editing",
+        "requested",
+        "accepted",
+        "invalid",
+        "correcting",
+        "revalidating",
+        "checkPending",
+        "checkUnavailable",
+        "crossFieldInvalid",
+        "stale",
+        "failed"
+      ],
+      "copy": [
+        "summaryTitle"
+      ],
+      "events": [
+        "submit",
+        "correct",
+        "check",
+        "revalidate",
+        "retry"
+      ],
+      "renderer": "schematic"
+    }
+  ]
+}

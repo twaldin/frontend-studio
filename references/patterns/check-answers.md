@@ -1,3 +1,15 @@
+---
+id: check-answers
+scale: flow
+studio: null
+slots: {"required":["header","answers","corrections","commit","state"],"optional":["objects","back","save","leave"]}
+variants: [{"id":"finalReview","label":"Single final review"},{"id":"sectionReview","label":"Section review plus final commitment"},{"id":"repeatedObjects","label":"Repeated-object summary"}]
+states: ["loading","ready","committing","committed","editing","invalid","stale","failed","outcomeUnknown","alreadyCommitted"]
+copy: ["change","commitAction"]
+events: ["change","commit","save","leave"]
+renderer: schematic
+---
+
 # Check answers
 
 `id: check-answers` · scale: flow · studio: no studio step · references checked: 2026-10-08

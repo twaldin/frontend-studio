@@ -1,0 +1,2572 @@
+{
+  "$schema": "../../../references/product-model.schema.json",
+  "model": 1,
+  "product": {
+    "id": "companion",
+    "outcome": "Claim completed quest rewards, prepare a loadout, and coordinate the next raid with the clan.",
+    "archetype": "companion",
+    "users": [
+      {
+        "id": "player",
+        "who": "A Hollowmere player using a second-screen phone between game sessions.",
+        "device": "phone",
+        "surfaces": [
+          "home",
+          "quests",
+          "inventory",
+          "clan",
+          "rankings",
+          "settings",
+          "help",
+          "landing",
+          "pushQuestExpiring"
+        ]
+      }
+    ]
+  },
+  "entities": [
+    {
+      "id": "character",
+      "contract": "Character",
+      "words": [
+        "character",
+        "player"
+      ],
+      "never": [
+        "profile"
+      ]
+    },
+    {
+      "id": "quest",
+      "contract": "Quest",
+      "words": [
+        "quest",
+        "reward"
+      ],
+      "never": [
+        "task"
+      ]
+    },
+    {
+      "id": "gear",
+      "contract": "Gear",
+      "words": [
+        "gear",
+        "loadout"
+      ],
+      "never": [
+        "item"
+      ]
+    }
+  ],
+  "capabilities": [
+    {
+      "id": "syncGameProgress",
+      "real": true,
+      "note": "Read acknowledged character, quest, gear and roster snapshots from Hollowmere."
+    },
+    {
+      "id": "claimRewards",
+      "real": true,
+      "note": "Claim each completed quest once; uncertain claims are reconciled before another submission."
+    },
+    {
+      "id": "equipGear",
+      "real": true,
+      "note": "Persist a gear swap after the game acknowledges the new loadout."
+    },
+    {
+      "id": "sellGear",
+      "real": true,
+      "note": "A confirmed sale returns gold and removes that gear; no buyback is promised."
+    },
+    {
+      "id": "sendClanMessages",
+      "real": true,
+      "note": "Persist clan planning messages with delivery acknowledgement."
+    },
+    {
+      "id": "savePreferences",
+      "real": true,
+      "note": "Persist player display and notification preferences."
+    },
+    {
+      "id": "sendQuestReminder",
+      "real": true,
+      "note": "Notify opted-in players before an active quest deadline."
+    },
+    {
+      "id": "launchRaid",
+      "real": false,
+      "note": "The companion helps plan a raid but cannot start a match or teleport a character; it has no launch control."
+    }
+  ],
+  "data": {
+    "Character": {
+      "fields": {
+        "name": "text",
+        "className": "text",
+        "clan": "text",
+        "level": "number",
+        "power": "number",
+        "xp": "number",
+        "equippedWeapon": "ref",
+        "gold": "number",
+        "gems": "number"
+      },
+      "typical": 2,
+      "max": 8,
+      "long": [
+        "name",
+        "clan"
+      ]
+    },
+    "Quest": {
+      "fields": {
+        "title": "text",
+        "location": "text",
+        "description": "longText",
+        "xp": "number",
+        "goldReward": "number",
+        "gemReward": "number",
+        "rewardGear": "text",
+        "completedCount": "number",
+        "targetCount": "number",
+        "resetsAt": "date",
+        "hoursUntilReset": "number",
+        "expiresAt": "date",
+        "hoursUntilExpiry": "number",
+        "chapter": "number",
+        "kind": "enum",
+        "status": "enum"
+      },
+      "typical": 4,
+      "max": 40,
+      "long": [
+        "title",
+        "description"
+      ],
+      "enums": {
+        "kind": [
+          "daily",
+          "story",
+          "arena"
+        ],
+        "status": [
+          "active",
+          "ready",
+          "expiring",
+          "claimed",
+          "expired"
+        ]
+      }
+    },
+    "Gear": {
+      "fields": {
+        "name": "text",
+        "lore": "longText",
+        "category": "enum",
+        "quantity": "number",
+        "rarity": "enum",
+        "power": "number",
+        "guard": "number",
+        "lightRadiusPercent": "number",
+        "xpBonusPercent": "number",
+        "healing": "number",
+        "dailyCrests": "number",
+        "sellGold": "number",
+        "equipped": "enum"
+      },
+      "typical": 6,
+      "max": 200,
+      "long": [
+        "name",
+        "lore"
+      ],
+      "enums": {
+        "rarity": [
+          "epic",
+          "legendary",
+          "rare",
+          "uncommon",
+          "common"
+        ],
+        "category": [
+          "weapon",
+          "trinket",
+          "armor",
+          "charm",
+          "consumable",
+          "relic"
+        ],
+        "equipped": [
+          "equipped",
+          "stored"
+        ]
+      }
+    },
+    "ClanMember": {
+      "fields": {
+        "name": "text",
+        "className": "text",
+        "rank": "number",
+        "power": "number",
+        "presence": "enum",
+        "isSelf": "enum"
+      },
+      "typical": 6,
+      "max": 100,
+      "long": [
+        "name",
+        "className"
+      ],
+      "enums": {
+        "presence": [
+          "inMatch",
+          "online",
+          "away",
+          "offline"
+        ],
+        "isSelf": [
+          "self",
+          "other"
+        ]
+      }
+    },
+    "Message": {
+      "fields": {
+        "author": "text",
+        "text": "longText",
+        "mine": "enum",
+        "sentAt": "date",
+        "delivery": "enum"
+      },
+      "typical": 4,
+      "max": 500,
+      "long": [
+        "author",
+        "text"
+      ],
+      "enums": {
+        "mine": [
+          "mine",
+          "theirs"
+        ],
+        "delivery": [
+          "sent",
+          "pending",
+          "failed"
+        ]
+      }
+    }
+  },
+  "states": {
+    "homeReady": {
+      "label": "Session overview",
+      "rule": "Show Kestrel’s acknowledged loadout and the claimable forge reward ahead of unfinished quests.",
+      "kind": "data",
+      "fixtures": {
+        "Character": "one",
+        "Quest": "populated"
+      }
+    },
+    "homeLoading": {
+      "label": "Syncing character",
+      "rule": "Keep navigation while withholding character totals and claims until the snapshot arrives.",
+      "kind": "data",
+      "fixtures": {
+        "Character": "none",
+        "Quest": "none"
+      }
+    },
+    "homeEmpty": {
+      "label": "No active quests",
+      "rule": "Keep the linked character visible and explain when new daily quests arrive.",
+      "kind": "data",
+      "fixtures": {
+        "Character": "one",
+        "Quest": "none"
+      }
+    },
+    "homeFailed": {
+      "label": "Game unavailable",
+      "rule": "Keep the last known character and mark it stale; reconnect before making reward or gear changes.",
+      "kind": "connectivity",
+      "fixtures": {
+        "Character": "one",
+        "Quest": "populated"
+      }
+    },
+    "homeLongContent": {
+      "label": "Long character and quest names",
+      "rule": "Wrap the complete character, clan and quest names while keeping numeric power separate.",
+      "kind": "data",
+      "fixtures": {
+        "Character": "long",
+        "Quest": "long"
+      }
+    },
+    "homePlanned": {
+      "label": "Loadout prepared",
+      "rule": "Show the acknowledged tempered blade and updated power before the player returns to the game.",
+      "kind": "operation",
+      "fixtures": {
+        "Character": "equipped",
+        "Quest": "populated"
+      }
+    },
+    "questsReady": {
+      "label": "Quest board",
+      "rule": "Distinguish the forge reward ready to claim from active, story and expiring quests.",
+      "kind": "data",
+      "fixtures": {
+        "Quest": "populated"
+      }
+    },
+    "questsLoading": {
+      "label": "Syncing quests",
+      "rule": "Hide claim controls until completion and reward identity are confirmed by the game.",
+      "kind": "data",
+      "fixtures": {
+        "Quest": "none"
+      }
+    },
+    "questsEmpty": {
+      "label": "No active quests",
+      "rule": "Explain the daily reset and return to the character overview.",
+      "kind": "data",
+      "fixtures": {
+        "Quest": "none"
+      }
+    },
+    "questsFailed": {
+      "label": "Quest sync failed",
+      "rule": "Reconnect to fetch current completion before offering any claim.",
+      "kind": "connectivity",
+      "fixtures": {
+        "Quest": "populated"
+      }
+    },
+    "questsLongContent": {
+      "label": "Long quest narrative",
+      "rule": "Wrap the complete story objective; keep chapter, reward amounts and deadline as separate facts.",
+      "kind": "data",
+      "fixtures": {
+        "Quest": "long"
+      }
+    },
+    "questsClaiming": {
+      "label": "Claim pending",
+      "rule": "Disable another claim while the forge reward is awaiting acknowledgement.",
+      "kind": "operation",
+      "fixtures": {
+        "Quest": "ready"
+      }
+    },
+    "questsClaimed": {
+      "label": "Reward claimed",
+      "rule": "Mark the forge quest claimed and link to inventory only after acknowledgement.",
+      "kind": "operation",
+      "fixtures": {
+        "Quest": "claimed"
+      }
+    },
+    "questsClaimFailed": {
+      "label": "Claim rejected",
+      "rule": "Keep the forge reward ready; explain that no reward was delivered and allow a safe retry.",
+      "kind": "operation",
+      "fixtures": {
+        "Quest": "ready"
+      }
+    },
+    "questsClaimUnknown": {
+      "label": "Claim outcome unknown",
+      "rule": "Do not resubmit; refresh the claim result to learn whether the reward was delivered.",
+      "kind": "operation",
+      "fixtures": {
+        "Quest": "ready"
+      }
+    },
+    "questsExpired": {
+      "label": "Quest expired",
+      "rule": "Show the expired arena quest and remove claim controls; no completed reward is implied.",
+      "kind": "data",
+      "fixtures": {
+        "Quest": "expired"
+      }
+    },
+    "inventoryReady": {
+      "label": "Gear collection",
+      "rule": "Compare stored gear with Kestrel’s equipped sword; separate category and each numerical bonus.",
+      "kind": "data",
+      "fixtures": {
+        "Gear": "populated",
+        "Character": "one"
+      }
+    },
+    "inventoryLoading": {
+      "label": "Syncing gear",
+      "rule": "Keep the inventory heading while withholding gear changes until the snapshot arrives.",
+      "kind": "data",
+      "fixtures": {
+        "Gear": "none",
+        "Character": "one"
+      }
+    },
+    "inventoryEmpty": {
+      "label": "No gear",
+      "rule": "Keep the character context and route to quest rewards.",
+      "kind": "data",
+      "fixtures": {
+        "Gear": "none",
+        "Character": "one"
+      }
+    },
+    "inventoryFailed": {
+      "label": "Gear sync failed",
+      "rule": "Keep last known gear visible but disable equip and sell until a fresh snapshot is loaded.",
+      "kind": "connectivity",
+      "fixtures": {
+        "Gear": "populated",
+        "Character": "one"
+      }
+    },
+    "inventoryLongContent": {
+      "label": "Long gear lore",
+      "rule": "Wrap gear name and lore without losing category, rarity or bonuses.",
+      "kind": "data",
+      "fixtures": {
+        "Gear": "long",
+        "Character": "one"
+      }
+    },
+    "inventoryEquipping": {
+      "label": "Equipping gear",
+      "rule": "Keep the selected tempered blade and prevent a duplicate swap until acknowledged.",
+      "kind": "operation",
+      "fixtures": {
+        "Gear": "claimed",
+        "Character": "one"
+      }
+    },
+    "inventoryEquipped": {
+      "label": "Loadout saved",
+      "rule": "Show the tempered blade as equipped and Kestrel’s acknowledged new power.",
+      "kind": "operation",
+      "fixtures": {
+        "Gear": "equipped",
+        "Character": "equipped"
+      }
+    },
+    "inventoryEquipFailed": {
+      "label": "Swap not saved",
+      "rule": "Keep the prior sword equipped and offer another attempt for the selected tempered blade.",
+      "kind": "operation",
+      "fixtures": {
+        "Gear": "claimed",
+        "Character": "one"
+      }
+    },
+    "inventorySelling": {
+      "label": "Selling sword",
+      "rule": "Keep the selected sword visible but prevent another sale while awaiting acknowledgement.",
+      "kind": "operation",
+      "fixtures": {
+        "Gear": "equipped",
+        "Character": "equipped"
+      }
+    },
+    "inventorySold": {
+      "label": "Sale saved",
+      "rule": "Remove the sold sword and show only the acknowledged gold balance.",
+      "kind": "operation",
+      "fixtures": {
+        "Gear": "sold",
+        "Character": "sold"
+      }
+    },
+    "inventorySellFailed": {
+      "label": "Sale not saved",
+      "rule": "Keep the sword in inventory and the prior gold balance; retry the same sale.",
+      "kind": "operation",
+      "fixtures": {
+        "Gear": "equipped",
+        "Character": "equipped"
+      }
+    },
+    "clanReady": {
+      "label": "Raid planning",
+      "rule": "Keep the healer request and clan roster next to the message input; this does not start the raid.",
+      "kind": "data",
+      "fixtures": {
+        "Message": "populated",
+        "ClanMember": "populated"
+      }
+    },
+    "clanLoading": {
+      "label": "Loading clan",
+      "rule": "Retain the clan heading and reserve history without implying a draft was delivered.",
+      "kind": "data",
+      "fixtures": {
+        "Message": "none",
+        "ClanMember": "populated"
+      }
+    },
+    "clanEmpty": {
+      "label": "No planning messages",
+      "rule": "Show the roster and invite the player to post availability for the next raid.",
+      "kind": "firstRun",
+      "fixtures": {
+        "Message": "none",
+        "ClanMember": "populated"
+      }
+    },
+    "clanFailed": {
+      "label": "Clan unavailable",
+      "rule": "Keep the history and any draft; reconnect before sending.",
+      "kind": "connectivity",
+      "fixtures": {
+        "Message": "populated",
+        "ClanMember": "populated"
+      }
+    },
+    "clanLongContent": {
+      "label": "Long raid plan",
+      "rule": "Wrap the full raid plan and author identity while preserving message order.",
+      "kind": "data",
+      "fixtures": {
+        "Message": "long",
+        "ClanMember": "long"
+      }
+    },
+    "clanSending": {
+      "label": "Sending availability",
+      "rule": "Keep the proposed raid message with a pending marker and prevent duplicate delivery.",
+      "kind": "operation",
+      "fixtures": {
+        "Message": "sending",
+        "ClanMember": "populated"
+      }
+    },
+    "clanSent": {
+      "label": "Availability sent",
+      "rule": "Show the message as delivered after acknowledgement; the roster can now read it.",
+      "kind": "operation",
+      "fixtures": {
+        "Message": "populated",
+        "ClanMember": "populated"
+      }
+    },
+    "clanSendFailed": {
+      "label": "Message not sent",
+      "rule": "Retain the exact draft beside a retry; never show it as delivered.",
+      "kind": "operation",
+      "fixtures": {
+        "Message": "sendFailed",
+        "ClanMember": "populated"
+      }
+    },
+    "rankingsReady": {
+      "label": "Weekly rankings",
+      "rule": "Sort the acknowledged roster by rank and keep presence separate from combat power.",
+      "kind": "data",
+      "fixtures": {
+        "ClanMember": "populated"
+      }
+    },
+    "rankingsLoading": {
+      "label": "Loading ranks",
+      "rule": "Do not invent player positions while fetching the weekly ranking.",
+      "kind": "data",
+      "fixtures": {
+        "ClanMember": "none"
+      }
+    },
+    "rankingsEmpty": {
+      "label": "No weekly ranking",
+      "rule": "Explain that ranks require a completed quest this week and link to Quests.",
+      "kind": "data",
+      "fixtures": {
+        "ClanMember": "none"
+      }
+    },
+    "rankingsFailed": {
+      "label": "Ranks unavailable",
+      "rule": "Retry the ranking fetch without changing power or completed quests.",
+      "kind": "data",
+      "fixtures": {
+        "ClanMember": "none"
+      }
+    },
+    "rankingsLongContent": {
+      "label": "Long player identities",
+      "rule": "Wrap the full name and class while keeping rank and power aligned.",
+      "kind": "data",
+      "fixtures": {
+        "ClanMember": "long"
+      }
+    },
+    "settingsReady": {
+      "label": "Player preferences",
+      "rule": "Player display, server and quest reminder choices are explicitly saved together.",
+      "kind": "data",
+      "fixtures": {}
+    },
+    "settingsSaving": {
+      "label": "Saving player preferences",
+      "rule": "Keep changed values visible while preventing duplicate preference saves.",
+      "kind": "operation",
+      "fixtures": {}
+    },
+    "settingsSaved": {
+      "label": "Player preferences saved",
+      "rule": "Confirm display and reminders without changing equipped gear or game progress.",
+      "kind": "operation",
+      "fixtures": {}
+    },
+    "settingsFailed": {
+      "label": "Preferences not saved",
+      "rule": "Retain player preference edits and offer a local retry.",
+      "kind": "operation",
+      "fixtures": {}
+    },
+    "helpReady": {
+      "label": "Power and weekly rewards",
+      "rule": "Explain power and ranking reset separately from actions; the companion cannot launch a match.",
+      "kind": "data",
+      "fixtures": {}
+    },
+    "landingReady": {
+      "label": "About the companion",
+      "rule": "Explain claim, loadout and clan planning against an already linked Hollowmere character; do not promise a linking form.",
+      "kind": "data",
+      "fixtures": {}
+    },
+    "pushQuestExpiringReady": {
+      "label": "Quest deadline reminder",
+      "rule": "Notify opted-in players only for the active arena quest and link to its remaining deadline.",
+      "kind": "operation",
+      "fixtures": {
+        "Quest": "expiring"
+      }
+    },
+    "inventoryRewardReady": {
+      "label": "Forge reward received",
+      "rule": "The newly claimed tempered blade is stored next to the existing loadout; the player can compare it before equipping.",
+      "kind": "data",
+      "fixtures": {
+        "Gear": "claimed",
+        "Character": "one"
+      }
+    }
+  },
+  "events": {
+    "claimQuestEvent": {
+      "label": "Claim forge reward",
+      "kind": "operation",
+      "needs": "claimRewards"
+    },
+    "reconcileClaimEvent": {
+      "label": "Refresh uncertain claim",
+      "kind": "operation",
+      "needs": "syncGameProgress"
+    },
+    "equipGearEvent": {
+      "label": "Equip selected gear",
+      "kind": "operation",
+      "needs": "equipGear"
+    },
+    "confirmSaleEvent": {
+      "label": "Review gear sale",
+      "kind": "layer"
+    },
+    "sellGearEvent": {
+      "label": "Sell selected gear",
+      "kind": "operation",
+      "needs": "sellGear"
+    },
+    "compareGearEvent": {
+      "label": "Compare selected gear",
+      "kind": "layer"
+    },
+    "clanSendEvent": {
+      "label": "Send raid availability",
+      "kind": "operation",
+      "needs": "sendClanMessages"
+    },
+    "savePlayerPreferencesEvent": {
+      "label": "Save player preferences",
+      "kind": "operation",
+      "needs": "savePreferences"
+    },
+    "chooseGearFiltersEvent": {
+      "label": "Open gear filters",
+      "kind": "layer"
+    }
+  },
+  "nav": {
+    "items": [
+      {
+        "surface": "home",
+        "copy": "nav.home"
+      },
+      {
+        "surface": "quests",
+        "copy": "nav.quests"
+      },
+      {
+        "surface": "inventory",
+        "copy": "nav.inventory"
+      },
+      {
+        "surface": "clan",
+        "copy": "nav.clan"
+      },
+      {
+        "surface": "rankings",
+        "copy": "nav.rankings"
+      },
+      {
+        "surface": "settings",
+        "copy": "nav.settings"
+      }
+    ],
+    "inAYear": 8
+  },
+  "flows": [
+    {
+      "id": "claimFlow",
+      "goal": "Collect the completed forge quest reward exactly once.",
+      "priority": "must",
+      "stages": [
+        {
+          "id": "step1",
+          "surface": "home",
+          "next": [
+            "step2"
+          ]
+        },
+        {
+          "id": "step2",
+          "surface": "quests",
+          "state": "questsReady",
+          "next": [
+            "step3"
+          ]
+        },
+        {
+          "id": "step3",
+          "surface": "quests",
+          "state": "questsClaiming",
+          "next": [
+            "step4"
+          ]
+        },
+        {
+          "id": "step4",
+          "surface": "quests",
+          "state": "questsClaimed",
+          "next": [
+            "step5"
+          ]
+        },
+        {
+          "id": "step5",
+          "surface": "inventory",
+          "state": "inventoryRewardReady"
+        }
+      ],
+      "ends": "The forge quest is acknowledged as claimed and its tempered blade appears in inventory.",
+      "needs": [
+        "syncGameProgress",
+        "claimRewards"
+      ]
+    },
+    {
+      "id": "prepareRaidFlow",
+      "goal": "Choose a stronger loadout and tell the clan when I can join.",
+      "priority": "must",
+      "stages": [
+        {
+          "id": "step1",
+          "surface": "home",
+          "next": [
+            "step2"
+          ]
+        },
+        {
+          "id": "step2",
+          "surface": "inventory",
+          "next": [
+            "step3"
+          ],
+          "state": "inventoryRewardReady"
+        },
+        {
+          "id": "step3",
+          "surface": "inventory",
+          "state": "inventoryEquipping",
+          "next": [
+            "step4"
+          ]
+        },
+        {
+          "id": "step4",
+          "surface": "inventory",
+          "state": "inventoryEquipped",
+          "next": [
+            "step5"
+          ]
+        },
+        {
+          "id": "step5",
+          "surface": "clan",
+          "next": [
+            "step6"
+          ]
+        },
+        {
+          "id": "step6",
+          "surface": "clan",
+          "state": "clanSent",
+          "next": [
+            "step7"
+          ]
+        },
+        {
+          "id": "step7",
+          "surface": "home",
+          "state": "homePlanned"
+        }
+      ],
+      "ends": "The game acknowledges the tempered blade loadout, and the clan sees the delivered availability message; the player starts the raid in the game.",
+      "needs": [
+        "equipGear",
+        "sendClanMessages"
+      ]
+    },
+    {
+      "id": "sellGearFlow",
+      "goal": "Sell an unequipped sword after checking its gold return.",
+      "priority": "should",
+      "stages": [
+        {
+          "id": "step1",
+          "surface": "inventory",
+          "next": [
+            "step2"
+          ]
+        },
+        {
+          "id": "step2",
+          "surface": "inventory",
+          "state": "inventorySelling",
+          "next": [
+            "step3"
+          ]
+        },
+        {
+          "id": "step3",
+          "surface": "inventory",
+          "state": "inventorySold"
+        }
+      ],
+      "ends": "The sword is removed once and the acknowledged gold balance includes its sale value.",
+      "needs": [
+        "sellGear"
+      ]
+    },
+    {
+      "id": "rankingFlow",
+      "goal": "Compare this week’s clan rank and power before raid planning.",
+      "priority": "should",
+      "stages": [
+        {
+          "id": "step1",
+          "surface": "rankings",
+          "next": [
+            "step2"
+          ]
+        },
+        {
+          "id": "step2",
+          "surface": "clan"
+        }
+      ],
+      "ends": "The player can name the current rank and roster presence, then post a grounded raid plan.",
+      "needs": [
+        "syncGameProgress"
+      ]
+    },
+    {
+      "id": "preferencesFlow",
+      "goal": "Choose display visibility and quest reminders for this player.",
+      "priority": "should",
+      "stages": [
+        {
+          "id": "step1",
+          "surface": "settings",
+          "next": [
+            "step2"
+          ]
+        },
+        {
+          "id": "step2",
+          "surface": "settings",
+          "state": "settingsSaved"
+        }
+      ],
+      "ends": "Reopening preferences retains the selected server, display visibility and reminder opt-in.",
+      "needs": [
+        "savePreferences"
+      ]
+    },
+    {
+      "id": "helpFlow",
+      "goal": "Understand power, crests and what the companion cannot do.",
+      "priority": "should",
+      "stages": [
+        {
+          "id": "step1",
+          "surface": "help",
+          "next": [
+            "step2"
+          ]
+        },
+        {
+          "id": "step2",
+          "surface": "rankings"
+        }
+      ],
+      "ends": "The player can distinguish power from weekly rank and knows raids start in the game.",
+      "needs": []
+    },
+    {
+      "id": "discoverFlow",
+      "goal": "Understand the companion and open my linked character.",
+      "priority": "should",
+      "stages": [
+        {
+          "id": "step1",
+          "surface": "landing",
+          "next": [
+            "step2"
+          ]
+        },
+        {
+          "id": "step2",
+          "surface": "home"
+        }
+      ],
+      "ends": "The player reaches the synced character overview, not an unsupported account-link form.",
+      "needs": []
+    },
+    {
+      "id": "pushQuestExpiringFlow",
+      "goal": "Check an opted-in quest deadline before it expires.",
+      "priority": "later",
+      "stages": [
+        {
+          "id": "step1",
+          "surface": "pushQuestExpiring",
+          "next": [
+            "step2"
+          ]
+        },
+        {
+          "id": "step2",
+          "surface": "quests"
+        }
+      ],
+      "ends": "The notification opens the active arena quest with its current deadline and progress.",
+      "needs": [
+        "sendQuestReminder"
+      ]
+    }
+  ],
+  "surfaces": [
+    {
+      "id": "home",
+      "question": "Which quest is ready, and what should I prepare for the next session?",
+      "route": "/home",
+      "binding": {
+        "record": "home",
+        "status": "proposed",
+        "variant": "continue",
+        "because": "Completed quest rewards and the next unfinished quest lead the second screen.",
+        "candidates": [
+          "continue",
+          "status"
+        ]
+      },
+      "slots": [
+        {
+          "id": "identity",
+          "copy": {
+            "home.title": "always",
+            "home.documentTitle": {
+              "when": "always",
+              "as": "title"
+            }
+          }
+        },
+        {
+          "id": "primary",
+          "copy": {
+            "home.character": [
+              "homeReady",
+              "homeEmpty",
+              "homeFailed",
+              "homeLongContent",
+              "homePlanned"
+            ],
+            "home.level": [
+              "homeReady",
+              "homeEmpty",
+              "homeFailed",
+              "homeLongContent",
+              "homePlanned"
+            ],
+            "home.power": [
+              "homeReady",
+              "homeEmpty",
+              "homeFailed",
+              "homeLongContent",
+              "homePlanned"
+            ],
+            "home.xp": [
+              "homeReady",
+              "homeEmpty",
+              "homeFailed",
+              "homeLongContent",
+              "homePlanned"
+            ]
+          },
+          "data": {
+            "contract": "Character",
+            "many": false,
+            "map": {
+              "name": "name",
+              "level": "level",
+              "power": "power",
+              "clan": "clan",
+              "xp": "xp",
+              "equippedWeapon": "equippedWeapon"
+            }
+          },
+          "states": [
+            "homeReady",
+            "homeEmpty",
+            "homeFailed",
+            "homeLongContent",
+            "homePlanned"
+          ]
+        },
+        {
+          "id": "resume",
+          "copy": {
+            "home.quests": [
+              "homeReady",
+              "homeFailed",
+              "homeLongContent",
+              "homePlanned"
+            ]
+          },
+          "data": {
+            "contract": "Quest",
+            "many": true,
+            "map": {
+              "title": "title",
+              "description": "description",
+              "completedCount": "completedCount",
+              "targetCount": "targetCount",
+              "status": "status"
+            }
+          },
+          "states": [
+            "homeReady",
+            "homeFailed",
+            "homeLongContent",
+            "homePlanned"
+          ]
+        },
+        {
+          "id": "state",
+          "copy": {
+            "home.empty.title": [
+              "homeEmpty"
+            ],
+            "home.empty.body": [
+              "homeEmpty"
+            ],
+            "home.empty.action": [
+              "homeEmpty"
+            ],
+            "home.recovery.title": [
+              "homeFailed"
+            ],
+            "home.recovery.action": [
+              "homeFailed"
+            ],
+            "home.stale": [
+              "homeFailed"
+            ],
+            "home.loading": {
+              "when": [
+                "homeLoading"
+              ],
+              "as": "announce"
+            }
+          }
+        },
+        {
+          "id": "navigation",
+          "copy": {
+            "nav.home": "always",
+            "nav.quests": "always",
+            "nav.inventory": "always",
+            "nav.clan": "always",
+            "nav.rankings": "always",
+            "nav.settings": "always"
+          }
+        }
+      ],
+      "states": [
+        "homeReady",
+        "homeLoading",
+        "homeEmpty",
+        "homeFailed",
+        "homeLongContent",
+        "homePlanned"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
+        "nav.home": "always",
+        "nav.quests": "always",
+        "nav.inventory": "always",
+        "nav.clan": "always",
+        "nav.rankings": "always",
+        "nav.settings": "always"
+      }
+    },
+    {
+      "id": "quests",
+      "question": "Which quest can I finish or claim before it expires?",
+      "route": "/quests",
+      "slots": [
+        {
+          "id": "primary",
+          "copy": {
+            "quests.progress": [
+              "questsReady",
+              "questsFailed",
+              "questsLongContent",
+              "questsClaiming",
+              "questsClaimed",
+              "questsClaimFailed",
+              "questsClaimUnknown",
+              "questsExpired"
+            ],
+            "quests.reward.xp": [
+              "questsReady",
+              "questsFailed",
+              "questsLongContent",
+              "questsClaiming",
+              "questsClaimed",
+              "questsClaimFailed",
+              "questsClaimUnknown",
+              "questsExpired"
+            ]
+          },
+          "data": {
+            "contract": "Quest",
+            "many": true,
+            "map": {
+              "title": "title",
+              "location": "location",
+              "description": "description",
+              "xp": "xp",
+              "goldReward": "goldReward",
+              "gemReward": "gemReward",
+              "rewardGear": "rewardGear",
+              "completedCount": "completedCount",
+              "targetCount": "targetCount",
+              "resetsAt": "resetsAt",
+              "hoursUntilReset": "hoursUntilReset",
+              "expiresAt": "expiresAt",
+              "hoursUntilExpiry": "hoursUntilExpiry",
+              "chapter": "chapter",
+              "kind": "kind",
+              "status": "status"
+            }
+          },
+          "states": [
+            "questsReady",
+            "questsFailed",
+            "questsLongContent",
+            "questsClaiming",
+            "questsClaimed",
+            "questsClaimFailed",
+            "questsClaimUnknown",
+            "questsExpired"
+          ]
+        },
+        {
+          "id": "state",
+          "copy": {
+            "quests.loading": {
+              "when": [
+                "questsLoading"
+              ],
+              "as": "announce"
+            },
+            "quests.empty.title": [
+              "questsEmpty"
+            ],
+            "quests.empty.body": [
+              "questsEmpty"
+            ],
+            "quests.empty.action": [
+              "questsEmpty"
+            ],
+            "quests.recovery.title": [
+              "questsFailed"
+            ],
+            "quests.recovery.action": [
+              "questsFailed"
+            ],
+            "quests.claim.pending": {
+              "when": [
+                "questsClaiming"
+              ],
+              "as": "announce"
+            },
+            "quests.claim.failed": [
+              "questsClaimFailed"
+            ],
+            "quests.claim.retry": [
+              "questsClaimFailed"
+            ],
+            "quests.claim.unknown": [
+              "questsClaimUnknown"
+            ],
+            "quests.claim.reconcile": [
+              "questsClaimUnknown"
+            ]
+          }
+        },
+        {
+          "id": "outcome",
+          "copy": {
+            "quests.outcome": {
+              "when": [
+                "questsClaimed"
+              ],
+              "as": "announce"
+            },
+            "quests.openInventory": [
+              "questsClaimed"
+            ]
+          },
+          "record": "notifications",
+          "status": "proposed",
+          "variant": "inline",
+          "because": "The acknowledged quest and inventory destination stay visible after a claim.",
+          "data": {
+            "contract": "Quest",
+            "many": false,
+            "map": {
+              "rewardGear": "rewardGear"
+            }
+          }
+        }
+      ],
+      "states": [
+        "questsReady",
+        "questsLoading",
+        "questsEmpty",
+        "questsFailed",
+        "questsLongContent",
+        "questsClaiming",
+        "questsClaimed",
+        "questsClaimFailed",
+        "questsClaimUnknown",
+        "questsExpired"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
+        "nav.home": "always",
+        "nav.quests": "always",
+        "nav.inventory": "always",
+        "nav.clan": "always",
+        "nav.rankings": "always",
+        "nav.settings": "always",
+        "quests.title": "always",
+        "quests.documentTitle": {
+          "when": "always",
+          "as": "title"
+        },
+        "quests.claim": [
+          "questsReady",
+          "questsClaimFailed"
+        ],
+        "quests.kind.daily": [
+          "questsReady",
+          "questsFailed",
+          "questsClaiming",
+          "questsClaimed",
+          "questsClaimFailed",
+          "questsClaimUnknown"
+        ],
+        "quests.kind.story": [
+          "questsReady",
+          "questsFailed",
+          "questsLongContent"
+        ],
+        "quests.kind.arena": [
+          "questsReady",
+          "questsFailed",
+          "questsExpired"
+        ],
+        "quests.status.active": [
+          "questsReady",
+          "questsFailed",
+          "questsLongContent"
+        ],
+        "quests.status.ready": [
+          "questsReady",
+          "questsFailed",
+          "questsClaiming",
+          "questsClaimFailed",
+          "questsClaimUnknown"
+        ],
+        "quests.status.expiring": [
+          "questsReady",
+          "questsFailed"
+        ],
+        "quests.status.claimed": [
+          "questsClaimed"
+        ],
+        "quests.status.expired": [
+          "questsExpired"
+        ],
+        "quests.reward.gold": [
+          "questsReady",
+          "questsFailed"
+        ],
+        "quests.reward.gems": [
+          "questsReady",
+          "questsFailed",
+          "questsExpired"
+        ],
+        "quests.reward.gear": [
+          "questsReady",
+          "questsFailed",
+          "questsLongContent",
+          "questsClaiming",
+          "questsClaimed",
+          "questsClaimFailed",
+          "questsClaimUnknown"
+        ],
+        "quests.chapter": [
+          "questsReady",
+          "questsFailed",
+          "questsLongContent"
+        ],
+        "quests.reset.hours": [
+          "questsReady",
+          "questsFailed",
+          "questsClaiming",
+          "questsClaimed",
+          "questsClaimFailed",
+          "questsClaimUnknown"
+        ],
+        "quests.reset.date": [
+          "questsReady",
+          "questsFailed",
+          "questsClaiming",
+          "questsClaimed",
+          "questsClaimFailed",
+          "questsClaimUnknown"
+        ],
+        "quests.expiry.hours": [
+          "questsReady",
+          "questsFailed",
+          "questsLongContent"
+        ],
+        "quests.expiry.date": [
+          "questsReady",
+          "questsFailed",
+          "questsLongContent",
+          "questsExpired"
+        ]
+      }
+    },
+    {
+      "id": "inventory",
+      "question": "Which gear improves my current loadout?",
+      "route": "/inventory",
+      "slots": [
+        {
+          "id": "primary",
+          "copy": {
+            "inventory.quantity": [
+              "inventoryReady",
+              "inventoryFailed",
+              "inventoryLongContent",
+              "inventoryEquipping",
+              "inventoryEquipped",
+              "inventoryEquipFailed",
+              "inventorySelling",
+              "inventorySold",
+              "inventorySellFailed",
+              "inventoryRewardReady"
+            ]
+          },
+          "data": {
+            "contract": "Gear",
+            "many": true,
+            "map": {
+              "name": "name",
+              "lore": "lore",
+              "category": "category",
+              "quantity": "quantity",
+              "rarity": "rarity",
+              "power": "power",
+              "guard": "guard",
+              "lightRadiusPercent": "lightRadiusPercent",
+              "xpBonusPercent": "xpBonusPercent",
+              "healing": "healing",
+              "dailyCrests": "dailyCrests",
+              "sellGold": "sellGold",
+              "equipped": "equipped"
+            }
+          },
+          "states": [
+            "inventoryReady",
+            "inventoryFailed",
+            "inventoryLongContent",
+            "inventoryEquipping",
+            "inventoryEquipped",
+            "inventoryEquipFailed",
+            "inventorySelling",
+            "inventorySold",
+            "inventorySellFailed",
+            "inventoryRewardReady"
+          ]
+        },
+        {
+          "id": "context",
+          "copy": {},
+          "data": {
+            "contract": "Character",
+            "many": false,
+            "map": {
+              "name": "name",
+              "className": "className",
+              "clan": "clan",
+              "level": "level",
+              "power": "power",
+              "xp": "xp",
+              "equippedWeapon": "equippedWeapon",
+              "gold": "gold",
+              "gems": "gems"
+            }
+          }
+        },
+        {
+          "id": "state",
+          "copy": {
+            "inventory.loading": {
+              "when": [
+                "inventoryLoading"
+              ],
+              "as": "announce"
+            },
+            "inventory.empty.title": [
+              "inventoryEmpty"
+            ],
+            "inventory.empty.body": [
+              "inventoryEmpty"
+            ],
+            "inventory.empty.action": [
+              "inventoryEmpty"
+            ],
+            "inventory.recovery.title": [
+              "inventoryFailed"
+            ],
+            "inventory.recovery.action": [
+              "inventoryFailed"
+            ],
+            "inventory.equip.pending": {
+              "when": [
+                "inventoryEquipping"
+              ],
+              "as": "announce"
+            },
+            "inventory.equip.failed": [
+              "inventoryEquipFailed"
+            ],
+            "inventory.equip.retry": [
+              "inventoryEquipFailed"
+            ],
+            "inventory.sell.pending": {
+              "when": [
+                "inventorySelling"
+              ],
+              "as": "announce"
+            },
+            "inventory.sell.saved": [
+              "inventorySold"
+            ],
+            "inventory.sell.failed": [
+              "inventorySellFailed"
+            ],
+            "inventory.sell.retry": [
+              "inventorySellFailed"
+            ]
+          },
+          "data": {
+            "contract": "Character",
+            "many": false,
+            "map": {
+              "gold": "gold"
+            }
+          }
+        },
+        {
+          "id": "confirmation",
+          "copy": {
+            "inventory.confirmation.title": [
+              "sellGearSetup"
+            ],
+            "inventory.confirmation.body": [
+              "sellGearSetup"
+            ],
+            "inventory.confirmation.confirm": [
+              "sellGearSetup"
+            ],
+            "inventory.confirmation.cancel": [
+              "sellGearSetup"
+            ],
+            "inventory.confirmation.close": [
+              "sellGearSetup"
+            ]
+          },
+          "record": "dialogs-and-layers",
+          "status": "proposed",
+          "variant": "dialog",
+          "because": "A sale permanently removes the named gear; the gold return must be reviewed before committing.",
+          "data": {
+            "contract": "Gear",
+            "many": false,
+            "map": {
+              "name": "name",
+              "sellGold": "sellGold"
+            }
+          }
+        },
+        {
+          "id": "outcome",
+          "copy": {
+            "inventory.outcome": {
+              "when": [
+                "inventoryEquipped"
+              ],
+              "as": "announce"
+            }
+          },
+          "record": "notifications",
+          "status": "proposed",
+          "variant": "inline",
+          "because": "The game-acknowledged gear swap stays beside the selected loadout.",
+          "data": {
+            "contract": "Character",
+            "many": false,
+            "map": {
+              "equippedWeapon": "equippedWeapon"
+            }
+          }
+        }
+      ],
+      "states": [
+        "inventoryReady",
+        "inventoryRewardReady",
+        "inventoryLoading",
+        "inventoryEmpty",
+        "inventoryFailed",
+        "inventoryLongContent",
+        "inventoryEquipping",
+        "inventoryEquipped",
+        "inventoryEquipFailed",
+        "inventorySelling",
+        "inventorySold",
+        "inventorySellFailed"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
+        "nav.home": "always",
+        "nav.quests": "always",
+        "nav.inventory": "always",
+        "nav.clan": "always",
+        "nav.rankings": "always",
+        "nav.settings": "always",
+        "inventory.title": "always",
+        "inventory.documentTitle": {
+          "when": "always",
+          "as": "title"
+        },
+        "inventory.queryLabel": "always",
+        "inventory.equip": [
+          "inventoryReady",
+          "inventoryLongContent",
+          "inventoryEquipped",
+          "inventoryEquipFailed",
+          "inventorySold",
+          "inventoryRewardReady"
+        ],
+        "inventory.compare": [
+          "inventoryReady",
+          "inventoryLongContent",
+          "inventoryEquipped",
+          "inventoryEquipFailed",
+          "inventorySold",
+          "inventoryRewardReady"
+        ],
+        "inventory.sell": [
+          "inventoryEquipped",
+          "inventorySold"
+        ],
+        "inventory.equipped": [
+          "inventoryReady",
+          "inventoryFailed",
+          "inventoryEquipping",
+          "inventoryEquipped",
+          "inventoryEquipFailed",
+          "inventorySelling",
+          "inventorySold",
+          "inventorySellFailed",
+          "inventoryRewardReady"
+        ],
+        "inventory.goldValue": [
+          "inventoryReady",
+          "inventoryFailed",
+          "inventoryLongContent",
+          "inventoryEquipping",
+          "inventoryEquipped",
+          "inventoryEquipFailed",
+          "inventorySelling",
+          "inventorySold",
+          "inventorySellFailed",
+          "inventoryRewardReady"
+        ],
+        "inventory.compare.title": [
+          "compareGearSetup"
+        ],
+        "inventory.compare.close": [
+          "compareGearSetup"
+        ],
+        "inventory.filter.rarity": [
+          "gearFiltersSetup"
+        ],
+        "inventory.filter.category": [
+          "gearFiltersSetup"
+        ],
+        "inventory.filter.close": [
+          "gearFiltersSetup"
+        ],
+        "inventory.power": [
+          "inventoryReady",
+          "inventoryFailed",
+          "inventoryEquipping",
+          "inventoryEquipped",
+          "inventoryEquipFailed",
+          "inventorySelling",
+          "inventorySold",
+          "inventorySellFailed",
+          "inventoryRewardReady"
+        ],
+        "inventory.guard": [
+          "inventoryReady",
+          "inventoryFailed",
+          "inventoryEquipping",
+          "inventoryEquipped",
+          "inventoryEquipFailed",
+          "inventorySelling",
+          "inventorySold",
+          "inventorySellFailed",
+          "inventoryRewardReady"
+        ],
+        "inventory.lightRadius": [
+          "inventoryReady",
+          "inventoryFailed",
+          "inventoryEquipping",
+          "inventoryEquipped",
+          "inventoryEquipFailed",
+          "inventorySelling",
+          "inventorySold",
+          "inventorySellFailed",
+          "inventoryRewardReady"
+        ],
+        "inventory.xpBonus": [
+          "inventoryReady",
+          "inventoryFailed",
+          "inventoryEquipping",
+          "inventoryEquipped",
+          "inventoryEquipFailed",
+          "inventorySelling",
+          "inventorySold",
+          "inventorySellFailed",
+          "inventoryRewardReady"
+        ],
+        "inventory.healing": [
+          "inventoryReady",
+          "inventoryFailed",
+          "inventoryEquipping",
+          "inventoryEquipped",
+          "inventoryEquipFailed",
+          "inventorySelling",
+          "inventorySold",
+          "inventorySellFailed",
+          "inventoryRewardReady"
+        ],
+        "inventory.dailyCrests": [
+          "inventoryReady",
+          "inventoryFailed",
+          "inventoryLongContent",
+          "inventoryEquipping",
+          "inventoryEquipped",
+          "inventoryEquipFailed",
+          "inventorySelling",
+          "inventorySold",
+          "inventorySellFailed",
+          "inventoryRewardReady"
+        ],
+        "inventory.category.weapon": [
+          "inventoryReady",
+          "inventoryFailed",
+          "inventoryEquipping",
+          "inventoryEquipped",
+          "inventoryEquipFailed",
+          "inventorySelling",
+          "inventorySold",
+          "inventorySellFailed",
+          "gearFiltersSetup",
+          "inventoryRewardReady"
+        ],
+        "inventory.category.trinket": [
+          "inventoryReady",
+          "inventoryFailed",
+          "inventoryEquipping",
+          "inventoryEquipped",
+          "inventoryEquipFailed",
+          "inventorySelling",
+          "inventorySold",
+          "inventorySellFailed",
+          "gearFiltersSetup",
+          "inventoryRewardReady"
+        ],
+        "inventory.category.armor": [
+          "inventoryReady",
+          "inventoryFailed",
+          "inventoryEquipping",
+          "inventoryEquipped",
+          "inventoryEquipFailed",
+          "inventorySelling",
+          "inventorySold",
+          "inventorySellFailed",
+          "gearFiltersSetup",
+          "inventoryRewardReady"
+        ],
+        "inventory.category.charm": [
+          "inventoryReady",
+          "inventoryFailed",
+          "inventoryEquipping",
+          "inventoryEquipped",
+          "inventoryEquipFailed",
+          "inventorySelling",
+          "inventorySold",
+          "inventorySellFailed",
+          "gearFiltersSetup",
+          "inventoryRewardReady"
+        ],
+        "inventory.category.consumable": [
+          "inventoryReady",
+          "inventoryFailed",
+          "inventoryEquipping",
+          "inventoryEquipped",
+          "inventoryEquipFailed",
+          "inventorySelling",
+          "inventorySold",
+          "inventorySellFailed",
+          "gearFiltersSetup",
+          "inventoryRewardReady"
+        ],
+        "inventory.category.relic": [
+          "inventoryReady",
+          "inventoryFailed",
+          "inventoryEquipping",
+          "inventoryEquipped",
+          "inventoryEquipFailed",
+          "inventorySelling",
+          "inventorySold",
+          "inventorySellFailed",
+          "inventoryLongContent",
+          "gearFiltersSetup",
+          "inventoryRewardReady"
+        ],
+        "inventory.rarity.epic": [
+          "inventoryReady",
+          "inventoryFailed",
+          "inventoryEquipping",
+          "inventoryEquipped",
+          "inventoryEquipFailed",
+          "inventorySelling",
+          "inventorySold",
+          "inventorySellFailed",
+          "inventoryLongContent",
+          "gearFiltersSetup",
+          "inventoryRewardReady"
+        ],
+        "inventory.rarity.legendary": [
+          "inventoryReady",
+          "inventoryFailed",
+          "inventoryEquipping",
+          "inventoryEquipped",
+          "inventoryEquipFailed",
+          "inventorySelling",
+          "inventorySold",
+          "inventorySellFailed",
+          "gearFiltersSetup",
+          "inventoryRewardReady"
+        ],
+        "inventory.rarity.rare": [
+          "inventoryReady",
+          "inventoryFailed",
+          "inventoryEquipping",
+          "inventoryEquipped",
+          "inventoryEquipFailed",
+          "inventorySelling",
+          "inventorySold",
+          "inventorySellFailed",
+          "gearFiltersSetup",
+          "inventoryRewardReady"
+        ],
+        "inventory.rarity.uncommon": [
+          "inventoryReady",
+          "inventoryFailed",
+          "inventoryEquipping",
+          "inventoryEquipped",
+          "inventoryEquipFailed",
+          "inventorySelling",
+          "inventorySold",
+          "inventorySellFailed",
+          "gearFiltersSetup",
+          "inventoryRewardReady"
+        ],
+        "inventory.rarity.common": [
+          "inventoryReady",
+          "inventoryFailed",
+          "inventoryEquipping",
+          "inventoryEquipped",
+          "inventoryEquipFailed",
+          "inventorySelling",
+          "inventorySold",
+          "inventorySellFailed",
+          "gearFiltersSetup",
+          "inventoryRewardReady"
+        ]
+      },
+      "setups": [
+        {
+          "id": "sellGearSetup",
+          "label": "Sell unequipped Ash Greatsword",
+          "event": "confirmSaleEvent",
+          "state": "inventoryEquipped"
+        },
+        {
+          "id": "compareGearSetup",
+          "label": "Gear comparison open",
+          "event": "compareGearEvent",
+          "state": "inventoryReady"
+        },
+        {
+          "id": "gearFiltersSetup",
+          "label": "Gear filter choices",
+          "event": "chooseGearFiltersEvent",
+          "state": "inventoryReady"
+        }
+      ]
+    },
+    {
+      "id": "clan",
+      "question": "Who can fill the next raid slot, and what availability should I post?",
+      "route": "/clan",
+      "binding": {
+        "record": "conversation",
+        "status": "proposed",
+        "variant": "context",
+        "because": "The healer request needs the current clan roster alongside delivered raid-planning messages.",
+        "candidates": [
+          "bubbles",
+          "transcript",
+          "channel",
+          "context"
+        ]
+      },
+      "slots": [
+        {
+          "id": "header",
+          "copy": {
+            "clan.title": "always",
+            "clan.documentTitle": {
+              "when": "always",
+              "as": "title"
+            }
+          }
+        },
+        {
+          "id": "primary",
+          "copy": {
+            "clan.time": [
+              "clanReady",
+              "clanLongContent",
+              "clanSending",
+              "clanSent",
+              "clanSendFailed",
+              "clanFailed"
+            ]
+          },
+          "data": {
+            "contract": "Message",
+            "many": true,
+            "map": {
+              "author": "author",
+              "text": "text",
+              "sentAt": "sentAt",
+              "mine": "mine",
+              "delivery": "delivery"
+            }
+          }
+        },
+        {
+          "id": "composer",
+          "copy": {
+            "clan.composer.placeholder": [
+              "clanReady",
+              "clanEmpty",
+              "clanLongContent",
+              "clanSending",
+              "clanSent",
+              "clanSendFailed",
+              "clanFailed"
+            ],
+            "clan.send": [
+              "clanReady",
+              "clanEmpty",
+              "clanLongContent",
+              "clanSending",
+              "clanSent",
+              "clanSendFailed",
+              "clanFailed"
+            ],
+            "clan.aria.send": {
+              "when": [
+                "clanReady",
+                "clanEmpty",
+                "clanLongContent",
+                "clanSending",
+                "clanSent",
+                "clanSendFailed",
+                "clanFailed"
+              ],
+              "as": "label"
+            },
+            "clan.composer.label": [
+              "clanReady",
+              "clanEmpty",
+              "clanLongContent",
+              "clanSending",
+              "clanSent",
+              "clanSendFailed",
+              "clanFailed"
+            ]
+          },
+          "states": [
+            "clanReady",
+            "clanEmpty",
+            "clanLongContent",
+            "clanSending",
+            "clanSent",
+            "clanSendFailed",
+            "clanFailed"
+          ],
+          "on": [
+            {
+              "event": "clanSendEvent",
+              "axis": "asyncFeedback"
+            }
+          ]
+        },
+        {
+          "id": "context",
+          "copy": {},
+          "data": {
+            "contract": "ClanMember",
+            "many": true,
+            "map": {
+              "name": "name",
+              "className": "className",
+              "rank": "rank",
+              "power": "power",
+              "presence": "presence",
+              "isSelf": "isSelf"
+            }
+          }
+        },
+        {
+          "id": "state",
+          "copy": {
+            "clan.loading": {
+              "when": [
+                "clanLoading"
+              ],
+              "as": "announce"
+            },
+            "clan.empty.title": [
+              "clanEmpty"
+            ],
+            "clan.empty.body": [
+              "clanEmpty"
+            ],
+            "clan.empty.action": [
+              "clanEmpty"
+            ],
+            "clan.recovery.title": [
+              "clanFailed"
+            ],
+            "clan.recovery.action": [
+              "clanFailed"
+            ],
+            "clan.pending": {
+              "when": [
+                "clanSending"
+              ],
+              "as": "announce"
+            },
+            "clan.sent": {
+              "when": [
+                "clanSent"
+              ],
+              "as": "announce"
+            },
+            "clan.failed": [
+              "clanSendFailed"
+            ],
+            "clan.retry": [
+              "clanSendFailed"
+            ]
+          }
+        }
+      ],
+      "states": [
+        "clanReady",
+        "clanLoading",
+        "clanEmpty",
+        "clanFailed",
+        "clanLongContent",
+        "clanSending",
+        "clanSent",
+        "clanSendFailed"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
+        "nav.home": "always",
+        "nav.quests": "always",
+        "nav.inventory": "always",
+        "nav.clan": "always",
+        "nav.rankings": "always",
+        "nav.settings": "always"
+      }
+    },
+    {
+      "id": "rankings",
+      "question": "Who is ready for the raid, and where do I rank this week?",
+      "route": "/rankings",
+      "slots": [
+        {
+          "id": "primary",
+          "copy": {
+            "rankings.columns.rank": [
+              "rankingsReady",
+              "rankingsLongContent"
+            ],
+            "rankings.columns.player": [
+              "rankingsReady",
+              "rankingsLongContent"
+            ],
+            "rankings.columns.class": [
+              "rankingsReady",
+              "rankingsLongContent"
+            ],
+            "rankings.columns.presence": [
+              "rankingsReady",
+              "rankingsLongContent"
+            ],
+            "rankings.columns.power": [
+              "rankingsReady",
+              "rankingsLongContent"
+            ]
+          },
+          "data": {
+            "contract": "ClanMember",
+            "many": true,
+            "map": {
+              "name": "name",
+              "className": "className",
+              "rank": "rank",
+              "power": "power",
+              "presence": "presence",
+              "isSelf": "isSelf"
+            }
+          },
+          "states": [
+            "rankingsReady",
+            "rankingsLongContent"
+          ]
+        }
+      ],
+      "states": [
+        "rankingsReady",
+        "rankingsLoading",
+        "rankingsEmpty",
+        "rankingsFailed",
+        "rankingsLongContent"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
+        "nav.home": "always",
+        "nav.quests": "always",
+        "nav.inventory": "always",
+        "nav.clan": "always",
+        "nav.rankings": "always",
+        "nav.settings": "always",
+        "rankings.title": "always",
+        "rankings.documentTitle": {
+          "when": "always",
+          "as": "title"
+        },
+        "rankings.self": [
+          "rankingsReady"
+        ],
+        "rankings.presence.inMatch": [
+          "rankingsReady",
+          "rankingsLongContent"
+        ],
+        "rankings.presence.online": [
+          "rankingsReady"
+        ],
+        "rankings.presence.away": [
+          "rankingsReady"
+        ],
+        "rankings.presence.offline": [
+          "rankingsReady"
+        ],
+        "rankings.loading": {
+          "when": [
+            "rankingsLoading"
+          ],
+          "as": "announce"
+        },
+        "rankings.empty.title": [
+          "rankingsEmpty"
+        ],
+        "rankings.empty.body": [
+          "rankingsEmpty"
+        ],
+        "rankings.empty.action": [
+          "rankingsEmpty"
+        ],
+        "rankings.recovery.title": [
+          "rankingsFailed"
+        ],
+        "rankings.recovery.action": [
+          "rankingsFailed"
+        ]
+      }
+    },
+    {
+      "id": "settings",
+      "question": "Which player display, server and quest reminder preferences should persist?",
+      "route": "/settings",
+      "binding": {
+        "record": "settings",
+        "status": "fixed",
+        "variant": "sections",
+        "because": "Display visibility and quest reminders belong to the same player and fit one preference section."
+      },
+      "slots": [
+        {
+          "id": "header",
+          "copy": {
+            "settings.title": "always",
+            "settings.documentTitle": {
+              "when": "always",
+              "as": "title"
+            }
+          }
+        },
+        {
+          "id": "navigation",
+          "copy": {
+            "settings.section": "always"
+          }
+        },
+        {
+          "id": "primary",
+          "copy": {
+            "settings.playerName.label": "always",
+            "settings.playerName.placeholder": "always",
+            "settings.server.label": "always",
+            "settings.server.hollowReach": "always",
+            "settings.server.ashenCoast": "always",
+            "settings.server.veilIsles": "always",
+            "settings.rankVisibility.label": "always",
+            "settings.questReminder.label": "always"
+          }
+        },
+        {
+          "id": "commit",
+          "copy": {
+            "settings.save": "always",
+            "settings.cancel": "always"
+          },
+          "on": [
+            {
+              "event": "savePlayerPreferencesEvent",
+              "axis": "asyncFeedback"
+            }
+          ]
+        },
+        {
+          "id": "state",
+          "copy": {
+            "settings.status.saving": {
+              "when": [
+                "settingsSaving"
+              ],
+              "as": "announce"
+            },
+            "settings.status.saved": {
+              "when": [
+                "settingsSaved"
+              ],
+              "as": "announce"
+            },
+            "settings.recovery": [
+              "settingsFailed"
+            ],
+            "settings.retry": [
+              "settingsFailed"
+            ]
+          }
+        }
+      ],
+      "states": [
+        "settingsReady",
+        "settingsSaving",
+        "settingsSaved",
+        "settingsFailed"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
+        "nav.home": "always",
+        "nav.quests": "always",
+        "nav.inventory": "always",
+        "nav.clan": "always",
+        "nav.rankings": "always",
+        "nav.settings": "always"
+      }
+    },
+    {
+      "id": "help",
+      "question": "How do power and weekly crests work, and where must I start a raid?",
+      "route": "/help",
+      "slots": [
+        {
+          "id": "primary",
+          "copy": {
+            "help.power.explanation": "always",
+            "help.crests.explanation": "always",
+            "help.launchLimit": "always"
+          }
+        }
+      ],
+      "states": [
+        "helpReady"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
+        "nav.home": "always",
+        "nav.quests": "always",
+        "nav.inventory": "always",
+        "nav.clan": "always",
+        "nav.rankings": "always",
+        "nav.settings": "always",
+        "help.title": "always",
+        "help.documentTitle": {
+          "when": "always",
+          "as": "title"
+        }
+      }
+    },
+    {
+      "id": "landing",
+      "question": "What can I manage for my Hollowmere character between game sessions?",
+      "route": "/",
+      "slots": [
+        {
+          "id": "primary",
+          "copy": {
+            "landing.title": "always",
+            "landing.documentTitle": {
+              "when": "always",
+              "as": "title"
+            },
+            "landing.description": "always",
+            "landing.action": "always",
+            "landing.secondaryAction": "always",
+            "landing.footer": "always",
+            "landing.quests.eyebrow": "always",
+            "landing.quests.title": "always",
+            "landing.quests.body": "always",
+            "landing.loadouts.eyebrow": "always",
+            "landing.loadouts.title": "always",
+            "landing.loadouts.body": "always",
+            "landing.clan.eyebrow": "always",
+            "landing.clan.title": "always",
+            "landing.clan.body": "always",
+            "landing.characters.value": "always",
+            "landing.characters.label": "always",
+            "landing.claimTime.value": "always",
+            "landing.claimTime.label": "always",
+            "landing.rating.value": "always",
+            "landing.rating.label": "always",
+            "landing.testimonial.text": "always",
+            "landing.testimonial.who": "always",
+            "landing.partners.ashenWardens.alt": {
+              "when": "always",
+              "as": "alt"
+            },
+            "landing.partners.hollowCourt.alt": {
+              "when": "always",
+              "as": "alt"
+            },
+            "landing.partners.paleLanterns.alt": {
+              "when": "always",
+              "as": "alt"
+            },
+            "landing.partners.emberGuild.alt": {
+              "when": "always",
+              "as": "alt"
+            },
+            "landing.partners.veilRunners.alt": {
+              "when": "always",
+              "as": "alt"
+            },
+            "landing.partners.stonebriar.alt": {
+              "when": "always",
+              "as": "alt"
+            }
+          }
+        }
+      ],
+      "states": [
+        "landingReady"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
+        "landing.title": "always",
+        "landing.documentTitle": {
+          "when": "always",
+          "as": "title"
+        }
+      }
+    },
+    {
+      "id": "pushQuestExpiring",
+      "question": "How much time remains for my active arena quest, and what progress is still needed?",
+      "route": "push:questExpiring",
+      "channel": "push",
+      "slots": [
+        {
+          "id": "primary",
+          "copy": {
+            "pushQuestExpiring.body": {
+              "when": "always",
+              "as": "body"
+            },
+            "pushQuestExpiring.action": {
+              "when": "always",
+              "as": "action"
+            },
+            "pushQuestExpiring.title": {
+              "when": "always",
+              "as": "title"
+            }
+          },
+          "data": {
+            "contract": "Quest",
+            "many": false,
+            "map": {
+              "title": "title",
+              "location": "location",
+              "description": "description",
+              "xp": "xp",
+              "goldReward": "goldReward",
+              "gemReward": "gemReward",
+              "rewardGear": "rewardGear",
+              "completedCount": "completedCount",
+              "targetCount": "targetCount",
+              "resetsAt": "resetsAt",
+              "hoursUntilReset": "hoursUntilReset",
+              "expiresAt": "expiresAt",
+              "hoursUntilExpiry": "hoursUntilExpiry",
+              "chapter": "chapter",
+              "kind": "kind",
+              "status": "status"
+            }
+          }
+        }
+      ],
+      "states": [
+        "pushQuestExpiringReady"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {}
+    }
+  ],
+  "files": {
+    "copy": "copy.md",
+    "fixtures": "fixtures.json"
+  }
+}

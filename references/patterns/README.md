@@ -8,30 +8,33 @@ The studio has five surface axes and seven interaction axes. A surface step's op
 
 A product is a few **flows** (sign in, browse then buy, write then publish). Each flow passes through **surfaces** (a storefront, a reading view, a checkout page), and each surface has **slots** (its primary list, a detail panel, a composer, its empty state). A **binding** puts one record, in one variant, into one slot of one surface in one flow.
 
-1. **Flows first.** From the brief's Must-have workflows, name each flow and give it a flow record when one fits (`checkout`, `browse-inspect-act`, `first-run`). The flow record says where it starts and ends, and which surfaces it crosses.
-2. **Surfaces next.** For every surface a flow crosses, pick the surface record (`storefront`, `reader`, `feed`) and its variant. In the studio, that's the surface step.
-3. **Slots last.** Fill each slot of a surface with the component, state and interaction records it needs (`search-filter` in the storefront's toolbar slot, `empty-states` in its empty slot, `async-progress` while results load).
-4. **Write the bindings into the brief.** Each binding names the flow/stage, surface, slot, record, variant, data fields, copy keys, real actions and states/events/recovery the product must support. Unbound slots are decisions still open; they become steps in the next studio round. Attach interaction/motion selections to semantic events in those slots, not just to screenshots.
+1. **Flows first.** From the model's Must-have workflows, name each flow and give it a flow record when one fits (`checkout`, `browse-inspect-act`, `first-run`). The flow record says where it starts and ends, and which surfaces it crosses.
+2. **Surfaces next.** For every surface a flow crosses, pick a surface record (`storefront`, `reader`, `feed`) or compose it from slots.
+3. **Slots last.** Fill declared placements with the component, state and interaction records they need (`search-filter` in `toolbar`, `empty-states` in `state`, `async-progress` in `pending`).
+4. **Write bindings into `docs/product.json`.** Each binding names its record, status, candidates, selected variant when proposed/fixed, product reason and any shared decision. The surface/slot definition owns data maps, fixed-copy keys, states, setups and semantic events. An unbound slot is plain copy/data. A nonfixed binding needs at least two fitting candidates; a single fitting variant is fixed with a reason. `sameAs` followers match their leader's status, selected variant and effective candidates. See the [checked binding format](../product-model.md#bindings) and [current boundary](../product-model.md#current-boundary).
 
-A binding table in a product's `docs/brief.md`, Design section. Choose the flow contract first: here, [browse-inspect-act](browse-inspect-act.md) with **Grid** describes browse → inspect → act and the return path; [checkout](checkout.md) with **One page** owns payment and its outcome. The local surface/slot bindings then refine those contracts:
+The table below illustrates model placements, not a second structural source in the brief. A flow/surface binding occupies its `binding` field; slot bindings use header-supported placement IDs:
 
 | Flow | Surface | Slot | Record | Variant | States to render |
 | --- | --- | --- | --- | --- | --- |
-| Browse, inspect, buy | Storefront | primary | [storefront](storefront.md) | Grid | loading, empty, no matches, populated, failed |
-| Browse, inspect, buy | Storefront | toolbar | [search-filter](search-filter.md) | Submitted search with filter bar | no filters, filters applied, no results, failed |
-| Browse, inspect, buy | Storefront | state | [empty-states](empty-states.md) | Action panel | first-use, no matches, denied, unavailable |
-| Browse, inspect, buy | Product detail | secondary facts | [disclosure](disclosure.md) | Single details region | closed, open, unavailable |
-| Browse, inspect, buy | Product detail | purchase.pending | [async-progress](async-progress.md) | Inline spinner | idle, pending, failed, confirmed |
-| Pay | Checkout | primary | [checkout](checkout.md) | One page | editing, invalid, paying, declined, unknown, paid |
-| Pay | Receipt | outcome | [confirmation](confirmation.md) | Confirmation page | paid, receipt delivery pending/sent/failed |
+| Browse, inspect, buy | — | flow binding | [browse-inspect-act](browse-inspect-act.md) | Shared with storefront | Flow stages reference the applicable surface states |
+| Browse, inspect, buy | Catalog | surface binding | [storefront](storefront.md) | Grid | loading, populated, no matches, failed |
+| Browse, inspect, buy | Catalog | toolbar | [search-filter](search-filter.md) | Submitted search with filter bar | filters applied, no results, failed |
+| Browse, inspect, buy | Catalog | state | [empty-states](empty-states.md) | Action panel | first-use, no matches, denied, unavailable |
+| Browse, inspect, buy | Tool detail | facts | [disclosure](disclosure.md) | Single details region | closed, open, unavailable |
+| Browse, inspect, buy | Tool detail | pending | [async-progress](async-progress.md) | Inline spinner | pending, failed, confirmed |
+| Pay | — | flow binding | [checkout](checkout.md) | One page | stages reference editing, paying, declined, unknown and paid states |
+| Pay | Receipt | surface binding | [confirmation](confirmation.md) | Confirmation page | paid, receipt delivery pending/sent/failed |
 
-Below the table, make the mappings concrete. For example, `primary` maps item identity/title/price/availability to the product's own fields; `purchase.pending` maps the real operation ID/status/result and retry capability; the toolbar maps query/filter/sort events; copy maps labels and each absence/failure reason to copy-deck keys. Do not infer absence from an empty array, payment success from a timer, or permission from a hidden button.
+Make the mappings concrete in the model. `primary` maps item identity, title, price and availability to product fields. `pending` maps the operation's actual lifecycle and retry capability. The toolbar names query, filter and sort events. Copy references name the states/setups and roles that expose each fixed string. Surface-level placeholders read all its slot contracts; slot placeholders read only that slot's own data. Use the [typed formatter contract](../product-model.md#placeholder-sources-and-formatters) for derived values.
 
-Record focus/return and responsive behavior with the same binding: inspection preserves query and selected item, phone detail returns to the originating item, and purchase failure retains the actual order state. Bind `control-response` to press/release, `async-progress` to the service lifecycle, and `route-transition` to navigation. The product's chosen `motion-language` supplies timing; Still/reduced motion supplies the complete static rendition. One surface may participate in multiple flows without duplicating its data or inventing a second component grammar.
+An interaction- or motion-scale slot binding requires a nonempty `on` list with matching semantic events and axes. Bind `control-response` to a press or submit event on `controlResponse`, `async-progress` to an operation event on `asyncFeedback`, and `route-transition` to a route event on `routeMotion`. The record's header events describe action/lifecycle vocabulary, not model event IDs. The [binding contract](../product-model.md#slots-and-data-mapping) covers other axes and `motion-language`.
 
-The studio export's `design-decisions.md` names the record and option label for each of the five surface axes. It is a decision list, **not an automatically generated flow/slot/data/action graph**: the builder writes those product-specific bindings and required states into the brief. Drop surfaces the product does not have rather than building them because an export lists an option.
+Record focus/return and responsive behavior with the same binding. Inspection preserves query and selected item, phone detail returns to the originating item, and purchase failure retains the actual order state. The chosen motion language supplies timing; Still and reduced motion supply the complete static rendition. One surface may participate in multiple flows, and multiple surfaces may share a product-wide state when its rendering rule agrees. The [Shed example](../product-model.md#samples) demonstrates shared states.
 
-Records attach to user goals, not to archetypes. An archetype suggests which surfaces a product probably has; the brief decides.
+Keep the checked model as the source of product-specific bindings and required states. Reconcile studio choices into it manually under the [current boundary](../product-model.md#current-boundary). Build only surfaces the product needs rather than adding one because the catalog lists an option. Every screen coverage still includes all referenced fixed strings on every modeled surface, including deferred flows and all roles/channels; see the [coverage contract](../product-model.md#every-screen-coverage).
+
+Records attach to user goals, not archetypes. An archetype hints at likely surfaces; the product model decides.
 
 ## Record fields
 
@@ -39,13 +42,14 @@ Every record has these sections, in this order. A record with a dedicated studio
 
 | Section | What it holds |
 | --- | --- |
-| Header line | `id` · scale (flow, surface, component, interaction or motion) · the dedicated studio step, or "no studio step" with any indirect relationship stated · latest reference-check date; individual sources retain their own dates. |
+| Machine header | YAML front matter: `id`, `scale`, `studio` (an exact existing step id or `null`), required/optional placement `slots`, `{id,label}` variants, states, required copy families, events and `renderer`. A flow may declare `sharesVariants` for a surface record. |
+| Human header | Record identity, any indirect studio relationship and latest reference-check date; individual sources retain their own dates. |
 | Problem and outcome | Who is trying to do what, what gets in the way, and what they can observably do once the pattern is in place. |
 | When to use / When not to use | The situations it fits, and the ones where a simpler pattern (linked) does better. |
 | Structure and slots | The regions and slots, which are required, and what each holds. |
 | Variants | Two to four genuinely different shapes, each with gain, cost and when to choose it; the universal Still/Cut baselines are documented separately in the two five-choice records. |
 | States and transitions | Every state the person can see (loading, empty, populated, partial, invalid, denied, failed, done, as they apply), and what moves them between states. |
-| Data and copy contract | The objects and fields it needs, how many, the long and short cases, and the copy keys; every visible string comes from the copy deck. |
+| Data and copy contract | The objects and fields it needs, counts, long and nullable cases, and keyed fixed strings with placement-specific placeholders and roles. |
 | Accessibility | Semantics, focus order and focus return, keyboard and touch equivalents, announcements, targets, contrast and zoom. |
 | Responsive | How it recomposes at phone width and what stays reachable. |
 | Motion | What may move, why, its duration role in the motion language, and the still version under reduced motion. |
@@ -53,9 +57,15 @@ Every record has these sections, in this order. A record with a dedicated studio
 | References | Every source, with what it supports here and the date it was checked. |
 | Code you can use | Implementations whose license allows adapting them, with the license and the notice to keep; sources that are link-only, and why. |
 
+The machine header is the binding contract. A surface record's required slots are its child placements; optional slots are the additional placements it supports. A record bound inside a slot declares supported placement ids (for example, search/filter in `toolbar`, absence feedback in `state`, and notifications in `outcome`). Its internal prose regions do not require separately bound nested slots. Variant, slot, state and event ids use camelCase; record ids retain their filenames. Every string in `copy` is a **required fixed-copy family**: at least one bound copy key must contain that exact dot-separated segment, such as `catalog.priceUnit` for `priceUnit`. Headers deliberately list only genuinely obligatory families; the fuller prose contract still applies to whichever states and capabilities the product actually offers.
+
 ## Index
 
-The tables below are the source of truth for record membership and count, excluding this README. They group flows, surfaces, components/states and interaction/motion contracts, not executable studio options. For example, `async-progress` is an interaction record indexed with states, while `search-filter` is a flow contract that can bind to local toolbar/results slots. Twelve dedicated axes point at records: the five surface axes and seven interaction axes; the latter include `asyncFeedback`. Text-only records do not acquire an executable studio step merely by appearing here.
+Each record's YAML header is the machine source of truth; [`index.json`](index.json) is its deterministic generated snapshot, with `{version:1,records:[...]}` ordered by record id. The tables below are a human navigation index of the 34 records, excluding this README. They group flows, surfaces, components/states and interaction/motion contracts, not executable studio options. For example, `async-progress` is an interaction record indexed with states, while `search-filter` is a flow contract that can bind to local toolbar/results slots.
+
+From `studio/`, run `bun run patterns:index` after editing a header; `bun run patterns:index --check` fails when the snapshot is missing or stale. Both use `readPatternCatalog` in `studio/src/model/patterns.ts`, which checks header shape, filenames, duplicate ids, studio option ids/labels, shared variants and exact label agreement with the prose Variants section. Still and Cut remain explicit header entries as well as prose baselines. `browse-inspect-act` declares `sharesVariants: storefront`, so its flow binding can share the surface's selection rather than introducing an independent step.
+
+`renderer` declares the product-model rendering contract. Twenty-three records declare `variants`. These are the twelve dedicated records plus home, empty states, notifications, dialogs/layers, search/filter, settings, create/edit, destructive action, confirmation, sign-in and first run. The remaining eleven declare `schematic`. Runtime availability is documented in the [current boundary](../product-model.md#current-boundary). A standalone schematic binding is fixed with its product reason. The shared browse/inspect/act flow may instead follow a compatible variant-rendered surface through `sameAs`, with the same decision and no independent walk step.
 
 ### Flows
 

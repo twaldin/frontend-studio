@@ -1,3 +1,15 @@
+---
+id: home
+scale: surface
+studio: null
+slots: {"required":["identity","primary","navigation","state"],"optional":["resume","secondary","summary","help","header","actions"]}
+variants: [{"id":"launcher","label":"Action launcher"},{"id":"continue","label":"Continue work"},{"id":"collection","label":"Collection landing"},{"id":"status","label":"Status overview"}]
+states: ["loading","firstUse","populated","failed","resumable","partial","denied","stale"]
+copy: ["title"]
+events: ["start","resume","complete","refresh","navigate"]
+renderer: variants
+---
+
 # Home
 
 `id: home` · `scale: surface` · `studio: no dedicated step; archetype selects the home anatomy` · `references checked: 2026-10-08`

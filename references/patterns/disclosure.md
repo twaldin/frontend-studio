@@ -1,3 +1,15 @@
+---
+id: disclosure
+scale: component
+studio: null
+slots: {"required":[],"optional":["facts","detail","notes","help"]}
+variants: [{"id":"singleDetails","label":"Single details region"},{"id":"accordion","label":"Accordion"},{"id":"contextPopover","label":"Context popover"}]
+states: ["closed","open","loading","available","empty","denied","failed"]
+copy: ["summary"]
+events: ["expand","collapse","load","deepLink"]
+renderer: schematic
+---
+
 # Disclosure
 
 `id: disclosure` · `scale: component` · `studio: no studio step` · `references checked: 2026-10-08`

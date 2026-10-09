@@ -1,3 +1,15 @@
+---
+id: motion-language
+scale: motion
+studio: motion
+slots: {"required":[],"optional":["interaction"]}
+variants: [{"id":"still","label":"Still"},{"id":"snappy","label":"Snappy"},{"id":"anchored","label":"Anchored"},{"id":"tactile","label":"Tactile"},{"id":"material","label":"Material"}]
+states: ["idle","responding","entering","changing","exiting","settled"]
+copy: []
+events: ["press","local","layer","swap","route","theme","interrupt"]
+renderer: variants
+---
+
 # Motion language
 
 `id: motion-language` · `scale: motion` · `studio: motion` · `references checked: 2026-10-08`

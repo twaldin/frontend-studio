@@ -6,8 +6,7 @@
 
 export type Branch = "product" | "frame" | "surfaces" | "tokens" | "components" | "interaction" | "landing";
 
-/** The product's shape. It picks the home surface and the sample content the studio renders. */
-export type Archetype = "workspace" | "feed" | "commerce" | "reader" | "media" | "companion" | "canvas" | "conversation" | "utility";
+export type { Archetype } from "../model/schema";
 
 export interface Option {
   id: string;

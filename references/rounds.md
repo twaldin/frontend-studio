@@ -21,6 +21,14 @@ The visual grill runs in rounds. One round: write the tree, review it, render, c
 - The dev server saves the walk to `studio/.studio/state.json` as it happens. Read it there rather than asking the user to export; `bun run export` turns it into the export files.
 - Notes carry what no option offered: hybrid picks ("this one, with icons"), interaction requirements, cross-step rules, doubts and product questions. Read every one.
 
+## End on Every screen
+
+In-app studios finish each round on the **Every screen** page required by their [contract](in-app-studio.md#contract), with controls for every modeled surface, state and setup.
+
+Until the generic studio renders models, make a checklist by hand from `docs/product.json` and `docs/copy.md`. `model:check` does not generate one. Walk every surface's declared states and setups with their fixture scenarios. Review every referenced fixed string in its declared role, including hidden copy and screen, email and push parts. Record the reviewed targets and strings, and resolve gaps before ending the round.
+
+Include Should-have and Later surfaces in either review. Must-only scope limits walk choices, not coverage. Use the [coverage contract](product-model.md#every-screen-coverage) for the complete target set and the [current boundary](product-model.md#current-boundary) for runtime availability.
+
 ## Lock in
 
 1. Export, and save the artifacts where SKILL.md says.

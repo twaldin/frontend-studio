@@ -1,3 +1,15 @@
+---
+id: settings
+scale: surface
+studio: null
+slots: {"required":["header","navigation","primary","commit","state"],"optional":["toolbar","reset","unsaved","billing","security","help","actions"]}
+variants: [{"id":"sections","label":"Sectioned page"},{"id":"categories","label":"Category navigation"},{"id":"search","label":"Search-led settings"}]
+states: ["loading","editable","readOnly","denied","failed","dirty","validating","saving","saved","invalid","pending","confirmed","reverted","conflict","partial"]
+copy: ["save"]
+events: ["edit","save","reset","leave","discard","search","navigate"]
+renderer: variants
+---
+
 # Settings
 
 `id: settings` · `scale: surface` · `studio: no studio step` · `references checked: 2026-10-08`

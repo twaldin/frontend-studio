@@ -1,0 +1,1922 @@
+{
+  "$schema": "../../../references/product-model.schema.json",
+  "model": 1,
+  "product": {
+    "id": "utility",
+    "outcome": "Convert a unit or currency amount in seconds, see where the rate came from, and reuse favorite pairs.",
+    "archetype": "utility",
+    "users": [
+      {
+        "id": "conversionUser",
+        "who": "A buyer on a laptop pricing goods in another currency and a cook using a phone for unit conversions.",
+        "device": "both",
+        "surfaces": [
+          "convert",
+          "history",
+          "favorites",
+          "rates",
+          "saveFavorite",
+          "shortcuts",
+          "settings",
+          "help",
+          "landing"
+        ]
+      }
+    ]
+  },
+  "entities": [
+    {
+      "id": "conversion",
+      "contract": "Conversion",
+      "words": [
+        "conversion",
+        "result"
+      ],
+      "never": [
+        "calculation"
+      ]
+    },
+    {
+      "id": "favorite",
+      "contract": "Favorite",
+      "words": [
+        "favorite",
+        "pair"
+      ],
+      "never": [
+        "preset"
+      ]
+    }
+  ],
+  "capabilities": [
+    {
+      "id": "saveFavorites",
+      "real": true,
+      "note": "Favorite names, pinned status and currency refresh choices are saved on this device."
+    },
+    {
+      "id": "savePreferences",
+      "real": true
+    },
+    {
+      "id": "convertUnits",
+      "real": true
+    },
+    {
+      "id": "refreshRates",
+      "real": true
+    },
+    {
+      "id": "saveLocalHistory",
+      "real": true
+    },
+    {
+      "id": "copyResults",
+      "real": true,
+      "note": "Copy the formatted numeric result to the clipboard after an explicit action."
+    },
+    {
+      "id": "clearHistory",
+      "real": true,
+      "note": "Remove only this device’s conversion history after confirmation; favorites are unaffected."
+    }
+  ],
+  "data": {
+    "Conversion": {
+      "fields": {
+        "amount": "number",
+        "fromUnit": "text",
+        "toUnit": "text",
+        "result": "number",
+        "source": "enum",
+        "convertedAt": "date"
+      },
+      "typical": 6,
+      "max": 380,
+      "enums": {
+        "source": [
+          "live",
+          "cached",
+          "exact"
+        ]
+      }
+    },
+    "Favorite": {
+      "fields": {
+        "name": "text",
+        "fromUnit": "text",
+        "toUnit": "text",
+        "category": "enum",
+        "pinned": "enum",
+        "refreshRates": "enum"
+      },
+      "typical": 6,
+      "max": 60,
+      "long": [
+        "name"
+      ],
+      "enums": {
+        "category": [
+          "currency",
+          "length",
+          "weight",
+          "volume"
+        ],
+        "pinned": [
+          "pinned",
+          "unpinned"
+        ],
+        "refreshRates": [
+          "enabled",
+          "disabled"
+        ]
+      }
+    },
+    "Rate": {
+      "fields": {
+        "fromUnit": "text",
+        "toUnit": "text",
+        "rate": "number",
+        "updatedAt": "date"
+      },
+      "typical": 3,
+      "max": 310
+    },
+    "HistorySummary": {
+      "fields": {
+        "conversionCount": "number"
+      },
+      "typical": 1,
+      "max": 1
+    },
+    "ConversionDraft": {
+      "fields": {
+        "expression": "text",
+        "amountText": "text",
+        "fromUnit": "text",
+        "toUnit": "text"
+      },
+      "typical": 1,
+      "max": 1,
+      "long": [
+        "expression"
+      ]
+    }
+  },
+  "states": {
+    "convertReady": {
+      "label": "Live currency result",
+      "rule": "Show the parsed currency result with its live rate and timestamp; retain the editable expression and show pinned favorites as reusable pairs.",
+      "kind": "data",
+      "fixtures": {
+        "Conversion": "live",
+        "Favorite": "populated",
+        "Rate": "one",
+        "ConversionDraft": "populated"
+      }
+    },
+    "convertInvalid": {
+      "label": "Invalid",
+      "rule": "Retain the original expression and amount text, show the amount error beside the input and hide any previous numeric result and its copy or favorite actions.",
+      "kind": "data",
+      "fixtures": {
+        "Conversion": "none",
+        "Favorite": "one",
+        "Rate": "one",
+        "ConversionDraft": "invalid"
+      }
+    },
+    "convertCachedRates": {
+      "label": "Cached rates",
+      "rule": "Show saved-rate age next to the result; exact unit conversions remain available.",
+      "kind": "connectivity",
+      "fixtures": {
+        "Conversion": "cached",
+        "Favorite": "populated",
+        "Rate": "cachedPair",
+        "ConversionDraft": "cached"
+      }
+    },
+    "convertFailed": {
+      "label": "Failed",
+      "rule": "Keep the amount and selected currencies editable, hide result-dependent actions, and explain that no saved rate is available; switching to exact units still works.",
+      "kind": "connectivity",
+      "fixtures": {
+        "Conversion": "none",
+        "Favorite": "none",
+        "Rate": "none",
+        "ConversionDraft": "one"
+      }
+    },
+    "convertLongContent": {
+      "label": "Long content",
+      "rule": "Wrap a full currency-name expression and long favorite names while preserving the editable amount, unit controls and live-rate result.",
+      "kind": "data",
+      "fixtures": {
+        "Conversion": "long",
+        "Favorite": "long",
+        "Rate": "long",
+        "ConversionDraft": "long"
+      }
+    },
+    "historyReady": {
+      "label": "Ready",
+      "rule": "List this device’s conversions newest first with amounts, unit pairs, source and conversion timestamps; selecting a row restores its pair.",
+      "kind": "data",
+      "fixtures": {
+        "Conversion": "populated",
+        "HistorySummary": "populated"
+      }
+    },
+    "historyLoading": {
+      "label": "Loading",
+      "rule": "Keep the last local history rows visible while storage is opened; disable clearing until the read finishes.",
+      "kind": "data",
+      "fixtures": {
+        "Conversion": "populated",
+        "HistorySummary": "populated"
+      }
+    },
+    "historyEmpty": {
+      "label": "Empty",
+      "rule": "Show the first-conversion route instead of rows or a clear-history action.",
+      "kind": "firstRun",
+      "fixtures": {
+        "Conversion": "none",
+        "HistorySummary": "empty"
+      }
+    },
+    "historyFailed": {
+      "label": "Failed",
+      "rule": "Explain that local history could not be read; do not replace it with currency-rate errors or delete stored conversions.",
+      "kind": "data",
+      "fixtures": {
+        "Conversion": "none",
+        "HistorySummary": "empty"
+      }
+    },
+    "historyLongContent": {
+      "label": "Long content",
+      "rule": "Wrap unit labels in history without separating the input amount from its result or timestamp.",
+      "kind": "data",
+      "fixtures": {
+        "Conversion": "long",
+        "HistorySummary": "long"
+      }
+    },
+    "favoritesReady": {
+      "label": "Ready",
+      "rule": "List named pairs and their pin state; selecting a pair returns to Convert without using a stale saved result.",
+      "kind": "data",
+      "fixtures": {
+        "Favorite": "populated"
+      }
+    },
+    "favoritesLoading": {
+      "label": "Loading",
+      "rule": "Keep known pairs visible while local favorite storage is opened.",
+      "kind": "data",
+      "fixtures": {
+        "Favorite": "populated"
+      }
+    },
+    "favoritesEmpty": {
+      "label": "Empty",
+      "rule": "Explain that no pairs have been saved and route back to a conversion that can be favorited.",
+      "kind": "firstRun",
+      "fixtures": {
+        "Favorite": "none"
+      }
+    },
+    "favoritesFailed": {
+      "label": "Failed",
+      "rule": "Keep the Convert route available when local favorite storage cannot be read; retry the storage read, not a rate refresh.",
+      "kind": "data",
+      "fixtures": {
+        "Favorite": "none"
+      }
+    },
+    "favoritesLongContent": {
+      "label": "Long content",
+      "rule": "Wrap the full pair name while keeping its source and target units and unpin control together.",
+      "kind": "data",
+      "fixtures": {
+        "Favorite": "long"
+      }
+    },
+    "ratesLive": {
+      "label": "Live",
+      "rule": "Show the timestamp of the last successful rate refresh.",
+      "kind": "data",
+      "fixtures": {
+        "Rate": "populated"
+      }
+    },
+    "ratesCached": {
+      "label": "Cached",
+      "rule": "Use the saved rate and disclose its age.",
+      "kind": "connectivity",
+      "fixtures": {
+        "Rate": "cached"
+      }
+    },
+    "ratesUnavailable": {
+      "label": "Unavailable",
+      "rule": "No saved rate exists; leave currency results unavailable.",
+      "kind": "connectivity",
+      "fixtures": {
+        "Rate": "none"
+      }
+    },
+    "saveFavoriteDraft": {
+      "label": "Draft",
+      "rule": "Show the current unit pair, an editable name, four visible category radio choices and a pin option; enable live-rate refresh only for currency pairs.",
+      "kind": "data",
+      "fixtures": {
+        "Favorite": "one"
+      }
+    },
+    "saveFavoriteSaving": {
+      "label": "Saving",
+      "rule": "Keep the pair and entered name visible, disable a second save and wait for local persistence to acknowledge it.",
+      "kind": "operation",
+      "fixtures": {
+        "Favorite": "one"
+      }
+    },
+    "saveFavoriteSaved": {
+      "label": "Saved",
+      "rule": "Show the saved favorite name and pair with a route to reopen it in Convert.",
+      "kind": "operation",
+      "fixtures": {
+        "Favorite": "one"
+      }
+    },
+    "saveFavoriteFailed": {
+      "label": "Failed",
+      "rule": "Keep the unsaved favorite name and pair editable; retry persistence without creating a duplicate favorite.",
+      "kind": "operation",
+      "fixtures": {
+        "Favorite": "one"
+      }
+    },
+    "saveFavoriteLongContent": {
+      "label": "Long content",
+      "rule": "Wrap a descriptive favorite name while keeping both units visible and editable.",
+      "kind": "data",
+      "fixtures": {
+        "Favorite": "long"
+      }
+    },
+    "shortcutsReady": {
+      "label": "Ready",
+      "rule": "List the real keyboard actions with equivalent visible controls.",
+      "kind": "data",
+      "fixtures": {}
+    },
+    "settingsReady": {
+      "label": "Ready",
+      "rule": "Display saved decimal precision, local-history and currency-refresh preferences together; cached-rate disclosure is never hidden.",
+      "kind": "data",
+      "fixtures": {}
+    },
+    "settingsSaving": {
+      "label": "Saving",
+      "rule": "Preserve all preference selections and disable a second commit while local storage acknowledges them.",
+      "kind": "operation",
+      "fixtures": {}
+    },
+    "settingsSaved": {
+      "label": "Saved",
+      "rule": "Acknowledge the saved conversion preferences in place; the next conversion uses the selected precision.",
+      "kind": "operation",
+      "fixtures": {}
+    },
+    "settingsFailed": {
+      "label": "Failed",
+      "rule": "Retain preference selections and keep the save control available for another local-storage attempt.",
+      "kind": "operation",
+      "fixtures": {}
+    },
+    "helpReady": {
+      "label": "Ready",
+      "rule": "Explain which conversions use exact factors and which use timestamped currency rates; link back to the current conversion.",
+      "kind": "data",
+      "fixtures": {}
+    },
+    "landingReady": {
+      "label": "Ready",
+      "rule": "Explain Kilter’s unit and currency conversion loop and route directly into the browser converter, without an unsupported download or signup.",
+      "kind": "data",
+      "fixtures": {}
+    },
+    "convertExact": {
+      "label": "Exact unit result",
+      "rule": "Show the exact unit result without a currency-rate timestamp or refresh control.",
+      "kind": "data",
+      "fixtures": {
+        "Conversion": "exact",
+        "Favorite": "populated",
+        "Rate": "none",
+        "ConversionDraft": "exact"
+      }
+    },
+    "historyClearing": {
+      "label": "Clearing history",
+      "rule": "Keep the affected rows visible and disable another clear until local deletion is acknowledged.",
+      "kind": "operation",
+      "fixtures": {
+        "Conversion": "populated",
+        "HistorySummary": "populated"
+      }
+    },
+    "historyCleared": {
+      "label": "History cleared",
+      "rule": "Replace the deleted rows with a clear-history acknowledgment; favorites remain available.",
+      "kind": "operation",
+      "fixtures": {
+        "Conversion": "none",
+        "HistorySummary": "empty"
+      }
+    },
+    "historyClearFailed": {
+      "label": "Clear failed",
+      "rule": "Keep the original conversion rows and report that nothing was removed; allow another confirmed clear.",
+      "kind": "operation",
+      "fixtures": {
+        "Conversion": "populated",
+        "HistorySummary": "populated"
+      }
+    },
+    "ratesRefreshing": {
+      "label": "Refreshing",
+      "rule": "Keep saved rates and their last successful timestamps visible while requesting a newer snapshot.",
+      "kind": "operation",
+      "fixtures": {
+        "Rate": "cached"
+      }
+    },
+    "ratesRefreshFailed": {
+      "label": "Refresh failed",
+      "rule": "Keep the saved rate snapshot and timestamp; explain that the refresh failed without calling the cached result live.",
+      "kind": "operation",
+      "fixtures": {
+        "Rate": "cached"
+      }
+    }
+  },
+  "events": {
+    "convertInputEvent": {
+      "label": "Change amount or units",
+      "kind": "swap",
+      "needs": "convertUnits"
+    },
+    "convertUnitPickerEvent": {
+      "label": "Open unit picker",
+      "kind": "layer"
+    },
+    "historyOpenDialogEvent": {
+      "label": "Open confirmation",
+      "kind": "layer"
+    },
+    "historyOutcomeEvent": {
+      "label": "Clear local conversion history",
+      "kind": "operation",
+      "needs": "clearHistory"
+    },
+    "saveFavoriteSaveEvent": {
+      "label": "Save conversion pair",
+      "kind": "operation",
+      "needs": "saveFavorites"
+    },
+    "saveFavoriteInvalidEvent": {
+      "label": "Show invalid fields",
+      "kind": "submit"
+    },
+    "convertCopyEvent": {
+      "label": "Copy conversion result",
+      "kind": "press",
+      "needs": "copyResults"
+    },
+    "ratesRefreshEvent": {
+      "label": "Refresh currency rates",
+      "kind": "operation",
+      "needs": "refreshRates"
+    },
+    "settingsSaveEvent": {
+      "label": "Save conversion preferences",
+      "kind": "operation",
+      "needs": "savePreferences"
+    }
+  },
+  "nav": {
+    "items": [
+      {
+        "surface": "convert",
+        "copy": "nav.convert"
+      },
+      {
+        "surface": "history",
+        "copy": "nav.history"
+      },
+      {
+        "surface": "favorites",
+        "copy": "nav.favorites"
+      },
+      {
+        "surface": "rates",
+        "copy": "nav.rates"
+      },
+      {
+        "surface": "shortcuts",
+        "copy": "nav.shortcuts"
+      },
+      {
+        "surface": "settings",
+        "copy": "nav.settings"
+      }
+    ],
+    "inAYear": 8
+  },
+  "flows": [
+    {
+      "id": "convertFlow",
+      "goal": "Convert a unit or currency amount and copy the result with its source visible.",
+      "priority": "must",
+      "stages": [
+        {
+          "id": "convertFlowStage1",
+          "surface": "convert"
+        }
+      ],
+      "ends": "The converted amount is visible, its exact/live/cached source is identified, and the requested result is on the clipboard.",
+      "needs": [
+        "convertUnits",
+        "copyResults",
+        "saveLocalHistory"
+      ]
+    },
+    {
+      "id": "rateFlow",
+      "goal": "Check a currency rate’s age and refresh it before relying on the result.",
+      "priority": "must",
+      "stages": [
+        {
+          "id": "rateFlowStage1",
+          "surface": "rates",
+          "next": [
+            "rateFlowStage2"
+          ]
+        },
+        {
+          "id": "rateFlowStage2",
+          "surface": "convert"
+        }
+      ],
+      "ends": "A new rate timestamp is visible, or the retained cached timestamp and refresh failure are explicit; no unsupported result is shown.",
+      "needs": [
+        "refreshRates"
+      ]
+    },
+    {
+      "id": "repeatFlow",
+      "goal": "Restore a recent unit pair or a named favorite without retyping the units.",
+      "priority": "should",
+      "stages": [
+        {
+          "id": "chooseRecent",
+          "surface": "history",
+          "next": [
+            "restorePair"
+          ]
+        },
+        {
+          "id": "chooseFavorite",
+          "surface": "favorites",
+          "next": [
+            "restorePair"
+          ]
+        },
+        {
+          "id": "restorePair",
+          "surface": "convert"
+        }
+      ],
+      "ends": "Convert contains the selected pair and recalculates the current amount instead of presenting an old currency result as live.",
+      "needs": [
+        "saveLocalHistory"
+      ]
+    },
+    {
+      "id": "saveFavoriteFlow",
+      "goal": "Name and pin a frequently used conversion pair.",
+      "priority": "should",
+      "binding": {
+        "record": "create-edit",
+        "status": "proposed",
+        "variant": "dialogForm",
+        "because": "Naming one unit pair needs only a short form, without hiding the pair or forcing a full-page edit."
+      },
+      "stages": [
+        {
+          "id": "saveFavoriteFlowStage1",
+          "surface": "saveFavorite"
+        }
+      ],
+      "ends": "The named pair appears in Favorites and can reopen Convert with both units and its pin preference restored.",
+      "needs": [
+        "saveFavorites"
+      ]
+    },
+    {
+      "id": "preferencesFlow",
+      "goal": "Choose decimal precision, local history and currency-refresh behavior.",
+      "priority": "should",
+      "stages": [
+        {
+          "id": "preferencesFlowStage1",
+          "surface": "settings"
+        }
+      ],
+      "ends": "Saved preference values remain on Settings and govern subsequent conversions on this device.",
+      "needs": [
+        "savePreferences"
+      ]
+    },
+    {
+      "id": "helpFlow",
+      "goal": "Understand why an exact unit result is stable and a currency result needs a timestamp.",
+      "priority": "should",
+      "stages": [
+        {
+          "id": "helpFlowStage1",
+          "surface": "help"
+        }
+      ],
+      "ends": "The person can identify the result’s source and return to Convert knowing whether a rate refresh is needed.",
+      "needs": []
+    },
+    {
+      "id": "shortcutFlow",
+      "goal": "Use the unit picker, swap, copy and favorite actions without leaving the keyboard.",
+      "priority": "later",
+      "stages": [
+        {
+          "id": "shortcutFlowStage1",
+          "surface": "shortcuts",
+          "next": [
+            "shortcutFlowStage2"
+          ]
+        },
+        {
+          "id": "shortcutFlowStage2",
+          "surface": "convert"
+        }
+      ],
+      "ends": "A documented keyboard command performs the same available action as its visible Convert control.",
+      "needs": []
+    },
+    {
+      "id": "discoverFlow",
+      "goal": "Understand Kilter and try an amount in the browser converter.",
+      "priority": "later",
+      "stages": [
+        {
+          "id": "discoverFlowStage1",
+          "surface": "landing",
+          "next": [
+            "discoverFlowStage2"
+          ]
+        },
+        {
+          "id": "discoverFlowStage2",
+          "surface": "convert"
+        }
+      ],
+      "ends": "The browser converter is open with editable amount and unit controls, not a promised download or mailing-list signup.",
+      "needs": []
+    }
+  ],
+  "surfaces": [
+    {
+      "id": "convert",
+      "question": "What is this amount in the other unit?",
+      "route": "/convert",
+      "binding": {
+        "record": "home",
+        "status": "fixed",
+        "variant": "launcher",
+        "because": "The amount and unit pair lead directly to a result; collection and dashboard compositions do not fit this focused converter.",
+        "candidates": [
+          "launcher"
+        ]
+      },
+      "slots": [
+        {
+          "id": "primary",
+          "data": {
+            "contract": "Conversion",
+            "many": false,
+            "map": {
+              "amount": "amount",
+              "fromUnit": "fromUnit",
+              "toUnit": "toUnit",
+              "result": "result",
+              "source": "source",
+              "convertedAt": "convertedAt"
+            }
+          },
+          "copy": {},
+          "on": [
+            {
+              "event": "convertInputEvent",
+              "axis": "contentSwap"
+            },
+            {
+              "event": "convertCopyEvent",
+              "axis": "controlResponse"
+            }
+          ]
+        },
+        {
+          "id": "resume",
+          "data": {
+            "contract": "Favorite",
+            "many": true,
+            "map": {
+              "title": "name",
+              "fromUnit": "fromUnit",
+              "toUnit": "toUnit",
+              "pinned": "pinned"
+            }
+          },
+          "copy": {}
+        },
+        {
+          "id": "summary",
+          "data": {
+            "contract": "Rate",
+            "many": true,
+            "map": {
+              "fromUnit": "fromUnit",
+              "toUnit": "toUnit",
+              "rate": "rate",
+              "updatedAt": "updatedAt"
+            }
+          },
+          "copy": {}
+        },
+        {
+          "id": "state",
+          "copy": {
+            "convert.invalid": [
+              "convertInvalid"
+            ],
+            "convert.unavailable": [
+              "convertFailed"
+            ],
+            "convert.cachedNotice": [
+              "convertCachedRates"
+            ]
+          },
+          "data": {
+            "contract": "Rate",
+            "many": false,
+            "map": {
+              "updatedAt": "updatedAt"
+            }
+          }
+        },
+        {
+          "id": "identity",
+          "copy": {
+            "convert.title": "always",
+            "convert.documentTitle": {
+              "when": "always",
+              "as": "title"
+            },
+            "shell.alt.productMark": {
+              "when": "always",
+              "as": "alt"
+            }
+          }
+        },
+        {
+          "id": "navigation",
+          "copy": {
+            "nav.convert": "always",
+            "nav.history": "always",
+            "nav.favorites": "always",
+            "nav.rates": "always",
+            "nav.shortcuts": "always",
+            "nav.settings": "always"
+          }
+        },
+        {
+          "id": "secondary",
+          "data": {
+            "contract": "ConversionDraft",
+            "many": false,
+            "map": {
+              "expression": "expression",
+              "amountText": "amountText",
+              "fromUnit": "fromUnit",
+              "toUnit": "toUnit"
+            }
+          },
+          "copy": {}
+        }
+      ],
+      "states": [
+        "convertReady",
+        "convertExact",
+        "convertInvalid",
+        "convertCachedRates",
+        "convertFailed",
+        "convertLongContent"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "convert.title": "always",
+        "convert.documentTitle": {
+          "when": "always",
+          "as": "title"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
+        "convert.composer.placeholder": "always",
+        "convert.send": "always",
+        "convert.amount.label": "always",
+        "convert.from.label": "always",
+        "convert.to.label": "always",
+        "convert.swap": "always",
+        "convert.copy": [
+          "convertReady",
+          "convertExact",
+          "convertCachedRates",
+          "convertLongContent",
+          "convertUnitPickerSetup",
+          "convertCopiedSetup"
+        ],
+        "convert.saveFavorite": [
+          "convertReady",
+          "convertExact",
+          "convertCachedRates",
+          "convertLongContent",
+          "convertUnitPickerSetup",
+          "convertCopiedSetup"
+        ],
+        "convert.result": [
+          "convertReady",
+          "convertExact",
+          "convertCachedRates",
+          "convertLongContent",
+          "convertUnitPickerSetup",
+          "convertCopiedSetup"
+        ],
+        "convert.source.live": [
+          "convertReady",
+          "convertLongContent",
+          "convertUnitPickerSetup",
+          "convertCopiedSetup"
+        ],
+        "convert.source.cached": [
+          "convertCachedRates"
+        ],
+        "convert.source.exact": [
+          "convertExact"
+        ],
+        "convert.queryLabel": [
+          "convertUnitPickerSetup"
+        ],
+        "convert.unitPicker.title": [
+          "convertUnitPickerSetup"
+        ],
+        "convert.unitPicker.close": [
+          "convertUnitPickerSetup"
+        ],
+        "nav.convert": "always",
+        "nav.history": "always",
+        "nav.favorites": "always",
+        "nav.rates": "always",
+        "nav.shortcuts": "always",
+        "nav.settings": "always",
+        "convert.rateUpdated": [
+          "convertReady",
+          "convertCachedRates",
+          "convertLongContent",
+          "convertUnitPickerSetup",
+          "convertCopiedSetup"
+        ],
+        "convert.outcome.copied": {
+          "when": [
+            "convertCopiedSetup"
+          ],
+          "as": "announce"
+        }
+      },
+      "setups": [
+        {
+          "id": "convertUnitPickerSetup",
+          "label": "Unit picker open",
+          "event": "convertUnitPickerEvent",
+          "state": "convertReady"
+        },
+        {
+          "id": "convertCopiedSetup",
+          "label": "Result copied",
+          "event": "convertCopyEvent",
+          "state": "convertReady"
+        }
+      ]
+    },
+    {
+      "id": "history",
+      "question": "What did I convert recently, and can I repeat it?",
+      "route": "/history",
+      "slots": [
+        {
+          "id": "primary",
+          "data": {
+            "contract": "Conversion",
+            "many": true,
+            "map": {
+              "amount": "amount",
+              "fromUnit": "fromUnit",
+              "toUnit": "toUnit",
+              "result": "result",
+              "source": "source",
+              "convertedAt": "convertedAt"
+            }
+          },
+          "copy": {}
+        },
+        {
+          "id": "state",
+          "record": "empty-states",
+          "status": "open",
+          "candidates": [
+            "compactCue",
+            "actionPanel"
+          ],
+          "copy": {
+            "history.empty.title": [
+              "historyEmpty"
+            ],
+            "history.empty.body": [
+              "historyEmpty"
+            ],
+            "history.empty.action": [
+              "historyEmpty"
+            ],
+            "history.recovery.title": [
+              "historyFailed"
+            ],
+            "history.recovery.action": [
+              "historyFailed"
+            ],
+            "history.status.clearing": {
+              "when": [
+                "historyClearing"
+              ],
+              "as": "announce"
+            },
+            "history.recovery.clearFailure": [
+              "historyClearFailed"
+            ]
+          }
+        },
+        {
+          "id": "confirmation",
+          "record": "dialogs-and-layers",
+          "status": "proposed",
+          "variant": "dialog",
+          "because": "Clearing local history is irreversible, so show the affected conversion count and preserve favorites explicitly.",
+          "candidates": [
+            "dialog",
+            "sheet"
+          ],
+          "copy": {
+            "history.confirmation.title": [
+              "historyConfirmSetup"
+            ],
+            "history.confirmation.body": [
+              "historyConfirmSetup"
+            ],
+            "history.confirmation.confirm": [
+              "historyConfirmSetup"
+            ],
+            "history.confirmation.cancel": [
+              "historyConfirmSetup"
+            ],
+            "history.confirmation.close": [
+              "historyConfirmSetup"
+            ]
+          },
+          "data": {
+            "contract": "HistorySummary",
+            "many": false,
+            "map": {
+              "conversionCount": "conversionCount"
+            }
+          }
+        },
+        {
+          "id": "outcome",
+          "record": "notifications",
+          "status": "proposed",
+          "variant": "inline",
+          "because": "A durable acknowledgment beside the empty history makes clear that only conversion rows were removed.",
+          "candidates": [
+            "inline",
+            "toast"
+          ],
+          "copy": {
+            "history.outcome": {
+              "when": [
+                "historyCleared",
+                "historyOutcomeSetup"
+              ],
+              "as": "announce"
+            }
+          }
+        },
+        {
+          "id": "summary",
+          "data": {
+            "contract": "HistorySummary",
+            "many": false,
+            "map": {
+              "conversionCount": "conversionCount"
+            }
+          },
+          "copy": {
+            "history.conversionCount": [
+              "historyReady",
+              "historyLoading",
+              "historyLongContent",
+              "historyClearing",
+              "historyClearFailed",
+              "historyConfirmSetup"
+            ]
+          }
+        }
+      ],
+      "states": [
+        "historyReady",
+        "historyLoading",
+        "historyEmpty",
+        "historyFailed",
+        "historyLongContent",
+        "historyClearing",
+        "historyCleared",
+        "historyClearFailed"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "history.title": "always",
+        "history.documentTitle": {
+          "when": "always",
+          "as": "title"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
+        "history.column.fromUnit": [
+          "historyReady",
+          "historyLoading",
+          "historyLongContent",
+          "historyClearing",
+          "historyClearFailed",
+          "historyConfirmSetup"
+        ],
+        "history.column.toUnit": [
+          "historyReady",
+          "historyLoading",
+          "historyLongContent",
+          "historyClearing",
+          "historyClearFailed",
+          "historyConfirmSetup"
+        ],
+        "history.column.result": [
+          "historyReady",
+          "historyLoading",
+          "historyLongContent",
+          "historyClearing",
+          "historyClearFailed",
+          "historyConfirmSetup"
+        ],
+        "history.column.source": [
+          "historyReady",
+          "historyLoading",
+          "historyLongContent",
+          "historyClearing",
+          "historyClearFailed",
+          "historyConfirmSetup"
+        ],
+        "history.column.convertedAt": [
+          "historyReady",
+          "historyLoading",
+          "historyLongContent",
+          "historyClearing",
+          "historyClearFailed",
+          "historyConfirmSetup"
+        ],
+        "history.repeat": [
+          "historyReady",
+          "historyLoading",
+          "historyLongContent",
+          "historyClearing",
+          "historyClearFailed",
+          "historyConfirmSetup"
+        ],
+        "history.clear": [
+          "historyReady",
+          "historyLongContent",
+          "historyClearFailed",
+          "historyConfirmSetup"
+        ],
+        "history.recovery.detail": [
+          "historyFailed"
+        ],
+        "history.recovery.action": [
+          "historyFailed"
+        ],
+        "nav.history": "always",
+        "nav.convert": "always",
+        "nav.favorites": "always",
+        "nav.rates": "always",
+        "nav.shortcuts": "always",
+        "nav.settings": "always",
+        "convert.source.live": [
+          "historyReady",
+          "historyLoading",
+          "historyClearing",
+          "historyClearFailed",
+          "historyConfirmSetup",
+          "historyLongContent"
+        ],
+        "convert.source.cached": [
+          "historyReady",
+          "historyLoading",
+          "historyClearing",
+          "historyClearFailed",
+          "historyConfirmSetup"
+        ],
+        "convert.source.exact": [
+          "historyReady",
+          "historyLoading",
+          "historyClearing",
+          "historyClearFailed",
+          "historyConfirmSetup"
+        ]
+      },
+      "setups": [
+        {
+          "id": "historyConfirmSetup",
+          "label": "Confirmation open",
+          "event": "historyOpenDialogEvent",
+          "state": "historyReady"
+        },
+        {
+          "id": "historyOutcomeSetup",
+          "label": "History cleared",
+          "event": "historyOutcomeEvent",
+          "state": "historyCleared"
+        }
+      ]
+    },
+    {
+      "id": "favorites",
+      "question": "Which pair do I convert often?",
+      "route": "/favorites",
+      "slots": [
+        {
+          "id": "primary",
+          "data": {
+            "contract": "Favorite",
+            "many": true,
+            "map": {
+              "title": "name",
+              "fromUnit": "fromUnit",
+              "toUnit": "toUnit",
+              "category": "category"
+            }
+          },
+          "copy": {}
+        }
+      ],
+      "states": [
+        "favoritesReady",
+        "favoritesLoading",
+        "favoritesEmpty",
+        "favoritesFailed",
+        "favoritesLongContent"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "favorites.title": "always",
+        "favorites.documentTitle": {
+          "when": "always",
+          "as": "title"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
+        "favorites.open": [
+          "favoritesReady",
+          "favoritesLoading",
+          "favoritesLongContent"
+        ],
+        "favorites.unpin": [
+          "favoritesReady",
+          "favoritesLoading",
+          "favoritesLongContent"
+        ],
+        "favorites.category.currency": [
+          "favoritesReady",
+          "favoritesLoading"
+        ],
+        "favorites.category.length": [
+          "favoritesReady",
+          "favoritesLoading"
+        ],
+        "favorites.category.weight": [
+          "favoritesReady",
+          "favoritesLoading"
+        ],
+        "favorites.category.volume": [
+          "favoritesReady",
+          "favoritesLoading",
+          "favoritesLongContent"
+        ],
+        "favorites.empty.title": [
+          "favoritesEmpty"
+        ],
+        "favorites.empty.body": [
+          "favoritesEmpty"
+        ],
+        "favorites.empty.action": [
+          "favoritesEmpty"
+        ],
+        "favorites.recovery.title": [
+          "favoritesFailed"
+        ],
+        "favorites.recovery.action": [
+          "favoritesFailed"
+        ],
+        "nav.favorites": "always",
+        "nav.convert": "always",
+        "nav.history": "always",
+        "nav.rates": "always",
+        "nav.shortcuts": "always",
+        "nav.settings": "always"
+      }
+    },
+    {
+      "id": "rates",
+      "question": "How recent is the currency rate behind my result?",
+      "route": "/rates",
+      "slots": [
+        {
+          "id": "primary",
+          "data": {
+            "contract": "Rate",
+            "many": true,
+            "map": {
+              "fromUnit": "fromUnit",
+              "toUnit": "toUnit",
+              "rate": "rate",
+              "updatedAt": "updatedAt"
+            }
+          },
+          "copy": {},
+          "on": [
+            {
+              "event": "ratesRefreshEvent",
+              "axis": "asyncFeedback"
+            }
+          ]
+        }
+      ],
+      "states": [
+        "ratesLive",
+        "ratesCached",
+        "ratesUnavailable",
+        "ratesRefreshing",
+        "ratesRefreshFailed"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "rates.title": "always",
+        "rates.documentTitle": {
+          "when": "always",
+          "as": "title"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
+        "rates.refresh": "always",
+        "rates.updated": [
+          "ratesLive",
+          "ratesCached",
+          "ratesRefreshing",
+          "ratesRefreshFailed"
+        ],
+        "rates.explanation.title": [
+          "ratesCached",
+          "ratesRefreshFailed"
+        ],
+        "rates.explanation.body": [
+          "ratesCached",
+          "ratesRefreshFailed"
+        ],
+        "nav.rates": "always",
+        "nav.convert": "always",
+        "nav.history": "always",
+        "nav.favorites": "always",
+        "nav.shortcuts": "always",
+        "nav.settings": "always",
+        "rates.unavailable": [
+          "ratesUnavailable"
+        ],
+        "rates.status.refreshing": {
+          "when": [
+            "ratesRefreshing"
+          ],
+          "as": "announce"
+        },
+        "rates.recovery": [
+          "ratesRefreshFailed"
+        ],
+        "rates.pair": [
+          "ratesLive",
+          "ratesCached",
+          "ratesRefreshing",
+          "ratesRefreshFailed"
+        ]
+      }
+    },
+    {
+      "id": "saveFavorite",
+      "question": "How should I name this unit pair, and should it be pinned on Convert?",
+      "route": "/saveFavorite",
+      "slots": [
+        {
+          "id": "header",
+          "copy": {
+            "saveFavorite.title": "always",
+            "saveFavorite.documentTitle": {
+              "when": "always",
+              "as": "title"
+            }
+          }
+        },
+        {
+          "id": "primary",
+          "data": {
+            "contract": "Favorite",
+            "many": false,
+            "map": {
+              "name": "name",
+              "fromUnit": "fromUnit",
+              "toUnit": "toUnit",
+              "category": "category",
+              "pinned": "pinned",
+              "refreshRates": "refreshRates"
+            }
+          },
+          "copy": {},
+          "on": [
+            {
+              "event": "saveFavoriteSaveEvent",
+              "axis": "asyncFeedback"
+            }
+          ]
+        },
+        {
+          "id": "state",
+          "copy": {
+            "saveFavorite.status": {
+              "when": [
+                "saveFavoriteSaving"
+              ],
+              "as": "announce"
+            },
+            "saveFavorite.recovery": [
+              "saveFavoriteFailed"
+            ],
+            "saveFavorite.saved": [
+              "saveFavoriteSaved"
+            ]
+          },
+          "data": {
+            "contract": "Favorite",
+            "many": false,
+            "map": {
+              "name": "name",
+              "fromUnit": "fromUnit",
+              "toUnit": "toUnit"
+            }
+          }
+        },
+        {
+          "id": "commit",
+          "copy": {
+            "saveFavorite.save": "always"
+          }
+        },
+        {
+          "id": "exit",
+          "copy": {
+            "saveFavorite.cancel": "always"
+          }
+        },
+        {
+          "id": "result",
+          "data": {
+            "contract": "Favorite",
+            "many": false,
+            "map": {
+              "name": "name",
+              "fromUnit": "fromUnit",
+              "toUnit": "toUnit"
+            }
+          },
+          "copy": {
+            "saveFavorite.saved": [
+              "saveFavoriteSaved"
+            ],
+            "saveFavorite.open": [
+              "saveFavoriteSaved"
+            ]
+          }
+        }
+      ],
+      "states": [
+        "saveFavoriteDraft",
+        "saveFavoriteSaving",
+        "saveFavoriteSaved",
+        "saveFavoriteFailed",
+        "saveFavoriteLongContent"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "saveFavorite.title": "always",
+        "saveFavorite.documentTitle": {
+          "when": "always",
+          "as": "title"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
+        "saveFavorite.save": "always",
+        "saveFavorite.cancel": "always",
+        "saveFavorite.status": {
+          "when": [
+            "saveFavoriteSaving"
+          ],
+          "as": "announce"
+        },
+        "saveFavorite.recovery": [
+          "saveFavoriteFailed"
+        ],
+        "saveFavorite.name.label": "always",
+        "saveFavorite.name.placeholder": "always",
+        "saveFavorite.category.label": "always",
+        "saveFavorite.category.currency": "always",
+        "saveFavorite.category.length": "always",
+        "saveFavorite.category.weight": "always",
+        "saveFavorite.category.volume": "always",
+        "saveFavorite.pinned.label": "always",
+        "saveFavorite.refreshRates.label": "always",
+        "saveFavorite.invalid": [
+          "saveFavoriteInvalidSetup"
+        ],
+        "nav.convert": "always",
+        "nav.history": "always",
+        "nav.favorites": "always",
+        "nav.rates": "always",
+        "nav.shortcuts": "always",
+        "nav.settings": "always",
+        "saveFavorite.saved": [
+          "saveFavoriteSaved"
+        ],
+        "saveFavorite.open": [
+          "saveFavoriteSaved"
+        ],
+        "convert.from.label": "always",
+        "convert.to.label": "always"
+      },
+      "setups": [
+        {
+          "id": "saveFavoriteInvalidSetup",
+          "label": "Field invalid",
+          "event": "saveFavoriteInvalidEvent",
+          "state": "saveFavoriteDraft"
+        }
+      ]
+    },
+    {
+      "id": "shortcuts",
+      "question": "Which keyboard commands complete the frequent actions?",
+      "route": "/shortcuts",
+      "slots": [
+        {
+          "id": "primary",
+          "copy": {
+            "shortcuts.pickUnits.label": "always",
+            "shortcuts.pickUnits.keys": "always",
+            "shortcuts.swapUnits.label": "always",
+            "shortcuts.swapUnits.keys": "always",
+            "shortcuts.copyResult.label": "always",
+            "shortcuts.copyResult.keys": "always",
+            "shortcuts.saveFavorite.label": "always",
+            "shortcuts.saveFavorite.keys": "always"
+          }
+        }
+      ],
+      "states": [
+        "shortcutsReady"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "shortcuts.title": "always",
+        "shortcuts.documentTitle": {
+          "when": "always",
+          "as": "title"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
+        "shortcuts.pickUnits.label": "always",
+        "shortcuts.pickUnits.keys": "always",
+        "shortcuts.swapUnits.label": "always",
+        "shortcuts.swapUnits.keys": "always",
+        "shortcuts.copyResult.label": "always",
+        "shortcuts.copyResult.keys": "always",
+        "shortcuts.saveFavorite.label": "always",
+        "shortcuts.saveFavorite.keys": "always",
+        "nav.shortcuts": "always",
+        "nav.convert": "always",
+        "nav.history": "always",
+        "nav.favorites": "always",
+        "nav.rates": "always",
+        "nav.settings": "always"
+      }
+    },
+    {
+      "id": "settings",
+      "question": "How precise should results be, and should this device retain history and refresh currency rates?",
+      "route": "/settings",
+      "binding": {
+        "record": "settings",
+        "status": "fixed",
+        "variant": "sections",
+        "because": "Precision, local history and refresh choices affect the same conversion result and fit one explicitly saved preference section."
+      },
+      "slots": [
+        {
+          "id": "primary",
+          "copy": {
+            "settings.section": "always",
+            "settings.precision.label": "always",
+            "settings.precision.two": "always",
+            "settings.precision.four": "always",
+            "settings.precision.full": "always",
+            "settings.saveHistory.label": "always",
+            "settings.rateRefresh.label": "always",
+            "settings.favoritePin.label": "always"
+          },
+          "on": [
+            {
+              "event": "settingsSaveEvent",
+              "axis": "asyncFeedback"
+            }
+          ]
+        },
+        {
+          "id": "header",
+          "copy": {
+            "settings.title": "always",
+            "settings.documentTitle": {
+              "when": "always",
+              "as": "title"
+            }
+          }
+        },
+        {
+          "id": "state",
+          "copy": {
+            "settings.status.saving": {
+              "when": [
+                "settingsSaving"
+              ],
+              "as": "announce"
+            },
+            "settings.status.saved": {
+              "when": [
+                "settingsSaved"
+              ],
+              "as": "announce"
+            },
+            "settings.recovery": [
+              "settingsFailed"
+            ]
+          }
+        },
+        {
+          "id": "navigation",
+          "copy": {
+            "settings.section": "always",
+            "nav.settings": "always",
+            "nav.convert": "always",
+            "nav.history": "always",
+            "nav.favorites": "always",
+            "nav.rates": "always",
+            "nav.shortcuts": "always"
+          }
+        },
+        {
+          "id": "commit",
+          "copy": {
+            "settings.save": "always",
+            "settings.cancel": "always"
+          }
+        }
+      ],
+      "states": [
+        "settingsReady",
+        "settingsSaving",
+        "settingsSaved",
+        "settingsFailed"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "settings.title": "always",
+        "settings.documentTitle": {
+          "when": "always",
+          "as": "title"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
+        "settings.section": "always",
+        "settings.save": "always",
+        "settings.cancel": "always",
+        "settings.status.saving": {
+          "when": [
+            "settingsSaving"
+          ],
+          "as": "announce"
+        },
+        "settings.status.saved": {
+          "when": [
+            "settingsSaved"
+          ],
+          "as": "announce"
+        },
+        "settings.recovery": [
+          "settingsFailed"
+        ],
+        "nav.settings": "always",
+        "nav.convert": "always",
+        "nav.history": "always",
+        "nav.favorites": "always",
+        "nav.rates": "always",
+        "nav.shortcuts": "always"
+      }
+    },
+    {
+      "id": "help",
+      "question": "Which results use exact factors, and how can I judge the age of a currency rate?",
+      "route": "/help",
+      "slots": [
+        {
+          "id": "primary",
+          "copy": {
+            "help.currencyRates": "always",
+            "help.exactFactors": "always"
+          }
+        }
+      ],
+      "states": [
+        "helpReady"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "help.title": "always",
+        "help.documentTitle": {
+          "when": "always",
+          "as": "title"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
+        "help.currencyRates": "always",
+        "help.exactFactors": "always",
+        "nav.convert": "always",
+        "nav.history": "always",
+        "nav.favorites": "always",
+        "nav.rates": "always",
+        "nav.shortcuts": "always",
+        "nav.settings": "always"
+      }
+    },
+    {
+      "id": "landing",
+      "question": "Can Kilter convert my amount quickly while making a currency rate’s source and age clear?",
+      "route": "/",
+      "slots": [
+        {
+          "id": "primary",
+          "copy": {
+            "landing.description": "always",
+            "landing.action": "always",
+            "landing.conversion.eyebrow": "always",
+            "landing.conversion.title": "always",
+            "landing.conversion.body": "always",
+            "landing.rates.eyebrow": "always",
+            "landing.rates.title": "always",
+            "landing.rates.body": "always",
+            "landing.favorites.eyebrow": "always",
+            "landing.favorites.title": "always",
+            "landing.favorites.body": "always"
+          }
+        }
+      ],
+      "states": [
+        "landingReady"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "landing.title": "always",
+        "landing.documentTitle": {
+          "when": "always",
+          "as": "title"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
+        "landing.description": "always",
+        "landing.action": "always",
+        "landing.secondaryAction": "always",
+        "landing.footer": "always",
+        "landing.navigation.features": "always",
+        "landing.navigation.rates": "always",
+        "landing.navigation.favorites": "always",
+        "landing.navigation.shortcuts": "always",
+        "landing.conversion.eyebrow": "always",
+        "landing.conversion.title": "always",
+        "landing.conversion.body": "always",
+        "landing.rates.eyebrow": "always",
+        "landing.rates.title": "always",
+        "landing.rates.body": "always",
+        "landing.favorites.eyebrow": "always",
+        "landing.favorites.title": "always",
+        "landing.favorites.body": "always",
+        "landing.proof.weeklyConversions.value": "always",
+        "landing.proof.weeklyConversions.label": "always",
+        "landing.proof.refreshInterval.value": "always",
+        "landing.proof.refreshInterval.label": "always",
+        "landing.proof.supportedUnits.value": "always",
+        "landing.proof.supportedUnits.label": "always",
+        "landing.buyerQuote.text": "always",
+        "landing.buyerQuote.attribution": "always",
+        "landing.customer.pinecrest.alt": {
+          "when": "always",
+          "as": "alt"
+        },
+        "landing.customer.tidewater.alt": {
+          "when": "always",
+          "as": "alt"
+        },
+        "landing.customer.orchardRow.alt": {
+          "when": "always",
+          "as": "alt"
+        },
+        "landing.customer.northgate.alt": {
+          "when": "always",
+          "as": "alt"
+        },
+        "landing.customer.copperline.alt": {
+          "when": "always",
+          "as": "alt"
+        },
+        "landing.customer.fieldstone.alt": {
+          "when": "always",
+          "as": "alt"
+        }
+      }
+    }
+  ],
+  "files": {
+    "copy": "copy.md",
+    "fixtures": "fixtures.json"
+  }
+}

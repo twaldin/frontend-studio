@@ -1,3 +1,15 @@
+---
+id: confirmation
+scale: flow
+studio: null
+slots: {"required":["header","result","nextSteps","record","support"],"optional":["delivery","actions","feedback","state"]}
+variants: [{"id":"confirmationPage","label":"Confirmation page"},{"id":"inContext","label":"Persistent in-context result"},{"id":"followUpReceipt","label":"Submitted-with-follow-up receipt"}]
+states: ["checking","confirmed","pending","deliveryPending","deliveryFailed","revisited","accessRequired","expired","unavailable","outcomeUnknown","failed"]
+copy: ["outcome","nextSteps"]
+events: ["checkStatus","saveRecord","viewResult","resend","startNew"]
+renderer: variants
+---
+
 # Confirmation
 
 `id: confirmation` · scale: flow · studio: no studio step · references checked: 2026-10-08

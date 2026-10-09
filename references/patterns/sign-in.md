@@ -1,3 +1,15 @@
+---
+id: sign-in
+scale: flow
+studio: null
+slots: {"required":["header","proof","status","recovery"],"optional":["accountCreation","factor","remembered","actions","state"]}
+variants: [{"id":"password","label":"Password form"},{"id":"emailCode","label":"Email link or code"},{"id":"deviceFederated","label":"Device or federated sign-in"}]
+states: ["signedOut","entering","choosing","verifying","signedIn","invalid","rejected","challengeSent","expired","cancelled","factorRequired","limited","providerUnavailable","sessionExpired","denied"]
+copy: ["continue","recover"]
+events: ["submit","chooseMethod","resend","recover","createAccount","switchAccount","cancel"]
+renderer: variants
+---
+
 # Sign in
 
 `id: sign-in` · scale: flow · studio: no studio step · references checked: 2026-10-08 (new primary guidance); 2026-10-06 (inherited link-only inspiration)

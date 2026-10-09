@@ -1,0 +1,3323 @@
+{
+  "$schema": "../../../references/product-model.schema.json",
+  "capabilities": [
+    {
+      "id": "deployServices",
+      "real": true,
+      "note": "A rollout is service-reported and shifts traffic only after each batch passes its health check."
+    },
+    {
+      "id": "rollbackServices",
+      "real": true,
+      "note": "The last healthy artifact can be restored without rebuilding it."
+    },
+    {
+      "id": "restartServices",
+      "real": true,
+      "note": "Unhealthy instances can be replaced while healthy instances continue serving traffic."
+    },
+    {
+      "id": "registerServices",
+      "real": true,
+      "note": "A repository and region can be registered before a first deployment."
+    },
+    {
+      "id": "resolveIncidents",
+      "real": true,
+      "note": "An on-call engineer records resolution only after checking service recovery."
+    },
+    {
+      "id": "sendMessages",
+      "real": true,
+      "note": "Incident updates are persisted in an ordered timeline."
+    },
+    {
+      "id": "savePreferences",
+      "real": true,
+      "note": "Region, auto-deploy and notification preferences persist through an explicit save."
+    },
+    {
+      "id": "deploymentEmails",
+      "real": true,
+      "note": "A failed rollout email points to the persisted attempt and its diagnostic values."
+    },
+    {
+      "id": "incidentPush",
+      "real": true,
+      "note": "An opted-in on-call engineer receives a notification for the recorded incident."
+    },
+    {
+      "id": "automaticRemediation",
+      "real": false,
+      "note": "Automatic rollback or incident resolution is not offered; each recovery operation requires an engineer’s explicit action."
+    }
+  ],
+  "data": {
+    "Service": {
+      "fields": {
+        "name": "text",
+        "status": "enum",
+        "region": "text",
+        "latencyMs": "number",
+        "lastDeployedAt": "date",
+        "activeArtifact": "text"
+      },
+      "typical": 24,
+      "max": 240,
+      "long": [
+        "name"
+      ],
+      "enums": {
+        "status": [
+          "healthy",
+          "degraded",
+          "down",
+          "paused"
+        ]
+      },
+      "optional": [
+        "latencyMs"
+      ]
+    },
+    "Deploy": {
+      "fields": {
+        "artifact": "text",
+        "service": "ref",
+        "owner": "text",
+        "stage": "enum",
+        "progressPercent": "number",
+        "startedAt": "date",
+        "exitCode": "number",
+        "elapsedSeconds": "number",
+        "operation": "enum"
+      },
+      "typical": 18,
+      "max": 180,
+      "long": [
+        "artifact"
+      ],
+      "enums": {
+        "stage": [
+          "queued",
+          "building",
+          "rollingOut",
+          "complete",
+          "failed"
+        ],
+        "operation": [
+          "deploy",
+          "rollback",
+          "restart"
+        ]
+      }
+    },
+    "Message": {
+      "fields": {
+        "author": "text",
+        "text": "longText",
+        "sentAt": "date",
+        "mine": "enum"
+      },
+      "typical": 3,
+      "max": 500,
+      "long": [
+        "author",
+        "text"
+      ],
+      "enums": {
+        "mine": [
+          "mine",
+          "theirs"
+        ]
+      }
+    },
+    "Configuration": {
+      "fields": {
+        "name": "text",
+        "body": "longText",
+        "service": "ref"
+      },
+      "typical": 2,
+      "max": 20,
+      "long": [
+        "name",
+        "body"
+      ]
+    },
+    "MetricPoint": {
+      "fields": {
+        "metric": "enum",
+        "service": "ref",
+        "value": "number",
+        "observedAt": "date"
+      },
+      "typical": 56,
+      "max": 448,
+      "enums": {
+        "metric": [
+          "requestsPerMinute",
+          "latencyP95Ms",
+          "errorPercent",
+          "deployCount"
+        ]
+      }
+    },
+    "Incident": {
+      "fields": {
+        "reference": "text",
+        "title": "text",
+        "summary": "longText",
+        "service": "ref",
+        "owner": "text",
+        "status": "enum",
+        "openedAt": "date"
+      },
+      "typical": 2,
+      "max": 20,
+      "long": [
+        "title",
+        "summary"
+      ],
+      "enums": {
+        "status": [
+          "open",
+          "resolved"
+        ]
+      }
+    },
+    "ServiceDraft": {
+      "fields": {
+        "name": "text",
+        "repository": "text",
+        "region": "enum",
+        "autoDeploy": "enum",
+        "notifyFailure": "enum"
+      },
+      "typical": 1,
+      "max": 1,
+      "long": [
+        "name",
+        "repository"
+      ],
+      "enums": {
+        "region": [
+          "us-east-1",
+          "us-west-2",
+          "eu-west-1"
+        ],
+        "autoDeploy": [
+          "enabled",
+          "disabled"
+        ],
+        "notifyFailure": [
+          "enabled",
+          "disabled"
+        ]
+      }
+    },
+    "Artifact": {
+      "fields": {
+        "revision": "text",
+        "service": "ref"
+      },
+      "typical": 1,
+      "max": 50,
+      "long": [
+        "revision"
+      ]
+    }
+  },
+  "entities": [
+    {
+      "id": "service",
+      "contract": "Service",
+      "words": [
+        "service"
+      ],
+      "never": [
+        "project",
+        "app"
+      ]
+    },
+    {
+      "id": "deploy",
+      "contract": "Deploy",
+      "words": [
+        "deploy",
+        "rollout"
+      ],
+      "never": [
+        "task card"
+      ]
+    },
+    {
+      "id": "incident",
+      "contract": "Incident",
+      "words": [
+        "incident",
+        "recovery timeline"
+      ],
+      "never": [
+        "notice"
+      ]
+    },
+    {
+      "id": "serviceRegistration",
+      "contract": "ServiceDraft",
+      "words": [
+        "repository",
+        "service registration"
+      ]
+    }
+  ],
+  "events": {
+    "deployReviewEvent": {
+      "label": "Review artifact rollout",
+      "kind": "layer"
+    },
+    "deployServiceEvent": {
+      "label": "Start reviewed rollout",
+      "kind": "operation",
+      "needs": "deployServices"
+    },
+    "rollbackReviewEvent": {
+      "label": "Review restoration of the previous artifact",
+      "kind": "layer"
+    },
+    "rollbackServiceEvent": {
+      "label": "Restore last healthy artifact",
+      "kind": "operation",
+      "needs": "rollbackServices"
+    },
+    "restartReviewEvent": {
+      "label": "Review unhealthy instance replacement",
+      "kind": "layer"
+    },
+    "restartServiceEvent": {
+      "label": "Replace unhealthy instances",
+      "kind": "operation",
+      "needs": "restartServices"
+    },
+    "incidentThreadSendEvent": {
+      "label": "Post incident observation",
+      "kind": "operation",
+      "needs": "sendMessages"
+    },
+    "resolveReviewEvent": {
+      "label": "Review recovered incident",
+      "kind": "layer"
+    },
+    "resolveIncidentEvent": {
+      "label": "Record incident resolution",
+      "kind": "operation",
+      "needs": "resolveIncidents"
+    },
+    "newServiceSaveEvent": {
+      "label": "Register repository and region",
+      "kind": "operation",
+      "needs": "registerServices"
+    },
+    "newServiceInvalidEvent": {
+      "label": "Check service registration fields",
+      "kind": "submit"
+    },
+    "savePreferencesEvent": {
+      "label": "Save preferences",
+      "kind": "operation",
+      "needs": "savePreferences"
+    },
+    "registrationRegionChoicesEvent": {
+      "label": "Open registration region choices",
+      "kind": "layer"
+    },
+    "settingsRegionChoicesEvent": {
+      "label": "Open default-region choices",
+      "kind": "layer"
+    }
+  },
+  "files": {
+    "copy": "copy.md",
+    "fixtures": "fixtures.json"
+  },
+  "flows": [
+    {
+      "id": "operateFlow",
+      "goal": "Inspect a service record, review an artifact and follow its health-gated rollout.",
+      "priority": "must",
+      "stages": [
+        {
+          "id": "exceptions",
+          "surface": "home",
+          "next": [
+            "registry"
+          ]
+        },
+        {
+          "id": "registry",
+          "surface": "services",
+          "next": [
+            "record"
+          ]
+        },
+        {
+          "id": "record",
+          "surface": "serviceDetail",
+          "next": [
+            "rollingOut"
+          ]
+        },
+        {
+          "id": "rollingOut",
+          "surface": "serviceDetail",
+          "state": "serviceDetailDeploying",
+          "next": [
+            "complete"
+          ]
+        },
+        {
+          "id": "complete",
+          "surface": "serviceDetail",
+          "state": "serviceDetailDeployed",
+          "next": [
+            "history"
+          ]
+        },
+        {
+          "id": "history",
+          "surface": "deploys"
+        }
+      ],
+      "ends": "The artifact’s rollout is recorded as Complete with measured service recovery; the engineer can revisit the attempt and its owner.",
+      "needs": [
+        "deployServices"
+      ]
+    },
+    {
+      "id": "respondFlow",
+      "goal": "Investigate the billing incident, restore its last healthy artifact and record verified recovery.",
+      "priority": "must",
+      "stages": [
+        {
+          "id": "incidentRegister",
+          "surface": "incidents",
+          "next": [
+            "evidence"
+          ]
+        },
+        {
+          "id": "evidence",
+          "surface": "incidentThread",
+          "next": [
+            "restore"
+          ]
+        },
+        {
+          "id": "restore",
+          "surface": "serviceDetail",
+          "state": "serviceDetailRollingBack",
+          "next": [
+            "serviceRecovered"
+          ]
+        },
+        {
+          "id": "serviceRecovered",
+          "surface": "serviceDetail",
+          "state": "serviceDetailRolledBack",
+          "next": [
+            "verify"
+          ]
+        },
+        {
+          "id": "verify",
+          "surface": "incidentThread",
+          "state": "incidentThreadRecovered",
+          "next": [
+            "resolve"
+          ]
+        },
+        {
+          "id": "resolve",
+          "surface": "incidentThread",
+          "state": "incidentThreadResolving",
+          "next": [
+            "resolved"
+          ]
+        },
+        {
+          "id": "resolved",
+          "surface": "incidentThread",
+          "state": "incidentThreadResolved"
+        }
+      ],
+      "ends": "The previous artifact is serving with passing health checks and the incident is persisted as Resolved with its investigation timeline intact.",
+      "needs": [
+        "rollbackServices",
+        "resolveIncidents",
+        "sendMessages"
+      ]
+    },
+    {
+      "id": "retryDeployFlow",
+      "goal": "Inspect a failed build and explicitly retry the same artifact.",
+      "priority": "must",
+      "stages": [
+        {
+          "id": "failedAttempt",
+          "surface": "serviceDetail",
+          "state": "serviceDetailDeployFailed",
+          "next": [
+            "retrying"
+          ]
+        },
+        {
+          "id": "retrying",
+          "surface": "serviceDetail",
+          "state": "serviceDetailDeploying",
+          "next": [
+            "accepted"
+          ]
+        },
+        {
+          "id": "accepted",
+          "surface": "serviceDetail",
+          "state": "serviceDetailDeployed"
+        }
+      ],
+      "ends": "The failed attempt remains inspectable and the retried rollout reports its own accepted completion.",
+      "needs": [
+        "deployServices"
+      ]
+    },
+    {
+      "id": "restartServiceFlow",
+      "goal": "Replace unhealthy notification instances after reviewing the current artifact.",
+      "priority": "should",
+      "stages": [
+        {
+          "id": "serviceRecord",
+          "surface": "serviceDetail",
+          "next": [
+            "restarting"
+          ],
+          "state": "serviceDetailNotifications"
+        },
+        {
+          "id": "restarting",
+          "surface": "serviceDetail",
+          "state": "serviceDetailRestarting",
+          "next": [
+            "healthyInstances"
+          ]
+        },
+        {
+          "id": "healthyInstances",
+          "surface": "serviceDetail",
+          "state": "serviceDetailRestarted"
+        }
+      ],
+      "ends": "Replacement instances report passing health checks while the incident remains open for on-call verification.",
+      "needs": [
+        "restartServices"
+      ]
+    },
+    {
+      "id": "newServiceFlow",
+      "goal": "Register a repository and region before choosing the service’s first artifact.",
+      "priority": "should",
+      "stages": [
+        {
+          "id": "registry",
+          "surface": "services",
+          "next": [
+            "registration"
+          ]
+        },
+        {
+          "id": "registration",
+          "surface": "newService",
+          "state": "newServiceDraft",
+          "next": [
+            "registered"
+          ]
+        },
+        {
+          "id": "registered",
+          "surface": "newService",
+          "state": "newServiceSaved",
+          "next": [
+            "record"
+          ]
+        },
+        {
+          "id": "record",
+          "surface": "serviceDetail",
+          "state": "serviceDetailRegistered"
+        }
+      ],
+      "ends": "A registered service and stable record route exist; registration alone does not claim a successful deployment.",
+      "needs": [
+        "registerServices"
+      ],
+      "binding": {
+        "record": "create-edit",
+        "status": "proposed",
+        "variant": "dedicatedPage",
+        "because": "Repository, region and deploy preferences form a deliberate registration draft distinct from observed telemetry.",
+        "sameAs": "surface:newService"
+      }
+    },
+    {
+      "id": "incidentUpdateFlow",
+      "goal": "Add an observation to the on-call investigation without issuing a deployment from chat.",
+      "priority": "should",
+      "stages": [
+        {
+          "id": "timeline",
+          "surface": "incidentThread",
+          "next": [
+            "posting"
+          ]
+        },
+        {
+          "id": "posting",
+          "surface": "incidentThread",
+          "state": "incidentThreadSending",
+          "next": [
+            "recorded"
+          ]
+        },
+        {
+          "id": "recorded",
+          "surface": "incidentThread",
+          "state": "incidentThreadSent"
+        }
+      ],
+      "ends": "The accepted observation is visible in timestamp order and its composer draft is cleared only after persistence.",
+      "needs": [
+        "sendMessages"
+      ]
+    },
+    {
+      "id": "preferencesFlow",
+      "goal": "Save default region, auto-deploy and failure or health notifications.",
+      "priority": "should",
+      "stages": [
+        {
+          "id": "editPreferences",
+          "surface": "settings",
+          "state": "settingsReady",
+          "next": [
+            "savedPreferences"
+          ]
+        },
+        {
+          "id": "savedPreferences",
+          "surface": "settings",
+          "state": "settingsSaved"
+        }
+      ],
+      "ends": "Saved preferences apply to later registrations and notifications without rewriting existing rollout attempts.",
+      "needs": [
+        "savePreferences"
+      ]
+    },
+    {
+      "id": "helpFlow",
+      "goal": "Read batch safety and artifact reuse rules before choosing recovery.",
+      "priority": "should",
+      "stages": [
+        {
+          "id": "safetyGuide",
+          "surface": "help"
+        }
+      ],
+      "ends": "The engineer understands health-gated traffic shifts and that rollback restores rather than rebuilds an artifact.",
+      "needs": []
+    },
+    {
+      "id": "emailDeployFailedFlow",
+      "goal": "Open the exact failed rollout from its email diagnostics.",
+      "priority": "should",
+      "stages": [
+        {
+          "id": "failureEmail",
+          "surface": "emailDeployFailed",
+          "next": [
+            "failureRecord"
+          ]
+        },
+        {
+          "id": "failureRecord",
+          "surface": "serviceDetail",
+          "state": "serviceDetailDeployFailed"
+        }
+      ],
+      "ends": "The persisted failed artifact, build exit code and duration are visible before an explicit retry.",
+      "needs": [
+        "deploymentEmails"
+      ]
+    },
+    {
+      "id": "pushIncidentOpenedFlow",
+      "goal": "Open a recorded incident from an on-call notification.",
+      "priority": "should",
+      "stages": [
+        {
+          "id": "incidentPush",
+          "surface": "pushIncidentOpened",
+          "next": [
+            "investigation"
+          ]
+        },
+        {
+          "id": "investigation",
+          "surface": "incidentThread"
+        }
+      ],
+      "ends": "The notified incident opens with its affected service, owner and investigation timeline.",
+      "needs": [
+        "incidentPush"
+      ]
+    },
+    {
+      "id": "discoverFlow",
+      "goal": "Understand health-gated deployments and enter the service-health overview.",
+      "priority": "later",
+      "stages": [
+        {
+          "id": "explanation",
+          "surface": "landing",
+          "next": [
+            "healthOverview"
+          ]
+        },
+        {
+          "id": "healthOverview",
+          "surface": "home"
+        }
+      ],
+      "ends": "The engineer reaches measured service health rather than an unsupported automatic-remediation or signup flow.",
+      "needs": []
+    }
+  ],
+  "model": 1,
+  "nav": {
+    "items": [
+      {
+        "surface": "home",
+        "copy": "nav.home"
+      },
+      {
+        "surface": "deploys",
+        "copy": "nav.deploys"
+      },
+      {
+        "surface": "services",
+        "copy": "nav.services"
+      },
+      {
+        "surface": "incidents",
+        "copy": "nav.incidents"
+      },
+      {
+        "surface": "settings",
+        "copy": "nav.settings"
+      }
+    ],
+    "inAYear": 8
+  },
+  "product": {
+    "id": "workspace",
+    "outcome": "Deploy a registered service, follow its reported rollout, and resolve a health incident only after the service has recovered.",
+    "archetype": "workspace",
+    "users": [
+      {
+        "id": "onCallEngineer",
+        "who": "An on-call engineer selecting artifacts, reviewing rollout failures and recording recovery with the team.",
+        "device": "both",
+        "surfaces": [
+          "home",
+          "services",
+          "serviceDetail",
+          "deploys",
+          "incidents",
+          "incidentThread",
+          "newService",
+          "settings",
+          "help",
+          "landing",
+          "emailDeployFailed",
+          "pushIncidentOpened"
+        ]
+      },
+      {
+        "id": "statusViewer",
+        "who": "A teammate checking service health and rollout progress without initiating a recovery.",
+        "device": "phone",
+        "surfaces": [
+          "home",
+          "services",
+          "serviceDetail",
+          "deploys",
+          "incidents",
+          "incidentThread"
+        ]
+      }
+    ]
+  },
+  "states": {
+    "homeReady": {
+      "label": "Current health",
+      "rule": "Show measured request, latency, error and deployment dimensions with sample times; incidents link to their affected service.",
+      "kind": "data",
+      "fixtures": {
+        "Service": "populated",
+        "MetricPoint": "populated",
+        "Incident": "populated"
+      }
+    },
+    "homeLoading": {
+      "label": "Refreshing health",
+      "rule": "Keep the last measured health and incident list visible with their timestamps while requesting fresh observations.",
+      "kind": "data",
+      "fixtures": {
+        "Service": "populated",
+        "MetricPoint": "populated",
+        "Incident": "populated"
+      }
+    },
+    "homeEmpty": {
+      "label": "No registered services",
+      "rule": "Show no metrics or incidents and direct the engineer to register a repository.",
+      "kind": "data",
+      "fixtures": {
+        "Service": "none",
+        "MetricPoint": "none",
+        "Incident": "none"
+      }
+    },
+    "homeFailed": {
+      "label": "Health unavailable",
+      "rule": "Report a failed health request, not a failed deploy; do not invent zero metrics or healthy status.",
+      "kind": "data",
+      "fixtures": {
+        "Service": "none",
+        "MetricPoint": "none",
+        "Incident": "none"
+      }
+    },
+    "homeLongContent": {
+      "label": "Long incident and service names",
+      "rule": "Wrap full service identity and incident evidence without separating an incident from its affected service.",
+      "kind": "data",
+      "fixtures": {
+        "Service": "long",
+        "MetricPoint": "long",
+        "Incident": "long"
+      }
+    },
+    "servicesReady": {
+      "label": "Registered services",
+      "rule": "Show each service’s health, region, latest measured latency and last deployment time; opening the record exposes its rollout history.",
+      "kind": "data",
+      "fixtures": {
+        "Service": "populated"
+      }
+    },
+    "servicesLoading": {
+      "label": "Refreshing services",
+      "rule": "Retain known service rows and timestamps while refreshing health.",
+      "kind": "data",
+      "fixtures": {
+        "Service": "populated"
+      }
+    },
+    "servicesEmpty": {
+      "label": "No registered services",
+      "rule": "Offer repository registration; a service is not healthy until it has reported observations.",
+      "kind": "data",
+      "fixtures": {
+        "Service": "none"
+      }
+    },
+    "servicesFailed": {
+      "label": "Services unavailable",
+      "rule": "Retry the registry request without reporting it as a build failure.",
+      "kind": "data",
+      "fixtures": {
+        "Service": "none"
+      }
+    },
+    "servicesLongContent": {
+      "label": "Long service identity",
+      "rule": "Wrap the regional billing worker name without hiding its region or health.",
+      "kind": "data",
+      "fixtures": {
+        "Service": "long"
+      }
+    },
+    "servicesMinutes": {
+      "label": "Recent deployment",
+      "rule": "Show a minute-relative deployment time computed from the service’s ISO timestamp.",
+      "kind": "data",
+      "fixtures": {
+        "Service": "minutes"
+      }
+    },
+    "servicesHours": {
+      "label": "Deployment hours ago",
+      "rule": "Show an hour-relative deployment time computed from the service’s ISO timestamp.",
+      "kind": "data",
+      "fixtures": {
+        "Service": "hours"
+      }
+    },
+    "servicesDays": {
+      "label": "Deployment days ago",
+      "rule": "Show a day-relative deployment time computed from the service’s ISO timestamp.",
+      "kind": "data",
+      "fixtures": {
+        "Service": "days"
+      }
+    },
+    "servicesWeeks": {
+      "label": "Deployment weeks ago",
+      "rule": "Show a week-relative deployment time computed from the service’s ISO timestamp.",
+      "kind": "data",
+      "fixtures": {
+        "Service": "weeks"
+      }
+    },
+    "serviceDetailReady": {
+      "label": "Service record",
+      "rule": "Show billing’s current health, configuration, selected artifact and rollout diagnostics before any operation.",
+      "kind": "data",
+      "fixtures": {
+        "Service": "billing",
+        "Deploy": "queued",
+        "Configuration": "billing",
+        "ServiceDraft": "none",
+        "Artifact": "none"
+      }
+    },
+    "serviceDetailLoading": {
+      "label": "Refreshing record",
+      "rule": "Retain the selected service and current artifact while refreshing; withhold deployment and recovery controls until refreshed.",
+      "kind": "data",
+      "fixtures": {
+        "Service": "billing",
+        "Deploy": "queued",
+        "Configuration": "billing",
+        "ServiceDraft": "none",
+        "Artifact": "none"
+      }
+    },
+    "serviceDetailEmpty": {
+      "label": "Service removed",
+      "rule": "Show the missing registered service and a route to the registry; do not create a new service with the old route.",
+      "kind": "data",
+      "fixtures": {
+        "Service": "none",
+        "Deploy": "none",
+        "Configuration": "none",
+        "ServiceDraft": "none",
+        "Artifact": "none"
+      }
+    },
+    "serviceDetailFailed": {
+      "label": "Record unavailable",
+      "rule": "Report a failed record request separately from a persisted deploy failure; no rollout actions are available.",
+      "kind": "data",
+      "fixtures": {
+        "Service": "none",
+        "Deploy": "none",
+        "Configuration": "none",
+        "ServiceDraft": "none",
+        "Artifact": "none"
+      }
+    },
+    "serviceDetailLongContent": {
+      "label": "Long service and artifact names",
+      "rule": "Wrap the complete regional service and release artifact names beside their configuration.",
+      "kind": "data",
+      "fixtures": {
+        "Service": "long",
+        "Deploy": "long",
+        "Configuration": "long",
+        "ServiceDraft": "none",
+        "Artifact": "none"
+      }
+    },
+    "serviceDetailDeploying": {
+      "label": "Rolling out",
+      "rule": "Keep the selected artifact and measured batch progress visible, lock conflicting recovery operations and prevent duplicate rollout submission.",
+      "kind": "operation",
+      "fixtures": {
+        "Service": "billing",
+        "Deploy": "active",
+        "Configuration": "billing",
+        "ServiceDraft": "none",
+        "Artifact": "none"
+      }
+    },
+    "serviceDetailDeployed": {
+      "label": "Rollout complete",
+      "rule": "Show all batches complete and billing health recovered; do not mark an incident resolved automatically.",
+      "kind": "operation",
+      "fixtures": {
+        "Service": "recovered",
+        "Deploy": "complete",
+        "Configuration": "billingRecovered",
+        "ServiceDraft": "none",
+        "Artifact": "none"
+      }
+    },
+    "serviceDetailDeployFailed": {
+      "label": "Deploy failed",
+      "rule": "Show persisted build exit code and duration, retain the previous serving artifact, and offer explicit retry of the failed artifact.",
+      "kind": "operation",
+      "fixtures": {
+        "Service": "billing",
+        "Deploy": "failed",
+        "Configuration": "billing",
+        "ServiceDraft": "none",
+        "Artifact": "none"
+      }
+    },
+    "serviceDetailRollingBack": {
+      "label": "Rolling back",
+      "rule": "Restore the last healthy artifact without rebuilding; keep the current service record visible and prevent another recovery operation.",
+      "kind": "operation",
+      "fixtures": {
+        "Service": "billing",
+        "Deploy": "rollback",
+        "Configuration": "billing",
+        "ServiceDraft": "none",
+        "Artifact": "none"
+      }
+    },
+    "serviceDetailRolledBack": {
+      "label": "Rollback complete",
+      "rule": "Show restored artifact and passing health checks; leave the incident open for the on-call engineer to verify.",
+      "kind": "operation",
+      "fixtures": {
+        "Service": "rolledBack",
+        "Deploy": "rollbackComplete",
+        "Configuration": "billingRecovered",
+        "ServiceDraft": "none",
+        "Artifact": "none"
+      }
+    },
+    "serviceDetailRollbackFailed": {
+      "label": "Rollback failed",
+      "rule": "Show the failed health check and keep the currently active artifact serving; offer retry without claiming restoration.",
+      "kind": "operation",
+      "fixtures": {
+        "Service": "billing",
+        "Deploy": "rollbackFailed",
+        "Configuration": "billing",
+        "ServiceDraft": "none",
+        "Artifact": "none"
+      }
+    },
+    "serviceDetailRestarting": {
+      "label": "Restarting instances",
+      "rule": "Replace unhealthy notification instances while healthy instances stay active; lock duplicate restart.",
+      "kind": "operation",
+      "fixtures": {
+        "Service": "notifications",
+        "Deploy": "restartActive",
+        "Configuration": "notifications",
+        "ServiceDraft": "none",
+        "Artifact": "none"
+      }
+    },
+    "serviceDetailRestarted": {
+      "label": "Instances restarted",
+      "rule": "Show healthy replacement instances and passing checks, leaving incident resolution to the engineer.",
+      "kind": "operation",
+      "fixtures": {
+        "Service": "notificationsRecovered",
+        "Deploy": "restartComplete",
+        "Configuration": "notifications",
+        "ServiceDraft": "none",
+        "Artifact": "none"
+      }
+    },
+    "serviceDetailRestartFailed": {
+      "label": "Restart failed",
+      "rule": "Keep known healthy instances serving and show that replacement health checks failed; offer explicit restart retry.",
+      "kind": "operation",
+      "fixtures": {
+        "Service": "notifications",
+        "Deploy": "restartFailed",
+        "Configuration": "notifications",
+        "ServiceDraft": "none",
+        "Artifact": "none"
+      }
+    },
+    "deploysReady": {
+      "label": "Rollout history",
+      "rule": "Group persisted rollout attempts by their service-reported stage; stages are not editable task columns.",
+      "kind": "data",
+      "fixtures": {
+        "Deploy": "populated"
+      }
+    },
+    "deploysLoading": {
+      "label": "Refreshing rollout history",
+      "rule": "Keep known attempts and their progress visible while fetching reported updates.",
+      "kind": "data",
+      "fixtures": {
+        "Deploy": "populated"
+      }
+    },
+    "deploysEmpty": {
+      "label": "No rollout attempts",
+      "rule": "Route to a registered service to select its first artifact; do not offer moving a card to invent a deployment.",
+      "kind": "data",
+      "fixtures": {
+        "Deploy": "none"
+      }
+    },
+    "deploysFailed": {
+      "label": "Rollout history unavailable",
+      "rule": "Retry reading history without retrying the deployments themselves.",
+      "kind": "data",
+      "fixtures": {
+        "Deploy": "none"
+      }
+    },
+    "deploysLongContent": {
+      "label": "Long release artifact",
+      "rule": "Wrap the complete artifact identifier with its service and owner before its reported progress.",
+      "kind": "data",
+      "fixtures": {
+        "Deploy": "long"
+      }
+    },
+    "incidentsReady": {
+      "label": "Open incidents",
+      "rule": "Show each recorded incident with its affected service and on-call owner; opening one preserves the investigation context.",
+      "kind": "data",
+      "fixtures": {
+        "Incident": "populated"
+      }
+    },
+    "incidentsLoading": {
+      "label": "Refreshing incidents",
+      "rule": "Keep known incidents and owners visible while fetching changes.",
+      "kind": "data",
+      "fixtures": {
+        "Incident": "populated"
+      }
+    },
+    "incidentsEmpty": {
+      "label": "No open incidents",
+      "rule": "State only that no incidents are recorded; do not equate an empty incident list with measured healthy services.",
+      "kind": "data",
+      "fixtures": {
+        "Incident": "none"
+      }
+    },
+    "incidentsFailed": {
+      "label": "Incidents unavailable",
+      "rule": "Retry reading the incident register without opening a duplicate incident.",
+      "kind": "data",
+      "fixtures": {
+        "Incident": "none"
+      }
+    },
+    "incidentsLongContent": {
+      "label": "Long incident evidence",
+      "rule": "Wrap the complete incident title and report with its affected service and owner.",
+      "kind": "data",
+      "fixtures": {
+        "Incident": "long"
+      }
+    },
+    "incidentsResolved": {
+      "label": "Resolved incident",
+      "rule": "Keep the resolved incident and its timeline available for the next on-call handoff.",
+      "kind": "data",
+      "fixtures": {
+        "Incident": "resolved"
+      }
+    },
+    "incidentThreadReady": {
+      "label": "Incident timeline",
+      "rule": "Show the billing incident, affected service and observations in timestamp order; recovery operations are performed on the service record.",
+      "kind": "data",
+      "fixtures": {
+        "Message": "populated",
+        "Incident": "one",
+        "Service": "billing"
+      }
+    },
+    "incidentThreadLoading": {
+      "label": "Refreshing timeline",
+      "rule": "Retain the incident context and existing observations while requesting newer updates.",
+      "kind": "data",
+      "fixtures": {
+        "Message": "populated",
+        "Incident": "one",
+        "Service": "billing"
+      }
+    },
+    "incidentThreadEmpty": {
+      "label": "No observations",
+      "rule": "Keep the recorded incident and affected service visible and invite the first on-call observation.",
+      "kind": "data",
+      "fixtures": {
+        "Message": "none",
+        "Incident": "one",
+        "Service": "billing"
+      }
+    },
+    "incidentThreadFailed": {
+      "label": "Timeline unavailable",
+      "rule": "Keep the incident and service context visible and retry reading observations without sending a duplicate update.",
+      "kind": "data",
+      "fixtures": {
+        "Message": "none",
+        "Incident": "one",
+        "Service": "billing"
+      }
+    },
+    "incidentThreadLongContent": {
+      "label": "Long recovery observation",
+      "rule": "Wrap the full diagnostic observation and on-call identity without replacing the incident context.",
+      "kind": "data",
+      "fixtures": {
+        "Message": "long",
+        "Incident": "long",
+        "Service": "long"
+      }
+    },
+    "incidentThreadSending": {
+      "label": "Sending observation",
+      "rule": "Retain the authored observation and prevent duplicate sending until the timeline accepts it.",
+      "kind": "operation",
+      "fixtures": {
+        "Message": "populated",
+        "Incident": "one",
+        "Service": "billing"
+      }
+    },
+    "incidentThreadSent": {
+      "label": "Observation recorded",
+      "rule": "Append the persisted observation and clear the composer only after acceptance.",
+      "kind": "operation",
+      "fixtures": {
+        "Message": "populated",
+        "Incident": "one",
+        "Service": "billing"
+      }
+    },
+    "incidentThreadSendFailed": {
+      "label": "Observation not sent",
+      "rule": "Keep the unsent observation and offer Send update again.",
+      "kind": "operation",
+      "fixtures": {
+        "Message": "populated",
+        "Incident": "one",
+        "Service": "billing"
+      }
+    },
+    "incidentThreadRecovered": {
+      "label": "Service recovered",
+      "rule": "Show passing service health alongside the still-open incident so the engineer can review resolution explicitly.",
+      "kind": "operation",
+      "fixtures": {
+        "Message": "populated",
+        "Incident": "one",
+        "Service": "rolledBack"
+      }
+    },
+    "incidentThreadResolving": {
+      "label": "Recording resolution",
+      "rule": "Keep recovery evidence visible and disable duplicate resolution while recording the incident outcome.",
+      "kind": "operation",
+      "fixtures": {
+        "Message": "populated",
+        "Incident": "one",
+        "Service": "rolledBack"
+      }
+    },
+    "incidentThreadResolved": {
+      "label": "Incident resolved",
+      "rule": "Show the persisted resolved state and retain the timeline for handoff; do not offer resolving it again.",
+      "kind": "operation",
+      "fixtures": {
+        "Message": "populated",
+        "Incident": "resolved",
+        "Service": "rolledBack"
+      }
+    },
+    "incidentThreadResolveFailed": {
+      "label": "Resolution not recorded",
+      "rule": "Keep the recovered service visible and the incident open; allow an explicit retry of resolution.",
+      "kind": "operation",
+      "fixtures": {
+        "Message": "populated",
+        "Incident": "one",
+        "Service": "rolledBack"
+      }
+    },
+    "newServiceDraft": {
+      "label": "Registration draft",
+      "rule": "Edit the repository, name and region only; health, latency and deployment timestamps are observed later, never entered into this form.",
+      "kind": "data",
+      "fixtures": {
+        "ServiceDraft": "blank"
+      }
+    },
+    "newServiceSaving": {
+      "label": "Registering service",
+      "rule": "Keep the complete registration draft and disable duplicate registration while persisting the repository.",
+      "kind": "operation",
+      "fixtures": {
+        "ServiceDraft": "one"
+      }
+    },
+    "newServiceSaved": {
+      "label": "Service registered",
+      "rule": "Replace the registration form with the newly registered service and a route to choose its first artifact.",
+      "kind": "operation",
+      "fixtures": {
+        "ServiceDraft": "one"
+      }
+    },
+    "newServiceFailed": {
+      "label": "Registration failed",
+      "rule": "Retain the full repository and region draft, and retry registration without claiming a service or deploy exists.",
+      "kind": "operation",
+      "fixtures": {
+        "ServiceDraft": "one"
+      }
+    },
+    "newServiceLongContent": {
+      "label": "Long repository name",
+      "rule": "Keep the full repository and service name editable and wrap them before the region controls.",
+      "kind": "data",
+      "fixtures": {
+        "ServiceDraft": "long"
+      }
+    },
+    "settingsReady": {
+      "label": "Editable",
+      "rule": "Keep the saved default region, auto-deploy and failure or health alert preferences visible; changes apply only after Save preferences.",
+      "kind": "data",
+      "fixtures": {}
+    },
+    "settingsSaving": {
+      "label": "Saving",
+      "rule": "Keep changed preferences visible, disable Save, and announce the in-flight persistence operation.",
+      "kind": "operation",
+      "fixtures": {}
+    },
+    "settingsSaved": {
+      "label": "Saved",
+      "rule": "Show the persisted preference values and an inline acknowledgement without leaving settings.",
+      "kind": "operation",
+      "fixtures": {}
+    },
+    "settingsFailed": {
+      "label": "Save failed",
+      "rule": "Retain unsaved operations preferences and explain that the previous region and notification settings still apply; allow an explicit save retry.",
+      "kind": "operation",
+      "fixtures": {}
+    },
+    "helpReady": {
+      "label": "Rollout safety guide",
+      "rule": "Explain batch health gates and artifact reuse before an engineer chooses deployment or rollback.",
+      "kind": "data",
+      "fixtures": {}
+    },
+    "landingReady": {
+      "label": "Operations introduction",
+      "rule": "Explain service records, health-gated rollouts and incident timelines; link only to modelled operations surfaces.",
+      "kind": "data",
+      "fixtures": {}
+    },
+    "emailDeployFailedReady": {
+      "label": "Recorded rollout failure",
+      "rule": "Send only for the persisted failed billing rollout; include its artifact, exit code and duration and open that attempt rather than retrying automatically.",
+      "kind": "operation",
+      "fixtures": {
+        "Deploy": "failed"
+      }
+    },
+    "pushIncidentOpenedReady": {
+      "label": "Incident recorded",
+      "rule": "Notify the opted-in on-call engineer only after the billing incident is recorded with an affected service and owner.",
+      "kind": "operation",
+      "fixtures": {
+        "Incident": "one"
+      }
+    },
+    "serviceDetailRegistered": {
+      "label": "Registered, not deployed",
+      "rule": "Show the registered repository and region without health, latency, last-deploy time or a serving artifact. The selected first artifact can be reviewed before starting a rollout.",
+      "kind": "data",
+      "fixtures": {
+        "Service": "none",
+        "Deploy": "none",
+        "Configuration": "none",
+        "ServiceDraft": "one",
+        "Artifact": "one"
+      }
+    },
+    "serviceDetailNotifications": {
+      "label": "Notification service record",
+      "rule": "Show the down notification service and its current artifact before reviewing replacement of unhealthy instances; do not offer manual rollout-stage editing.",
+      "kind": "data",
+      "fixtures": {
+        "Service": "notifications",
+        "Deploy": "notificationsCurrent",
+        "Configuration": "notifications",
+        "ServiceDraft": "none",
+        "Artifact": "none"
+      }
+    }
+  },
+  "surfaces": [
+    {
+      "id": "home",
+      "question": "Which service has a measured health exception, and which incident explains the next investigation?",
+      "route": "/home",
+      "slots": [
+        {
+          "id": "primary",
+          "data": {
+            "contract": "Service",
+            "many": true,
+            "map": {
+              "title": "name",
+              "status": "status",
+              "latencyMs": "latencyMs"
+            }
+          },
+          "copy": {
+            "services.latency.value": [
+              "homeReady",
+              "homeLoading"
+            ],
+            "services.latency.unobserved": [
+              "homeReady",
+              "homeLoading"
+            ]
+          }
+        },
+        {
+          "id": "summary",
+          "data": {
+            "contract": "MetricPoint",
+            "many": true,
+            "map": {
+              "metric": "metric",
+              "service": "service",
+              "value": "value",
+              "observedAt": "observedAt"
+            }
+          },
+          "copy": {
+            "home.metrics.requests.label": [
+              "homeReady",
+              "homeLoading",
+              "homeLongContent"
+            ],
+            "home.metrics.latency.label": [
+              "homeReady",
+              "homeLoading"
+            ],
+            "home.metrics.errors.label": [
+              "homeReady",
+              "homeLoading"
+            ],
+            "home.metrics.deploys.label": [
+              "homeReady",
+              "homeLoading"
+            ],
+            "home.metrics.requests.value": [
+              "homeReady",
+              "homeLoading",
+              "homeLongContent"
+            ],
+            "home.metrics.latency.value": [
+              "homeReady",
+              "homeLoading"
+            ],
+            "home.metrics.errors.value": [
+              "homeReady",
+              "homeLoading"
+            ],
+            "home.metrics.deploys.value": [
+              "homeReady",
+              "homeLoading"
+            ],
+            "home.metrics.observedAt": [
+              "homeReady",
+              "homeLoading",
+              "homeLongContent"
+            ]
+          }
+        },
+        {
+          "id": "secondary",
+          "data": {
+            "contract": "Incident",
+            "many": true,
+            "map": {
+              "title": "title",
+              "body": "summary",
+              "service": "service",
+              "owner": "owner",
+              "status": "status"
+            }
+          },
+          "copy": {
+            "home.incidents.heading": [
+              "homeReady",
+              "homeLoading",
+              "homeLongContent"
+            ],
+            "home.incidents.viewService": [
+              "homeReady",
+              "homeLoading",
+              "homeLongContent"
+            ],
+            "home.incidents.open": [
+              "homeReady",
+              "homeLoading",
+              "homeLongContent"
+            ]
+          }
+        },
+        {
+          "id": "state",
+          "record": "empty-states",
+          "status": "proposed",
+          "variant": "actionPanel",
+          "copy": {
+            "home.empty.title": [
+              "homeEmpty"
+            ],
+            "home.empty.body": [
+              "homeEmpty"
+            ],
+            "home.empty.action": [
+              "homeEmpty"
+            ],
+            "home.recovery.title": [
+              "homeFailed"
+            ],
+            "home.recovery.action": [
+              "homeFailed"
+            ]
+          }
+        },
+        {
+          "id": "identity",
+          "copy": {
+            "home.title": "always",
+            "shell.alt.productMark": {
+              "when": "always",
+              "as": "alt"
+            }
+          }
+        },
+        {
+          "id": "navigation",
+          "copy": {
+            "nav.home": "always",
+            "nav.deploys": "always",
+            "nav.services": "always",
+            "nav.incidents": "always",
+            "nav.settings": "always"
+          }
+        }
+      ],
+      "states": [
+        "homeReady",
+        "homeLoading",
+        "homeEmpty",
+        "homeFailed",
+        "homeLongContent"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "home.title": "always",
+        "home.documentTitle": {
+          "when": "always",
+          "as": "title"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
+        "nav.home": "always",
+        "nav.deploys": "always",
+        "nav.services": "always",
+        "nav.incidents": "always",
+        "nav.settings": "always"
+      },
+      "binding": {
+        "record": "home",
+        "status": "proposed",
+        "variant": "status",
+        "because": "On-call work starts with exceptions and recorded incidents rather than a launcher of unrelated tools.",
+        "candidates": [
+          "status",
+          "continue"
+        ]
+      }
+    },
+    {
+      "id": "services",
+      "question": "Which registered service changed health, and when was its last deployment?",
+      "route": "/services",
+      "slots": [
+        {
+          "id": "primary",
+          "data": {
+            "contract": "Service",
+            "many": true,
+            "map": {
+              "name": "name",
+              "status": "status",
+              "region": "region",
+              "latencyMs": "latencyMs",
+              "lastDeployedAt": "lastDeployedAt"
+            }
+          },
+          "copy": {}
+        },
+        {
+          "id": "state",
+          "record": "empty-states",
+          "status": "proposed",
+          "variant": "actionPanel",
+          "copy": {
+            "services.empty.title": [
+              "servicesEmpty"
+            ],
+            "services.empty.body": [
+              "servicesEmpty"
+            ],
+            "services.empty.action": [
+              "servicesEmpty"
+            ],
+            "services.recovery.title": [
+              "servicesFailed"
+            ],
+            "services.recovery.action": [
+              "servicesFailed"
+            ]
+          }
+        }
+      ],
+      "states": [
+        "servicesReady",
+        "servicesLoading",
+        "servicesEmpty",
+        "servicesFailed",
+        "servicesLongContent",
+        "servicesMinutes",
+        "servicesHours",
+        "servicesDays",
+        "servicesWeeks"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "services.title": "always",
+        "services.documentTitle": {
+          "when": "always",
+          "as": "title"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
+        "nav.home": "always",
+        "nav.deploys": "always",
+        "nav.services": "always",
+        "nav.incidents": "always",
+        "nav.settings": "always",
+        "services.columns.name": [
+          "servicesReady",
+          "servicesLoading",
+          "servicesLongContent",
+          "servicesMinutes",
+          "servicesHours",
+          "servicesDays",
+          "servicesWeeks"
+        ],
+        "services.columns.health": [
+          "servicesReady",
+          "servicesLoading",
+          "servicesLongContent",
+          "servicesMinutes",
+          "servicesHours",
+          "servicesDays",
+          "servicesWeeks"
+        ],
+        "services.columns.region": [
+          "servicesReady",
+          "servicesLoading",
+          "servicesLongContent",
+          "servicesMinutes",
+          "servicesHours",
+          "servicesDays",
+          "servicesWeeks"
+        ],
+        "services.columns.latency": [
+          "servicesReady",
+          "servicesLoading",
+          "servicesLongContent",
+          "servicesMinutes",
+          "servicesHours",
+          "servicesDays",
+          "servicesWeeks"
+        ],
+        "services.columns.lastDeploy": [
+          "servicesReady",
+          "servicesLoading",
+          "servicesLongContent",
+          "servicesMinutes",
+          "servicesHours",
+          "servicesDays",
+          "servicesWeeks"
+        ],
+        "services.create": [
+          "servicesReady",
+          "servicesLoading",
+          "servicesEmpty",
+          "servicesLongContent"
+        ],
+        "services.search.queryLabel": "always",
+        "services.latency.value": [
+          "servicesReady",
+          "servicesLoading",
+          "servicesLongContent",
+          "servicesMinutes",
+          "servicesHours"
+        ],
+        "services.latency.unobserved": [
+          "servicesReady",
+          "servicesLoading",
+          "servicesDays",
+          "servicesWeeks"
+        ],
+        "services.lastDeploy.relative": [
+          "servicesReady",
+          "servicesLoading",
+          "servicesMinutes",
+          "servicesLongContent",
+          "servicesHours",
+          "servicesDays",
+          "servicesWeeks"
+        ],
+        "services.status.healthy": [
+          "servicesReady",
+          "servicesLoading",
+          "servicesMinutes"
+        ],
+        "services.status.degraded": [
+          "servicesReady",
+          "servicesLoading",
+          "servicesLongContent",
+          "servicesHours"
+        ],
+        "services.status.down": [
+          "servicesReady",
+          "servicesLoading",
+          "servicesDays"
+        ],
+        "services.status.paused": [
+          "servicesReady",
+          "servicesLoading",
+          "servicesWeeks"
+        ]
+      }
+    },
+    {
+      "id": "serviceDetail",
+      "question": "Which artifact is serving this service, why did the rollout fail, and is deploy, rollback or restart the safe next operation?",
+      "route": "/services/:service",
+      "slots": [
+        {
+          "id": "primary",
+          "data": {
+            "contract": "Service",
+            "many": false,
+            "map": {
+              "title": "name",
+              "status": "status",
+              "latencyMs": "latencyMs",
+              "region": "region",
+              "activeArtifact": "activeArtifact"
+            }
+          },
+          "copy": {}
+        },
+        {
+          "id": "rollout",
+          "data": {
+            "contract": "Deploy",
+            "many": false,
+            "map": {
+              "artifact": "artifact",
+              "service": "service",
+              "stage": "stage",
+              "progressPercent": "progressPercent",
+              "startedAt": "startedAt",
+              "exitCode": "exitCode",
+              "elapsedSeconds": "elapsedSeconds",
+              "operation": "operation"
+            }
+          },
+          "copy": {}
+        },
+        {
+          "id": "configuration",
+          "data": {
+            "contract": "Configuration",
+            "many": true,
+            "map": {
+              "name": "name",
+              "body": "body",
+              "service": "service"
+            }
+          },
+          "copy": {}
+        },
+        {
+          "id": "confirmation",
+          "record": "dialogs-and-layers",
+          "status": "proposed",
+          "variant": "dialog",
+          "because": "Each reviewed operation identifies the service and artifact before it can change serving traffic.",
+          "copy": {
+            "serviceDetail.rollback.title": [
+              "rollbackReviewSetup"
+            ],
+            "serviceDetail.rollback.body": [
+              "rollbackReviewSetup"
+            ],
+            "serviceDetail.rollback.confirm": [
+              "rollbackReviewSetup"
+            ],
+            "serviceDetail.rollback.cancel": [
+              "rollbackReviewSetup"
+            ],
+            "serviceDetail.rollback.close": [
+              "rollbackReviewSetup"
+            ],
+            "serviceDetail.deployReview.title": [
+              "deployReviewSetup",
+              "firstDeployReviewSetup"
+            ],
+            "serviceDetail.deployReview.body": [
+              "deployReviewSetup",
+              "firstDeployReviewSetup"
+            ],
+            "serviceDetail.deployReview.confirm": [
+              "deployReviewSetup",
+              "firstDeployReviewSetup"
+            ],
+            "serviceDetail.deployReview.cancel": [
+              "deployReviewSetup"
+            ],
+            "serviceDetail.firstDeployReview.cancel": [
+              "firstDeployReviewSetup"
+            ],
+            "serviceDetail.deployReview.close": [
+              "deployReviewSetup",
+              "firstDeployReviewSetup"
+            ],
+            "serviceDetail.restartReview.title": [
+              "restartReviewSetup"
+            ],
+            "serviceDetail.restartReview.body": [
+              "restartReviewSetup"
+            ],
+            "serviceDetail.restartReview.confirm": [
+              "restartReviewSetup"
+            ],
+            "serviceDetail.restartReview.cancel": [
+              "restartReviewSetup"
+            ],
+            "serviceDetail.restartReview.close": [
+              "restartReviewSetup"
+            ]
+          },
+          "data": {
+            "contract": "Deploy",
+            "many": false,
+            "map": {
+              "artifact": "artifact",
+              "service": "service"
+            }
+          }
+        },
+        {
+          "id": "operations",
+          "copy": {
+            "serviceDetail.status.deploying": {
+              "when": [
+                "serviceDetailDeploying"
+              ],
+              "as": "announce"
+            },
+            "serviceDetail.status.deployed": {
+              "when": [
+                "serviceDetailDeployed"
+              ],
+              "as": "announce"
+            },
+            "serviceDetail.status.rollingBack": {
+              "when": [
+                "serviceDetailRollingBack"
+              ],
+              "as": "announce"
+            },
+            "serviceDetail.status.rolledBack": {
+              "when": [
+                "serviceDetailRolledBack"
+              ],
+              "as": "announce"
+            },
+            "serviceDetail.status.restarting": {
+              "when": [
+                "serviceDetailRestarting"
+              ],
+              "as": "announce"
+            },
+            "serviceDetail.status.restarted": {
+              "when": [
+                "serviceDetailRestarted"
+              ],
+              "as": "announce"
+            },
+            "serviceDetail.rollbackFailure": [
+              "serviceDetailRollbackFailed"
+            ],
+            "serviceDetail.retryRollback": [
+              "serviceDetailRollbackFailed"
+            ],
+            "serviceDetail.restartFailure": [
+              "serviceDetailRestartFailed"
+            ],
+            "serviceDetail.retryRestart": [
+              "serviceDetailRestartFailed"
+            ],
+            "serviceDetail.recovery.heading": [
+              "serviceDetailDeployFailed"
+            ],
+            "serviceDetail.recovery.detail": [
+              "serviceDetailDeployFailed"
+            ],
+            "serviceDetail.recovery.action": [
+              "serviceDetailDeployFailed"
+            ]
+          },
+          "on": [
+            {
+              "event": "deployServiceEvent",
+              "axis": "asyncFeedback"
+            },
+            {
+              "event": "rollbackServiceEvent",
+              "axis": "asyncFeedback"
+            },
+            {
+              "event": "restartServiceEvent",
+              "axis": "asyncFeedback"
+            }
+          ],
+          "data": {
+            "contract": "Deploy",
+            "many": false,
+            "map": {
+              "exitCode": "exitCode",
+              "elapsedSeconds": "elapsedSeconds"
+            }
+          }
+        },
+        {
+          "id": "registration",
+          "data": {
+            "contract": "ServiceDraft",
+            "many": false,
+            "map": {
+              "name": "name",
+              "repository": "repository",
+              "region": "region"
+            }
+          },
+          "copy": {},
+          "states": [
+            "serviceDetailRegistered"
+          ]
+        },
+        {
+          "id": "selectedArtifact",
+          "data": {
+            "contract": "Artifact",
+            "many": false,
+            "map": {
+              "artifact": "revision",
+              "service": "service"
+            }
+          },
+          "copy": {},
+          "states": [
+            "serviceDetailRegistered"
+          ]
+        }
+      ],
+      "states": [
+        "serviceDetailReady",
+        "serviceDetailLoading",
+        "serviceDetailEmpty",
+        "serviceDetailFailed",
+        "serviceDetailLongContent",
+        "serviceDetailDeploying",
+        "serviceDetailDeployed",
+        "serviceDetailDeployFailed",
+        "serviceDetailRollingBack",
+        "serviceDetailRolledBack",
+        "serviceDetailRollbackFailed",
+        "serviceDetailRestarting",
+        "serviceDetailRestarted",
+        "serviceDetailRestartFailed",
+        "serviceDetailRegistered",
+        "serviceDetailNotifications"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "serviceDetail.title": "always",
+        "serviceDetail.documentTitle": {
+          "when": "always",
+          "as": "title"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
+        "nav.home": "always",
+        "nav.deploys": "always",
+        "nav.services": "always",
+        "nav.incidents": "always",
+        "nav.settings": "always",
+        "serviceDetail.deploy": [
+          "serviceDetailReady",
+          "serviceDetailLongContent",
+          "serviceDetailDeployed",
+          "serviceDetailRolledBack",
+          "serviceDetailRestarted",
+          "serviceDetailRegistered"
+        ],
+        "serviceDetail.rollBack": [
+          "serviceDetailReady",
+          "serviceDetailLongContent",
+          "serviceDetailDeployFailed",
+          "serviceDetailRollbackFailed",
+          "serviceDetailRestartFailed"
+        ],
+        "serviceDetail.restart": [
+          "serviceDetailNotifications",
+          "serviceDetailRestartFailed"
+        ],
+        "serviceDetail.openIncident": [
+          "serviceDetailReady",
+          "serviceDetailLoading",
+          "serviceDetailLongContent",
+          "serviceDetailDeploying",
+          "serviceDetailDeployed",
+          "serviceDetailDeployFailed",
+          "serviceDetailRollingBack",
+          "serviceDetailRolledBack",
+          "serviceDetailRollbackFailed",
+          "serviceDetailRestarting",
+          "serviceDetailRestarted",
+          "serviceDetailRestartFailed",
+          "serviceDetailNotifications"
+        ],
+        "serviceDetail.latency.value": [
+          "serviceDetailReady",
+          "serviceDetailLoading",
+          "serviceDetailLongContent",
+          "serviceDetailDeploying",
+          "serviceDetailDeployed",
+          "serviceDetailDeployFailed",
+          "serviceDetailRollingBack",
+          "serviceDetailRolledBack",
+          "serviceDetailRollbackFailed",
+          "serviceDetailRestarted"
+        ],
+        "serviceDetail.artifact": [
+          "serviceDetailReady",
+          "serviceDetailLoading",
+          "serviceDetailLongContent",
+          "serviceDetailDeploying",
+          "serviceDetailDeployed",
+          "serviceDetailDeployFailed",
+          "serviceDetailRollingBack",
+          "serviceDetailRolledBack",
+          "serviceDetailRollbackFailed",
+          "serviceDetailRestarting",
+          "serviceDetailRestarted",
+          "serviceDetailRestartFailed",
+          "serviceDetailRegistered",
+          "serviceDetailNotifications"
+        ],
+        "serviceDetail.progress": [
+          "serviceDetailReady",
+          "serviceDetailLoading",
+          "serviceDetailLongContent",
+          "serviceDetailDeploying",
+          "serviceDetailDeployed",
+          "serviceDetailDeployFailed",
+          "serviceDetailRollingBack",
+          "serviceDetailRolledBack",
+          "serviceDetailRollbackFailed",
+          "serviceDetailRestarting",
+          "serviceDetailRestarted",
+          "serviceDetailRestartFailed",
+          "serviceDetailNotifications"
+        ],
+        "serviceDetail.startedAt": [
+          "serviceDetailReady",
+          "serviceDetailLoading",
+          "serviceDetailLongContent",
+          "serviceDetailDeploying",
+          "serviceDetailDeployed",
+          "serviceDetailDeployFailed",
+          "serviceDetailRollingBack",
+          "serviceDetailRolledBack",
+          "serviceDetailRollbackFailed",
+          "serviceDetailRestarting",
+          "serviceDetailRestarted",
+          "serviceDetailRestartFailed",
+          "serviceDetailNotifications"
+        ],
+        "serviceDetail.loadFailure": [
+          "serviceDetailFailed"
+        ],
+        "serviceDetail.loadRetry": [
+          "serviceDetailFailed"
+        ],
+        "serviceDetail.missing.title": [
+          "serviceDetailEmpty"
+        ],
+        "serviceDetail.missing.action": [
+          "serviceDetailEmpty"
+        ],
+        "serviceDetail.servingArtifact": [
+          "serviceDetailReady",
+          "serviceDetailLoading",
+          "serviceDetailLongContent",
+          "serviceDetailDeploying",
+          "serviceDetailDeployed",
+          "serviceDetailDeployFailed",
+          "serviceDetailRollingBack",
+          "serviceDetailRolledBack",
+          "serviceDetailRollbackFailed",
+          "serviceDetailRestarting",
+          "serviceDetailRestarted",
+          "serviceDetailRestartFailed",
+          "serviceDetailNotifications"
+        ],
+        "services.latency.unobserved": [
+          "serviceDetailRestarting",
+          "serviceDetailRestartFailed",
+          "serviceDetailNotifications"
+        ]
+      },
+      "setups": [
+        {
+          "id": "deployReviewSetup",
+          "label": "Review rollout",
+          "event": "deployReviewEvent",
+          "state": "serviceDetailReady"
+        },
+        {
+          "id": "rollbackReviewSetup",
+          "label": "Review rollback",
+          "event": "rollbackReviewEvent",
+          "state": "serviceDetailReady"
+        },
+        {
+          "id": "restartReviewSetup",
+          "label": "Review restart",
+          "event": "restartReviewEvent",
+          "state": "serviceDetailNotifications"
+        },
+        {
+          "id": "firstDeployReviewSetup",
+          "label": "Review first rollout",
+          "event": "deployReviewEvent",
+          "state": "serviceDetailRegistered"
+        }
+      ]
+    },
+    {
+      "id": "deploys",
+      "question": "Which artifact and owner belong to each recorded rollout attempt, and what stage has the service reported?",
+      "route": "/deploys",
+      "slots": [
+        {
+          "id": "header",
+          "copy": {
+            "deploys.title": "always"
+          }
+        },
+        {
+          "id": "primary",
+          "data": {
+            "contract": "Deploy",
+            "many": true,
+            "map": {
+              "artifact": "artifact",
+              "service": "service",
+              "owner": "owner",
+              "stage": "stage",
+              "progressPercent": "progressPercent",
+              "startedAt": "startedAt"
+            }
+          },
+          "copy": {}
+        },
+        {
+          "id": "state",
+          "record": "empty-states",
+          "status": "proposed",
+          "variant": "actionPanel",
+          "copy": {
+            "deploys.empty.title": [
+              "deploysEmpty"
+            ],
+            "deploys.empty.body": [
+              "deploysEmpty"
+            ],
+            "deploys.empty.action": [
+              "deploysEmpty"
+            ],
+            "deploys.recovery.title": [
+              "deploysFailed"
+            ],
+            "deploys.recovery.action": [
+              "deploysFailed"
+            ]
+          }
+        }
+      ],
+      "states": [
+        "deploysReady",
+        "deploysLoading",
+        "deploysEmpty",
+        "deploysFailed",
+        "deploysLongContent"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "deploys.title": "always",
+        "deploys.documentTitle": {
+          "when": "always",
+          "as": "title"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
+        "nav.home": "always",
+        "nav.deploys": "always",
+        "nav.services": "always",
+        "nav.incidents": "always",
+        "nav.settings": "always",
+        "deploys.inspect": [
+          "deploysReady",
+          "deploysLoading",
+          "deploysLongContent"
+        ],
+        "deploys.artifact": [
+          "deploysReady",
+          "deploysLoading",
+          "deploysLongContent"
+        ],
+        "deploys.progress": [
+          "deploysReady",
+          "deploysLoading",
+          "deploysLongContent"
+        ],
+        "deploys.startedAt": [
+          "deploysReady",
+          "deploysLoading",
+          "deploysLongContent"
+        ],
+        "deploys.stage.queued": [
+          "deploysReady",
+          "deploysLoading"
+        ],
+        "deploys.stage.building": [
+          "deploysReady",
+          "deploysLoading",
+          "deploysLongContent"
+        ],
+        "deploys.stage.rollingOut": [
+          "deploysReady",
+          "deploysLoading"
+        ],
+        "deploys.stage.complete": [
+          "deploysReady",
+          "deploysLoading"
+        ],
+        "deploys.stage.failed": [
+          "deploysReady",
+          "deploysLoading"
+        ]
+      }
+    },
+    {
+      "id": "incidents",
+      "question": "Which recorded incident is open, which service is affected, and who is on call?",
+      "route": "/incidents",
+      "slots": [
+        {
+          "id": "primary",
+          "data": {
+            "contract": "Incident",
+            "many": true,
+            "map": {
+              "reference": "reference",
+              "title": "title",
+              "body": "summary",
+              "service": "service",
+              "owner": "owner",
+              "status": "status",
+              "openedAt": "openedAt"
+            }
+          },
+          "copy": {}
+        },
+        {
+          "id": "state",
+          "record": "empty-states",
+          "status": "proposed",
+          "variant": "actionPanel",
+          "copy": {
+            "incidents.empty.title": [
+              "incidentsEmpty"
+            ],
+            "incidents.empty.body": [
+              "incidentsEmpty"
+            ],
+            "incidents.empty.action": [
+              "incidentsEmpty"
+            ],
+            "incidents.recovery.title": [
+              "incidentsFailed"
+            ],
+            "incidents.recovery.action": [
+              "incidentsFailed"
+            ]
+          }
+        }
+      ],
+      "states": [
+        "incidentsReady",
+        "incidentsLoading",
+        "incidentsEmpty",
+        "incidentsFailed",
+        "incidentsLongContent",
+        "incidentsResolved"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "incidents.title": "always",
+        "incidents.documentTitle": {
+          "when": "always",
+          "as": "title"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
+        "nav.home": "always",
+        "nav.deploys": "always",
+        "nav.services": "always",
+        "nav.incidents": "always",
+        "nav.settings": "always",
+        "incidents.columns.service": [
+          "incidentsReady",
+          "incidentsLoading",
+          "incidentsLongContent",
+          "incidentsResolved"
+        ],
+        "incidents.columns.owner": [
+          "incidentsReady",
+          "incidentsLoading",
+          "incidentsLongContent",
+          "incidentsResolved"
+        ],
+        "incidents.columns.status": [
+          "incidentsReady",
+          "incidentsLoading",
+          "incidentsLongContent",
+          "incidentsResolved"
+        ],
+        "incidents.openedAt": [
+          "incidentsReady",
+          "incidentsLoading",
+          "incidentsLongContent",
+          "incidentsResolved"
+        ],
+        "incidents.status.open": [
+          "incidentsReady",
+          "incidentsLoading",
+          "incidentsLongContent"
+        ],
+        "incidents.status.resolved": [
+          "incidentsResolved"
+        ]
+      }
+    },
+    {
+      "id": "incidentThread",
+      "question": "What evidence explains this service incident, what has the on-call team tried, and has recovery been recorded?",
+      "route": "/incidents/:incident",
+      "slots": [
+        {
+          "id": "header",
+          "copy": {
+            "incidentThread.title": "always"
+          }
+        },
+        {
+          "id": "primary",
+          "data": {
+            "contract": "Message",
+            "many": true,
+            "map": {
+              "author": "author",
+              "body": "text",
+              "sentAt": "sentAt",
+              "mine": "mine"
+            }
+          },
+          "copy": {}
+        },
+        {
+          "id": "composer",
+          "copy": {
+            "incidentThread.composer.placeholder": [
+              "incidentThreadReady",
+              "incidentThreadLoading",
+              "incidentThreadEmpty",
+              "incidentThreadLongContent",
+              "incidentThreadSent",
+              "incidentThreadRecovered",
+              "incidentThreadResolved",
+              "incidentThreadResolveFailed"
+            ],
+            "incidentThread.send": [
+              "incidentThreadReady",
+              "incidentThreadLoading",
+              "incidentThreadEmpty",
+              "incidentThreadLongContent",
+              "incidentThreadSent",
+              "incidentThreadSendFailed",
+              "incidentThreadRecovered",
+              "incidentThreadResolved",
+              "incidentThreadResolveFailed"
+            ],
+            "incidentThread.aria.send": {
+              "when": [
+                "incidentThreadReady",
+                "incidentThreadLoading",
+                "incidentThreadEmpty",
+                "incidentThreadLongContent",
+                "incidentThreadSent",
+                "incidentThreadSendFailed",
+                "incidentThreadRecovered",
+                "incidentThreadResolved",
+                "incidentThreadResolveFailed"
+              ],
+              "as": "label"
+            }
+          },
+          "on": [
+            {
+              "event": "incidentThreadSendEvent",
+              "axis": "asyncFeedback"
+            }
+          ]
+        },
+        {
+          "id": "context",
+          "data": {
+            "contract": "Incident",
+            "many": false,
+            "map": {
+              "reference": "reference",
+              "title": "title",
+              "body": "summary",
+              "service": "service",
+              "owner": "owner",
+              "status": "status"
+            }
+          },
+          "copy": {}
+        },
+        {
+          "id": "actions",
+          "data": {
+            "contract": "Service",
+            "many": false,
+            "map": {
+              "name": "name",
+              "status": "status",
+              "latencyMs": "latencyMs"
+            }
+          },
+          "copy": {},
+          "on": [
+            {
+              "event": "resolveIncidentEvent",
+              "axis": "asyncFeedback"
+            }
+          ]
+        },
+        {
+          "id": "state",
+          "record": "empty-states",
+          "status": "proposed",
+          "variant": "actionPanel",
+          "copy": {
+            "incidentThread.empty.title": [
+              "incidentThreadEmpty"
+            ],
+            "incidentThread.empty.body": [
+              "incidentThreadEmpty"
+            ],
+            "incidentThread.empty.action": [
+              "incidentThreadEmpty"
+            ],
+            "incidentThread.recovery.title": [
+              "incidentThreadFailed"
+            ],
+            "incidentThread.recovery.action": [
+              "incidentThreadFailed"
+            ],
+            "incidentThread.status.sending": {
+              "when": [
+                "incidentThreadSending"
+              ],
+              "as": "announce"
+            },
+            "incidentThread.status.sent": {
+              "when": [
+                "incidentThreadSent"
+              ],
+              "as": "announce"
+            },
+            "incidentThread.sendFailure": [
+              "incidentThreadSendFailed"
+            ],
+            "incidentThread.retrySend": [
+              "incidentThreadSendFailed"
+            ],
+            "incidentThread.status.resolving": {
+              "when": [
+                "incidentThreadResolving"
+              ],
+              "as": "announce"
+            },
+            "incidentThread.status.resolved": {
+              "when": [
+                "incidentThreadResolved"
+              ],
+              "as": "announce"
+            },
+            "incidentThread.resolveFailure": [
+              "incidentThreadResolveFailed"
+            ],
+            "incidentThread.retryResolve": [
+              "incidentThreadResolveFailed"
+            ]
+          }
+        },
+        {
+          "id": "confirmation",
+          "record": "dialogs-and-layers",
+          "status": "proposed",
+          "variant": "dialog",
+          "because": "Resolution changes the incident’s recorded state only after an engineer has reviewed measured recovery.",
+          "copy": {
+            "incidentThread.resolveReview.title": [
+              "resolveIncidentSetup"
+            ],
+            "incidentThread.resolveReview.body": [
+              "resolveIncidentSetup"
+            ],
+            "incidentThread.resolveReview.confirm": [
+              "resolveIncidentSetup"
+            ],
+            "incidentThread.resolveReview.cancel": [
+              "resolveIncidentSetup"
+            ],
+            "incidentThread.resolveReview.close": [
+              "resolveIncidentSetup"
+            ]
+          },
+          "data": {
+            "contract": "Incident",
+            "many": false,
+            "map": {
+              "title": "title"
+            }
+          }
+        },
+        {
+          "id": "outcome",
+          "record": "notifications",
+          "status": "proposed",
+          "variant": "inline",
+          "because": "The recorded resolution belongs beside the incident timeline and must survive a transient notification.",
+          "copy": {
+            "incidentThread.outcome": {
+              "when": [
+                "incidentThreadResolved"
+              ],
+              "as": "announce"
+            }
+          }
+        }
+      ],
+      "states": [
+        "incidentThreadReady",
+        "incidentThreadLoading",
+        "incidentThreadEmpty",
+        "incidentThreadFailed",
+        "incidentThreadLongContent",
+        "incidentThreadSending",
+        "incidentThreadSent",
+        "incidentThreadSendFailed",
+        "incidentThreadRecovered",
+        "incidentThreadResolving",
+        "incidentThreadResolved",
+        "incidentThreadResolveFailed"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "incidentThread.title": "always",
+        "incidentThread.documentTitle": {
+          "when": "always",
+          "as": "title"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
+        "nav.home": "always",
+        "nav.deploys": "always",
+        "nav.services": "always",
+        "nav.incidents": "always",
+        "nav.settings": "always",
+        "incidentThread.sentAt": [
+          "incidentThreadReady",
+          "incidentThreadLoading",
+          "incidentThreadLongContent",
+          "incidentThreadSending",
+          "incidentThreadSent",
+          "incidentThreadSendFailed",
+          "incidentThreadRecovered",
+          "incidentThreadResolving",
+          "incidentThreadResolved",
+          "incidentThreadResolveFailed"
+        ],
+        "incidentThread.sender.you": [
+          "incidentThreadReady",
+          "incidentThreadLoading",
+          "incidentThreadSending",
+          "incidentThreadSent",
+          "incidentThreadSendFailed",
+          "incidentThreadRecovered",
+          "incidentThreadResolving",
+          "incidentThreadResolved",
+          "incidentThreadResolveFailed"
+        ],
+        "incidentThread.resolve": [
+          "incidentThreadRecovered",
+          "incidentThreadResolveFailed"
+        ]
+      },
+      "binding": {
+        "record": "conversation",
+        "status": "proposed",
+        "variant": "context",
+        "because": "On-call observations need the incident identity, owner and measured service recovery alongside the timeline."
+      },
+      "setups": [
+        {
+          "id": "resolveIncidentSetup",
+          "label": "Review incident resolution",
+          "event": "resolveReviewEvent",
+          "state": "incidentThreadRecovered"
+        }
+      ]
+    },
+    {
+      "id": "newService",
+      "question": "Which repository, service name and region should be registered before the first artifact is deployed?",
+      "route": "/services/new",
+      "slots": [
+        {
+          "id": "header",
+          "copy": {
+            "newService.title": "always"
+          }
+        },
+        {
+          "id": "primary",
+          "data": {
+            "contract": "ServiceDraft",
+            "many": false,
+            "map": {
+              "name": "name",
+              "repository": "repository",
+              "region": "region",
+              "autoDeploy": "autoDeploy",
+              "notifyFailure": "notifyFailure"
+            }
+          },
+          "copy": {},
+          "on": [
+            {
+              "event": "newServiceSaveEvent",
+              "axis": "asyncFeedback"
+            }
+          ]
+        },
+        {
+          "id": "result",
+          "data": {
+            "contract": "ServiceDraft",
+            "many": false,
+            "map": {
+              "name": "name",
+              "repository": "repository",
+              "region": "region"
+            }
+          },
+          "copy": {},
+          "states": [
+            "newServiceSaved"
+          ]
+        },
+        {
+          "id": "state",
+          "copy": {
+            "newService.status.saving": {
+              "when": [
+                "newServiceSaving"
+              ],
+              "as": "announce"
+            },
+            "newService.status.saved": {
+              "when": [
+                "newServiceSaved"
+              ],
+              "as": "announce"
+            },
+            "newService.recovery": [
+              "newServiceFailed"
+            ]
+          }
+        },
+        {
+          "id": "commit",
+          "copy": {
+            "newService.save": [
+              "newServiceDraft",
+              "newServiceFailed",
+              "newServiceLongContent"
+            ]
+          },
+          "on": [
+            {
+              "event": "newServiceSaveEvent",
+              "axis": "asyncFeedback"
+            }
+          ]
+        },
+        {
+          "id": "exit",
+          "copy": {
+            "newService.cancel": [
+              "newServiceDraft",
+              "newServiceFailed",
+              "newServiceLongContent"
+            ]
+          }
+        }
+      ],
+      "states": [
+        "newServiceDraft",
+        "newServiceSaving",
+        "newServiceSaved",
+        "newServiceFailed",
+        "newServiceLongContent"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "newService.title": "always",
+        "newService.documentTitle": {
+          "when": "always",
+          "as": "title"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
+        "nav.home": "always",
+        "nav.deploys": "always",
+        "nav.services": "always",
+        "nav.incidents": "always",
+        "nav.settings": "always",
+        "newService.name.label": [
+          "newServiceDraft",
+          "newServiceSaving",
+          "newServiceFailed",
+          "newServiceLongContent"
+        ],
+        "newService.name.placeholder": [
+          "newServiceDraft"
+        ],
+        "newService.region.label": [
+          "newServiceDraft",
+          "newServiceSaving",
+          "newServiceFailed",
+          "newServiceLongContent"
+        ],
+        "newService.region.east": [
+          "newServiceDraft",
+          "newServiceSaving",
+          "newServiceFailed",
+          "newServiceLongContent",
+          "registrationRegionChoicesSetup"
+        ],
+        "newService.region.west": [
+          "registrationRegionChoicesSetup"
+        ],
+        "newService.region.europe": [
+          "registrationRegionChoicesSetup"
+        ],
+        "newService.autoDeploy.label": [
+          "newServiceDraft",
+          "newServiceSaving",
+          "newServiceFailed",
+          "newServiceLongContent"
+        ],
+        "newService.failureNotifications.label": [
+          "newServiceDraft",
+          "newServiceSaving",
+          "newServiceFailed",
+          "newServiceLongContent"
+        ],
+        "newService.repository.label": [
+          "newServiceDraft",
+          "newServiceSaving",
+          "newServiceFailed",
+          "newServiceLongContent"
+        ],
+        "newService.repository.placeholder": [
+          "newServiceDraft"
+        ],
+        "newService.save": [
+          "newServiceDraft",
+          "newServiceFailed",
+          "newServiceLongContent"
+        ],
+        "newService.cancel": [
+          "newServiceDraft",
+          "newServiceFailed",
+          "newServiceLongContent"
+        ],
+        "newService.invalid": [
+          "newServiceInvalidSetup"
+        ],
+        "newService.status.saving": {
+          "when": [
+            "newServiceSaving"
+          ],
+          "as": "announce"
+        },
+        "newService.status.saved": {
+          "when": [
+            "newServiceSaved"
+          ],
+          "as": "announce"
+        },
+        "newService.recovery": [
+          "newServiceFailed"
+        ],
+        "newService.result": [
+          "newServiceSaved"
+        ]
+      },
+      "setups": [
+        {
+          "id": "newServiceInvalidSetup",
+          "label": "Invalid registration fields",
+          "event": "newServiceInvalidEvent",
+          "state": "newServiceDraft"
+        },
+        {
+          "id": "registrationRegionChoicesSetup",
+          "label": "Registration region choices open",
+          "event": "registrationRegionChoicesEvent",
+          "state": "newServiceDraft"
+        }
+      ],
+      "binding": {
+        "record": "create-edit",
+        "status": "proposed",
+        "variant": "dedicatedPage",
+        "because": "Registering a repository, supported region and deploy preferences is a deliberate draft, separate from observed service telemetry."
+      }
+    },
+    {
+      "id": "settings",
+      "question": "Which default region, auto-deploy behavior and operational notifications do I want saved?",
+      "route": "/settings",
+      "slots": [
+        {
+          "id": "header",
+          "copy": {
+            "settings.title": "always"
+          }
+        },
+        {
+          "id": "navigation",
+          "copy": {
+            "settings.section": "always"
+          }
+        },
+        {
+          "id": "primary",
+          "copy": {
+            "settings.section": "always",
+            "settings.region.label": "always",
+            "settings.region.east": "always",
+            "settings.region.west": [
+              "settingsRegionChoicesSetup"
+            ],
+            "settings.region.europe": [
+              "settingsRegionChoicesSetup"
+            ],
+            "settings.autoDeploy.label": "always",
+            "settings.failureNotifications.label": "always",
+            "settings.healthAlerts.label": "always"
+          }
+        },
+        {
+          "id": "commit",
+          "copy": {
+            "settings.save": [
+              "settingsReady",
+              "settingsSaved",
+              "settingsFailed"
+            ],
+            "settings.cancel": [
+              "settingsReady",
+              "settingsFailed"
+            ]
+          },
+          "on": [
+            {
+              "event": "savePreferencesEvent",
+              "axis": "asyncFeedback"
+            }
+          ]
+        },
+        {
+          "id": "state",
+          "copy": {
+            "settings.status.saving": {
+              "when": [
+                "settingsSaving"
+              ],
+              "as": "announce"
+            },
+            "settings.status.saved": {
+              "when": [
+                "settingsSaved"
+              ],
+              "as": "announce"
+            },
+            "settings.recovery": [
+              "settingsFailed"
+            ]
+          }
+        }
+      ],
+      "states": [
+        "settingsReady",
+        "settingsSaving",
+        "settingsSaved",
+        "settingsFailed"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "settings.title": "always",
+        "settings.documentTitle": {
+          "when": "always",
+          "as": "title"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
+        "nav.home": "always",
+        "nav.deploys": "always",
+        "nav.services": "always",
+        "nav.incidents": "always",
+        "nav.settings": "always"
+      },
+      "binding": {
+        "record": "settings",
+        "status": "fixed",
+        "variant": "sections",
+        "because": "Default region, auto-deploy and failure or health notifications belong to one small on-call preference page."
+      },
+      "setups": [
+        {
+          "id": "settingsRegionChoicesSetup",
+          "label": "Default-region choices open",
+          "event": "settingsRegionChoicesEvent",
+          "state": "settingsReady"
+        }
+      ]
+    },
+    {
+      "id": "help",
+      "question": "When does a rollout stop, and what does restoring the previous artifact change?",
+      "route": "/help/rollouts",
+      "slots": [
+        {
+          "id": "primary",
+          "copy": {
+            "help.rolloutPolicy": "always",
+            "help.rollbackPolicy": "always"
+          }
+        }
+      ],
+      "states": [
+        "helpReady"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "help.title": "always",
+        "help.documentTitle": {
+          "when": "always",
+          "as": "title"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
+        "nav.home": "always",
+        "nav.deploys": "always",
+        "nav.services": "always",
+        "nav.incidents": "always",
+        "nav.settings": "always"
+      }
+    },
+    {
+      "id": "landing",
+      "question": "How does Relay connect an artifact rollout to measured service health and an on-call recovery timeline?",
+      "route": "/",
+      "slots": [
+        {
+          "id": "primary",
+          "copy": {
+            "landing.action": "always",
+            "landing.secondaryAction": "always",
+            "landing.rollouts.eyebrow": "always",
+            "landing.rollouts.title": "always",
+            "landing.rollouts.body": "always",
+            "landing.incidents.eyebrow": "always",
+            "landing.incidents.title": "always",
+            "landing.incidents.body": "always",
+            "landing.services.eyebrow": "always",
+            "landing.services.title": "always",
+            "landing.services.body": "always"
+          }
+        }
+      ],
+      "states": [
+        "landingReady"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "landing.title": "always",
+        "landing.documentTitle": {
+          "when": "always",
+          "as": "title"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
+        "landing.description": "always",
+        "landing.action": "always",
+        "landing.secondaryAction": "always",
+        "landing.footer": "always",
+        "landing.navigation.services": "always",
+        "landing.navigation.help": "always",
+        "landing.navigation.deploys": "always",
+        "landing.navigation.incidents": "always",
+        "landing.rollouts.eyebrow": "always",
+        "landing.rollouts.title": "always",
+        "landing.rollouts.body": "always",
+        "landing.incidents.eyebrow": "always",
+        "landing.incidents.title": "always",
+        "landing.incidents.body": "always",
+        "landing.services.eyebrow": "always",
+        "landing.services.title": "always",
+        "landing.services.body": "always",
+        "landing.proof.deployCount.value": "always",
+        "landing.proof.deployCount.label": "always",
+        "landing.proof.rolloutSeconds.value": "always",
+        "landing.proof.rolloutSeconds.label": "always",
+        "landing.proof.uptime.value": "always",
+        "landing.proof.uptime.label": "always",
+        "landing.engineerQuote.text": "always",
+        "landing.engineerQuote.attribution": "always",
+        "landing.teamMarks.northwind.alt": {
+          "when": "always",
+          "as": "alt"
+        },
+        "landing.teamMarks.contoso.alt": {
+          "when": "always",
+          "as": "alt"
+        },
+        "landing.teamMarks.fabrikam.alt": {
+          "when": "always",
+          "as": "alt"
+        },
+        "landing.teamMarks.initech.alt": {
+          "when": "always",
+          "as": "alt"
+        },
+        "landing.teamMarks.umbrella.alt": {
+          "when": "always",
+          "as": "alt"
+        },
+        "landing.teamMarks.hooli.alt": {
+          "when": "always",
+          "as": "alt"
+        }
+      }
+    },
+    {
+      "id": "emailDeployFailed",
+      "question": "Which artifact failed on which service, and where can I inspect the recorded build failure before retrying?",
+      "route": "email:deploy-failed",
+      "slots": [
+        {
+          "id": "primary",
+          "data": {
+            "contract": "Deploy",
+            "many": false,
+            "map": {
+              "artifact": "artifact",
+              "service": "service",
+              "exitCode": "exitCode",
+              "elapsedSeconds": "elapsedSeconds"
+            }
+          },
+          "copy": {}
+        }
+      ],
+      "states": [
+        "emailDeployFailedReady"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "emailDeployFailed.subject": {
+          "when": "always",
+          "as": "subject"
+        },
+        "emailDeployFailed.body": {
+          "when": "always",
+          "as": "body"
+        },
+        "emailDeployFailed.action": {
+          "when": "always",
+          "as": "action"
+        },
+        "emailDeployFailed.preheader": {
+          "when": "always",
+          "as": "preheader"
+        }
+      },
+      "channel": "email"
+    },
+    {
+      "id": "pushIncidentOpened",
+      "question": "Which service has a newly recorded incident, who is on call, and where is the investigation timeline?",
+      "route": "push:incident-opened",
+      "slots": [
+        {
+          "id": "primary",
+          "data": {
+            "contract": "Incident",
+            "many": false,
+            "map": {
+              "title": "title",
+              "service": "service",
+              "owner": "owner",
+              "reference": "reference"
+            }
+          },
+          "copy": {}
+        }
+      ],
+      "states": [
+        "pushIncidentOpenedReady"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "pushIncidentOpened.title": {
+          "when": "always",
+          "as": "title"
+        },
+        "pushIncidentOpened.body": {
+          "when": "always",
+          "as": "body"
+        },
+        "pushIncidentOpened.action": {
+          "when": "always",
+          "as": "action"
+        }
+      },
+      "channel": "push"
+    }
+  ]
+}

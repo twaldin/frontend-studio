@@ -1,3 +1,15 @@
+---
+id: checkout
+scale: flow
+studio: null
+slots: {"required":["summary","total","details","payment","commit","recovery"],"optional":["promotion","account","express","state"]}
+variants: [{"id":"onePage","label":"One page"},{"id":"staged","label":"Staged checkout"},{"id":"hosted","label":"Hosted or express handoff"}]
+states: ["loading","editable","reviewing","submitting","challenge","pending","paid","accepted","quoteChanged","empty","unavailable","invalid","declined","cancelled","expired","outcomeUnknown","fulfillmentPending","receiptFailed","alreadyPaid","offline","denied"]
+copy: ["total","payAmount"]
+events: ["editCart","changeDetails","pay","challenge","cancel","checkStatus","resume"]
+renderer: schematic
+---
+
 # Checkout
 
 `id: checkout` · scale: flow · studio: no studio step · references checked: 2026-10-08 (new primary guidance); 2026-10-06 (inherited link-only inspiration)

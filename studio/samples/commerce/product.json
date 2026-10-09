@@ -1,0 +1,2360 @@
+{
+  "$schema": "../../../references/product-model.schema.json",
+  "model": 1,
+  "product": {
+    "id": "commerce",
+    "outcome": "Choose a small-batch piece, inspect the maker’s terms, and pay once with an order reference that survives an uncertain payment response.",
+    "archetype": "commerce",
+    "users": [
+      {
+        "id": "buyer",
+        "who": "A buyer comparing small-batch goods and checking delivery from a phone or laptop.",
+        "device": "both",
+        "surfaces": [
+          "shop",
+          "goodsDetail",
+          "checkout",
+          "orders",
+          "makerThread",
+          "saved",
+          "settings",
+          "help",
+          "landing",
+          "emailOrderShipped",
+          "pushPriceChanged"
+        ]
+      }
+    ]
+  },
+  "entities": [
+    {
+      "id": "goods",
+      "contract": "Goods",
+      "words": [
+        "piece",
+        "goods"
+      ],
+      "never": [
+        "listing",
+        "listings",
+        "product",
+        "products"
+      ]
+    },
+    {
+      "id": "order",
+      "contract": "Order",
+      "words": [
+        "order",
+        "parcel"
+      ],
+      "never": [
+        "booking",
+        "bookings"
+      ]
+    },
+    {
+      "id": "checkoutDetails",
+      "contract": "Checkout",
+      "words": [
+        "delivery details",
+        "payment attempt"
+      ],
+      "never": [
+        "goods editor",
+        "goods editors"
+      ]
+    }
+  ],
+  "capabilities": [
+    {
+      "id": "purchaseGoods",
+      "real": true,
+      "note": "The invented shop accepts one piece per checkout and returns a durable order reference."
+    },
+    {
+      "id": "checkPaymentStatus",
+      "real": true,
+      "note": "A payment attempt is idempotent and its result can be checked without charging again."
+    },
+    {
+      "id": "savePieces",
+      "real": true,
+      "note": "Buyers can save a piece and later revisit its current terms."
+    },
+    {
+      "id": "sendMessages",
+      "real": true,
+      "note": "Maker messages are persisted before a sent acknowledgement appears."
+    },
+    {
+      "id": "savePreferences",
+      "real": true,
+      "note": "Shopping preferences persist independently of an order."
+    },
+    {
+      "id": "shippingUpdates",
+      "real": true,
+      "note": "A shipping email is sent only after a parcel tracking reference is recorded."
+    },
+    {
+      "id": "priceAlerts",
+      "real": true,
+      "note": "An opted-in buyer is notified when the saved piece’s price changes."
+    },
+    {
+      "id": "makerOnboarding",
+      "real": false,
+      "note": "Opening a maker shop is not part of the buyer contract; no seller-registration control is rendered."
+    }
+  ],
+  "data": {
+    "Goods": {
+      "fields": {
+        "name": "text",
+        "maker": "text",
+        "description": "longText",
+        "price": "money",
+        "category": "text",
+        "availability": "enum",
+        "rating": "number",
+        "image": "image",
+        "imageAlt": "text"
+      },
+      "typical": 12,
+      "max": 600,
+      "long": [
+        "name",
+        "description"
+      ],
+      "enums": {
+        "availability": [
+          "available",
+          "madeToOrder",
+          "soldOut"
+        ]
+      }
+    },
+    "Order": {
+      "fields": {
+        "reference": "text",
+        "goods": "ref",
+        "name": "text",
+        "maker": "text",
+        "status": "enum",
+        "total": "money",
+        "deliveryCost": "money",
+        "giftWrapCost": "money",
+        "createdAt": "date",
+        "trackingReference": "text",
+        "subtotal": "money"
+      },
+      "typical": 6,
+      "max": 60,
+      "long": [
+        "name"
+      ],
+      "enums": {
+        "status": [
+          "shipped",
+          "delivered",
+          "packing",
+          "delayed",
+          "refunded",
+          "awaitingPayment"
+        ]
+      }
+    },
+    "Message": {
+      "fields": {
+        "author": "text",
+        "text": "longText",
+        "mine": "enum",
+        "sentAt": "date"
+      },
+      "typical": 4,
+      "max": 500,
+      "long": [
+        "author",
+        "text"
+      ],
+      "enums": {
+        "mine": [
+          "mine",
+          "theirs"
+        ]
+      }
+    },
+    "Checkout": {
+      "fields": {
+        "recipientName": "text",
+        "addressText": "longText",
+        "email": "text",
+        "delivery": "enum",
+        "giftWrap": "enum",
+        "trackingUpdates": "enum",
+        "paymentLastFour": "text",
+        "attemptReference": "text"
+      },
+      "typical": 1,
+      "max": 1,
+      "long": [
+        "recipientName",
+        "addressText"
+      ],
+      "enums": {
+        "delivery": [
+          "standard",
+          "express",
+          "collection"
+        ],
+        "giftWrap": [
+          "yes",
+          "no"
+        ],
+        "trackingUpdates": [
+          "yes",
+          "no"
+        ]
+      }
+    }
+  },
+  "states": {
+    "shopReady": {
+      "label": "Available pieces",
+      "rule": "Show maker, price and availability on each card; buying begins only after the piece is inspected.",
+      "kind": "data",
+      "fixtures": {
+        "Goods": "populated"
+      }
+    },
+    "shopLoading": {
+      "label": "Refreshing pieces",
+      "rule": "Keep the last assortment and the current filters visible while refreshing; do not claim new stock has arrived.",
+      "kind": "data",
+      "fixtures": {
+        "Goods": "populated"
+      }
+    },
+    "shopEmpty": {
+      "label": "No matching pieces",
+      "rule": "Keep the query and selected filters so the buyer can clear them rather than starting an unrelated task.",
+      "kind": "firstRun",
+      "fixtures": {
+        "Goods": "none"
+      }
+    },
+    "shopFailed": {
+      "label": "Shop unavailable",
+      "rule": "Show that the assortment could not be retrieved and retry without changing the buyer’s filters.",
+      "kind": "data",
+      "fixtures": {
+        "Goods": "none"
+      }
+    },
+    "shopLongContent": {
+      "label": "Long maker descriptions",
+      "rule": "Wrap the print’s complete edition name and material description without hiding its maker or price.",
+      "kind": "data",
+      "fixtures": {
+        "Goods": "long"
+      }
+    },
+    "shopSoldOut": {
+      "label": "Sold-out piece",
+      "rule": "Retain the piece’s identity and show Sold out; inspection is available but payment is not.",
+      "kind": "data",
+      "fixtures": {
+        "Goods": "soldOut"
+      }
+    },
+    "goodsDetailReady": {
+      "label": "Piece available",
+      "rule": "Show the selected piece and maker, then the delivery and return terms; Buy opens the final checkout review.",
+      "kind": "data",
+      "fixtures": {
+        "Goods": "one"
+      }
+    },
+    "goodsDetailLoading": {
+      "label": "Refreshing piece",
+      "rule": "Keep the selected piece visible while checking its current price and stock; withhold Buy until refreshed.",
+      "kind": "data",
+      "fixtures": {
+        "Goods": "one"
+      }
+    },
+    "goodsDetailEmpty": {
+      "label": "Piece removed",
+      "rule": "Show that this piece is no longer listed and return to the shop without inventing a replacement.",
+      "kind": "data",
+      "fixtures": {
+        "Goods": "none"
+      }
+    },
+    "goodsDetailFailed": {
+      "label": "Piece unavailable",
+      "rule": "Explain a retrieval failure, not a card decline; do not offer payment while the maker’s terms cannot be read.",
+      "kind": "data",
+      "fixtures": {
+        "Goods": "none"
+      }
+    },
+    "goodsDetailLongContent": {
+      "label": "Long piece details",
+      "rule": "Wrap the complete print edition name and maker’s care description before the buying action.",
+      "kind": "data",
+      "fixtures": {
+        "Goods": "long"
+      }
+    },
+    "goodsDetailSoldOut": {
+      "label": "Sold out",
+      "rule": "Show the sold-out piece and its maker’s terms with no Buy action.",
+      "kind": "data",
+      "fixtures": {
+        "Goods": "soldOut"
+      }
+    },
+    "goodsDetailMadeToOrder": {
+      "label": "Made to order",
+      "rule": "Explain that the serving bowl is made to order and that its cancellation window closes when work starts.",
+      "kind": "data",
+      "fixtures": {
+        "Goods": "madeToOrder"
+      }
+    },
+    "goodsDetailSavingPiece": {
+      "label": "Saving piece",
+      "rule": "Keep the piece visible and prevent a duplicate save until the saved list accepts it.",
+      "kind": "operation",
+      "fixtures": {
+        "Goods": "one"
+      }
+    },
+    "goodsDetailPieceSaved": {
+      "label": "Piece saved",
+      "rule": "Confirm that the piece is now in Saved and keep its buying terms available.",
+      "kind": "operation",
+      "fixtures": {
+        "Goods": "one"
+      }
+    },
+    "goodsDetailSaveFailed": {
+      "label": "Save failed",
+      "rule": "Keep the piece visible and offer another save without implying a purchase failed.",
+      "kind": "operation",
+      "fixtures": {
+        "Goods": "one"
+      }
+    },
+    "checkoutEditable": {
+      "label": "Editable",
+      "rule": "Show the reserved piece, delivery form, selected card and exact final total. Paying submits one idempotent payment attempt.",
+      "kind": "data",
+      "fixtures": {
+        "Goods": "one",
+        "Order": "quote",
+        "Checkout": "blankDetails"
+      }
+    },
+    "checkoutPaying": {
+      "label": "Paying",
+      "rule": "Keep the reviewed summary and delivery details read-only. Replace Pay with payment progress and prevent a second charge.",
+      "kind": "operation",
+      "fixtures": {
+        "Goods": "one",
+        "Order": "quote",
+        "Checkout": "one"
+      }
+    },
+    "checkoutDeclined": {
+      "label": "Card declined",
+      "rule": "State that the provider rejected payment, retain all delivery values, and let the buyer select another card before trying again.",
+      "kind": "operation",
+      "fixtures": {
+        "Goods": "one",
+        "Order": "quote",
+        "Checkout": "one"
+      }
+    },
+    "checkoutUnknown": {
+      "label": "Payment outcome unknown",
+      "rule": "Retain the attempt reference and total. Never offer Pay again until Check payment status establishes whether this attempt was paid.",
+      "kind": "operation",
+      "fixtures": {
+        "Goods": "one",
+        "Order": "quote",
+        "Checkout": "one"
+      }
+    },
+    "checkoutChecking": {
+      "label": "Checking payment",
+      "rule": "Query the existing payment attempt, not a new charge; keep duplicate checking disabled.",
+      "kind": "operation",
+      "fixtures": {
+        "Goods": "one",
+        "Order": "quote",
+        "Checkout": "one"
+      }
+    },
+    "checkoutPaid": {
+      "label": "Paid",
+      "rule": "Show the accepted order reference and maker, replace the delivery form and every payment action with a receipt summary and View orders; never offer paying the same order again.",
+      "kind": "operation",
+      "fixtures": {
+        "Goods": "one",
+        "Order": "paid",
+        "Checkout": "one"
+      }
+    },
+    "checkoutLongContent": {
+      "label": "Long delivery details",
+      "rule": "Wrap the full recipient and receiving instructions; keep the total and payment action reachable without truncation.",
+      "kind": "data",
+      "fixtures": {
+        "Goods": "one",
+        "Order": "quote",
+        "Checkout": "long"
+      }
+    },
+    "ordersReady": {
+      "label": "Order history",
+      "rule": "Show each durable order reference with its maker, payment or parcel status and total.",
+      "kind": "data",
+      "fixtures": {
+        "Order": "populated"
+      }
+    },
+    "ordersLoading": {
+      "label": "Refreshing orders",
+      "rule": "Keep the known order history visible while retrieving parcel changes.",
+      "kind": "data",
+      "fixtures": {
+        "Order": "populated"
+      }
+    },
+    "ordersEmpty": {
+      "label": "No orders yet",
+      "rule": "Explain that purchases appear here after payment; start from the shop rather than creating an empty order.",
+      "kind": "data",
+      "fixtures": {
+        "Order": "none"
+      }
+    },
+    "ordersFailed": {
+      "label": "Order history unavailable",
+      "rule": "Explain that order retrieval failed without suggesting a payment failed; retry the history request.",
+      "kind": "data",
+      "fixtures": {
+        "Order": "none"
+      }
+    },
+    "ordersLongContent": {
+      "label": "Long order name",
+      "rule": "Wrap the complete wool throw name beside its parcel reference and maker.",
+      "kind": "data",
+      "fixtures": {
+        "Order": "long"
+      }
+    },
+    "ordersPlaced": {
+      "label": "New order",
+      "rule": "Show the newly accepted mug order as Packing with its payment total and stable order reference.",
+      "kind": "data",
+      "fixtures": {
+        "Order": "paid"
+      }
+    },
+    "makerThreadReady": {
+      "label": "Conversation",
+      "rule": "Show the maker’s replies in timestamp order with the mug order beside them.",
+      "kind": "data",
+      "fixtures": {
+        "Message": "populated",
+        "Order": "conversation"
+      }
+    },
+    "makerThreadLoading": {
+      "label": "Refreshing messages",
+      "rule": "Keep the existing conversation and selected order visible while fetching replies.",
+      "kind": "data",
+      "fixtures": {
+        "Message": "populated",
+        "Order": "conversation"
+      }
+    },
+    "makerThreadEmpty": {
+      "label": "No messages",
+      "rule": "Keep the selected mug order visible and offer to ask its maker the first question.",
+      "kind": "data",
+      "fixtures": {
+        "Message": "none",
+        "Order": "conversation"
+      }
+    },
+    "makerThreadFailed": {
+      "label": "Messages unavailable",
+      "rule": "Keep the selected order visible but report that the conversation could not be retrieved.",
+      "kind": "data",
+      "fixtures": {
+        "Message": "none",
+        "Order": "conversation"
+      }
+    },
+    "makerThreadLongContent": {
+      "label": "Long maker reply",
+      "rule": "Wrap the maker’s complete reply and studio name; keep the composer after the transcript.",
+      "kind": "data",
+      "fixtures": {
+        "Message": "long",
+        "Order": "conversation"
+      }
+    },
+    "makerThreadSending": {
+      "label": "Sending message",
+      "rule": "Keep the authored draft visible and disable duplicate sending until the maker thread accepts it.",
+      "kind": "operation",
+      "fixtures": {
+        "Message": "populated",
+        "Order": "conversation"
+      }
+    },
+    "makerThreadSent": {
+      "label": "Message sent",
+      "rule": "Append the persisted message in the thread and announce success before clearing the composer.",
+      "kind": "operation",
+      "fixtures": {
+        "Message": "populated",
+        "Order": "conversation"
+      }
+    },
+    "makerThreadSendFailed": {
+      "label": "Message not sent",
+      "rule": "Keep the unsent draft beside the transcript and offer Send again without reloading the order.",
+      "kind": "operation",
+      "fixtures": {
+        "Message": "populated",
+        "Order": "conversation"
+      }
+    },
+    "savedReady": {
+      "label": "Saved pieces",
+      "rule": "Show saved pieces with today’s maker and price; opening a piece rechecks its stock before payment.",
+      "kind": "data",
+      "fixtures": {
+        "Goods": "populated"
+      }
+    },
+    "savedLoading": {
+      "label": "Refreshing saved pieces",
+      "rule": "Keep the saved list visible while checking current prices.",
+      "kind": "data",
+      "fixtures": {
+        "Goods": "populated"
+      }
+    },
+    "savedEmpty": {
+      "label": "No saved pieces",
+      "rule": "Explain that Save piece on a detail page builds this list.",
+      "kind": "data",
+      "fixtures": {
+        "Goods": "none"
+      }
+    },
+    "savedFailed": {
+      "label": "Saved pieces unavailable",
+      "rule": "Retry loading the saved list without claiming the buyer’s saves were removed.",
+      "kind": "data",
+      "fixtures": {
+        "Goods": "none"
+      }
+    },
+    "savedLongContent": {
+      "label": "Long saved piece name",
+      "rule": "Wrap the saved print’s edition name and keep its maker and current price visible.",
+      "kind": "data",
+      "fixtures": {
+        "Goods": "long"
+      }
+    },
+    "settingsReady": {
+      "label": "Editable",
+      "rule": "Keep the saved delivery-email, gift-wrap-prompt and price-alert preferences beside their controls; changes apply only after Save preferences.",
+      "kind": "data",
+      "fixtures": {}
+    },
+    "settingsSaving": {
+      "label": "Saving",
+      "rule": "Keep changed preferences visible, disable Save, and announce the in-flight persistence operation.",
+      "kind": "operation",
+      "fixtures": {}
+    },
+    "settingsSaved": {
+      "label": "Saved",
+      "rule": "Show the persisted preference values and an inline acknowledgement without leaving settings.",
+      "kind": "operation",
+      "fixtures": {}
+    },
+    "settingsFailed": {
+      "label": "Save failed",
+      "rule": "Retain unsaved shopping preferences and explain that the previous saved preferences still apply; another explicit Save preferences is safe.",
+      "kind": "operation",
+      "fixtures": {}
+    },
+    "helpReady": {
+      "label": "Shipping and returns",
+      "rule": "Explain separate maker parcels and the return or cancellation windows without claiming the buyer has started a return.",
+      "kind": "data",
+      "fixtures": {}
+    },
+    "landingReady": {
+      "label": "Buyer introduction",
+      "rule": "Explain buying from independent makers and link only to the shop, saved pieces, shipping help and messages; do not offer unsupported seller registration.",
+      "kind": "data",
+      "fixtures": {}
+    },
+    "emailOrderShippedReady": {
+      "label": "Parcel shipped",
+      "rule": "Send this message only when the wool throw order is Shipped and has a tracking reference; its action opens that order’s parcel details.",
+      "kind": "operation",
+      "fixtures": {
+        "Order": "one"
+      }
+    },
+    "pushPriceChangedReady": {
+      "label": "Saved price changed",
+      "rule": "Notify only an opted-in buyer about the saved mug’s current price; opening the piece does not automatically place an order.",
+      "kind": "operation",
+      "fixtures": {
+        "Goods": "one"
+      }
+    }
+  },
+  "events": {
+    "reviewPurchaseEvent": {
+      "label": "Review purchase terms",
+      "kind": "layer"
+    },
+    "savePieceEvent": {
+      "label": "Save piece",
+      "kind": "operation",
+      "needs": "savePieces"
+    },
+    "payForPieceEvent": {
+      "label": "Pay for the reviewed piece",
+      "kind": "operation",
+      "needs": "purchaseGoods"
+    },
+    "checkPaymentEvent": {
+      "label": "Check an uncertain payment attempt",
+      "kind": "operation",
+      "needs": "checkPaymentStatus"
+    },
+    "checkoutInvalidEvent": {
+      "label": "Check delivery and receipt details",
+      "kind": "submit"
+    },
+    "makerThreadSendEvent": {
+      "label": "Send maker message",
+      "kind": "operation",
+      "needs": "sendMessages"
+    },
+    "savePreferencesEvent": {
+      "label": "Save preferences",
+      "kind": "operation",
+      "needs": "savePreferences"
+    },
+    "deliveryChoicesEvent": {
+      "label": "Open delivery choices",
+      "kind": "layer"
+    }
+  },
+  "nav": {
+    "items": [
+      {
+        "surface": "shop",
+        "copy": "nav.shop"
+      },
+      {
+        "surface": "orders",
+        "copy": "nav.orders"
+      },
+      {
+        "surface": "saved",
+        "copy": "nav.saved"
+      },
+      {
+        "surface": "makerThread",
+        "copy": "nav.makerThread"
+      },
+      {
+        "surface": "settings",
+        "copy": "nav.settings"
+      }
+    ],
+    "inAYear": 8
+  },
+  "flows": [
+    {
+      "id": "browseGoodsFlow",
+      "goal": "Compare available pieces and inspect one maker’s materials and terms.",
+      "priority": "must",
+      "stages": [
+        {
+          "id": "compare",
+          "surface": "shop",
+          "next": [
+            "inspect"
+          ]
+        },
+        {
+          "id": "inspect",
+          "surface": "goodsDetail"
+        }
+      ],
+      "ends": "The chosen piece’s price, availability, maker, materials and return terms are visible before any payment.",
+      "needs": [],
+      "binding": {
+        "record": "browse-inspect-act",
+        "status": "proposed",
+        "variant": "grid",
+        "because": "The buying decision starts in the same assortment composition as the shop.",
+        "sameAs": "surface:shop",
+        "candidates": [
+          "grid",
+          "list",
+          "shelves"
+        ]
+      }
+    },
+    {
+      "id": "purchaseFlow",
+      "goal": "Pay once for the inspected piece and keep the accepted order reference.",
+      "priority": "must",
+      "stages": [
+        {
+          "id": "inspectTerms",
+          "surface": "goodsDetail",
+          "next": [
+            "review"
+          ]
+        },
+        {
+          "id": "review",
+          "surface": "checkout",
+          "state": "checkoutEditable",
+          "next": [
+            "pay"
+          ]
+        },
+        {
+          "id": "pay",
+          "surface": "checkout",
+          "state": "checkoutPaying",
+          "next": [
+            "receipt"
+          ]
+        },
+        {
+          "id": "receipt",
+          "surface": "checkout",
+          "state": "checkoutPaid",
+          "next": [
+            "order"
+          ]
+        },
+        {
+          "id": "order",
+          "surface": "orders",
+          "state": "ordersPlaced"
+        }
+      ],
+      "ends": "Payment is confirmed once, the mug order is Packing with reference #4183, and the buyer can revisit it without paying again.",
+      "needs": [
+        "purchaseGoods",
+        "checkPaymentStatus"
+      ],
+      "binding": {
+        "record": "checkout",
+        "status": "fixed",
+        "variant": "onePage",
+        "because": "One maker’s piece, one delivery choice and an exact final total fit a single review page.",
+        "sameAs": "surface:checkout"
+      }
+    },
+    {
+      "id": "askMakerFlow",
+      "goal": "Ask the maker about glaze, care or delivery and keep the reply attached to the order.",
+      "priority": "should",
+      "stages": [
+        {
+          "id": "piece",
+          "surface": "goodsDetail",
+          "next": [
+            "conversation"
+          ]
+        },
+        {
+          "id": "conversation",
+          "surface": "makerThread",
+          "next": [
+            "send"
+          ]
+        },
+        {
+          "id": "send",
+          "surface": "makerThread",
+          "state": "makerThreadSending",
+          "next": [
+            "sent"
+          ]
+        },
+        {
+          "id": "sent",
+          "surface": "makerThread",
+          "state": "makerThreadSent"
+        }
+      ],
+      "ends": "The persisted reply appears in the mug’s maker conversation and the unsent draft is cleared only after acceptance.",
+      "needs": [
+        "sendMessages"
+      ]
+    },
+    {
+      "id": "savedGoodsFlow",
+      "goal": "Save a piece and revisit its current maker and price.",
+      "priority": "should",
+      "stages": [
+        {
+          "id": "save",
+          "surface": "goodsDetail",
+          "state": "goodsDetailPieceSaved",
+          "next": [
+            "savedList"
+          ]
+        },
+        {
+          "id": "savedList",
+          "surface": "saved",
+          "next": [
+            "recheck"
+          ]
+        },
+        {
+          "id": "recheck",
+          "surface": "goodsDetail"
+        }
+      ],
+      "ends": "The saved piece remains in the buyer’s list and its current stock and price are rechecked on opening.",
+      "needs": [
+        "savePieces"
+      ]
+    },
+    {
+      "id": "preferencesFlow",
+      "goal": "Choose delivery emails, gift-wrap prompts and saved-price alerts.",
+      "priority": "should",
+      "stages": [
+        {
+          "id": "edit",
+          "surface": "settings",
+          "state": "settingsReady",
+          "next": [
+            "saved"
+          ]
+        },
+        {
+          "id": "saved",
+          "surface": "settings",
+          "state": "settingsSaved"
+        }
+      ],
+      "ends": "The saved settings apply to later shopping without changing an order already paid.",
+      "needs": [
+        "savePreferences"
+      ]
+    },
+    {
+      "id": "helpFlow",
+      "goal": "Understand separate parcels and return windows before contacting a maker.",
+      "priority": "should",
+      "stages": [
+        {
+          "id": "policy",
+          "surface": "help"
+        }
+      ],
+      "ends": "The buyer can distinguish a 30-day return from a made-to-order cancellation before work starts.",
+      "needs": []
+    },
+    {
+      "id": "discoverFlow",
+      "goal": "Understand buying from a maker and enter the shop.",
+      "priority": "later",
+      "stages": [
+        {
+          "id": "introduction",
+          "surface": "landing",
+          "next": [
+            "assortment"
+          ]
+        },
+        {
+          "id": "assortment",
+          "surface": "shop"
+        }
+      ],
+      "ends": "The buyer reaches the assortment without entering an email address or an unsupported seller-registration flow.",
+      "needs": []
+    },
+    {
+      "id": "emailOrderShippedFlow",
+      "goal": "Open parcel tracking from a shipping email.",
+      "priority": "should",
+      "stages": [
+        {
+          "id": "shippingEmail",
+          "surface": "emailOrderShipped",
+          "next": [
+            "orders"
+          ]
+        },
+        {
+          "id": "orders",
+          "surface": "orders"
+        }
+      ],
+      "ends": "The shipped order and its existing parcel reference are visible; the message does not imply a second order.",
+      "needs": [
+        "shippingUpdates"
+      ]
+    },
+    {
+      "id": "pushPriceChangedFlow",
+      "goal": "Inspect a saved piece after its price changes.",
+      "priority": "later",
+      "stages": [
+        {
+          "id": "pricePush",
+          "surface": "pushPriceChanged",
+          "next": [
+            "updatedPiece"
+          ]
+        },
+        {
+          "id": "updatedPiece",
+          "surface": "goodsDetail"
+        }
+      ],
+      "ends": "The current price is visible before the buyer chooses whether to enter checkout.",
+      "needs": [
+        "priceAlerts"
+      ]
+    }
+  ],
+  "surfaces": [
+    {
+      "id": "shop",
+      "question": "Which maker’s piece fits my materials, price and availability needs?",
+      "route": "/shop",
+      "slots": [
+        {
+          "id": "primary",
+          "data": {
+            "contract": "Goods",
+            "many": true,
+            "map": {
+              "title": "name",
+              "image": "image",
+              "imageAlt": "imageAlt",
+              "price": "price",
+              "maker": "maker",
+              "availability": "availability"
+            }
+          },
+          "copy": {}
+        },
+        {
+          "id": "toolbar",
+          "record": "search-filter",
+          "status": "proposed",
+          "variant": "facetedBatch",
+          "because": "Material categories and stock availability can be combined before refreshing the assortment.",
+          "copy": {
+            "shop.queryLabel": "always",
+            "shop.filter.apply": "always",
+            "shop.filter.clear": "always"
+          }
+        },
+        {
+          "id": "state",
+          "record": "empty-states",
+          "status": "proposed",
+          "variant": "actionPanel",
+          "copy": {
+            "shop.empty.title": [
+              "shopEmpty"
+            ],
+            "shop.empty.body": [
+              "shopEmpty"
+            ],
+            "shop.empty.action": [
+              "shopEmpty"
+            ],
+            "shop.recovery.title": [
+              "shopFailed"
+            ],
+            "shop.recovery.action": [
+              "shopFailed"
+            ]
+          }
+        },
+        {
+          "id": "header",
+          "copy": {
+            "shop.title": "always",
+            "shop.documentTitle": {
+              "when": "always",
+              "as": "title"
+            }
+          }
+        }
+      ],
+      "states": [
+        "shopReady",
+        "shopLoading",
+        "shopEmpty",
+        "shopFailed",
+        "shopLongContent",
+        "shopSoldOut"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "shop.title": "always",
+        "shop.documentTitle": {
+          "when": "always",
+          "as": "title"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
+        "nav.shop": "always",
+        "nav.orders": "always",
+        "nav.saved": "always",
+        "nav.makerThread": "always",
+        "nav.settings": "always",
+        "shop.priceUnit": [
+          "shopReady",
+          "shopLoading",
+          "shopLongContent",
+          "shopSoldOut"
+        ],
+        "shop.availability.available": [
+          "shopReady",
+          "shopLoading",
+          "shopLongContent"
+        ],
+        "shop.availability.madeToOrder": [
+          "shopReady",
+          "shopLoading"
+        ],
+        "shop.availability.soldOut": [
+          "shopSoldOut"
+        ],
+        "shop.inspect": [
+          "shopReady",
+          "shopLoading",
+          "shopLongContent",
+          "shopSoldOut"
+        ]
+      },
+      "binding": {
+        "record": "storefront",
+        "status": "proposed",
+        "variant": "grid",
+        "because": "Glaze, weave and shape make images useful before reading the maker’s full description.",
+        "candidates": [
+          "grid",
+          "list",
+          "shelves"
+        ]
+      }
+    },
+    {
+      "id": "goodsDetail",
+      "question": "What is this piece made from, can it be bought now, and what are the maker’s shipping and return terms?",
+      "route": "/goods/:goods",
+      "slots": [
+        {
+          "id": "primary",
+          "data": {
+            "contract": "Goods",
+            "many": false,
+            "map": {
+              "title": "name",
+              "body": "description",
+              "price": "price",
+              "maker": "maker",
+              "image": "image",
+              "imageAlt": "imageAlt",
+              "availability": "availability"
+            }
+          },
+          "copy": {}
+        },
+        {
+          "id": "confirmation",
+          "record": "dialogs-and-layers",
+          "status": "proposed",
+          "variant": "dialog",
+          "because": "The buyer reviews which maker and piece will enter checkout before leaving the detail page.",
+          "copy": {
+            "goodsDetail.confirmation.title": [
+              "reviewPurchaseSetup"
+            ],
+            "goodsDetail.confirmation.body": [
+              "reviewPurchaseSetup"
+            ],
+            "goodsDetail.confirmation.confirm": [
+              "reviewPurchaseSetup"
+            ],
+            "goodsDetail.confirmation.cancel": [
+              "reviewPurchaseSetup"
+            ],
+            "goodsDetail.confirmation.close": [
+              "reviewPurchaseSetup"
+            ]
+          },
+          "data": {
+            "contract": "Goods",
+            "many": false,
+            "map": {
+              "name": "name",
+              "maker": "maker"
+            }
+          }
+        },
+        {
+          "id": "save",
+          "copy": {
+            "goodsDetail.save.status": {
+              "when": [
+                "goodsDetailSavingPiece"
+              ],
+              "as": "announce"
+            },
+            "goodsDetail.save.outcome": {
+              "when": [
+                "goodsDetailPieceSaved"
+              ],
+              "as": "announce"
+            },
+            "goodsDetail.save.recovery": [
+              "goodsDetailSaveFailed"
+            ]
+          },
+          "on": [
+            {
+              "event": "savePieceEvent",
+              "axis": "asyncFeedback"
+            }
+          ]
+        }
+      ],
+      "states": [
+        "goodsDetailReady",
+        "goodsDetailLoading",
+        "goodsDetailEmpty",
+        "goodsDetailFailed",
+        "goodsDetailLongContent",
+        "goodsDetailSoldOut",
+        "goodsDetailMadeToOrder",
+        "goodsDetailSavingPiece",
+        "goodsDetailPieceSaved",
+        "goodsDetailSaveFailed"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "goodsDetail.title": "always",
+        "goodsDetail.documentTitle": {
+          "when": "always",
+          "as": "title"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
+        "nav.shop": "always",
+        "nav.orders": "always",
+        "nav.saved": "always",
+        "nav.makerThread": "always",
+        "nav.settings": "always",
+        "goodsDetail.buy": [
+          "goodsDetailReady",
+          "goodsDetailLongContent",
+          "goodsDetailMadeToOrder",
+          "goodsDetailPieceSaved",
+          "goodsDetailSaveFailed"
+        ],
+        "goodsDetail.save": [
+          "goodsDetailReady",
+          "goodsDetailLongContent",
+          "goodsDetailSoldOut",
+          "goodsDetailMadeToOrder",
+          "goodsDetailSaveFailed"
+        ],
+        "goodsDetail.messageMaker": [
+          "goodsDetailReady",
+          "goodsDetailLoading",
+          "goodsDetailLongContent",
+          "goodsDetailSoldOut",
+          "goodsDetailMadeToOrder",
+          "goodsDetailSavingPiece",
+          "goodsDetailPieceSaved",
+          "goodsDetailSaveFailed"
+        ],
+        "goodsDetail.summary": "always",
+        "goodsDetail.shippingPolicy": "always",
+        "goodsDetail.returnPolicy": "always",
+        "goodsDetail.priceUnit": [
+          "goodsDetailReady",
+          "goodsDetailLoading",
+          "goodsDetailLongContent",
+          "goodsDetailSoldOut",
+          "goodsDetailMadeToOrder",
+          "goodsDetailSavingPiece",
+          "goodsDetailPieceSaved",
+          "goodsDetailSaveFailed"
+        ],
+        "goodsDetail.backToResults": "always",
+        "goodsDetail.availability.soldOut": [
+          "goodsDetailSoldOut"
+        ],
+        "goodsDetail.availability.madeToOrder": [
+          "goodsDetailMadeToOrder"
+        ],
+        "goodsDetail.unavailable.title": [
+          "goodsDetailEmpty"
+        ],
+        "goodsDetail.unavailable.action": [
+          "goodsDetailEmpty"
+        ],
+        "goodsDetail.recovery.heading": [
+          "goodsDetailFailed"
+        ],
+        "goodsDetail.recovery.detail": [
+          "goodsDetailFailed"
+        ],
+        "goodsDetail.recovery.action": [
+          "goodsDetailFailed"
+        ]
+      },
+      "setups": [
+        {
+          "id": "reviewPurchaseSetup",
+          "label": "Review purchase",
+          "event": "reviewPurchaseEvent",
+          "state": "goodsDetailReady"
+        }
+      ]
+    },
+    {
+      "id": "checkout",
+      "question": "Are the piece, delivery address, selected card and total correct, and has this payment actually been accepted?",
+      "route": "/checkout/:order",
+      "slots": [
+        {
+          "id": "summary",
+          "data": {
+            "contract": "Goods",
+            "many": false,
+            "map": {
+              "title": "name",
+              "maker": "maker",
+              "price": "price",
+              "image": "image",
+              "imageAlt": "imageAlt"
+            }
+          },
+          "copy": {
+            "checkout.summary": "always"
+          }
+        },
+        {
+          "id": "total",
+          "data": {
+            "contract": "Order",
+            "many": false,
+            "map": {
+              "reference": "reference",
+              "total": "total",
+              "deliveryCost": "deliveryCost",
+              "giftWrapCost": "giftWrapCost",
+              "maker": "maker",
+              "subtotal": "subtotal"
+            }
+          },
+          "copy": {
+            "checkout.subtotal": "always",
+            "checkout.deliveryCost": "always",
+            "checkout.giftWrapCost": "always",
+            "checkout.total": "always"
+          }
+        },
+        {
+          "id": "details",
+          "data": {
+            "contract": "Checkout",
+            "many": false,
+            "map": {
+              "recipientName": "recipientName",
+              "addressText": "addressText",
+              "email": "email",
+              "delivery": "delivery",
+              "giftWrap": "giftWrap",
+              "trackingUpdates": "trackingUpdates"
+            }
+          },
+          "copy": {
+            "checkout.recipient.label": [
+              "checkoutEditable",
+              "checkoutPaying",
+              "checkoutDeclined",
+              "checkoutUnknown",
+              "checkoutChecking",
+              "checkoutLongContent"
+            ],
+            "checkout.address.placeholder": [
+              "checkoutEditable"
+            ],
+            "checkout.delivery.label": [
+              "checkoutEditable",
+              "checkoutPaying",
+              "checkoutDeclined",
+              "checkoutUnknown",
+              "checkoutChecking",
+              "checkoutLongContent"
+            ],
+            "checkout.delivery.standard": [
+              "checkoutEditable",
+              "checkoutPaying",
+              "checkoutDeclined",
+              "checkoutUnknown",
+              "checkoutChecking",
+              "checkoutLongContent",
+              "deliveryChoicesSetup"
+            ],
+            "checkout.delivery.express": [
+              "deliveryChoicesSetup"
+            ],
+            "checkout.delivery.collection": [
+              "deliveryChoicesSetup"
+            ],
+            "checkout.giftWrap.label": [
+              "checkoutEditable",
+              "checkoutPaying",
+              "checkoutDeclined",
+              "checkoutUnknown",
+              "checkoutChecking",
+              "checkoutLongContent"
+            ],
+            "checkout.trackingUpdates.label": [
+              "checkoutEditable",
+              "checkoutPaying",
+              "checkoutDeclined",
+              "checkoutUnknown",
+              "checkoutChecking",
+              "checkoutLongContent"
+            ],
+            "checkout.recipient.placeholder": [
+              "checkoutEditable"
+            ],
+            "checkout.address.label": [
+              "checkoutEditable",
+              "checkoutPaying",
+              "checkoutDeclined",
+              "checkoutUnknown",
+              "checkoutChecking",
+              "checkoutLongContent"
+            ],
+            "checkout.email.label": [
+              "checkoutEditable",
+              "checkoutPaying",
+              "checkoutDeclined",
+              "checkoutUnknown",
+              "checkoutChecking",
+              "checkoutLongContent"
+            ],
+            "checkout.email.placeholder": [
+              "checkoutEditable"
+            ]
+          }
+        },
+        {
+          "id": "payment",
+          "data": {
+            "contract": "Checkout",
+            "many": false,
+            "map": {
+              "lastFour": "paymentLastFour",
+              "attemptReference": "attemptReference"
+            }
+          },
+          "copy": {
+            "checkout.payment.label": [
+              "checkoutEditable",
+              "checkoutPaying",
+              "checkoutDeclined",
+              "checkoutUnknown",
+              "checkoutChecking",
+              "checkoutLongContent"
+            ],
+            "checkout.payment.card": [
+              "checkoutEditable",
+              "checkoutPaying",
+              "checkoutDeclined",
+              "checkoutUnknown",
+              "checkoutChecking",
+              "checkoutLongContent"
+            ],
+            "checkout.payment.change": [
+              "checkoutEditable",
+              "checkoutDeclined",
+              "checkoutLongContent"
+            ]
+          }
+        },
+        {
+          "id": "commit",
+          "copy": {
+            "checkout.payAmount": [
+              "checkoutEditable",
+              "checkoutDeclined",
+              "checkoutLongContent"
+            ],
+            "checkout.back": [
+              "checkoutEditable",
+              "checkoutDeclined",
+              "checkoutLongContent"
+            ],
+            "checkout.paid.action": [
+              "checkoutPaid"
+            ]
+          },
+          "on": [
+            {
+              "event": "payForPieceEvent",
+              "axis": "asyncFeedback"
+            }
+          ],
+          "data": {
+            "contract": "Order",
+            "many": false,
+            "map": {
+              "total": "total"
+            }
+          }
+        },
+        {
+          "id": "recovery",
+          "copy": {
+            "checkout.declined.title": [
+              "checkoutDeclined"
+            ],
+            "checkout.declined.body": [
+              "checkoutDeclined"
+            ],
+            "checkout.declined.action": [
+              "checkoutDeclined"
+            ],
+            "checkout.unknown.title": [
+              "checkoutUnknown"
+            ],
+            "checkout.unknown.body": [
+              "checkoutUnknown"
+            ],
+            "checkout.unknown.action": [
+              "checkoutUnknown"
+            ],
+            "checkout.invalid": [
+              "checkoutInvalidSetup"
+            ]
+          },
+          "on": [
+            {
+              "event": "checkPaymentEvent",
+              "axis": "asyncFeedback"
+            }
+          ]
+        },
+        {
+          "id": "state",
+          "copy": {
+            "checkout.status.paying": {
+              "when": [
+                "checkoutPaying"
+              ],
+              "as": "announce"
+            },
+            "checkout.status.checking": {
+              "when": [
+                "checkoutChecking"
+              ],
+              "as": "announce"
+            },
+            "checkout.paid.title": [
+              "checkoutPaid"
+            ],
+            "checkout.paid.body": [
+              "checkoutPaid"
+            ]
+          },
+          "data": {
+            "contract": "Order",
+            "many": false,
+            "map": {
+              "reference": "reference",
+              "maker": "maker"
+            }
+          }
+        }
+      ],
+      "states": [
+        "checkoutEditable",
+        "checkoutPaying",
+        "checkoutDeclined",
+        "checkoutUnknown",
+        "checkoutChecking",
+        "checkoutPaid",
+        "checkoutLongContent"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "checkout.title": "always",
+        "checkout.documentTitle": {
+          "when": "always",
+          "as": "title"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
+        "nav.shop": "always",
+        "nav.orders": "always",
+        "nav.saved": "always",
+        "nav.makerThread": "always",
+        "nav.settings": "always",
+        "checkout.aria.payment": {
+          "when": [
+            "checkoutEditable",
+            "checkoutPaying",
+            "checkoutDeclined",
+            "checkoutUnknown",
+            "checkoutChecking",
+            "checkoutLongContent"
+          ],
+          "as": "label"
+        }
+      },
+      "binding": {
+        "record": "checkout",
+        "status": "fixed",
+        "variant": "onePage",
+        "because": "One piece, one maker and one delivery choice can be reviewed together; payment never edits the goods catalog."
+      },
+      "setups": [
+        {
+          "id": "checkoutInvalidSetup",
+          "label": "Invalid delivery details",
+          "event": "checkoutInvalidEvent",
+          "state": "checkoutEditable"
+        },
+        {
+          "id": "deliveryChoicesSetup",
+          "label": "Delivery choices open",
+          "event": "deliveryChoicesEvent",
+          "state": "checkoutEditable"
+        }
+      ]
+    },
+    {
+      "id": "orders",
+      "question": "Which orders are paid, where is each parcel, and which maker should I contact about delivery?",
+      "route": "/orders",
+      "slots": [
+        {
+          "id": "primary",
+          "data": {
+            "contract": "Order",
+            "many": true,
+            "map": {
+              "reference": "reference",
+              "title": "name",
+              "maker": "maker",
+              "status": "status",
+              "total": "total",
+              "trackingReference": "trackingReference"
+            }
+          },
+          "copy": {}
+        },
+        {
+          "id": "state",
+          "record": "empty-states",
+          "status": "proposed",
+          "variant": "actionPanel",
+          "copy": {
+            "orders.empty.title": [
+              "ordersEmpty"
+            ],
+            "orders.empty.body": [
+              "ordersEmpty"
+            ],
+            "orders.empty.action": [
+              "ordersEmpty"
+            ],
+            "orders.recovery.title": [
+              "ordersFailed"
+            ],
+            "orders.recovery.action": [
+              "ordersFailed"
+            ]
+          }
+        }
+      ],
+      "states": [
+        "ordersReady",
+        "ordersLoading",
+        "ordersEmpty",
+        "ordersFailed",
+        "ordersLongContent",
+        "ordersPlaced"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "orders.title": "always",
+        "orders.documentTitle": {
+          "when": "always",
+          "as": "title"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
+        "nav.shop": "always",
+        "nav.orders": "always",
+        "nav.saved": "always",
+        "nav.makerThread": "always",
+        "nav.settings": "always",
+        "orders.columns.reference": [
+          "ordersReady",
+          "ordersLoading",
+          "ordersLongContent",
+          "ordersPlaced"
+        ],
+        "orders.columns.piece": [
+          "ordersReady",
+          "ordersLoading",
+          "ordersLongContent",
+          "ordersPlaced"
+        ],
+        "orders.columns.maker": [
+          "ordersReady",
+          "ordersLoading",
+          "ordersLongContent",
+          "ordersPlaced"
+        ],
+        "orders.columns.status": [
+          "ordersReady",
+          "ordersLoading",
+          "ordersLongContent",
+          "ordersPlaced"
+        ],
+        "orders.columns.total": [
+          "ordersReady",
+          "ordersLoading",
+          "ordersLongContent",
+          "ordersPlaced"
+        ],
+        "orders.money": [
+          "ordersReady",
+          "ordersLoading",
+          "ordersLongContent",
+          "ordersPlaced"
+        ],
+        "orders.status.shipped": [
+          "ordersReady",
+          "ordersLoading",
+          "ordersLongContent"
+        ],
+        "orders.status.delivered": [
+          "ordersReady",
+          "ordersLoading"
+        ],
+        "orders.status.packing": [
+          "ordersReady",
+          "ordersLoading",
+          "ordersPlaced"
+        ],
+        "orders.status.delayed": [
+          "ordersReady",
+          "ordersLoading"
+        ],
+        "orders.status.refunded": [
+          "ordersReady",
+          "ordersLoading"
+        ],
+        "orders.status.awaitingPayment": [
+          "ordersReady",
+          "ordersLoading"
+        ]
+      }
+    },
+    {
+      "id": "makerThread",
+      "question": "What did this piece’s maker say about glaze, care or delivery, and has my reply been sent?",
+      "route": "/orders/:order/messages",
+      "slots": [
+        {
+          "id": "header",
+          "copy": {
+            "makerThread.title": "always"
+          }
+        },
+        {
+          "id": "primary",
+          "data": {
+            "contract": "Message",
+            "many": true,
+            "map": {
+              "author": "author",
+              "body": "text",
+              "sentAt": "sentAt",
+              "mine": "mine"
+            }
+          },
+          "copy": {}
+        },
+        {
+          "id": "composer",
+          "copy": {
+            "makerThread.composer.placeholder": [
+              "makerThreadReady",
+              "makerThreadLoading",
+              "makerThreadEmpty",
+              "makerThreadLongContent",
+              "makerThreadSent"
+            ],
+            "makerThread.send": [
+              "makerThreadReady",
+              "makerThreadLoading",
+              "makerThreadEmpty",
+              "makerThreadLongContent",
+              "makerThreadSent",
+              "makerThreadSendFailed"
+            ],
+            "makerThread.aria.send": {
+              "when": [
+                "makerThreadReady",
+                "makerThreadLoading",
+                "makerThreadEmpty",
+                "makerThreadLongContent",
+                "makerThreadSent",
+                "makerThreadSendFailed"
+              ],
+              "as": "label"
+            }
+          },
+          "on": [
+            {
+              "event": "makerThreadSendEvent",
+              "axis": "asyncFeedback"
+            }
+          ]
+        },
+        {
+          "id": "context",
+          "data": {
+            "contract": "Order",
+            "many": false,
+            "map": {
+              "reference": "reference",
+              "name": "name",
+              "maker": "maker",
+              "status": "status",
+              "total": "total"
+            }
+          },
+          "copy": {}
+        },
+        {
+          "id": "state",
+          "record": "empty-states",
+          "status": "proposed",
+          "variant": "actionPanel",
+          "copy": {
+            "makerThread.empty.title": [
+              "makerThreadEmpty"
+            ],
+            "makerThread.empty.body": [
+              "makerThreadEmpty"
+            ],
+            "makerThread.empty.action": [
+              "makerThreadEmpty"
+            ],
+            "makerThread.recovery.title": [
+              "makerThreadFailed"
+            ],
+            "makerThread.recovery.action": [
+              "makerThreadFailed"
+            ],
+            "makerThread.status.sending": {
+              "when": [
+                "makerThreadSending"
+              ],
+              "as": "announce"
+            },
+            "makerThread.status.sent": {
+              "when": [
+                "makerThreadSent"
+              ],
+              "as": "announce"
+            },
+            "makerThread.sendFailure": [
+              "makerThreadSendFailed"
+            ],
+            "makerThread.retrySend": [
+              "makerThreadSendFailed"
+            ]
+          }
+        }
+      ],
+      "states": [
+        "makerThreadReady",
+        "makerThreadLoading",
+        "makerThreadEmpty",
+        "makerThreadFailed",
+        "makerThreadLongContent",
+        "makerThreadSending",
+        "makerThreadSent",
+        "makerThreadSendFailed"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "makerThread.title": "always",
+        "makerThread.documentTitle": {
+          "when": "always",
+          "as": "title"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
+        "nav.shop": "always",
+        "nav.orders": "always",
+        "nav.saved": "always",
+        "nav.makerThread": "always",
+        "nav.settings": "always",
+        "makerThread.sentAt": [
+          "makerThreadReady",
+          "makerThreadLoading",
+          "makerThreadLongContent",
+          "makerThreadSending",
+          "makerThreadSent",
+          "makerThreadSendFailed"
+        ],
+        "makerThread.sender.you": [
+          "makerThreadReady",
+          "makerThreadLoading",
+          "makerThreadSending",
+          "makerThreadSent",
+          "makerThreadSendFailed"
+        ]
+      },
+      "binding": {
+        "record": "conversation",
+        "status": "proposed",
+        "variant": "context",
+        "because": "The mug’s order reference and maker must remain visible while discussing glazing and delivery."
+      }
+    },
+    {
+      "id": "saved",
+      "question": "Which pieces did I save, and what do their makers charge now?",
+      "route": "/saved",
+      "slots": [
+        {
+          "id": "primary",
+          "data": {
+            "contract": "Goods",
+            "many": true,
+            "map": {
+              "title": "name",
+              "price": "price",
+              "maker": "maker"
+            }
+          },
+          "copy": {}
+        },
+        {
+          "id": "state",
+          "record": "empty-states",
+          "status": "proposed",
+          "variant": "actionPanel",
+          "copy": {
+            "saved.empty.title": [
+              "savedEmpty"
+            ],
+            "saved.empty.body": [
+              "savedEmpty"
+            ],
+            "saved.empty.action": [
+              "savedEmpty"
+            ],
+            "saved.recovery.title": [
+              "savedFailed"
+            ],
+            "saved.recovery.action": [
+              "savedFailed"
+            ]
+          }
+        }
+      ],
+      "states": [
+        "savedReady",
+        "savedLoading",
+        "savedEmpty",
+        "savedFailed",
+        "savedLongContent"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "saved.title": "always",
+        "saved.documentTitle": {
+          "when": "always",
+          "as": "title"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
+        "nav.shop": "always",
+        "nav.orders": "always",
+        "nav.saved": "always",
+        "nav.makerThread": "always",
+        "nav.settings": "always"
+      }
+    },
+    {
+      "id": "settings",
+      "question": "Do I want delivery emails, gift-wrap prompts and price alerts for my saved pieces?",
+      "route": "/settings",
+      "slots": [
+        {
+          "id": "header",
+          "copy": {
+            "settings.title": "always"
+          }
+        },
+        {
+          "id": "navigation",
+          "copy": {
+            "settings.section": "always"
+          }
+        },
+        {
+          "id": "primary",
+          "copy": {
+            "settings.section": "always",
+            "settings.deliveryUpdates.label": "always",
+            "settings.currency.label": "always",
+            "settings.currency.usd": "always",
+            "settings.currency.note": "always",
+            "settings.giftWrap.label": "always",
+            "settings.savedPriceUpdates.label": "always"
+          }
+        },
+        {
+          "id": "commit",
+          "copy": {
+            "settings.save": [
+              "settingsReady",
+              "settingsSaved",
+              "settingsFailed"
+            ],
+            "settings.cancel": [
+              "settingsReady",
+              "settingsFailed"
+            ]
+          },
+          "on": [
+            {
+              "event": "savePreferencesEvent",
+              "axis": "asyncFeedback"
+            }
+          ]
+        },
+        {
+          "id": "state",
+          "copy": {
+            "settings.status.saving": {
+              "when": [
+                "settingsSaving"
+              ],
+              "as": "announce"
+            },
+            "settings.status.saved": {
+              "when": [
+                "settingsSaved"
+              ],
+              "as": "announce"
+            },
+            "settings.recovery": [
+              "settingsFailed"
+            ]
+          }
+        }
+      ],
+      "states": [
+        "settingsReady",
+        "settingsSaving",
+        "settingsSaved",
+        "settingsFailed"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "settings.title": "always",
+        "settings.documentTitle": {
+          "when": "always",
+          "as": "title"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
+        "nav.shop": "always",
+        "nav.orders": "always",
+        "nav.saved": "always",
+        "nav.makerThread": "always",
+        "nav.settings": "always"
+      },
+      "binding": {
+        "record": "settings",
+        "status": "fixed",
+        "variant": "sections",
+        "because": "Delivery emails, gift-wrap prompts and saved-price alerts are a small set of buyer preferences with one explicit save."
+      }
+    },
+    {
+      "id": "help",
+      "question": "How do separate maker parcels, returns and made-to-order cancellations work?",
+      "route": "/help/shipping",
+      "slots": [
+        {
+          "id": "primary",
+          "copy": {
+            "help.shippingPolicy": "always",
+            "help.returnPolicy": "always"
+          }
+        }
+      ],
+      "states": [
+        "helpReady"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "help.title": "always",
+        "help.documentTitle": {
+          "when": "always",
+          "as": "title"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
+        "nav.shop": "always",
+        "nav.orders": "always",
+        "nav.saved": "always",
+        "nav.makerThread": "always",
+        "nav.settings": "always"
+      }
+    },
+    {
+      "id": "landing",
+      "question": "Why buy directly from an independent maker, and where can I inspect the pieces and delivery rules?",
+      "route": "/",
+      "slots": [
+        {
+          "id": "primary",
+          "copy": {
+            "landing.action": "always",
+            "landing.secondaryAction": "always",
+            "landing.makers.eyebrow": "always",
+            "landing.makers.title": "always",
+            "landing.makers.body": "always",
+            "landing.parcels.eyebrow": "always",
+            "landing.parcels.title": "always",
+            "landing.parcels.body": "always",
+            "landing.messages.eyebrow": "always",
+            "landing.messages.title": "always",
+            "landing.messages.body": "always"
+          }
+        }
+      ],
+      "states": [
+        "landingReady"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "landing.title": "always",
+        "landing.documentTitle": {
+          "when": "always",
+          "as": "title"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
+        "landing.description": "always",
+        "landing.action": "always",
+        "landing.secondaryAction": "always",
+        "landing.footer": "always",
+        "landing.navigation.shop": "always",
+        "landing.navigation.saved": "always",
+        "landing.navigation.returns": "always",
+        "landing.navigation.messages": "always",
+        "landing.makers.eyebrow": "always",
+        "landing.makers.title": "always",
+        "landing.makers.body": "always",
+        "landing.parcels.eyebrow": "always",
+        "landing.parcels.title": "always",
+        "landing.parcels.body": "always",
+        "landing.messages.eyebrow": "always",
+        "landing.messages.title": "always",
+        "landing.messages.body": "always",
+        "landing.proof.activeMakers.value": "always",
+        "landing.proof.activeMakers.label": "always",
+        "landing.proof.makerRating.value": "always",
+        "landing.proof.makerRating.label": "always",
+        "landing.proof.deliveryDays.value": "always",
+        "landing.proof.deliveryDays.label": "always",
+        "landing.makerQuote.text": "always",
+        "landing.makerQuote.attribution": "always",
+        "landing.makerMarks.ternClay.alt": {
+          "when": "always",
+          "as": "alt"
+        },
+        "landing.makerMarks.haldene.alt": {
+          "when": "always",
+          "as": "alt"
+        },
+        "landing.makerMarks.orrinMetalworks.alt": {
+          "when": "always",
+          "as": "alt"
+        },
+        "landing.makerMarks.pressFennel.alt": {
+          "when": "always",
+          "as": "alt"
+        },
+        "landing.makerMarks.wickThistle.alt": {
+          "when": "always",
+          "as": "alt"
+        },
+        "landing.makerMarks.birchwright.alt": {
+          "when": "always",
+          "as": "alt"
+        }
+      }
+    },
+    {
+      "id": "emailOrderShipped",
+      "question": "Which maker shipped my piece, and where can I track this parcel?",
+      "route": "email:order-shipped",
+      "slots": [
+        {
+          "id": "primary",
+          "data": {
+            "contract": "Order",
+            "many": false,
+            "map": {
+              "reference": "reference",
+              "name": "name",
+              "maker": "maker",
+              "trackingReference": "trackingReference"
+            }
+          },
+          "copy": {}
+        }
+      ],
+      "states": [
+        "emailOrderShippedReady"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "emailOrderShipped.subject": {
+          "when": "always",
+          "as": "subject"
+        },
+        "emailOrderShipped.body": {
+          "when": "always",
+          "as": "body"
+        },
+        "emailOrderShipped.action": {
+          "when": "always",
+          "as": "action"
+        },
+        "emailOrderShipped.preheader": {
+          "when": "always",
+          "as": "preheader"
+        }
+      },
+      "channel": "email"
+    },
+    {
+      "id": "pushPriceChanged",
+      "question": "What is the saved piece’s new price, and can I inspect it before deciding to buy?",
+      "route": "push:saved-price-changed",
+      "slots": [
+        {
+          "id": "primary",
+          "data": {
+            "contract": "Goods",
+            "many": false,
+            "map": {
+              "name": "name",
+              "price": "price",
+              "maker": "maker"
+            }
+          },
+          "copy": {}
+        }
+      ],
+      "states": [
+        "pushPriceChangedReady"
+      ],
+      "viewports": [
+        "phone",
+        "desktop"
+      ],
+      "copy": {
+        "pushPriceChanged.title": {
+          "when": "always",
+          "as": "title"
+        },
+        "pushPriceChanged.body": {
+          "when": "always",
+          "as": "body"
+        },
+        "pushPriceChanged.action": {
+          "when": "always",
+          "as": "action"
+        }
+      },
+      "channel": "push"
+    }
+  ],
+  "files": {
+    "copy": "copy.md",
+    "fixtures": "fixtures.json"
+  }
+}

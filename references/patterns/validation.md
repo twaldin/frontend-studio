@@ -1,3 +1,15 @@
+---
+id: validation
+scale: flow
+studio: null
+slots: {"required":["form","summary","messages","values","actions","state"],"optional":["feedback"]}
+variants: [{"id":"submitErrors","label":"Submit-time summary and inline errors"},{"id":"fieldCheck","label":"Explicit field check"},{"id":"preventativeFeedback","label":"Bounded preventative feedback"}]
+states: ["pristine","editing","requested","accepted","invalid","correcting","revalidating","checkPending","checkUnavailable","crossFieldInvalid","stale","failed"]
+copy: ["summaryTitle"]
+events: ["submit","correct","check","revalidate","retry"]
+renderer: schematic
+---
+
 # Validation
 
 `id: validation` · scale: flow · studio: no studio step · references checked: 2026-10-08

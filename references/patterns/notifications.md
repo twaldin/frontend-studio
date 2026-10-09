@@ -1,3 +1,15 @@
+---
+id: notifications
+scale: component
+studio: null
+slots: {"required":[],"optional":["outcome","notice"]}
+variants: [{"id":"inline","label":"Inline"},{"id":"toast","label":"Toast"},{"id":"banner","label":"Banner"},{"id":"notificationCenter","label":"Notification center"}]
+states: ["visible","unread","read","pending","resolved","dismissed","failed","expired"]
+copy: ["outcome"]
+events: ["notify","read","act","resolve","dismiss","expire"]
+renderer: variants
+---
+
 # Notifications
 
 `id: notifications` · `scale: component` · `studio: no studio step` · `references checked: 2026-10-08`

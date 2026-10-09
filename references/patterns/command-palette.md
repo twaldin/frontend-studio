@@ -1,3 +1,15 @@
+---
+id: command-palette
+scale: component
+studio: null
+slots: {"required":[],"optional":["commands"]}
+variants: [{"id":"flatSearch","label":"Flat command search"},{"id":"scoped","label":"Scoped palette"},{"id":"preview","label":"Search with preview"}]
+states: ["closed","open","idle","results","searching","noMatches","failed","pending","denied","unavailable"]
+copy: ["query"]
+events: ["open","query","select","execute","changeScope","close"]
+renderer: schematic
+---
+
 # Command palette
 
 `id: command-palette` · `scale: component` · `studio: no studio step` · `references checked: 2026-10-08`

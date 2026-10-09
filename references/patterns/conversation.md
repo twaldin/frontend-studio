@@ -1,3 +1,15 @@
+---
+id: conversation
+scale: surface
+studio: conversationLayout
+slots: {"required":["header","primary","composer","state"],"optional":["attachments","replies","navigation","timestamps","stop","context","actions","confirmation","outcome"]}
+variants: [{"id":"bubbles","label":"Bubbles"},{"id":"transcript","label":"Transcript"},{"id":"channel","label":"Channel"},{"id":"context","label":"With context"}]
+states: ["loading","empty","populated","partial","denied","failed","draft","sending","sent","unread","queued","streaming","awaitingInput","stopped","completed","uploadPending","uploadFailed","reconnecting"]
+copy: ["composer","send"]
+events: ["send","receive","retry","stop","upload","removeAttachment","reconnect"]
+renderer: variants
+---
+
 # Conversation
 
 `id: conversation` · `scale: surface` · `studio: conversationLayout` · `references checked: 2026-10-08`
@@ -13,6 +25,8 @@ Use for genuine turn-taking or channel communication. Do not disguise a determin
 ## Structure and slots
 
 Required: `header` identifies participants/thread; `primary` is an ordered message history with author and delivery status; `composer` has labeled input and send action; `state` explains loading, no messages, denied and failure. Optional: attachment controls, reply references, thread navigation, timestamps, response stop control and `context` about the discussed object. Bind support flow → conversation → `context` to the real order/file; bind `composer` pending to async-progress. Do not invent a context object just to fill the panel.
+
+Optional task-level `confirmation` and `outcome` placements support actual consequential thread actions and their acknowledged results. Bind a delete/leave decision to dialogs-and-layers and a share/completion result to notifications only when those capabilities exist; they are child placements, not nested message regions.
 
 ## Variants
 

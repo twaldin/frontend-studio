@@ -1,3 +1,15 @@
+---
+id: theme-transition
+scale: interaction
+studio: themeMotion
+slots: {"required":[],"optional":["appearance"]}
+variants: [{"id":"cut","label":"Cut"},{"id":"fade","label":"Crossfade"},{"id":"circle","label":"Circular reveal"},{"id":"wipe","label":"Wipe"}]
+states: ["current","selected","applied","persisted","failed","system"]
+copy: ["theme"]
+events: ["selectTheme","systemThemeChange","persist","interrupt"]
+renderer: variants
+---
+
 # Theme transition
 
 `id: theme-transition` · `scale: interaction` · `studio: themeMotion` · `references checked: 2026-10-08`

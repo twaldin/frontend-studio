@@ -1,3 +1,16 @@
+---
+id: browse-inspect-act
+scale: flow
+studio: commerceLayout
+slots: {"required":["collection","selection","detail","actions","return","outcome"],"optional":["compare","save","media","facts"]}
+variants: [{"id":"grid","label":"Grid"},{"id":"list","label":"List"},{"id":"shelves","label":"Shelves"},{"id":"split","label":"List and detail"}]
+states: ["loading","populated","empty","noMatches","failed","selecting","detailLoading","ready","unavailable","deleted","denied","available","acting","succeeded","changedTerms","outcomeUnknown","removed","bulkSelected"]
+copy: ["inspect","backToResults"]
+events: ["select","inspect","act","return","filter"]
+renderer: schematic
+sharesVariants: storefront
+---
+
 # Browse, inspect, act
 
 `id: browse-inspect-act` · scale: flow · studio: `commerceLayout` (“List and detail” specimen; variant names match the surface options) · references checked: 2026-10-08 (new primary guidance); 2026-10-06 (inherited link-only inspiration)

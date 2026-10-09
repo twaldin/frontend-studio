@@ -1,3 +1,15 @@
+---
+id: error-pages
+scale: flow
+studio: null
+slots: {"required":["identity","header","facts","actions"],"optional":["dataStatus","support","reference","search","state"]}
+variants: [{"id":"missingDestination","label":"Missing destination"},{"id":"serviceFailure","label":"Unexpected service failure"},{"id":"deliberateUnavailability","label":"Deliberate unavailability"}]
+states: ["missing","failed","unavailable","saved","partiallySaved","notSaved","saveStatusUnknown","checking","recovered","resumed","permanentlyClosed"]
+copy: ["explanation"]
+events: ["retry","checkStatus","resume","findContent","contact"]
+renderer: schematic
+---
+
 # Error pages
 
 `id: error-pages` · scale: flow · studio: no studio step · references checked: 2026-10-08

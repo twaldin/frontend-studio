@@ -1,3 +1,15 @@
+---
+id: content-swap
+scale: interaction
+studio: contentSwap
+slots: {"required":[],"optional":["primary","detail","results"]}
+variants: [{"id":"cut","label":"Cut"},{"id":"crossfade","label":"Crossfade"},{"id":"slide","label":"Slide by direction"},{"id":"resize","label":"Resize and settle"}]
+states: ["ready","requested","loading","empty","failed","stale","settled"]
+copy: []
+events: ["select","query","replace","interrupt"]
+renderer: variants
+---
+
 # Content swap
 
 `id: content-swap` · `scale: interaction` · `studio: contentSwap` · `references checked: 2026-10-08`

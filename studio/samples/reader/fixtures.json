@@ -1,0 +1,513 @@
+{
+  "Lesson": {
+    "populated": [
+      {
+        "title": "Greetings at the stall",
+        "duration": 6,
+        "newWords": 8,
+        "xp": 20,
+        "progressPercent": 100,
+        "kind": "dialogue",
+        "unitNumber": 3,
+        "unitTitle": "At the market"
+      },
+      {
+        "title": "Numbers and prices",
+        "duration": 5,
+        "newWords": 10,
+        "xp": 20,
+        "progressPercent": 100,
+        "kind": "vocabulary",
+        "unitNumber": 3,
+        "unitTitle": "At the market"
+      },
+      {
+        "title": "Asking for what you want",
+        "duration": 7,
+        "newWords": 9,
+        "xp": 20,
+        "progressPercent": 100,
+        "kind": "speaking",
+        "unitNumber": 3,
+        "unitTitle": "At the market"
+      },
+      {
+        "title": "Weights and quantities",
+        "duration": 7,
+        "newWords": 9,
+        "xp": 20,
+        "progressPercent": 40,
+        "kind": "listening",
+        "unitNumber": 3,
+        "unitTitle": "At the market"
+      },
+      {
+        "title": "Haggling politely",
+        "duration": 8,
+        "newWords": 11,
+        "xp": 20,
+        "progressPercent": 0,
+        "kind": "dialogue",
+        "unitNumber": 3,
+        "unitTitle": "At the market"
+      },
+      {
+        "title": "Course checkpoint",
+        "duration": 10,
+        "newWords": 20,
+        "xp": 50,
+        "progressPercent": 0,
+        "kind": "quiz",
+        "unitNumber": 3,
+        "unitTitle": "At the market"
+      },
+      {
+        "title": "Buying a tram ticket",
+        "duration": 6,
+        "newWords": 8,
+        "xp": 20,
+        "progressPercent": 0,
+        "kind": "dialogue",
+        "unitNumber": 4,
+        "unitTitle": "Getting around"
+      },
+      {
+        "title": "Asking for directions",
+        "duration": 7,
+        "newWords": 12,
+        "xp": 20,
+        "progressPercent": 0,
+        "kind": "speaking",
+        "unitNumber": 4,
+        "unitTitle": "Getting around"
+      },
+      {
+        "title": "Reading the timetable",
+        "duration": 6,
+        "newWords": 9,
+        "xp": 20,
+        "progressPercent": 0,
+        "kind": "reading",
+        "unitNumber": 4,
+        "unitTitle": "Getting around"
+      },
+      {
+        "title": "Course checkpoint",
+        "duration": 10,
+        "newWords": 20,
+        "xp": 50,
+        "progressPercent": 0,
+        "kind": "quiz",
+        "unitNumber": 4,
+        "unitTitle": "Getting around"
+      }
+    ],
+    "one": [
+      {
+        "title": "Weights and quantities",
+        "duration": 7,
+        "newWords": 9,
+        "xp": 20,
+        "progressPercent": 40,
+        "kind": "listening",
+        "unitNumber": 3,
+        "unitTitle": "At the market"
+      }
+    ],
+    "long": [
+      {
+        "title": "Choosing the right quantity when shopping for a large family meal",
+        "duration": 7,
+        "newWords": 9,
+        "xp": 20,
+        "progressPercent": 40,
+        "kind": "listening",
+        "unitNumber": 3,
+        "unitTitle": "At the neighborhood market before the autumn harvest celebration"
+      }
+    ],
+    "none": [],
+    "completed": [
+      {
+        "title": "Weights and quantities",
+        "duration": 7,
+        "newWords": 9,
+        "xp": 20,
+        "progressPercent": 100,
+        "kind": "listening",
+        "unitNumber": 3,
+        "unitTitle": "At the market"
+      }
+    ],
+    "listening": [
+      {
+        "title": "Weights and quantities",
+        "duration": 7,
+        "newWords": 9,
+        "xp": 20,
+        "progressPercent": 40,
+        "kind": "listening",
+        "unitNumber": 3,
+        "unitTitle": "At the market"
+      }
+    ],
+    "updated": [
+      {
+        "title": "Greetings at the stall",
+        "duration": 6,
+        "newWords": 8,
+        "xp": 20,
+        "progressPercent": 100,
+        "kind": "dialogue",
+        "unitNumber": 3,
+        "unitTitle": "At the market"
+      },
+      {
+        "title": "Numbers and prices",
+        "duration": 5,
+        "newWords": 10,
+        "xp": 20,
+        "progressPercent": 100,
+        "kind": "vocabulary",
+        "unitNumber": 3,
+        "unitTitle": "At the market"
+      },
+      {
+        "title": "Asking for what you want",
+        "duration": 7,
+        "newWords": 9,
+        "xp": 20,
+        "progressPercent": 100,
+        "kind": "speaking",
+        "unitNumber": 3,
+        "unitTitle": "At the market"
+      },
+      {
+        "title": "Weights and quantities",
+        "duration": 7,
+        "newWords": 9,
+        "xp": 20,
+        "progressPercent": 100,
+        "kind": "listening",
+        "unitNumber": 3,
+        "unitTitle": "At the market"
+      },
+      {
+        "title": "Haggling politely",
+        "duration": 8,
+        "newWords": 11,
+        "xp": 20,
+        "progressPercent": 0,
+        "kind": "dialogue",
+        "unitNumber": 3,
+        "unitTitle": "At the market"
+      },
+      {
+        "title": "Course checkpoint",
+        "duration": 10,
+        "newWords": 20,
+        "xp": 50,
+        "progressPercent": 0,
+        "kind": "quiz",
+        "unitNumber": 3,
+        "unitTitle": "At the market"
+      },
+      {
+        "title": "Buying a tram ticket",
+        "duration": 6,
+        "newWords": 8,
+        "xp": 20,
+        "progressPercent": 0,
+        "kind": "dialogue",
+        "unitNumber": 4,
+        "unitTitle": "Getting around"
+      },
+      {
+        "title": "Asking for directions",
+        "duration": 7,
+        "newWords": 12,
+        "xp": 20,
+        "progressPercent": 0,
+        "kind": "speaking",
+        "unitNumber": 4,
+        "unitTitle": "Getting around"
+      },
+      {
+        "title": "Reading the timetable",
+        "duration": 6,
+        "newWords": 9,
+        "xp": 20,
+        "progressPercent": 0,
+        "kind": "reading",
+        "unitNumber": 4,
+        "unitTitle": "Getting around"
+      },
+      {
+        "title": "Course checkpoint",
+        "duration": 10,
+        "newWords": 20,
+        "xp": 50,
+        "progressPercent": 0,
+        "kind": "quiz",
+        "unitNumber": 4,
+        "unitTitle": "Getting around"
+      }
+    ]
+  },
+  "Word": {
+    "populated": [
+      {
+        "word": "desculpe",
+        "meaning": "sorry, excuse me",
+        "strength": "strong",
+        "reviews": 18,
+        "nextReviewAt": "2026-10-14T19:00:00Z",
+        "daysUntilReview": 6
+      },
+      {
+        "word": "esquina",
+        "meaning": "street corner",
+        "strength": "fading",
+        "reviews": 7,
+        "nextReviewAt": "2026-10-08T19:00:00Z",
+        "daysUntilReview": 0
+      },
+      {
+        "word": "emprestar",
+        "meaning": "to lend",
+        "strength": "weak",
+        "reviews": 3,
+        "nextReviewAt": "2026-10-08T19:00:00Z",
+        "daysUntilReview": 0
+      },
+      {
+        "word": "devagar",
+        "meaning": "slowly",
+        "strength": "strong",
+        "reviews": 14,
+        "nextReviewAt": "2026-10-12T19:00:00Z",
+        "daysUntilReview": 4
+      },
+      {
+        "word": "troco",
+        "meaning": "change (money)",
+        "strength": "new",
+        "reviews": 1,
+        "nextReviewAt": "2026-10-09T19:00:00Z",
+        "daysUntilReview": 1
+      },
+      {
+        "word": "balcão",
+        "meaning": "counter",
+        "strength": "strong",
+        "reviews": 11,
+        "nextReviewAt": "2026-10-17T19:00:00Z",
+        "daysUntilReview": 9
+      }
+    ],
+    "one": [
+      {
+        "word": "desculpe",
+        "meaning": "sorry, excuse me",
+        "strength": "strong",
+        "reviews": 18,
+        "nextReviewAt": "2026-10-14T19:00:00Z",
+        "daysUntilReview": 6
+      }
+    ],
+    "long": [
+      {
+        "word": "emprestar alguma coisa a alguém por um curto período",
+        "meaning": "To lend something to another person with the understanding that it will be returned after the agreed period, rather than given away permanently.",
+        "strength": "weak",
+        "reviews": 3,
+        "nextReviewAt": "2026-10-08T19:00:00Z",
+        "daysUntilReview": 0
+      }
+    ],
+    "none": [],
+    "due": [
+      {
+        "word": "esquina",
+        "meaning": "street corner",
+        "strength": "fading",
+        "reviews": 7,
+        "nextReviewAt": "2026-10-08T19:00:00Z",
+        "daysUntilReview": 0
+      },
+      {
+        "word": "emprestar",
+        "meaning": "to lend",
+        "strength": "weak",
+        "reviews": 3,
+        "nextReviewAt": "2026-10-08T19:00:00Z",
+        "daysUntilReview": 0
+      }
+    ],
+    "reviewed": [
+      {
+        "word": "esquina",
+        "meaning": "street corner",
+        "strength": "strong",
+        "reviews": 8,
+        "nextReviewAt": "2026-10-12T19:00:00Z",
+        "daysUntilReview": 4
+      },
+      {
+        "word": "emprestar",
+        "meaning": "to lend",
+        "strength": "strong",
+        "reviews": 4,
+        "nextReviewAt": "2026-10-12T19:00:00Z",
+        "daysUntilReview": 4
+      }
+    ]
+  },
+  "Story": {
+    "populated": [
+      {
+        "title": "The baker who never sleeps",
+        "body": "Rosa opens the padaria at four in the morning, long before the street wakes up. By six the first loaves are cooling on the counter, and the neighbors start knocking on the window.",
+        "sectionNumber": 1,
+        "sectionCount": 2,
+        "level": "a2",
+        "readingProgress": 0.5,
+        "translation": "Rosa abre a padaria às quatro da manhã, muito antes de a rua acordar. Às seis, os primeiros pães esfriam no balcão e os vizinhos começam a bater na janela."
+      },
+      {
+        "title": "The baker who never sleeps",
+        "body": "Rosa says the dough decides when the bread is ready. All she does is wait, and she has had thirty years of practice.",
+        "sectionNumber": 2,
+        "sectionCount": 2,
+        "level": "a2",
+        "readingProgress": 0.5,
+        "translation": "Rosa diz que a massa decide quando o pão está pronto. Ela só espera, depois de trinta anos de prática."
+      }
+    ],
+    "one": [
+      {
+        "title": "The baker who never sleeps",
+        "body": "Rosa opens the padaria at four in the morning, long before the street wakes up. By six the first loaves are cooling on the counter, and the neighbors start knocking on the window.",
+        "sectionNumber": 1,
+        "sectionCount": 2,
+        "level": "a2",
+        "readingProgress": 0.5,
+        "translation": "Rosa abre a padaria às quatro da manhã, muito antes de a rua acordar. Às seis, os primeiros pães esfriam no balcão e os vizinhos começam a bater na janela."
+      }
+    ],
+    "long": [
+      {
+        "title": "The baker who never sleeps before the first tram crosses the square",
+        "body": "Rosa opens the padaria at four in the morning, while the street lamps still shine on the empty square. She measures the flour, folds the dough and waits for the oven to warm. Her neighbor brings oranges from the market, and together they prepare breakfast for the tram drivers who will arrive before sunrise. Rosa knows each customer by name, but today a traveler asks for a loaf she has not baked in years.",
+        "sectionNumber": 1,
+        "sectionCount": 2,
+        "level": "a2",
+        "readingProgress": 0.5,
+        "translation": "Rosa abre a padaria às quatro da manhã, muito antes de a rua acordar. Às seis, os primeiros pães esfriam no balcão e os vizinhos começam a bater na janela."
+      }
+    ],
+    "none": [],
+    "completed": [
+      {
+        "title": "The baker who never sleeps",
+        "body": "Rosa says the dough decides when the bread is ready. All she does is wait, and she has had thirty years of practice.",
+        "sectionNumber": 2,
+        "sectionCount": 2,
+        "level": "a2",
+        "readingProgress": 1,
+        "translation": "Rosa diz que a massa decide quando o pão está pronto. Ela só espera, depois de trinta anos de prática."
+      }
+    ]
+  },
+  "PracticeTurn": {
+    "populated": [
+      {
+        "text": "Bom dia! O que deseja comprar hoje?",
+        "speaker": "merchant",
+        "sentAt": "2026-10-08T09:14:00Z"
+      },
+      {
+        "text": "Eu quero dois quilos de laranjas, por favor.",
+        "speaker": "learner",
+        "sentAt": "2026-10-08T09:15:00Z"
+      },
+      {
+        "text": "Muito bem. Dois quilos de laranjas custam quatro euros. Deseja mais alguma coisa?",
+        "speaker": "merchant",
+        "sentAt": "2026-10-08T09:16:00Z"
+      },
+      {
+        "text": "Não, obrigado. Só isso.",
+        "speaker": "learner",
+        "sentAt": "2026-10-08T09:17:00Z"
+      }
+    ],
+    "one": [
+      {
+        "text": "Bom dia! O que deseja comprar hoje?",
+        "speaker": "merchant",
+        "sentAt": "2026-10-08T09:14:00Z"
+      }
+    ],
+    "long": [
+      {
+        "text": "Bom dia! As laranjas chegaram esta manhã e estão muito doces. Se quiser preparar sumo para toda a família, recomendo estas pequenas. Quantos quilos deseja levar, e precisa também de um saco para transportar as compras até casa?",
+        "speaker": "merchant",
+        "sentAt": "2026-10-08T09:14:00Z"
+      }
+    ],
+    "none": []
+  },
+  "WordList": {
+    "populated": [
+      {
+        "name": "Market vocabulary",
+        "description": "Words from the stalls around the town square.",
+        "wordCount": 6
+      },
+      {
+        "name": "Getting around",
+        "description": "Tram tickets, directions and station conversations.",
+        "wordCount": 12
+      }
+    ],
+    "one": [
+      {
+        "name": "Market vocabulary",
+        "description": "Words from the stalls around the town square.",
+        "wordCount": 6
+      }
+    ],
+    "long": [
+      {
+        "name": "Everyday conversations with stallholders at the neighborhood market",
+        "description": "The words I keep needing when I ask how much fruit costs, explain the quantity I want, request a bag, and check the change before leaving the stall.",
+        "wordCount": 36
+      }
+    ],
+    "none": []
+  },
+  "LearningSummary": {
+    "populated": [
+      {
+        "completedLessons": 4,
+        "newWords": 27,
+        "earnedXp": 80,
+        "dueCount": 2,
+        "periodStart": "2026-10-01T00:00:00Z",
+        "periodEnd": "2026-10-08T00:00:00Z"
+      }
+    ],
+    "one": [
+      {
+        "completedLessons": 4,
+        "newWords": 27,
+        "earnedXp": 80,
+        "dueCount": 2,
+        "periodStart": "2026-10-01T00:00:00Z",
+        "periodEnd": "2026-10-08T00:00:00Z"
+      }
+    ],
+    "none": []
+  }
+}

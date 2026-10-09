@@ -13,9 +13,19 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.14
       - run: bun install --frozen-lockfile
       - run: bun run typecheck
       - run: bun run build
+      - name: pattern headers and generated index
+        run: bun run patterns:index --check
+      - name: generated product JSON Schema
+        run: bun run model:schema --check
+      - name: product model behavior tests
+        run: bun run test:model
+      - name: every sample product is valid
+        run: bun run model:check --samples
       - name: decision-tree.md matches steps.ts
         run: |
           bun run tree:md

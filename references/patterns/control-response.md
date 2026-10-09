@@ -1,3 +1,15 @@
+---
+id: control-response
+scale: interaction
+studio: controlResponse
+slots: {"required":[],"optional":["actions","composer","commit"]}
+variants: [{"id":"tone","label":"Tone"},{"id":"press","label":"Press in"},{"id":"sink","label":"Sink"},{"id":"ink","label":"Ink"}]
+states: ["rest","held","disabled","readOnly","pending"]
+copy: []
+events: ["press","release","cancel"]
+renderer: variants
+---
+
 # Control response
 
 `id: control-response` · `scale: interaction` · `studio: controlResponse` · `references checked: 2026-10-08`
