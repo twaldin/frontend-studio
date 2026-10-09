@@ -6,7 +6,7 @@
         "duration": 6,
         "newWords": 8,
         "xp": 20,
-        "progress": 1,
+        "progressPercent": 100,
         "kind": "dialogue",
         "unitNumber": 3,
         "unitTitle": "At the market"
@@ -16,7 +16,7 @@
         "duration": 5,
         "newWords": 10,
         "xp": 20,
-        "progress": 1,
+        "progressPercent": 100,
         "kind": "vocabulary",
         "unitNumber": 3,
         "unitTitle": "At the market"
@@ -26,7 +26,7 @@
         "duration": 7,
         "newWords": 9,
         "xp": 20,
-        "progress": 1,
+        "progressPercent": 100,
         "kind": "speaking",
         "unitNumber": 3,
         "unitTitle": "At the market"
@@ -36,7 +36,7 @@
         "duration": 7,
         "newWords": 9,
         "xp": 20,
-        "progress": 0.4,
+        "progressPercent": 40,
         "kind": "listening",
         "unitNumber": 3,
         "unitTitle": "At the market"
@@ -46,7 +46,7 @@
         "duration": 8,
         "newWords": 11,
         "xp": 20,
-        "progress": 0,
+        "progressPercent": 0,
         "kind": "dialogue",
         "unitNumber": 3,
         "unitTitle": "At the market"
@@ -56,7 +56,7 @@
         "duration": 10,
         "newWords": 20,
         "xp": 50,
-        "progress": 0,
+        "progressPercent": 0,
         "kind": "quiz",
         "unitNumber": 3,
         "unitTitle": "At the market"
@@ -66,7 +66,7 @@
         "duration": 6,
         "newWords": 8,
         "xp": 20,
-        "progress": 0,
+        "progressPercent": 0,
         "kind": "dialogue",
         "unitNumber": 4,
         "unitTitle": "Getting around"
@@ -76,7 +76,7 @@
         "duration": 7,
         "newWords": 12,
         "xp": 20,
-        "progress": 0,
+        "progressPercent": 0,
         "kind": "speaking",
         "unitNumber": 4,
         "unitTitle": "Getting around"
@@ -86,7 +86,7 @@
         "duration": 6,
         "newWords": 9,
         "xp": 20,
-        "progress": 0,
+        "progressPercent": 0,
         "kind": "reading",
         "unitNumber": 4,
         "unitTitle": "Getting around"
@@ -96,7 +96,7 @@
         "duration": 10,
         "newWords": 20,
         "xp": 50,
-        "progress": 0,
+        "progressPercent": 0,
         "kind": "quiz",
         "unitNumber": 4,
         "unitTitle": "Getting around"
@@ -108,7 +108,7 @@
         "duration": 7,
         "newWords": 9,
         "xp": 20,
-        "progress": 0.4,
+        "progressPercent": 40,
         "kind": "listening",
         "unitNumber": 3,
         "unitTitle": "At the market"
@@ -120,7 +120,7 @@
         "duration": 7,
         "newWords": 9,
         "xp": 20,
-        "progress": 0.4,
+        "progressPercent": 40,
         "kind": "listening",
         "unitNumber": 3,
         "unitTitle": "At the neighborhood market before the autumn harvest celebration"
@@ -133,7 +133,7 @@
         "duration": 7,
         "newWords": 9,
         "xp": 20,
-        "progress": 1,
+        "progressPercent": 100,
         "kind": "listening",
         "unitNumber": 3,
         "unitTitle": "At the market"
@@ -145,7 +145,7 @@
         "duration": 7,
         "newWords": 9,
         "xp": 20,
-        "progress": 0.4,
+        "progressPercent": 40,
         "kind": "listening",
         "unitNumber": 3,
         "unitTitle": "At the market"
@@ -157,7 +157,7 @@
         "duration": 6,
         "newWords": 8,
         "xp": 20,
-        "progress": 1,
+        "progressPercent": 100,
         "kind": "dialogue",
         "unitNumber": 3,
         "unitTitle": "At the market"
@@ -167,7 +167,7 @@
         "duration": 5,
         "newWords": 10,
         "xp": 20,
-        "progress": 1,
+        "progressPercent": 100,
         "kind": "vocabulary",
         "unitNumber": 3,
         "unitTitle": "At the market"
@@ -177,7 +177,7 @@
         "duration": 7,
         "newWords": 9,
         "xp": 20,
-        "progress": 1,
+        "progressPercent": 100,
         "kind": "speaking",
         "unitNumber": 3,
         "unitTitle": "At the market"
@@ -187,7 +187,7 @@
         "duration": 7,
         "newWords": 9,
         "xp": 20,
-        "progress": 1,
+        "progressPercent": 100,
         "kind": "listening",
         "unitNumber": 3,
         "unitTitle": "At the market"
@@ -197,7 +197,7 @@
         "duration": 8,
         "newWords": 11,
         "xp": 20,
-        "progress": 0,
+        "progressPercent": 0,
         "kind": "dialogue",
         "unitNumber": 3,
         "unitTitle": "At the market"
@@ -207,7 +207,7 @@
         "duration": 10,
         "newWords": 20,
         "xp": 50,
-        "progress": 0,
+        "progressPercent": 0,
         "kind": "quiz",
         "unitNumber": 3,
         "unitTitle": "At the market"
@@ -217,7 +217,7 @@
         "duration": 6,
         "newWords": 8,
         "xp": 20,
-        "progress": 0,
+        "progressPercent": 0,
         "kind": "dialogue",
         "unitNumber": 4,
         "unitTitle": "Getting around"
@@ -227,7 +227,7 @@
         "duration": 7,
         "newWords": 12,
         "xp": 20,
-        "progress": 0,
+        "progressPercent": 0,
         "kind": "speaking",
         "unitNumber": 4,
         "unitTitle": "Getting around"
@@ -237,7 +237,7 @@
         "duration": 6,
         "newWords": 9,
         "xp": 20,
-        "progress": 0,
+        "progressPercent": 0,
         "kind": "reading",
         "unitNumber": 4,
         "unitTitle": "Getting around"
@@ -247,7 +247,7 @@
         "duration": 10,
         "newWords": 20,
         "xp": 50,
-        "progress": 0,
+        "progressPercent": 0,
         "kind": "quiz",
         "unitNumber": 4,
         "unitTitle": "Getting around"

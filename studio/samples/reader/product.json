@@ -125,7 +125,7 @@
         "duration": "number",
         "newWords": "number",
         "xp": "number",
-        "progress": "number",
+        "progressPercent": "number",
         "kind": "enum"
       },
       "typical": 10,
@@ -1118,7 +1118,7 @@
               "unitNumber": "unitNumber",
               "unitTitle": "unitTitle",
               "duration": "duration",
-              "progress": "progress",
+              "progressPercent": "progressPercent",
               "xp": "xp"
             }
           },
@@ -1335,7 +1335,7 @@
               "duration": "duration",
               "newWords": "newWords",
               "xp": "xp",
-              "progress": "progress",
+              "progressPercent": "progressPercent",
               "kind": "kind"
             }
           },

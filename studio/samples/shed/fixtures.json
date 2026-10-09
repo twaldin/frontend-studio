@@ -749,7 +749,7 @@
         "toolId": "cordless-drill-with-two-batteries"
       }
     ],
-    "active": [
+    "current": [
       {
         "reference": "R-4182",
         "toolName": "Cordless drill with two batteries",

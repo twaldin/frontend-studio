@@ -113,13 +113,13 @@ This invented product’s fixed language belongs here, including document titles
 | rentals.aria.navigation | Main navigation | rentals |
 | rentals.aria.main | Main content | rentals |
 | rentals.alt.productMark | Shed mark | rentals |
-| rentals.pickup | Pickup {pickupDate} | rentals · Active; rentals · Cancel rental confirmation; rentals · Cancellation pending; rentals · Cancelled; rentals · Cancellation failed; rentals · Long content; rentals · Rental history |
-| rentals.return | Return by {returnDate} | rentals · Active; rentals · Cancel rental confirmation; rentals · Cancellation pending; rentals · Cancelled; rentals · Cancellation failed; rentals · Long content; rentals · Rental history |
-| rentals.message | Message lender | rentals · Active; rentals · Cancel rental confirmation; rentals · Cancellation pending; rentals · Cancelled; rentals · Cancellation failed; rentals · Long content; rentals · Rental history |
-| rentals.trigger | Cancel rental | rentals · Active; rentals · Cancel rental confirmation; rentals · Cancellation failed; rentals · Long content; rentals · Rental history |
+| rentals.pickup | Pickup {pickupDate} | rentals · Upcoming and active; rentals · Cancel rental confirmation; rentals · Cancellation pending; rentals · Cancelled; rentals · Cancellation failed; rentals · Long content; rentals · Rental history |
+| rentals.return | Return by {returnDate} | rentals · Upcoming and active; rentals · Cancel rental confirmation; rentals · Cancellation pending; rentals · Cancelled; rentals · Cancellation failed; rentals · Long content; rentals · Rental history |
+| rentals.message | Message lender | rentals · Upcoming and active; rentals · Cancel rental confirmation; rentals · Cancellation pending; rentals · Cancelled; rentals · Cancellation failed; rentals · Long content; rentals · Rental history |
+| rentals.trigger | Cancel rental | rentals · Upcoming and active; rentals · Cancel rental confirmation; rentals · Cancellation failed; rentals · Long content; rentals · Rental history |
 | rentals.status.pending | Pending approval | rentals · Rental history |
-| rentals.status.approved | Approved | home · Ready; home · Account menu open; home · Loading; home · Long content; rentals · Active; rentals · Cancel rental confirmation; rentals · Cancellation pending; rentals · Cancellation failed; rentals · Long content; rentals · Rental history |
-| rentals.status.active | Active | home · Ready; home · Account menu open; home · Loading; rentals · Active; rentals · Cancel rental confirmation; rentals · Rental history |
+| rentals.status.approved | Approved | home · Ready; home · Account menu open; home · Loading; home · Long content; rentals · Upcoming and active; rentals · Cancel rental confirmation; rentals · Cancellation pending; rentals · Cancellation failed; rentals · Long content; rentals · Rental history |
+| rentals.status.active | Active | home · Ready; home · Account menu open; home · Loading; rentals · Upcoming and active; rentals · Cancel rental confirmation; rentals · Rental history |
 | rentals.status.returned | Returned | rentals · Rental history |
 | rentals.status.cancelled | Cancelled | rentals · Cancelled; rentals · Rental history |
 | rentals.empty.title | No rentals yet | rentals · Empty |

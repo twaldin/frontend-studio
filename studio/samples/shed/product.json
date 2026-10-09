@@ -207,7 +207,7 @@
       "kind": "data",
       "fixtures": {
         "Tool": "populated",
-        "Rental": "active"
+        "Rental": "current"
       }
     },
     "homeFirstVisit": {
@@ -225,7 +225,7 @@
       "kind": "data",
       "fixtures": {
         "Tool": "populated",
-        "Rental": "active"
+        "Rental": "current"
       }
     },
     "homeLongContent": {
@@ -427,11 +427,11 @@
       }
     },
     "rentalsActive": {
-      "label": "Active",
+      "label": "Upcoming and active",
       "rule": "Upcoming and active rentals lead; due dates are explicit.",
       "kind": "data",
       "fixtures": {
-        "Rental": "active"
+        "Rental": "current"
       }
     },
     "rentalsEmpty": {
