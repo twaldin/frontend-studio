@@ -55,7 +55,7 @@ Without a browser, run the same tree as text and record notes and revisit steps 
 
 The visual grill is done when no step is Open or Revisit, every note is resolved, every artifact is saved, and the brief's Design section reads as one concise paragraph of decisions.
 
-End each round on a page with controls that reach every modeled surface's states, setups and referenced fixed strings. Include all copy roles and screen, email and push channels, even when a surface belongs only to Should-have or Later flows. Must-only scope limits walk choices, not this coverage. Follow the [Every screen coverage contract](references/product-model.md#every-screen-coverage) and the [current boundary](references/product-model.md#current-boundary).
+In-app studios end each round on the **Every screen** page required by their [contract](references/in-app-studio.md#contract). Until the generic studio renders models, end its round with the [manual coverage review](references/rounds.md#end-on-every-screen). Both reviews cover every modeled surface, state, setup, referenced fixed string and copy role across screen, email and push channels, including Should-have and Later flows. Must-only scope limits walk choices, not this coverage.
 
 ## Implementation contract
 
