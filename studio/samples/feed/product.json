@@ -1,4 +1,5 @@
 {
+  "$schema": "../../../references/product-model.schema.json",
   "model": 1,
   "product": {
     "id": "feed",
@@ -1127,18 +1128,24 @@
             "home.recovery.action": [
               "homeFailed"
             ],
-            "home.delete.status": [
-              "homeDeleting"
-            ],
+            "home.delete.status": {
+              "when": [
+                "homeDeleting"
+              ],
+              "as": "announce"
+            },
             "home.delete.recovery": [
               "homeDeleteFailed"
             ],
             "home.delete.retry": [
               "homeDeleteFailed"
             ],
-            "home.bookmark.status": [
-              "homeSavingPost"
-            ],
+            "home.bookmark.status": {
+              "when": [
+                "homeSavingPost"
+              ],
+              "as": "announce"
+            },
             "home.bookmark.recovery": [
               "homeSaveFailed"
             ],
@@ -1186,19 +1193,28 @@
             "toast"
           ],
           "copy": {
-            "home.outcome": [
-              "homeDeleted"
-            ],
-            "home.bookmark.outcome": [
-              "homePostSaved"
-            ]
+            "home.outcome": {
+              "when": [
+                "homeDeleted"
+              ],
+              "as": "announce"
+            },
+            "home.bookmark.outcome": {
+              "when": [
+                "homePostSaved"
+              ],
+              "as": "announce"
+            }
           }
         },
         {
           "id": "header",
           "copy": {
             "home.title": "always",
-            "home.documentTitle": "always"
+            "home.documentTitle": {
+              "when": "always",
+              "as": "title"
+            }
           }
         },
         {
@@ -1251,9 +1267,18 @@
         "desktop"
       ],
       "copy": {
-        "shell.aria.navigation": "always",
-        "shell.aria.main": "always",
-        "shell.alt.productMark": "always",
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
         "nav.home": "always",
         "nav.popular": "always",
         "nav.following": "always",
@@ -1321,12 +1346,18 @@
         {
           "id": "state",
           "copy": {
-            "following.status": [
-              "followingSaving"
-            ],
-            "following.outcome": [
-              "followingSaved"
-            ],
+            "following.status": {
+              "when": [
+                "followingSaving"
+              ],
+              "as": "announce"
+            },
+            "following.outcome": {
+              "when": [
+                "followingSaved"
+              ],
+              "as": "announce"
+            },
             "following.changeFailure": [
               "followingSaveFailed"
             ],
@@ -1352,10 +1383,22 @@
       ],
       "copy": {
         "following.title": "always",
-        "following.documentTitle": "always",
-        "shell.aria.navigation": "always",
-        "shell.aria.main": "always",
-        "shell.alt.productMark": "always",
+        "following.documentTitle": {
+          "when": "always",
+          "as": "title"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
         "following.search.queryLabel": "always",
         "following.topics.sourdough": "always",
         "following.topics.balconyGarden": "always",
@@ -1454,7 +1497,10 @@
           "id": "header",
           "copy": {
             "popular.title": "always",
-            "popular.documentTitle": "always"
+            "popular.documentTitle": {
+              "when": "always",
+              "as": "title"
+            }
           }
         },
         {
@@ -1480,9 +1526,18 @@
         "desktop"
       ],
       "copy": {
-        "shell.aria.navigation": "always",
-        "shell.aria.main": "always",
-        "shell.alt.productMark": "always",
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
         "nav.popular": "always",
         "nav.home": "always",
         "nav.following": "always",
@@ -1529,10 +1584,22 @@
       ],
       "copy": {
         "saved.title": "always",
-        "saved.documentTitle": "always",
-        "shell.aria.navigation": "always",
-        "shell.aria.main": "always",
-        "shell.alt.productMark": "always",
+        "saved.documentTitle": {
+          "when": "always",
+          "as": "title"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
         "saved.empty.title": [
           "savedEmpty"
         ],
@@ -1576,7 +1643,10 @@
           "id": "header",
           "copy": {
             "postThread.title": "always",
-            "postThread.documentTitle": "always"
+            "postThread.documentTitle": {
+              "when": "always",
+              "as": "title"
+            }
           }
         },
         {
@@ -1620,14 +1690,17 @@
               "postThreadSent",
               "postThreadSendFailed"
             ],
-            "postThread.aria.send": [
-              "postThreadReady",
-              "postThreadEmpty",
-              "postThreadLongContent",
-              "postThreadSending",
-              "postThreadSent",
-              "postThreadSendFailed"
-            ]
+            "postThread.aria.send": {
+              "when": [
+                "postThreadReady",
+                "postThreadEmpty",
+                "postThreadLongContent",
+                "postThreadSending",
+                "postThreadSent",
+                "postThreadSendFailed"
+              ],
+              "as": "label"
+            }
           },
           "on": [
             {
@@ -1675,9 +1748,12 @@
             "postThread.recovery.action": [
               "postThreadFailed"
             ],
-            "postThread.status.sending": [
-              "postThreadSending"
-            ],
+            "postThread.status.sending": {
+              "when": [
+                "postThreadSending"
+              ],
+              "as": "announce"
+            },
             "postThread.sendFailure": [
               "postThreadSendFailed"
             ],
@@ -1713,9 +1789,12 @@
           "variant": "inline",
           "because": "An accepted reply remains visible in its original thread instead of relying on a disappearing toast.",
           "copy": {
-            "postThread.outcome": [
-              "postThreadSent"
-            ]
+            "postThread.outcome": {
+              "when": [
+                "postThreadSent"
+              ],
+              "as": "announce"
+            }
           }
         }
       ],
@@ -1735,9 +1814,18 @@
         "desktop"
       ],
       "copy": {
-        "shell.aria.navigation": "always",
-        "shell.aria.main": "always",
-        "shell.alt.productMark": "always",
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
         "nav.home": "always",
         "nav.popular": "always",
         "nav.following": "always",
@@ -1754,7 +1842,10 @@
           "id": "header",
           "copy": {
             "newPost.title": "always",
-            "newPost.documentTitle": "always"
+            "newPost.documentTitle": {
+              "when": "always",
+              "as": "title"
+            }
           }
         },
         {
@@ -1894,9 +1985,12 @@
         {
           "id": "state",
           "copy": {
-            "newPost.status": [
-              "newPostSaving"
-            ],
+            "newPost.status": {
+              "when": [
+                "newPostSaving"
+              ],
+              "as": "announce"
+            },
             "newPost.recovery": [
               "newPostFailed"
             ],
@@ -1908,9 +2002,12 @@
         {
           "id": "result",
           "copy": {
-            "newPost.outcome": [
-              "newPostSaved"
-            ],
+            "newPost.outcome": {
+              "when": [
+                "newPostSaved"
+              ],
+              "as": "announce"
+            },
             "newPost.openPost": [
               "newPostSaved"
             ]
@@ -1939,9 +2036,18 @@
         "desktop"
       ],
       "copy": {
-        "shell.aria.navigation": "always",
-        "shell.aria.main": "always",
-        "shell.alt.productMark": "always",
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
         "nav.home": "always",
         "nav.popular": "always",
         "nav.following": "always",
@@ -1972,7 +2078,10 @@
           "id": "header",
           "copy": {
             "settings.title": "always",
-            "settings.documentTitle": "always"
+            "settings.documentTitle": {
+              "when": "always",
+              "as": "title"
+            }
           }
         },
         {
@@ -2013,12 +2122,18 @@
         {
           "id": "state",
           "copy": {
-            "settings.status.saving": [
-              "settingsSaving"
-            ],
-            "settings.status.saved": [
-              "settingsSaved"
-            ],
+            "settings.status.saving": {
+              "when": [
+                "settingsSaving"
+              ],
+              "as": "announce"
+            },
+            "settings.status.saved": {
+              "when": [
+                "settingsSaved"
+              ],
+              "as": "announce"
+            },
             "settings.recovery": [
               "settingsFailed"
             ]
@@ -2042,9 +2157,18 @@
         "desktop"
       ],
       "copy": {
-        "shell.aria.navigation": "always",
-        "shell.aria.main": "always",
-        "shell.alt.productMark": "always",
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
         "nav.settings": "always",
         "nav.home": "always",
         "nav.popular": "always",
@@ -2074,10 +2198,22 @@
       ],
       "copy": {
         "help.title": "always",
-        "help.documentTitle": "always",
-        "shell.aria.navigation": "always",
-        "shell.aria.main": "always",
-        "shell.alt.productMark": "always",
+        "help.documentTitle": {
+          "when": "always",
+          "as": "title"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
         "nav.home": "always",
         "nav.popular": "always",
         "nav.following": "always",
@@ -2116,10 +2252,18 @@
       ],
       "copy": {
         "landing.title": "always",
-        "landing.documentTitle": "always",
-        "shell.aria.navigation": "always",
-        "shell.aria.main": "always",
-        "shell.alt.productMark": "always",
+        "landing.documentTitle": {
+          "when": "always",
+          "as": "title"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
         "landing.secondaryAction": "always",
         "landing.footer": "always",
         "landing.navigation.explore": "always",
@@ -2134,12 +2278,30 @@
         "landing.chosenTopics.label": "always",
         "landing.priyaQuote.text": "always",
         "landing.priyaQuote.who": "always",
-        "landing.ashgrovePress.alt": "always",
-        "landing.tidewaterPottery.alt": "always",
-        "landing.larkspurCollective.alt": "always",
-        "landing.kestrelBooks.alt": "always",
-        "landing.oakhillStudio.alt": "always",
-        "landing.marrowBakery.alt": "always"
+        "landing.ashgrovePress.alt": {
+          "when": "always",
+          "as": "alt"
+        },
+        "landing.tidewaterPottery.alt": {
+          "when": "always",
+          "as": "alt"
+        },
+        "landing.larkspurCollective.alt": {
+          "when": "always",
+          "as": "alt"
+        },
+        "landing.kestrelBooks.alt": {
+          "when": "always",
+          "as": "alt"
+        },
+        "landing.oakhillStudio.alt": {
+          "when": "always",
+          "as": "alt"
+        },
+        "landing.marrowBakery.alt": {
+          "when": "always",
+          "as": "alt"
+        }
       }
     },
     {
@@ -2164,10 +2326,22 @@
             }
           },
           "copy": {
-            "emailReplyReceived.subject": "always",
-            "emailReplyReceived.body": "always",
-            "emailReplyReceived.action": "always",
-            "emailReplyReceived.preheader": "always"
+            "emailReplyReceived.subject": {
+              "when": "always",
+              "as": "subject"
+            },
+            "emailReplyReceived.body": {
+              "when": "always",
+              "as": "body"
+            },
+            "emailReplyReceived.action": {
+              "when": "always",
+              "as": "action"
+            },
+            "emailReplyReceived.preheader": {
+              "when": "always",
+              "as": "preheader"
+            }
           }
         }
       ],
@@ -2202,9 +2376,18 @@
             }
           },
           "copy": {
-            "pushMentionReceived.title": "always",
-            "pushMentionReceived.body": "always",
-            "pushMentionReceived.action": "always"
+            "pushMentionReceived.title": {
+              "when": "always",
+              "as": "title"
+            },
+            "pushMentionReceived.body": {
+              "when": "always",
+              "as": "body"
+            },
+            "pushMentionReceived.action": {
+              "when": "always",
+              "as": "action"
+            }
           }
         }
       ],
@@ -2221,6 +2404,5 @@
   "files": {
     "copy": "copy.md",
     "fixtures": "fixtures.json"
-  },
-  "$schema": "../../../references/product-model.schema.json"
+  }
 }

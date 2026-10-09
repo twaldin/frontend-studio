@@ -1,4 +1,5 @@
 {
+  "$schema": "../../../references/product-model.schema.json",
   "model": 1,
   "product": {
     "id": "conversation",
@@ -1044,8 +1045,14 @@
           "id": "identity",
           "copy": {
             "chats.title": "always",
-            "chats.documentTitle": "always",
-            "shell.alt.productMark": "always"
+            "chats.documentTitle": {
+              "when": "always",
+              "as": "title"
+            },
+            "shell.alt.productMark": {
+              "when": "always",
+              "as": "alt"
+            }
           }
         },
         {
@@ -1069,8 +1076,14 @@
         "desktop"
       ],
       "copy": {
-        "shell.aria.navigation": "always",
-        "shell.aria.main": "always",
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
         "chats.new": "always",
         "chats.queryLabel": "always",
         "chats.kind.agent": "always",
@@ -1097,7 +1110,10 @@
           "id": "header",
           "copy": {
             "thread.title": "always",
-            "thread.documentTitle": "always"
+            "thread.documentTitle": {
+              "when": "always",
+              "as": "title"
+            }
           },
           "data": {
             "contract": "Chat",
@@ -1334,9 +1350,12 @@
           "variant": "inline",
           "because": "Sharing confirmation stays beside the saved thread and names the teammate who now has access.",
           "copy": {
-            "thread.outcome": [
-              "threadShared"
-            ]
+            "thread.outcome": {
+              "when": [
+                "threadShared"
+              ],
+              "as": "announce"
+            }
           },
           "data": {
             "contract": "ThreadShare",
@@ -1349,24 +1368,42 @@
         {
           "id": "state",
           "copy": {
-            "thread.status.sending": [
-              "threadSending"
-            ],
-            "thread.status.generating": [
-              "threadGenerating"
-            ],
-            "thread.status.toolRunning": [
-              "threadToolRunning"
-            ],
-            "thread.status.completed": [
-              "threadCompleted"
-            ],
-            "thread.status.stopping": [
-              "threadStopping"
-            ],
-            "thread.status.stopped": [
-              "threadStopped"
-            ],
+            "thread.status.sending": {
+              "when": [
+                "threadSending"
+              ],
+              "as": "announce"
+            },
+            "thread.status.generating": {
+              "when": [
+                "threadGenerating"
+              ],
+              "as": "announce"
+            },
+            "thread.status.toolRunning": {
+              "when": [
+                "threadToolRunning"
+              ],
+              "as": "announce"
+            },
+            "thread.status.completed": {
+              "when": [
+                "threadCompleted"
+              ],
+              "as": "announce"
+            },
+            "thread.status.stopping": {
+              "when": [
+                "threadStopping"
+              ],
+              "as": "announce"
+            },
+            "thread.status.stopped": {
+              "when": [
+                "threadStopped"
+              ],
+              "as": "announce"
+            },
             "thread.recovery.heading": [
               "threadFailed"
             ],
@@ -1379,9 +1416,12 @@
             "thread.approval.denied": [
               "threadToolDenied"
             ],
-            "thread.status.sharing": [
-              "threadSharing"
-            ],
+            "thread.status.sharing": {
+              "when": [
+                "threadSharing"
+              ],
+              "as": "announce"
+            },
             "thread.share.recovery": [
               "threadShareFailed"
             ],
@@ -1430,13 +1470,25 @@
         "desktop"
       ],
       "copy": {
-        "shell.aria.navigation": "always",
-        "shell.aria.main": "always",
-        "shell.alt.productMark": "always",
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
         "nav.chats": "always",
         "nav.agents": "always",
         "nav.settings": "always",
-        "thread.aria.messages": "always"
+        "thread.aria.messages": {
+          "when": "always",
+          "as": "label"
+        }
       },
       "setups": [
         {
@@ -1563,10 +1615,22 @@
       ],
       "copy": {
         "agents.title": "always",
-        "agents.documentTitle": "always",
-        "shell.aria.navigation": "always",
-        "shell.aria.main": "always",
-        "shell.alt.productMark": "always",
+        "agents.documentTitle": {
+          "when": "always",
+          "as": "title"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
         "agents.new": "always",
         "agents.empty.title": [
           "agentsEmpty"
@@ -1597,7 +1661,10 @@
           "id": "header",
           "copy": {
             "newAgent.title": "always",
-            "newAgent.documentTitle": "always"
+            "newAgent.documentTitle": {
+              "when": "always",
+              "as": "title"
+            }
           }
         },
         {
@@ -1717,9 +1784,12 @@
         {
           "id": "state",
           "copy": {
-            "newAgent.status": [
-              "newAgentSaving"
-            ],
+            "newAgent.status": {
+              "when": [
+                "newAgentSaving"
+              ],
+              "as": "announce"
+            },
             "newAgent.recovery": [
               "newAgentFailed"
             ],
@@ -1731,9 +1801,12 @@
         {
           "id": "result",
           "copy": {
-            "newAgent.outcome": [
-              "newAgentSaved"
-            ],
+            "newAgent.outcome": {
+              "when": [
+                "newAgentSaved"
+              ],
+              "as": "announce"
+            },
             "newAgent.openAgents": [
               "newAgentSaved"
             ]
@@ -1762,9 +1835,18 @@
         "desktop"
       ],
       "copy": {
-        "shell.aria.navigation": "always",
-        "shell.aria.main": "always",
-        "shell.alt.productMark": "always",
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
         "nav.chats": "always",
         "nav.agents": "always",
         "nav.settings": "always"
@@ -1793,7 +1875,10 @@
           "id": "header",
           "copy": {
             "settings.title": "always",
-            "settings.documentTitle": "always"
+            "settings.documentTitle": {
+              "when": "always",
+              "as": "title"
+            }
           }
         },
         {
@@ -1835,12 +1920,18 @@
         {
           "id": "state",
           "copy": {
-            "settings.status.saving": [
-              "settingsSaving"
-            ],
-            "settings.status.saved": [
-              "settingsSaved"
-            ],
+            "settings.status.saving": {
+              "when": [
+                "settingsSaving"
+              ],
+              "as": "announce"
+            },
+            "settings.status.saved": {
+              "when": [
+                "settingsSaved"
+              ],
+              "as": "announce"
+            },
             "settings.recovery": [
               "settingsFailed"
             ]
@@ -1864,9 +1955,18 @@
         "desktop"
       ],
       "copy": {
-        "shell.aria.navigation": "always",
-        "shell.aria.main": "always",
-        "shell.alt.productMark": "always",
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
         "nav.settings": "always",
         "nav.chats": "always",
         "nav.agents": "always"
@@ -1894,10 +1994,22 @@
       ],
       "copy": {
         "help.title": "always",
-        "help.documentTitle": "always",
-        "shell.aria.navigation": "always",
-        "shell.aria.main": "always",
-        "shell.alt.productMark": "always",
+        "help.documentTitle": {
+          "when": "always",
+          "as": "title"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
         "nav.chats": "always",
         "nav.agents": "always",
         "nav.settings": "always"
@@ -1934,10 +2046,18 @@
       ],
       "copy": {
         "landing.title": "always",
-        "landing.documentTitle": "always",
-        "shell.aria.navigation": "always",
-        "shell.aria.main": "always",
-        "shell.alt.productMark": "always",
+        "landing.documentTitle": {
+          "when": "always",
+          "as": "title"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
         "landing.secondaryAction": "always",
         "landing.footer": "always",
         "landing.navigation.product": "always",
@@ -1952,12 +2072,30 @@
         "landing.scopedApproval.label": "always",
         "landing.danaQuote.text": "always",
         "landing.danaQuote.who": "always",
-        "landing.alderAndFinch.alt": "always",
-        "landing.brightwater.alt": "always",
-        "landing.calloway.alt": "always",
-        "landing.dunmore.alt": "always",
-        "landing.eastgate.alt": "always",
-        "landing.fernhill.alt": "always"
+        "landing.alderAndFinch.alt": {
+          "when": "always",
+          "as": "alt"
+        },
+        "landing.brightwater.alt": {
+          "when": "always",
+          "as": "alt"
+        },
+        "landing.calloway.alt": {
+          "when": "always",
+          "as": "alt"
+        },
+        "landing.dunmore.alt": {
+          "when": "always",
+          "as": "alt"
+        },
+        "landing.eastgate.alt": {
+          "when": "always",
+          "as": "alt"
+        },
+        "landing.fernhill.alt": {
+          "when": "always",
+          "as": "alt"
+        }
       }
     },
     {
@@ -1980,10 +2118,22 @@
             }
           },
           "copy": {
-            "emailThreadShared.subject": "always",
-            "emailThreadShared.body": "always",
-            "emailThreadShared.action": "always",
-            "emailThreadShared.preheader": "always"
+            "emailThreadShared.subject": {
+              "when": "always",
+              "as": "subject"
+            },
+            "emailThreadShared.body": {
+              "when": "always",
+              "as": "body"
+            },
+            "emailThreadShared.action": {
+              "when": "always",
+              "as": "action"
+            },
+            "emailThreadShared.preheader": {
+              "when": "always",
+              "as": "preheader"
+            }
           }
         }
       ],
@@ -2015,9 +2165,18 @@
             }
           },
           "copy": {
-            "pushApprovalNeeded.title": "always",
-            "pushApprovalNeeded.body": "always",
-            "pushApprovalNeeded.action": "always"
+            "pushApprovalNeeded.title": {
+              "when": "always",
+              "as": "title"
+            },
+            "pushApprovalNeeded.body": {
+              "when": "always",
+              "as": "body"
+            },
+            "pushApprovalNeeded.action": {
+              "when": "always",
+              "as": "action"
+            }
           }
         }
       ],
@@ -2034,6 +2193,5 @@
   "files": {
     "copy": "copy.md",
     "fixtures": "fixtures.json"
-  },
-  "$schema": "../../../references/product-model.schema.json"
+  }
 }

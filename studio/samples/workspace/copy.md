@@ -2,6 +2,8 @@
 
 Fixed product language for the screen, email and push contracts in this directory. Maker descriptions and authored incident or conversation text remain derived fixture content; prices, metrics and dates enter these strings through placeholders.
 
+For the Service contract on home, services and serviceDetail, a null `latencyMs` renders `services.latency.unobserved`, "No latency measurement", instead of numeric latency copy. A measured latency, including a genuine zero, renders with `ms`. Never substitute `0 ms` for null.
+
 | Key | Copy | Shown when |
 |---|---|---|
 | home.title | Needs attention | home |
@@ -35,7 +37,7 @@ Fixed product language for the screen, email and push contracts in this director
 | services.status.degraded | Degraded | services · Registered services; services · Refreshing services; services · Long service identity; services · Deployment hours ago |
 | services.status.down | Down | services · Registered services; services · Refreshing services; services · Deployment days ago |
 | services.status.paused | Paused | services · Registered services; services · Refreshing services; services · Deployment weeks ago |
-| services.latency.unobserved | No latency measurement | services · Registered services; services · Refreshing services; services · Deployment days ago; services · Deployment weeks ago |
+| services.latency.unobserved | No latency measurement | home · Current health; home · Refreshing health; services · Registered services; services · Refreshing services; services · Deployment days ago; services · Deployment weeks ago; serviceDetail · Restarting instances; serviceDetail · Restart failed; serviceDetail · Notification service record; serviceDetail · Review restart |
 | services.search.queryLabel | Search services | services |
 | services.recovery.action | Reload services | services · Services unavailable |
 | services.empty.title | No services yet. | services · No registered services |
@@ -158,24 +160,21 @@ Fixed product language for the screen, email and push contracts in this director
 | pushIncidentOpened.title | Incident opened for {service} | pushIncidentOpened |
 | pushIncidentOpened.body | {title}. {owner} is on call. Open the incident to review the evidence. | pushIncidentOpened |
 | pushIncidentOpened.action | Open incident | pushIncidentOpened |
-| shell.aria.navigation | Main navigation | home; services; serviceDetail; deploys; incidents; incidentThread; newService; settings; help; landing |
+| shell.aria.navigation | Main navigation | home; services; serviceDetail; deploys; incidents; incidentThread; newService; settings; help |
 | shell.aria.main | Main content | home; services; serviceDetail; deploys; incidents; incidentThread; newService; settings; help; landing |
 | shell.alt.productMark | Relay mark | home; services; serviceDetail; deploys; incidents; incidentThread; newService; settings; help; landing |
 | home.metrics.requests.value | {value} requests/min | home · Current health; home · Refreshing health; home · Long incident and service names |
 | home.metrics.latency.value | {value} ms | home · Current health; home · Refreshing health |
 | home.metrics.errors.value | {value}% | home · Current health; home · Refreshing health |
 | home.metrics.deploys.value | {value} deploys | home · Current health; home · Refreshing health |
-| home.metrics.observedAt | Observed {time} | home · Current health; home · Refreshing health; home · Long incident and service names |
-| services.latency.value | {latencyMs} ms | services · Registered services; services · Refreshing services; services · Long service identity; services · Recent deployment; services · Deployment hours ago |
-| services.lastDeploy.minutes | {count} min ago | services · Registered services; services · Refreshing services; services · Recent deployment |
-| services.lastDeploy.hours | {count} h ago | services · Registered services; services · Refreshing services; services · Long service identity; services · Deployment hours ago |
-| services.lastDeploy.days | {count} days ago | services · Registered services; services · Refreshing services; services · Deployment days ago |
-| services.lastDeploy.weeks | {count} weeks ago | services · Registered services; services · Refreshing services; services · Deployment weeks ago |
+| home.metrics.observedAt | Observed {observedAt:time} | home · Current health; home · Refreshing health; home · Long incident and service names |
+| services.latency.value | {latencyMs} ms | home · Current health; home · Refreshing health; services · Registered services; services · Refreshing services; services · Long service identity; services · Recent deployment; services · Deployment hours ago |
+| services.lastDeploy.relative | {lastDeployedAt:relative} | services · Registered services; services · Refreshing services; services · Recent deployment; services · Long service identity; services · Deployment hours ago; services · Deployment days ago; services · Deployment weeks ago |
 | serviceDetail.deploy | Deploy artifact | serviceDetail · Service record; serviceDetail · Review rollout; serviceDetail · Review rollback; serviceDetail · Long service and artifact names; serviceDetail · Rollout complete; serviceDetail · Rollback complete; serviceDetail · Instances restarted; serviceDetail · Registered, not deployed; serviceDetail · Review first rollout |
 | serviceDetail.latency.value | p95: {latencyMs} ms | serviceDetail · Service record; serviceDetail · Review rollout; serviceDetail · Review rollback; serviceDetail · Refreshing record; serviceDetail · Long service and artifact names; serviceDetail · Rolling out; serviceDetail · Rollout complete; serviceDetail · Deploy failed; serviceDetail · Rolling back; serviceDetail · Rollback complete; serviceDetail · Rollback failed; serviceDetail · Instances restarted |
 | serviceDetail.artifact | Artifact: {artifact} | serviceDetail · Service record; serviceDetail · Review rollout; serviceDetail · Review rollback; serviceDetail · Refreshing record; serviceDetail · Long service and artifact names; serviceDetail · Rolling out; serviceDetail · Rollout complete; serviceDetail · Deploy failed; serviceDetail · Rolling back; serviceDetail · Rollback complete; serviceDetail · Rollback failed; serviceDetail · Restarting instances; serviceDetail · Instances restarted; serviceDetail · Restart failed; serviceDetail · Registered, not deployed; serviceDetail · Review first rollout; serviceDetail · Notification service record; serviceDetail · Review restart |
 | serviceDetail.progress | Rollout: {progressPercent}% | serviceDetail · Service record; serviceDetail · Review rollout; serviceDetail · Review rollback; serviceDetail · Refreshing record; serviceDetail · Long service and artifact names; serviceDetail · Rolling out; serviceDetail · Rollout complete; serviceDetail · Deploy failed; serviceDetail · Rolling back; serviceDetail · Rollback complete; serviceDetail · Rollback failed; serviceDetail · Restarting instances; serviceDetail · Instances restarted; serviceDetail · Restart failed; serviceDetail · Notification service record; serviceDetail · Review restart |
-| serviceDetail.startedAt | Started {time} | serviceDetail · Service record; serviceDetail · Review rollout; serviceDetail · Review rollback; serviceDetail · Refreshing record; serviceDetail · Long service and artifact names; serviceDetail · Rolling out; serviceDetail · Rollout complete; serviceDetail · Deploy failed; serviceDetail · Rolling back; serviceDetail · Rollback complete; serviceDetail · Rollback failed; serviceDetail · Restarting instances; serviceDetail · Instances restarted; serviceDetail · Restart failed; serviceDetail · Notification service record; serviceDetail · Review restart |
+| serviceDetail.startedAt | Started {startedAt:time} | serviceDetail · Service record; serviceDetail · Review rollout; serviceDetail · Review rollback; serviceDetail · Refreshing record; serviceDetail · Long service and artifact names; serviceDetail · Rolling out; serviceDetail · Rollout complete; serviceDetail · Deploy failed; serviceDetail · Rolling back; serviceDetail · Rollback complete; serviceDetail · Rollback failed; serviceDetail · Restarting instances; serviceDetail · Instances restarted; serviceDetail · Restart failed; serviceDetail · Notification service record; serviceDetail · Review restart |
 | serviceDetail.loadFailure | Service details could not be loaded. | serviceDetail · Record unavailable |
 | serviceDetail.loadRetry | Reload service | serviceDetail · Record unavailable |
 | serviceDetail.missing.title | This service is no longer registered. | serviceDetail · Service removed |
@@ -203,14 +202,14 @@ Fixed product language for the screen, email and push contracts in this director
 | deploys.inspect | View rollout | deploys · Rollout history; deploys · Refreshing rollout history; deploys · Long release artifact |
 | deploys.artifact | {artifact} on {service} | deploys · Rollout history; deploys · Refreshing rollout history; deploys · Long release artifact |
 | deploys.progress | {progressPercent}% complete | deploys · Rollout history; deploys · Refreshing rollout history; deploys · Long release artifact |
-| deploys.startedAt | Started {time} | deploys · Rollout history; deploys · Refreshing rollout history; deploys · Long release artifact |
+| deploys.startedAt | Started {startedAt:time} | deploys · Rollout history; deploys · Refreshing rollout history; deploys · Long release artifact |
 | incidents.columns.service | Service | incidents · Open incidents; incidents · Refreshing incidents; incidents · Long incident evidence; incidents · Resolved incident |
 | incidents.columns.owner | On call | incidents · Open incidents; incidents · Refreshing incidents; incidents · Long incident evidence; incidents · Resolved incident |
 | incidents.columns.status | Status | incidents · Open incidents; incidents · Refreshing incidents; incidents · Long incident evidence; incidents · Resolved incident |
 | incidents.status.open | Open | incidents · Open incidents; incidents · Refreshing incidents; incidents · Long incident evidence |
 | incidents.status.resolved | Resolved | incidents · Resolved incident |
-| incidents.openedAt | Opened {time} | incidents · Open incidents; incidents · Refreshing incidents; incidents · Long incident evidence; incidents · Resolved incident |
-| incidentThread.sentAt | Sent {time} | incidentThread · Incident timeline; incidentThread · Refreshing timeline; incidentThread · Long recovery observation; incidentThread · Sending observation; incidentThread · Observation recorded; incidentThread · Observation not sent; incidentThread · Service recovered; incidentThread · Review incident resolution; incidentThread · Recording resolution; incidentThread · Incident resolved; incidentThread · Resolution not recorded |
+| incidents.openedAt | Opened {openedAt:time} | incidents · Open incidents; incidents · Refreshing incidents; incidents · Long incident evidence; incidents · Resolved incident |
+| incidentThread.sentAt | Sent {sentAt:time} | incidentThread · Incident timeline; incidentThread · Refreshing timeline; incidentThread · Long recovery observation; incidentThread · Sending observation; incidentThread · Observation recorded; incidentThread · Observation not sent; incidentThread · Service recovered; incidentThread · Review incident resolution; incidentThread · Recording resolution; incidentThread · Incident resolved; incidentThread · Resolution not recorded |
 | incidentThread.sender.you | You | incidentThread · Incident timeline; incidentThread · Refreshing timeline; incidentThread · Sending observation; incidentThread · Observation recorded; incidentThread · Observation not sent; incidentThread · Service recovered; incidentThread · Review incident resolution; incidentThread · Recording resolution; incidentThread · Incident resolved; incidentThread · Resolution not recorded |
 | incidentThread.status.sending | Sending your incident update… | incidentThread · Sending observation |
 | incidentThread.status.sent | Update added to the incident timeline. | incidentThread · Observation recorded |
@@ -233,4 +232,3 @@ Fixed product language for the screen, email and push contracts in this director
 | emailDeployFailed.preheader | The existing artifact is still serving traffic. | emailDeployFailed |
 | incidentThread.outcome | This incident is recorded as resolved. | incidentThread · Incident resolved |
 | serviceDetail.servingArtifact | Serving artifact: {activeArtifact} | serviceDetail · Service record; serviceDetail · Review rollout; serviceDetail · Review rollback; serviceDetail · Refreshing record; serviceDetail · Long service and artifact names; serviceDetail · Rolling out; serviceDetail · Rollout complete; serviceDetail · Deploy failed; serviceDetail · Rolling back; serviceDetail · Rollback complete; serviceDetail · Rollback failed; serviceDetail · Restarting instances; serviceDetail · Instances restarted; serviceDetail · Restart failed; serviceDetail · Notification service record; serviceDetail · Review restart |
-| serviceDetail.latency.unobserved | Latency not observed | serviceDetail · Restarting instances; serviceDetail · Restart failed; serviceDetail · Notification service record; serviceDetail · Review restart |

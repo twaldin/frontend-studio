@@ -20,13 +20,18 @@ const base: ProductModel = {
   events: { filter: { label: "Filter objects", kind: "swap", needs: "search" } },
   nav: { items: [{ surface: "catalog", copy: "catalog.title" }], inAYear: 1 },
   flows: [{ id: "browse", goal: "Find an object", priority: "must", stages: [{ id: "choose", surface: "catalog" }], ends: "An object is selected.", needs: ["search"] }],
-  surfaces: [{ id: "catalog", question: "Which object fits?", route: "/objects", binding: { record: "collection", status: "open", candidates: ["list", "grid"] }, states: ["ready", "absent"], viewports: ["phone", "desktop"], copy: { "catalog.title": "always" }, slots: [{ id: "primary", data: { contract: "Object", many: true, map: { title: "name", price: "price" } }, copy: {}, on: [{ event: "filter", axis: "contentSwap" }] }, { id: "state", record: "absence", status: "fixed", variant: "cue", because: "Only one structure is needed.", states: ["absent"], copy: { "catalog.empty": ["absent"] } }] }],
+  surfaces: [{ id: "catalog", question: "Which object fits?", route: "/objects", binding: { record: "collection", status: "open", candidates: ["list", "grid"] }, states: ["ready", "absent"], viewports: ["phone", "desktop"], copy: { "catalog.title": { when: "always", as: "title" }, "catalog.intro": "always" }, slots: [{ id: "primary", data: { contract: "Object", many: true, map: { title: "name", price: "price" } }, copy: {}, on: [{ event: "filter", axis: "contentSwap" }] }, { id: "state", record: "absence", status: "fixed", variant: "cue", because: "Only one structure is needed.", states: ["absent"], copy: { "catalog.empty": ["absent"] } }] }],
   files: { copy: "copy.md", fixtures: "fixtures.json" },
 };
 const fixture = { Object: { populated: [{ name: "Spade", price: 4 }, { name: "Drill", price: 8 }], long: [{ name: "A deliberately long object name that wraps across several lines in a narrow viewport", price: 9 }], none: [] } };
-const deckText = "| Key | Copy | Shown when |\n|---|---|---|\n| catalog.title | Objects | catalog |\n| catalog.empty | No objects yet | catalog · Empty |\n";
+const deckText = "| Key | Copy | Shown when |\n|---|---|---|\n| catalog.title | Objects | catalog |\n| catalog.empty | No objects yet | catalog · Empty |\n| catalog.intro | Choose an object | catalog |\n";
 const run = (change?: (m: ProductModel) => void) => { const m = structuredClone(base); change?.(m); return checkModel(m, { catalog, deck: readCopyDeck(deckText), fixtures: structuredClone(fixture) }); };
 const errors = (r: ModelCheckResult) => r.errors.map((e) => `${e.path}: ${e.message}`).join("\n");
+const expectIssue = (result: ModelCheckResult, path: string, ...messages: string[]) => {
+  const issue = result.errors.find((error) => error.path === path);
+  expect(issue, errors(result)).toBeDefined();
+  for (const message of messages) expect(issue!.message).toContain(message);
+};
 
 describe("model checking through its public interface", () => {
   test("accepts a coherent model and derives copy targets", () => { expect(run().errors).toEqual([]); expect(shownWhen(base)["catalog.empty"]).toBe("catalog · Empty"); });
@@ -158,6 +163,561 @@ describe("model checking through its public interface", () => {
   test("parses escaped table pipes and rejects duplicate keys", () => { expect(readCopyDeck(deckText.replace("Objects", "Tools \\| supplies")).entries["catalog.title"]!.text).toBe("Tools | supplies"); expect(readCopyDeck(deckText + "| catalog.title | Duplicate | catalog |\n").errors[0]!.message).toContain("duplicate"); });
 });
 
+describe("reviewer regressions for flow reach and derived copy", () => {
+  test("reviewer probe rejects a surface after its last flow stage is removed", () => {
+    const m = structuredClone(base);
+    m.surfaces.push({ ...structuredClone(m.surfaces[0]!), id: "detail", route: "/detail" });
+    m.flows[0]!.stages.push({ id: "inspect", surface: "detail" });
+    const deck = readCopyDeck(writeShownWhen(deckText, m));
+    expect(checkModel(m, { catalog, deck, fixtures: fixture }).errors).toEqual([]);
+    m.flows[0]!.stages.pop();
+    expectIssue(checkModel(m, { catalog, deck, fixtures: fixture }), "$.surfaces[1]", "No flow reaches surface detail", "add a stage");
+  });
+
+  for (const priority of ["should", "later"] as const) test(`warns for ${priority}-only deck keys but excludes keys shared with must surfaces`, () => {
+    const m = structuredClone(base);
+    const notice = { ...structuredClone(m.surfaces[0]!), id: "notice", route: "/notice" };
+    notice.copy = { "notice.title": { when: "always", as: "title" }, "catalog.intro": "always" };
+    m.surfaces.push(notice);
+    m.flows.push({ id: "notify", goal: "Read a notice", priority: "must", stages: [{ id: "read", surface: "notice" }], ends: "The notice is read.", needs: [] });
+    const deck = readCopyDeck(writeShownWhen(deckText + "| notice.title | Notice | stale |\n", m));
+    expect(checkModel(m, { catalog, deck, fixtures: fixture }).warnings).toEqual([]);
+    m.flows[1]!.priority = priority;
+    const result = checkModel(m, { catalog, deck, fixtures: fixture });
+    expect(result.errors).toEqual([]);
+    expect(result.warnings.filter((warning) => warning.path.startsWith("copy.md:"))).toEqual([
+      { path: "copy.md:6", message: expect.stringContaining("notice.title is reached only by should/later surfaces") },
+    ]);
+    expect(result.warnings.find((warning) => warning.path === "copy.md:6")!.message).toContain("Every screen must still reach");
+  });
+
+  test("surface copy reads fields and aliases from every slot contract", () => {
+    const m = structuredClone(base);
+    m.data.Category = { fields: { label: "text" }, typical: 1 };
+    m.states.ready!.fixtures.Category = "populated";
+    m.states.absent!.fixtures.Category = "none";
+    m.surfaces[0]!.slots[1]!.data = { contract: "Category", map: { category: "label" } };
+    const fixtures = { ...fixture, Category: { populated: [{ label: "Garden" }], none: [] } };
+    const deck = readCopyDeck(deckText.replace("Choose an object", "Choose {name} in {category}"));
+    expect(checkModel(m, { catalog, deck, fixtures }).errors).toEqual([]);
+    delete m.surfaces[0]!.slots[1]!.data;
+    expectIssue(checkModel(m, { catalog, deck, fixtures }), '$.surfaces[0].copy["catalog.intro"]', "Unknown placeholder category", "read by this placement");
+  });
+
+  test("slot copy cannot borrow a sibling slot's data contract", () => {
+    const m = structuredClone(base);
+    m.surfaces[0]!.slots[0]!.copy["catalog.detail"] = "always";
+    const text = deckText + "| catalog.detail | Inspect {name} | stale |\n";
+    expect(checkModel(m, { catalog, deck: readCopyDeck(writeShownWhen(text, m)), fixtures: fixture }).errors).toEqual([]);
+    delete m.surfaces[0]!.slots[0]!.copy["catalog.detail"];
+    m.surfaces[0]!.slots[1]!.copy["catalog.detail"] = "always";
+    expectIssue(checkModel(m, { catalog, deck: readCopyDeck(writeShownWhen(text, m)), fixtures: fixture }), '$.surfaces[0].slots[1].copy["catalog.detail"]', "Unknown placeholder name", "read by this placement");
+  });
+
+  test("placeholder map aliases resolve only while their placement declares them", () => {
+    const m = structuredClone(base);
+    const deck = readCopyDeck(deckText.replace("Choose an object", "Choose {title}"));
+    expect(checkModel(m, { catalog, deck, fixtures: fixture }).errors).toEqual([]);
+    m.surfaces[0]!.slots[0]!.data!.map = { heading: "name", price: "price" };
+    expectIssue(checkModel(m, { catalog, deck, fixtures: fixture }), '$.surfaces[0].copy["catalog.intro"]', "Unknown placeholder title", "map");
+  });
+
+  test("reviewer probe rejects a misspelled placeholder rather than accepting fixed copy", () => {
+    const valid = deckText.replace("Choose an object", "Price {price:currency}");
+    expect(checkModel(base, { catalog, deck: readCopyDeck(valid), fixtures: fixture }).errors).toEqual([]);
+    const result = checkModel(base, { catalog, deck: readCopyDeck(valid.replace("{price:currency}", "{prcie:currency}")), fixtures: fixture });
+    expectIssue(result, '$.surfaces[0].copy["catalog.intro"]', "Unknown placeholder prcie", "declared contract field");
+  });
+
+  test("a shared deck key must resolve its placeholders on every referencing surface", () => {
+    const m = structuredClone(base);
+    m.surfaces.push({ ...structuredClone(m.surfaces[0]!), id: "detail", route: "/detail" });
+    m.flows[0]!.stages.push({ id: "inspect", surface: "detail" });
+    const deck = readCopyDeck(writeShownWhen(deckText.replace("Choose an object", "Choose {name}"), m));
+    expect(checkModel(m, { catalog, deck, fixtures: fixture }).errors).toEqual([]);
+    delete m.surfaces[1]!.slots[0]!.data;
+    m.surfaces[1]!.slots[0]!.copy["catalog.intro"] = "always";
+    const result = checkModel(m, { catalog, deck, fixtures: fixture });
+    expectIssue(result, '$.surfaces[1].copy["catalog.intro"]', "Unknown placeholder name", "read by this placement");
+    expect(result.errors.some((error) => error.path === '$.surfaces[0].copy["catalog.intro"]')).toBe(false);
+  });
+
+  test("rejects an unknown derived formatter with the supported choices", () => {
+    const valid = deckText.replace("Choose an object", "Price {price:currency}");
+    expect(checkModel(base, { catalog, deck: readCopyDeck(valid), fixtures: fixture }).errors).toEqual([]);
+    expectIssue(checkModel(base, { catalog, deck: readCopyDeck(valid.replace(":currency}", ":coins}")), fixtures: fixture }), '$.surfaces[0].copy["catalog.intro"]', "Unknown formatter price:coins", "relative, time, date, currency, number");
+  });
+
+  test("rejects an extra formatter segment after a supported formatter", () => {
+    const valid = deckText.replace("Choose an object", "Price {price:currency}");
+    expect(checkModel(base, { catalog, deck: readCopyDeck(valid), fixtures: fixture }).errors).toEqual([]);
+    const invalid = valid.replace("{price:currency}", "{price:currency:extra}");
+    expect(checkModel(base, { catalog, deck: readCopyDeck(invalid), fixtures: fixture }).errors).toEqual([
+      { path: '$.surfaces[0].copy["catalog.intro"]', message: "Unknown formatter price:currency:extra in catalog.intro; choose relative, time, date, currency, number." },
+    ]);
+  });
+
+  for (const [formatter, field, kind] of [
+    ["relative", "editedAt", "date"], ["time", "editedAt", "date"], ["date", "editedAt", "date"],
+    ["currency", "price", "money"], ["number", "price", "number"],
+  ] as const) test(`rejects ${formatter} formatting on a text field`, () => {
+    const m = structuredClone(base);
+    m.data.Object!.fields.editedAt = "date";
+    const fixtures = { Object: Object.fromEntries(Object.entries(fixture.Object).map(([scenario, rows]) => [scenario, rows.map((row) => ({ ...row, editedAt: "2026-10-08T12:00:00Z" }))])) };
+    const valid = deckText.replace("Choose an object", `Value {${field}:${formatter}}`);
+    expect(checkModel(m, { catalog, deck: readCopyDeck(valid), fixtures }).errors).toEqual([]);
+    const invalid = valid.replace(`{${field}:${formatter}}`, `{name:${formatter}}`);
+    expectIssue(checkModel(m, { catalog, deck: readCopyDeck(invalid), fixtures }), '$.surfaces[0].copy["catalog.intro"]', `Formatter ${formatter}`, kind);
+  });
+
+  test("number formatting accepts both numeric fields and money aliases", () => {
+    const m = structuredClone(base);
+    m.data.Object!.fields.count = "number";
+    m.surfaces[0]!.slots[0]!.data!.map.cost = "price";
+    const fixtures = { Object: Object.fromEntries(Object.entries(fixture.Object).map(([scenario, rows]) => [scenario, rows.map((row, index) => ({ ...row, count: index + 1 }))])) };
+    const valid = deckText.replace("Choose an object", "{count:number} objects at {cost:number}");
+    expect(checkModel(m, { catalog, deck: readCopyDeck(valid), fixtures }).errors).toEqual([]);
+    expectIssue(checkModel(m, { catalog, deck: readCopyDeck(valid.replace("{cost:number}", "{title:number}")), fixtures }), '$.surfaces[0].copy["catalog.intro"]', "Formatter number", "number");
+  });
+});
+
+describe("copy roles and optional fixture fields", () => {
+  for (const [channel, role] of [
+    ["screen", "title"], ["email", "subject"], ["email", "body"], ["push", "title"], ["push", "body"],
+  ] as const) test(`${channel} surfaces require an explicit ${role} copy role`, () => {
+    const m = structuredClone(base);
+    m.surfaces[0]!.channel = channel;
+    m.surfaces[0]!.copy["catalog.title"] = { when: "always", as: channel === "email" ? "subject" : "title" };
+    if (channel !== "screen") m.surfaces[0]!.copy["catalog.intro"] = { when: "always", as: "body" };
+    expect(checkModel(m, { catalog, deck: readCopyDeck(deckText), fixtures: fixture }).errors).toEqual([]);
+    const key = role === "body" ? "catalog.intro" : "catalog.title";
+    m.surfaces[0]!.copy[key] = "always";
+    expect(checkModel(m, { catalog, deck: readCopyDeck(deckText), fixtures: fixture }).errors).toEqual([
+      { path: "$.surfaces[0].copy", message: `A ${channel} surface needs a ${role} copy reference in ready, absent; declare { when, as: "${role}" } on its surface or slot.` },
+    ]);
+  });
+
+  test("all copy roles preserve state and setup reach while shorthand forms remain text", () => {
+    const m = structuredClone(base);
+    m.surfaces[0]!.setups = [{ id: "confirm", label: "Confirm choice", event: "filter", state: "ready" }];
+    let text = deckText;
+    for (const role of ["text", "label", "title", "alt", "announce", "subject", "preheader", "body", "action"] as const) {
+      m.surfaces[0]!.copy[`catalog.role.${role}`] = { when: ["ready"], as: role };
+      text += `| catalog.role.${role} | ${role} copy | stale |\n`;
+    }
+    m.surfaces[0]!.copy["catalog.defaultText"] = { when: ["confirm"] };
+    text += "| catalog.defaultText | Confirm selection | stale |\n";
+    const result = checkModel(m, { catalog, deck: readCopyDeck(writeShownWhen(text, m)), fixtures: fixture });
+    expect(result.errors).toEqual([]);
+    const reach = shownWhen(result.model!);
+    expect(reach["catalog.intro"]).toBe("catalog");
+    expect(reach["catalog.empty"]).toBe("catalog · Empty");
+    expect(reach["catalog.defaultText"]).toBe("catalog · Confirm choice");
+    for (const role of ["text", "label", "title", "alt", "announce", "subject", "preheader", "body", "action"]) expect(reach[`catalog.role.${role}`]).toBe("catalog · Ready; catalog · Confirm choice");
+  });
+
+  test("an absent-only slot title leaves the ready state uncovered", () => {
+    const m = structuredClone(base);
+    m.surfaces[0]!.copy["catalog.title"] = "always";
+    m.surfaces[0]!.slots[1]!.copy["catalog.empty"] = { when: ["absent"], as: "title" };
+    expect(checkModel(m, { catalog, deck: readCopyDeck(deckText), fixtures: fixture }).errors).toEqual([
+      { path: "$.surfaces[0].copy", message: 'A screen surface needs a title copy reference in ready; declare { when, as: "title" } on its surface or slot.' },
+    ]);
+    m.surfaces[0]!.slots[1]!.copy["catalog.empty"] = { when: ["ready"], as: "title" };
+    expectIssue(checkModel(m, { catalog, deck: readCopyDeck(writeShownWhen(deckText, m)), fixtures: fixture }), '$.surfaces[0].slots[1].copy["catalog.empty"]', "slot is hidden there", "include that state");
+  });
+
+  test("state-specific title references jointly cover every state and inherited setup", () => {
+    const m = structuredClone(base);
+    m.surfaces[0]!.setups = [
+      { id: "filterMenu", label: "Filter menu", event: "filter" },
+      { id: "emptyHelp", label: "Empty help", event: "filter", state: "absent" },
+    ];
+    m.surfaces[0]!.copy["catalog.title"] = { when: ["ready"], as: "title" };
+    m.surfaces[0]!.slots[1]!.copy["catalog.empty"] = { when: "always", as: "title" };
+    const text = deckText
+      .replace("| catalog.title | Objects | catalog |", "| catalog.title | Objects | catalog · Ready; catalog · Filter menu |")
+      .replace("catalog · Empty |", "catalog · Empty; catalog · Empty help |");
+    expect(checkModel(m, { catalog, deck: readCopyDeck(text), fixtures: fixture }).errors).toEqual([]);
+    m.surfaces[0]!.slots[1]!.copy["catalog.empty"] = ["absent"];
+    expect(checkModel(m, { catalog, deck: readCopyDeck(text), fixtures: fixture }).errors).toEqual([
+      { path: "$.surfaces[0].copy", message: 'A screen surface needs a title copy reference in absent, emptyHelp; declare { when, as: "title" } on its surface or slot.' },
+    ]);
+  });
+
+  test("a setup-only title does not cover the setup's default state", () => {
+    const m = structuredClone(base);
+    m.surfaces[0]!.setups = [{ id: "confirm", label: "Confirm choice", event: "filter" }];
+    m.surfaces[0]!.copy["catalog.title"] = { when: ["confirm"], as: "title" };
+    m.surfaces[0]!.slots[1]!.copy["catalog.empty"] = { when: ["absent"], as: "title" };
+    const text = deckText.replace("| catalog.title | Objects | catalog |", "| catalog.title | Objects | catalog · Confirm choice |");
+    expect(checkModel(m, { catalog, deck: readCopyDeck(text), fixtures: fixture }).errors).toEqual([
+      { path: "$.surfaces[0].copy", message: 'A screen surface needs a title copy reference in ready; declare { when, as: "title" } on its surface or slot.' },
+    ]);
+  });
+
+  test("reports an uncovered setup alongside its invalid base-state diagnostic", () => {
+    const m = structuredClone(base);
+    m.states.other = { label: "Other", kind: "data", rule: "Show another view.", fixtures: { Object: "none" } };
+    m.surfaces[0]!.setups = [{ id: "confirm", label: "Confirm choice", event: "filter", state: "other" }];
+    expect(checkModel(m, { catalog, deck: readCopyDeck(deckText), fixtures: fixture }).errors).toEqual([
+      { path: "$.surfaces[0].setups[0].state", message: "Setup state other must be rendered by catalog." },
+      { path: "$.surfaces[0].copy", message: 'A screen surface needs a title copy reference in confirm; declare { when, as: "title" } on its surface or slot.' },
+    ]);
+  });
+
+  for (const [channel, role, key, copy] of [
+    ["screen", "title", "catalog.title", "Objects"],
+    ["email", "subject", "catalog.title", "Objects"],
+    ["email", "body", "catalog.intro", "Choose an object"],
+    ["push", "title", "catalog.title", "Objects"],
+    ["push", "body", "catalog.intro", "Choose an object"],
+  ] as const) test(`${channel} ${role} reach respects slot states and their setups`, () => {
+    const m = structuredClone(base);
+    m.surfaces[0]!.channel = channel;
+    m.surfaces[0]!.setups = [
+      { id: "filterMenu", label: "Filter menu", event: "filter" },
+      { id: "emptyHelp", label: "Empty help", event: "filter", state: "absent" },
+    ];
+    m.surfaces[0]!.copy["catalog.title"] = { when: "always", as: channel === "email" ? "subject" : "title" };
+    if (channel !== "screen") m.surfaces[0]!.copy["catalog.intro"] = { when: "always", as: "body" };
+    delete m.surfaces[0]!.copy[key];
+    m.surfaces[0]!.slots[0]!.copy[key] = { when: "always", as: role };
+    m.surfaces[0]!.slots[0]!.states = ["ready", "absent"];
+    const text = deckText.replace("catalog · Empty |", "catalog · Empty; catalog · Empty help |");
+    const fullReach = text.replace(`| ${key} | ${copy} | catalog |`, `| ${key} | ${copy} | catalog · Ready; catalog · Filter menu; catalog · Empty; catalog · Empty help |`);
+    expect(checkModel(m, { catalog, deck: readCopyDeck(fullReach), fixtures: fixture }).errors).toEqual([]);
+    m.surfaces[0]!.slots[0]!.states = ["ready"];
+    const partialReach = text.replace(`| ${key} | ${copy} | catalog |`, `| ${key} | ${copy} | catalog · Ready; catalog · Filter menu |`);
+    expect(checkModel(m, { catalog, deck: readCopyDeck(partialReach), fixtures: fixture }).errors).toEqual([
+      { path: "$.surfaces[0].copy", message: `A ${channel} surface needs a ${role} copy reference in absent, emptyHelp; declare { when, as: "${role}" } on its surface or slot.` },
+    ]);
+  });
+
+  test("rejects optional declarations for unknown contract fields", () => {
+    expect(run().errors).toEqual([]);
+    expectIssue(run((m) => { m.data.Object!.optional = ["missing"]; }), "$.data.Object.optional", "missing", "declared");
+  });
+
+  test("rejects duplicate optional field declarations", () => {
+    const m = structuredClone(base);
+    m.data.Object!.optional = ["price"];
+    const fixtures = { Object: { ...fixture.Object, unobserved: [{ name: "Rake", price: null }] } };
+    expect(checkModel(m, { catalog, deck: readCopyDeck(deckText), fixtures }).errors).toEqual([]);
+    m.data.Object!.optional.push("price");
+    expectIssue(checkModel(m, { catalog, deck: readCopyDeck(deckText), fixtures }), "$.data.Object.optional", "Duplicate", "unique");
+  });
+
+  test("reviewer probe requires a null scenario for every optional field", () => {
+    const m = structuredClone(base);
+    m.data.Object!.optional = ["price"];
+    const fixtures = { Object: { ...fixture.Object, unobserved: [{ name: "Rake", price: null }] } };
+    expect(checkModel(m, { catalog, deck: readCopyDeck(deckText), fixtures }).errors).toEqual([]);
+    expectIssue(checkModel(m, { catalog, deck: readCopyDeck(deckText), fixtures: fixture }), "fixtures.Object", "null", "optional field price", "Add a scenario");
+  });
+
+  test("every optional field needs its own null case even when another field has one", () => {
+    const m = structuredClone(base);
+    m.data.Object!.optional = ["name", "price"];
+    const fixtures = { Object: { ...fixture.Object, unobserved: [{ name: null, price: null }] } };
+    expect(checkModel(m, { catalog, deck: readCopyDeck(deckText), fixtures }).errors).toEqual([]);
+    expectIssue(checkModel(m, { catalog, deck: readCopyDeck(deckText), fixtures: { Object: { ...fixture.Object, unobserved: [{ name: "Rake", price: null }] } } }), "fixtures.Object", "optional field name", "Add a scenario");
+  });
+
+  test("optional fixture fields must still be declared in every row", () => {
+    const m = structuredClone(base);
+    m.data.Object!.optional = ["price"];
+    const fixtures: Record<string, Record<string, Record<string, unknown>[]>> = { Object: { ...structuredClone(fixture.Object), unobserved: [{ name: "Rake", price: null }] } };
+    expect(checkModel(m, { catalog, deck: readCopyDeck(deckText), fixtures }).errors).toEqual([]);
+    delete fixtures.Object!.populated![0]!.price;
+    expectIssue(checkModel(m, { catalog, deck: readCopyDeck(deckText), fixtures }), "fixtures.Object.populated[0].price", "Expected money", "correct type");
+  });
+
+  test("null is rejected when its field is not optional", () => {
+    const m = structuredClone(base);
+    m.data.Object!.optional = ["price"];
+    const fixtures = { Object: { ...fixture.Object, unobserved: [{ name: "Rake", price: null }] } };
+    expect(checkModel(m, { catalog, deck: readCopyDeck(deckText), fixtures }).errors).toEqual([]);
+    delete m.data.Object!.optional;
+    expectIssue(checkModel(m, { catalog, deck: readCopyDeck(deckText), fixtures }), "fixtures.Object.unobserved[0].price", "Expected money", "correct type");
+  });
+
+  test("optional fields still reject non-null values of the wrong kind", () => {
+    const m = structuredClone(base);
+    m.data.Object!.optional = ["price"];
+    const fixtures: Record<string, Record<string, Record<string, unknown>[]>> = { Object: { ...structuredClone(fixture.Object), unobserved: [{ name: "Rake", price: null }] } };
+    expect(checkModel(m, { catalog, deck: readCopyDeck(deckText), fixtures }).errors).toEqual([]);
+    fixtures.Object!.populated![0]!.price = "unobserved";
+    expectIssue(checkModel(m, { catalog, deck: readCopyDeck(deckText), fixtures }), "fixtures.Object.populated[0].price", "Expected money", "correct type");
+  });
+
+  test("optional null works for every field kind without exempting typed values", () => {
+    const m = structuredClone(base);
+    m.data.Object!.fields = { name: "text", price: "money", note: "longText", count: "number", date: "date", photo: "image", status: "enum", owner: "ref" };
+    m.data.Object!.enums = { status: ["ready"] };
+    m.data.Object!.optional = Object.keys(m.data.Object!.fields);
+    const common = { note: "A useful note", count: 3, date: "2026-10-08", photo: "data:image/svg+xml,illustration", status: "ready", owner: "person1" };
+    const fixtures: Record<string, Record<string, Record<string, unknown>[]>> = { Object: Object.fromEntries(Object.entries(fixture.Object).map(([scenario, rows]) => [scenario, rows.map((row) => ({ ...row, ...common }))])) };
+    fixtures.Object!.unobserved = [Object.fromEntries(Object.keys(m.data.Object!.fields).map((field) => [field, null]))];
+    expect(checkModel(m, { catalog, deck: readCopyDeck(deckText), fixtures }).errors).toEqual([]);
+    fixtures.Object!.populated![0]!.count = "three";
+    expectIssue(checkModel(m, { catalog, deck: readCopyDeck(deckText), fixtures }), "fixtures.Object.populated[0].count", "Expected number", "correct type");
+  });
+});
+
+describe("reviewer regressions for shared decisions and event-bound records", () => {
+  const sharedCatalog: PatternCatalog = {
+    ...catalog,
+    collection: { ...catalog.collection!, variants: [...catalog.collection!.variants, { id: "table", label: "Table" }] },
+    browse: { ...catalog.collection!, id: "browse", scale: "flow", slots: { required: [], optional: [] }, variants: [...catalog.collection!.variants, { id: "table", label: "Table" }], renderer: "schematic", sharesVariants: "collection" },
+  };
+
+  test("reviewer probe reconciles a sameAs follower's status with its leader", () => {
+    const m = structuredClone(base);
+    m.surfaces[0]!.binding = { record: "collection", status: "proposed", variant: "list", candidates: ["list", "grid"] };
+    m.flows[0]!.binding = { record: "browse", status: "proposed", variant: "list", candidates: ["grid", "list"], sameAs: "surface:catalog" };
+    expect(checkModel(m, { catalog: sharedCatalog, deck: readCopyDeck(deckText), fixtures: fixture }).errors).toEqual([]);
+    m.flows[0]!.binding.status = "fixed";
+    m.flows[0]!.binding.because = "Keep this structure.";
+    expectIssue(checkModel(m, { catalog: sharedCatalog, deck: readCopyDeck(deckText), fixtures: fixture }), "$.flows[0].binding.status", "Shared decision disagrees with surface:catalog", "proposed");
+  });
+
+  test("sameAs followers must select their leader's variant", () => {
+    const m = structuredClone(base);
+    m.surfaces[0]!.binding = { record: "collection", status: "proposed", variant: "list", candidates: ["list", "grid"] };
+    m.flows[0]!.binding = { record: "browse", status: "proposed", variant: "list", candidates: ["grid", "list"], sameAs: "surface:catalog" };
+    expect(checkModel(m, { catalog: sharedCatalog, deck: readCopyDeck(deckText), fixtures: fixture }).errors).toEqual([]);
+    m.flows[0]!.binding.variant = "grid";
+    expectIssue(checkModel(m, { catalog: sharedCatalog, deck: readCopyDeck(deckText), fixtures: fixture }), "$.flows[0].binding.variant", "Shared decision disagrees with surface:catalog", "use variant list");
+  });
+
+  test("reviewer probe compares sameAs candidate sets without depending on their order", () => {
+    const m = structuredClone(base);
+    m.surfaces[0]!.binding = { record: "collection", status: "open", candidates: ["list", "grid"] };
+    m.flows[0]!.binding = { record: "browse", status: "open", candidates: ["grid", "list"], sameAs: "surface:catalog" };
+    expect(checkModel(m, { catalog: sharedCatalog, deck: readCopyDeck(deckText), fixtures: fixture }).errors).toEqual([]);
+    m.flows[0]!.binding.candidates = ["list", "table"];
+    expectIssue(checkModel(m, { catalog: sharedCatalog, deck: readCopyDeck(deckText), fixtures: fixture }), "$.flows[0].binding.candidates", "Shared decision disagrees with surface:catalog", "use");
+  });
+
+  test("omitted sameAs candidates mean every header variant, not the leader's subset", () => {
+    const m = structuredClone(base);
+    m.surfaces[0]!.binding = { record: "collection", status: "open", candidates: ["table", "grid", "list"] };
+    m.flows[0]!.binding = { record: "browse", status: "open", sameAs: "surface:catalog" };
+    expect(checkModel(m, { catalog: sharedCatalog, deck: readCopyDeck(deckText), fixtures: fixture }).errors).toEqual([]);
+    m.surfaces[0]!.binding!.candidates = ["list", "grid"];
+    expectIssue(checkModel(m, { catalog: sharedCatalog, deck: readCopyDeck(deckText), fixtures: fixture }), "$.flows[0].binding.candidates", "Shared decision disagrees with surface:catalog", "use");
+  });
+
+  for (const status of ["open", "proposed"] as const) test(`reviewer probe requires a singleton ${status} decision to be fixed`, () => {
+    const m = structuredClone(base);
+    m.surfaces[0]!.binding!.status = status;
+    if (status === "proposed") m.surfaces[0]!.binding!.variant = "list";
+    expect(checkModel(m, { catalog, deck: readCopyDeck(deckText), fixtures: fixture }).errors).toEqual([]);
+    m.surfaces[0]!.binding!.candidates = ["list"];
+    expectIssue(checkModel(m, { catalog, deck: readCopyDeck(deckText), fixtures: fixture }), "$.surfaces[0].binding.candidates", "at least two fitting candidates", "make it fixed with a reason");
+    m.surfaces[0]!.binding = { record: "collection", status: "fixed", variant: "list", candidates: ["list"], because: "Only a list fits this product." };
+    expect(checkModel(m, { catalog, deck: readCopyDeck(deckText), fixtures: fixture }).errors).toEqual([]);
+  });
+
+  test("a nonfixed binding cannot hide a singleton header by omitting candidates", () => {
+    const m = structuredClone(base);
+    delete m.surfaces[0]!.binding!.candidates;
+    expect(checkModel(m, { catalog, deck: readCopyDeck(deckText), fixtures: fixture }).errors).toEqual([]);
+    const singleton = { ...catalog, collection: { ...catalog.collection!, variants: [catalog.collection!.variants[0]!] } };
+    expectIssue(checkModel(m, { catalog: singleton, deck: readCopyDeck(deckText), fixtures: fixture }), "$.surfaces[0].binding.candidates", "at least two fitting candidates", "make it fixed");
+  });
+
+  for (const [scale, axis, event, kind] of [
+    ["interaction", "asyncFeedback", "load", "operation"],
+    ["motion", "routeMotion", "navigate", "route"],
+  ] as const) {
+    for (const absent of ["missing", "empty"] as const) test(`${scale} record slots reject ${absent} on bindings`, () => {
+      const m = structuredClone(base);
+      m.events[event] = { label: "Complete the operation", kind };
+      m.surfaces[0]!.slots[1]!.record = "feedback";
+      m.surfaces[0]!.slots[1]!.variant = "cue";
+      m.surfaces[0]!.slots[1]!.on = [{ event, axis }];
+      const records: PatternCatalog = { ...catalog, feedback: { ...catalog.absence!, id: "feedback", scale, studio: axis, events: ["progress"] } };
+      expect(checkModel(m, { catalog: records, deck: readCopyDeck(deckText), fixtures: fixture }).errors).toEqual([]);
+      if (absent === "missing") delete m.surfaces[0]!.slots[1]!.on;
+      else m.surfaces[0]!.slots[1]!.on = [];
+      expectIssue(checkModel(m, { catalog: records, deck: readCopyDeck(deckText), fixtures: fixture }), "$.surfaces[0].slots[1].on", "needs on", "matching");
+    });
+
+    test(`${scale} records reject an event-valid axis that disagrees with their header`, () => {
+      const m = structuredClone(base);
+      m.events[event] = { label: "Complete the operation", kind };
+      m.surfaces[0]!.slots[1]!.record = "feedback";
+      m.surfaces[0]!.slots[1]!.variant = "cue";
+      m.surfaces[0]!.slots[1]!.on = [{ event, axis }];
+      const records: PatternCatalog = { ...catalog, feedback: { ...catalog.absence!, id: "feedback", scale, studio: axis, events: ["progress"] } };
+      expect(checkModel(m, { catalog: records, deck: readCopyDeck(deckText), fixtures: fixture }).errors).toEqual([]);
+      m.surfaces[0]!.slots[1]!.on = [{ event: "filter", axis: "contentSwap" }];
+      expectIssue(checkModel(m, { catalog: records, deck: readCopyDeck(deckText), fixtures: fixture }), "$.surfaces[0].slots[1].on[0].axis", `needs interaction axis ${axis}`, "matching semantic event");
+    });
+  }
+
+  test("reports a duplicate surface id without looking up its interaction slot on the duplicate", () => {
+    const m = structuredClone(base);
+    m.events.load = { label: "Load objects", kind: "operation" };
+    m.surfaces[0]!.slots[1]!.record = "feedback";
+    m.surfaces[0]!.slots[1]!.on = [{ event: "load", axis: "asyncFeedback" }];
+    const records: PatternCatalog = { ...catalog, feedback: { ...catalog.absence!, id: "feedback", scale: "interaction", studio: "asyncFeedback", events: ["progress"] } };
+    expect(checkModel(m, { catalog: records, deck: readCopyDeck(deckText), fixtures: fixture }).errors).toEqual([]);
+    const duplicate = structuredClone(base.surfaces[0]!);
+    duplicate.slots.splice(1, 1);
+    duplicate.copy["catalog.empty"] = ["absent"];
+    m.surfaces.push(duplicate);
+    expect(checkModel(m, { catalog: records, deck: readCopyDeck(deckText), fixtures: fixture }).errors).toEqual([
+      { path: "$.surfaces[1].id", message: "Identifier catalog is already used at $.surfaces[0].id; flows, surfaces, states and events need distinct names." },
+    ]);
+  });
+
+  test("duplicate slot ids do not borrow on bindings from the first slot", () => {
+    const m = structuredClone(base);
+    m.events.load = { label: "Load objects", kind: "operation" };
+    m.surfaces[0]!.slots[1]!.record = "feedback";
+    m.surfaces[0]!.slots[1]!.on = [{ event: "load", axis: "asyncFeedback" }];
+    const records: PatternCatalog = { ...catalog, feedback: { ...catalog.absence!, id: "feedback", scale: "interaction", studio: "asyncFeedback", events: ["progress"] } };
+    expect(checkModel(m, { catalog: records, deck: readCopyDeck(deckText), fixtures: fixture }).errors).toEqual([]);
+    const duplicate = structuredClone(m.surfaces[0]!.slots[1]!);
+    delete duplicate.on;
+    m.surfaces[0]!.slots.push(duplicate);
+    expect(checkModel(m, { catalog: records, deck: readCopyDeck(deckText), fixtures: fixture }).errors).toEqual([
+      { path: "$.surfaces[0].slots", message: "Duplicate identifier state; use unique names." },
+      { path: "$.surfaces[0].slots[2].on", message: "Interaction/motion pattern feedback needs on; bind it to a matching semantic event and interaction axis." },
+    ]);
+  });
+
+  for (const [axis, kind, wrongKind] of [
+    ["layerArrival", "layer", "swap"],
+    ["controlResponse", "press", "swap"],
+    ["contentSwap", "swap", "operation"],
+    ["asyncFeedback", "operation", "swap"],
+    ["routeMotion", "route", "swap"],
+    ["themeMotion", "theme", "swap"],
+  ] as const) test(`a non-axis motion-language studio accepts semantically valid ${axis} bindings`, () => {
+    const m = structuredClone(base);
+    m.events.respond = { label: "Respond to the change", kind };
+    m.surfaces[0]!.slots[1]!.record = "motion-language";
+    m.surfaces[0]!.slots[1]!.on = [{ event: "respond", axis }];
+    const records: PatternCatalog = { ...catalog, "motion-language": { ...catalog.absence!, id: "motion-language", scale: "motion", studio: "motion", events: ["change"] } };
+    expect(checkModel(m, { catalog: records, deck: readCopyDeck(deckText), fixtures: fixture }).errors).toEqual([]);
+    m.events.respond!.kind = wrongKind;
+    expect(checkModel(m, { catalog: records, deck: readCopyDeck(deckText), fixtures: fixture }).errors).toEqual([
+      { path: "$.surfaces[0].slots[1].on[0].axis", message: `Interaction axis ${axis} does not treat ${wrongKind}; bind it to the matching semantic event.` },
+    ]);
+  });
+
+  test("never words match declared forms case-insensitively but not fragments", () => {
+    const m = structuredClone(base);
+    m.entities[0]!.never = ["listing"];
+    const plural = deckText.replace("Choose an object", "View listings and relisting history");
+    expect(checkModel(m, { catalog, deck: readCopyDeck(plural), fixtures: fixture }).warnings).toEqual([]);
+    m.entities[0]!.never = ["listing", "listings"];
+    const fragment = deckText.replace("Choose an object", "View relisting history");
+    expect(checkModel(m, { catalog, deck: readCopyDeck(fragment), fixtures: fixture }).warnings).toEqual([]);
+    for (const [copy, word] of [["View LISTING.", "listing"], ["View LISTINGS and relisting history", "listings"]] as const) {
+      const result = checkModel(m, { catalog, deck: readCopyDeck(deckText.replace("Choose an object", copy)), fixtures: fixture });
+      expect(result.errors).toEqual([]);
+      expect(result.warnings).toEqual([
+        { path: "copy.md:5", message: `catalog.intro uses banned word "${word}" for object; use its declared entity words instead.` },
+      ]);
+    }
+  });
+});
+
+describe("previously uncovered model validation branches", () => {
+  test("a slot-bound record rejects an unsupported placement id", () => {
+    const m = structuredClone(base);
+    const records = { ...catalog, collection: { ...catalog.collection!, slots: { required: ["primary"], optional: ["state", "outcome"] } } };
+    expect(checkModel(m, { catalog: records, deck: readCopyDeck(deckText), fixtures: fixture }).errors).toEqual([]);
+    m.surfaces[0]!.slots[1]!.id = "outcome";
+    expectIssue(checkModel(m, { catalog: records, deck: readCopyDeck(deckText), fixtures: fixture }), "$.surfaces[0].slots[1].id", "not a supported placement", "use a declared slot id");
+  });
+
+  test("a surface-scale record belongs on the surface rather than a slot", () => {
+    const m = structuredClone(base);
+    const records: PatternCatalog = { ...catalog, panel: { ...catalog.collection!, id: "panel", slots: { required: ["state"], optional: [] }, copy: [] } };
+    expect(checkModel(m, { catalog: records, deck: readCopyDeck(deckText), fixtures: fixture }).errors).toEqual([]);
+    m.surfaces[0]!.slots[1]!.record = "panel";
+    m.surfaces[0]!.slots[1]!.variant = "list";
+    expectIssue(checkModel(m, { catalog: records, deck: readCopyDeck(deckText), fixtures: fixture }), "$.surfaces[0].slots[1].record", "belongs on the surface binding", "use a local");
+  });
+
+  const navCases: { name: string; path: string; message: string; correction: string; change: (model: ProductModel) => void }[] = [
+    { name: "item surface", path: "$.nav.items[0].surface", message: "Unknown surface missing", correction: "declare it in surfaces", change: (m) => { m.nav.items[0]!.surface = "missing"; } },
+    { name: "item copy", path: "$.nav.items[0].copy", message: "Missing copy key nav.missing", correction: "add it to the deck", change: (m) => { m.nav.items[0]!.copy = "nav.missing"; } },
+    { name: "menu surface", path: "$.nav.menu", message: "Unknown surface missing", correction: "menu entries are surface ids", change: (m) => { m.nav.menu = ["missing"]; } },
+    { name: "global action", path: "$.nav.globalAction", message: "Unknown event missing", correction: "declare the global action in events", change: (m) => { m.nav.globalAction = "missing"; } },
+  ];
+  for (const item of navCases) test(`navigation rejects an undeclared ${item.name}`, () => {
+    const m = structuredClone(base);
+    m.nav.menu = ["catalog"];
+    m.nav.globalAction = "filter";
+    expect(checkModel(m, { catalog, deck: readCopyDeck(deckText), fixtures: fixture }).errors).toEqual([]);
+    item.change(m);
+    expectIssue(checkModel(m, { catalog, deck: readCopyDeck(deckText), fixtures: fixture }), item.path, item.message, item.correction);
+  });
+
+  test("setup ids cannot collide with a state on the same surface", () => {
+    const m = structuredClone(base);
+    m.surfaces[0]!.setups = [{ id: "confirm", label: "Confirm choice", event: "filter", state: "absent" }];
+    expect(checkModel(m, { catalog, deck: readCopyDeck(writeShownWhen(deckText, m)), fixtures: fixture }).errors).toEqual([]);
+    m.surfaces[0]!.setups[0]!.id = "absent";
+    expectIssue(checkModel(m, { catalog, deck: readCopyDeck(writeShownWhen(deckText, m)), fixtures: fixture }), "$.surfaces[0].setups[0].id", "collides with a state", "choose a distinct setup id");
+  });
+
+  test("enum fields require declared allowed values", () => {
+    const m = structuredClone(base);
+    m.data.Object!.fields.status = "enum";
+    m.data.Object!.enums = { status: ["ready"] };
+    const fixtures = { Object: Object.fromEntries(Object.entries(fixture.Object).map(([scenario, rows]) => [scenario, rows.map((row) => ({ ...row, status: "ready" }))])) };
+    expect(checkModel(m, { catalog, deck: readCopyDeck(deckText), fixtures }).errors).toEqual([]);
+    delete m.data.Object!.enums;
+    expectIssue(checkModel(m, { catalog, deck: readCopyDeck(deckText), fixtures }), "$.data.Object.enums.status", "Declare the enum's allowed values");
+  });
+
+  test("enum declarations cannot target a non-enum field", () => {
+    expect(run().errors).toEqual([]);
+    expectIssue(run((m) => { m.data.Object!.enums = { name: ["Spade", "Drill"] }; }), "$.data.Object.enums.name", "Declare this field as enum or remove");
+  });
+
+  test("enum fixture values must be one of the declared options", () => {
+    const m = structuredClone(base);
+    m.data.Object!.fields.status = "enum";
+    m.data.Object!.enums = { status: ["ready", "pending"] };
+    const fixtures = { Object: Object.fromEntries(Object.entries(fixture.Object).map(([scenario, rows]) => [scenario, rows.map((row) => ({ ...row, status: "ready" }))])) };
+    expect(checkModel(m, { catalog, deck: readCopyDeck(deckText), fixtures }).errors).toEqual([]);
+    fixtures.Object.populated![0]!.status = "missing";
+    expectIssue(checkModel(m, { catalog, deck: readCopyDeck(deckText), fixtures }), "fixtures.Object.populated[0].status", "Expected enum (ready, pending)", "correct type");
+  });
+
+  for (const date of ["not-a-date", "2026-02-30"]) test(`date fixtures reject ${date}`, () => {
+    const m = structuredClone(base);
+    m.data.Object!.fields.editedAt = "date";
+    const fixtures = { Object: Object.fromEntries(Object.entries(fixture.Object).map(([scenario, rows]) => [scenario, rows.map((row) => ({ ...row, editedAt: "2026-10-08" }))])) };
+    expect(checkModel(m, { catalog, deck: readCopyDeck(deckText), fixtures }).errors).toEqual([]);
+    fixtures.Object.populated![0]!.editedAt = date;
+    expectIssue(checkModel(m, { catalog, deck: readCopyDeck(deckText), fixtures }), "fixtures.Object.populated[0].editedAt", "Expected date", "correct type");
+  });
+
+  test("a contract max cannot be lower than its typical count", () => {
+    expect(run().errors).toEqual([]);
+    expectIssue(run((m) => { m.data.Object!.max = 1; }), "$.data.Object.max", "max must be at least typical");
+  });
+
+  test("fixture scenario counts cannot exceed the declared max", () => {
+    const m = structuredClone(base);
+    m.data.Object!.max = 2;
+    const fixtures = { Object: { ...fixture.Object, crowded: [{ name: "Rake", price: 1 }, { name: "Saw", price: 2 }] } };
+    expect(checkModel(m, { catalog, deck: readCopyDeck(deckText), fixtures }).errors).toEqual([]);
+    fixtures.Object.crowded.push({ name: "Hoe", price: 3 });
+    expectIssue(checkModel(m, { catalog, deck: readCopyDeck(deckText), fixtures }), "fixtures.Object.crowded", "Scenario count exceeds max (2)");
+  });
+});
+
 describe("file and command behavior", () => {
   test("loads model-relative companions and reports malformed fixture JSON", async () => { const dir = await mkdtemp(join(tmpdir(), "studio-model-test-")); try { await Promise.all([writeFile(join(dir, "product.json"), JSON.stringify(base)), writeFile(join(dir, "copy.md"), deckText), writeFile(join(dir, "fixtures.json"), JSON.stringify(fixture))]); expect((await checkModelFile(join(dir, "product.json"), catalog)).errors).toEqual([]); await writeFile(join(dir, "fixtures.json"), "{broken"); expect((await checkModelFile(join(dir, "product.json"), catalog)).errors[0]!.path).toBe("$.files.fixtures"); } finally { await rm(dir, { recursive: true, force: true }); } });
   test("resolves conventional docs paths from project root and rejects absolute companions", async () => {
@@ -229,6 +789,82 @@ describe("file and command behavior", () => {
         expect(stderr, item.name).toContain(item.path);
         expect(stderr, item.name).toContain(item.message);
       }
+    } finally { await rm(dir, { recursive: true, force: true }); }
+  });
+});
+
+describe("reviewer regressions at file and CLI boundaries", () => {
+  for (const [name, ending] of [
+    ["missing trailing pipe", "stale"],
+    ["escaped final pipe without a trailing delimiter", "stale \\|"],
+  ] as const) test(`rejects a ${name} without a write repair loop`, async () => {
+    const dir = await mkdtemp(join(tmpdir(), "studio-model-pipe-"));
+    try {
+      const path = join(dir, "product.json");
+      const deckPath = join(dir, "copy.md");
+      await Promise.all([writeFile(path, JSON.stringify(base)), writeFile(deckPath, deckText), writeFile(join(dir, "fixtures.json"), JSON.stringify(fixture))]);
+      expect((await checkModelFile(path, catalog)).errors).toEqual([]);
+      const invalid = deckText.replace("catalog · Empty |", ending);
+      await writeFile(deckPath, invalid);
+      for (let attempt = 0; attempt < 2; attempt++) {
+        const result = await checkModelFile(path, catalog, { writeShownWhen: true });
+        expect(result.errors).toEqual([
+          { path: "copy.md:4", message: "Copy deck row is missing its trailing pipe; end the row with | before updating Shown when." },
+          { path: '$.surfaces[0].slots[1].copy["catalog.empty"]', message: "Missing copy key catalog.empty; add it to the keyed deck." },
+        ]);
+        expect(await readFile(deckPath, "utf8")).toBe(invalid);
+      }
+    } finally { await rm(dir, { recursive: true, force: true }); }
+  });
+
+  for (const { name, whitespace } of [{ name: "NBSP", whitespace: "\u00a0" }, { name: "line separator", whitespace: "\u2028" }, { name: "paragraph separator", whitespace: "\u2029" }]) test(`repairs stale reach with ${name} whitespace idempotently`, async () => {
+    const dir = await mkdtemp(join(tmpdir(), "studio-model-whitespace-"));
+    try {
+      const path = join(dir, "product.json");
+      const deckPath = join(dir, "copy.md");
+      const expected = "\u00a0| Key | Copy | Shown when |\u00a0\n\u00a0|---|---|---|\u00a0\n\u00a0| catalog.title | Objects | catalog |\u00a0\n\u00a0| catalog.empty | No objects yet | catalog · Empty |\u00a0\n\u00a0| catalog.intro | Choose an object | catalog |\u00a0\n".replaceAll("\u00a0", whitespace);
+      await Promise.all([writeFile(path, JSON.stringify(base)), writeFile(deckPath, expected.replace("catalog · Empty", "stale")), writeFile(join(dir, "fixtures.json"), JSON.stringify(fixture))]);
+      expect((await checkModelFile(path, catalog)).errors).toEqual([
+        { path: "copy.md:4", message: 'Stale Shown when for catalog.empty; expected "catalog · Empty". Run model:check --write-shown-when.' },
+      ]);
+      for (let attempt = 0; attempt < 2; attempt++) {
+        expect((await checkModelFile(path, catalog, { writeShownWhen: true })).errors).toEqual([]);
+        expect(await readFile(deckPath, "utf8")).toBe(expected);
+      }
+      expect((await checkModelFile(path, catalog)).errors).toEqual([]);
+    } finally { await rm(dir, { recursive: true, force: true }); }
+  });
+
+  const duplicateCases: { name: string; path: string; change: (json: string, model: ProductModel) => string }[] = [
+    { name: "top-level duplicate", path: '$["model"]', change: (json) => json.replace('"model":1', '"model":1,"model":1') },
+    { name: "nested duplicate", path: '$.product["id"]', change: (json, model) => json.replace('"product":{', `"product":{"id":${JSON.stringify(model.product.id)},`) },
+    { name: "escaped equivalent key", path: '$.product["id"]', change: (json, model) => json.replace('"product":{', `"product":{"\\u0069d":${JSON.stringify(model.product.id)},`) },
+    { name: "duplicate inside an array object", path: '$.product.users[0]["id"]', change: (json) => json.replace('"users":[{', '"users":[{"id":"duplicate",') },
+  ];
+  for (const item of duplicateCases) test(`file loading and CLI reject a ${item.name} before its last value wins`, async () => {
+    const cwd = fileURLToPath(new URL("..", import.meta.url));
+    const sampleDir = new URL("../samples/shed/", import.meta.url);
+    const model = JSON.parse(await readFile(new URL("product.json", sampleDir), "utf8")) as ProductModel;
+    model.files = { copy: "copy.md", fixtures: "fixtures.json" };
+    const records = await readPatternCatalog(fileURLToPath(new URL("../../references/patterns/", import.meta.url)));
+    const dir = await mkdtemp(join(tmpdir(), "studio-model-duplicate-"));
+    try {
+      const path = join(dir, "product.json");
+      const text = JSON.stringify(model);
+      await Promise.all([writeFile(path, text), writeFile(join(dir, "copy.md"), await readFile(new URL("copy.md", sampleDir))), writeFile(join(dir, "fixtures.json"), await readFile(new URL("fixtures.json", sampleDir)))]);
+      expect((await checkModelFile(path, records)).errors).toEqual([]);
+      const baseline = Bun.spawn([process.execPath, "scripts/model-check.ts", path], { cwd, stdout: "ignore", stderr: "pipe" });
+      const [baselineCode, baselineErrors] = await Promise.all([baseline.exited, new Response(baseline.stderr).text()]);
+      expect(baselineCode, baselineErrors).toBe(0);
+      await writeFile(path, item.change(text, model));
+      const result = await checkModelFile(path, records);
+      expectIssue(result, item.path, "Duplicate JSON key", "keep one declaration");
+      const proc = Bun.spawn([process.execPath, "scripts/model-check.ts", path], { cwd, stdout: "ignore", stderr: "pipe" });
+      const [code, stderr] = await Promise.all([proc.exited, new Response(proc.stderr).text()]);
+      expect(code).toBe(1);
+      expect(stderr).toContain(item.path);
+      expect(stderr).toContain("Duplicate JSON key");
+      expect(stderr).toContain("keep one declaration");
     } finally { await rm(dir, { recursive: true, force: true }); }
   });
 });

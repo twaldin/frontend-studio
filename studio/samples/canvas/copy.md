@@ -140,12 +140,7 @@ Fixed product language lives here. Lesson, game and board content lives in the t
 | help.frames.explanation | A frame is a screen or a section of the board. Layers inside a frame move with it and keep their position relative to its edges. | help |
 | help.sync.explanation | Changes are shared after a saved revision is acknowledged. Offline edits stay on this device until they sync; pinned comments remain attached to their layers. | help |
 | boards.frameCount | {frames} frames | boards · Recent boards; boards · Board list unavailable; boards · Long board name; boards · Board created |
-| boards.updatedAt | Edited {updatedAt} | boards · Recent boards; boards · Board list unavailable; boards · Long board name; boards · Board created |
-| boards.edited.minutes | {count} min ago | boards · Recent boards; boards · Board list unavailable; boards · Long board name |
-| boards.edited.hours | {count} h ago | boards · Recent boards; boards · Board list unavailable |
-| boards.edited.yesterday | Yesterday | boards · Recent boards; boards · Board list unavailable |
-| boards.edited.days | {count} days ago | boards · Recent boards; boards · Board list unavailable |
-| boards.edited.weeks | {count} weeks ago | boards · Recent boards; boards · Board list unavailable |
+| boards.updatedAt | Edited {updatedAt:relative} | boards · Recent boards; boards · Board list unavailable; boards · Long board name; boards · Board created |
 | boards.loading | Loading your boards… | boards · Loading boards |
 | boards.stale | These are the last saved board details. | boards · Board list unavailable |
 | boardEditor.title | New board | boardEditor |
@@ -203,7 +198,7 @@ Fixed product language lives here. Lesson, game and board content lives in the t
 | layerEditor.return | Back to canvas | layerEditor · Layer saved; layerEditor · First layer saved; layerEditor · Pinned layer saved |
 | layerEditor.retry | Save layer again | layerEditor · Layer not saved; layerEditor · First layer not saved |
 | layerEditor.invalid.name | Give this layer a name. | layerEditor · Missing layer name |
-| comments.time | Posted at {sentAt} | comments · Pinned feedback; comments · Comments unavailable; comments · Long review feedback; comments · Posting feedback; comments · Feedback posted; comments · Feedback not posted; comments · Resolving feedback; comments · Feedback resolved; comments · Resolution not saved |
+| comments.time | Posted at {sentAt:time} | comments · Pinned feedback; comments · Comments unavailable; comments · Long review feedback; comments · Posting feedback; comments · Feedback posted; comments · Feedback not posted; comments · Resolving feedback; comments · Feedback resolved; comments · Resolution not saved |
 | comments.pin | Pinned to {layerName} | comments · Pinned feedback; comments · Comments unavailable; comments · Long review feedback; comments · Posting feedback; comments · Feedback posted; comments · Feedback not posted; comments · Resolving feedback; comments · Feedback resolved; comments · Resolution not saved |
 | comments.loading | Loading pinned feedback… | comments · Loading comments |
 | comments.pending | Posting your comment… | comments · Posting feedback |

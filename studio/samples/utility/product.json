@@ -1,4 +1,5 @@
 {
+  "$schema": "../../../references/product-model.schema.json",
   "model": 1,
   "product": {
     "id": "utility",
@@ -703,9 +704,9 @@
       "route": "/convert",
       "binding": {
         "record": "home",
-        "status": "proposed",
+        "status": "fixed",
         "variant": "launcher",
-        "because": "One focused amount input produces the result without a browsing step.",
+        "because": "The amount and unit pair lead directly to a result; collection and dashboard compositions do not fit this focused converter.",
         "candidates": [
           "launcher"
         ]
@@ -777,14 +778,27 @@
             "convert.cachedNotice": [
               "convertCachedRates"
             ]
+          },
+          "data": {
+            "contract": "Rate",
+            "many": false,
+            "map": {
+              "updatedAt": "updatedAt"
+            }
           }
         },
         {
           "id": "identity",
           "copy": {
             "convert.title": "always",
-            "convert.documentTitle": "always",
-            "convert.alt.productMark": "always"
+            "convert.documentTitle": {
+              "when": "always",
+              "as": "title"
+            },
+            "shell.alt.productMark": {
+              "when": "always",
+              "as": "alt"
+            }
           }
         },
         {
@@ -827,10 +841,22 @@
       ],
       "copy": {
         "convert.title": "always",
-        "convert.documentTitle": "always",
-        "convert.aria.navigation": "always",
-        "convert.aria.main": "always",
-        "convert.alt.productMark": "always",
+        "convert.documentTitle": {
+          "when": "always",
+          "as": "title"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
         "convert.composer.placeholder": "always",
         "convert.send": "always",
         "convert.amount.label": "always",
@@ -895,9 +921,12 @@
           "convertUnitPickerSetup",
           "convertCopiedSetup"
         ],
-        "convert.outcome.copied": [
-          "convertCopiedSetup"
-        ]
+        "convert.outcome.copied": {
+          "when": [
+            "convertCopiedSetup"
+          ],
+          "as": "announce"
+        }
       },
       "setups": [
         {
@@ -959,9 +988,12 @@
             "history.recovery.action": [
               "historyFailed"
             ],
-            "history.status.clearing": [
-              "historyClearing"
-            ],
+            "history.status.clearing": {
+              "when": [
+                "historyClearing"
+              ],
+              "as": "announce"
+            },
             "history.recovery.clearFailure": [
               "historyClearFailed"
             ]
@@ -993,6 +1025,13 @@
             "history.confirmation.close": [
               "historyConfirmSetup"
             ]
+          },
+          "data": {
+            "contract": "HistorySummary",
+            "many": false,
+            "map": {
+              "conversionCount": "conversionCount"
+            }
           }
         },
         {
@@ -1006,10 +1045,13 @@
             "toast"
           ],
           "copy": {
-            "history.outcome": [
-              "historyCleared",
-              "historyOutcomeSetup"
-            ]
+            "history.outcome": {
+              "when": [
+                "historyCleared",
+                "historyOutcomeSetup"
+              ],
+              "as": "announce"
+            }
           }
         },
         {
@@ -1049,10 +1091,22 @@
       ],
       "copy": {
         "history.title": "always",
-        "history.documentTitle": "always",
-        "history.aria.navigation": "always",
-        "history.aria.main": "always",
-        "history.alt.productMark": "always",
+        "history.documentTitle": {
+          "when": "always",
+          "as": "title"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
         "history.column.fromUnit": [
           "historyReady",
           "historyLoading",
@@ -1190,10 +1244,22 @@
       ],
       "copy": {
         "favorites.title": "always",
-        "favorites.documentTitle": "always",
-        "favorites.aria.navigation": "always",
-        "favorites.aria.main": "always",
-        "favorites.alt.productMark": "always",
+        "favorites.documentTitle": {
+          "when": "always",
+          "as": "title"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
         "favorites.open": [
           "favoritesReady",
           "favoritesLoading",
@@ -1283,10 +1349,22 @@
       ],
       "copy": {
         "rates.title": "always",
-        "rates.documentTitle": "always",
-        "rates.aria.navigation": "always",
-        "rates.aria.main": "always",
-        "rates.alt.productMark": "always",
+        "rates.documentTitle": {
+          "when": "always",
+          "as": "title"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
         "rates.refresh": "always",
         "rates.updated": [
           "ratesLive",
@@ -1311,9 +1389,12 @@
         "rates.unavailable": [
           "ratesUnavailable"
         ],
-        "rates.status.refreshing": [
-          "ratesRefreshing"
-        ],
+        "rates.status.refreshing": {
+          "when": [
+            "ratesRefreshing"
+          ],
+          "as": "announce"
+        },
         "rates.recovery": [
           "ratesRefreshFailed"
         ],
@@ -1334,7 +1415,10 @@
           "id": "header",
           "copy": {
             "saveFavorite.title": "always",
-            "saveFavorite.documentTitle": "always"
+            "saveFavorite.documentTitle": {
+              "when": "always",
+              "as": "title"
+            }
           }
         },
         {
@@ -1362,15 +1446,27 @@
         {
           "id": "state",
           "copy": {
-            "saveFavorite.status": [
-              "saveFavoriteSaving"
-            ],
+            "saveFavorite.status": {
+              "when": [
+                "saveFavoriteSaving"
+              ],
+              "as": "announce"
+            },
             "saveFavorite.recovery": [
               "saveFavoriteFailed"
             ],
             "saveFavorite.saved": [
               "saveFavoriteSaved"
             ]
+          },
+          "data": {
+            "contract": "Favorite",
+            "many": false,
+            "map": {
+              "name": "name",
+              "fromUnit": "fromUnit",
+              "toUnit": "toUnit"
+            }
           }
         },
         {
@@ -1419,15 +1515,30 @@
       ],
       "copy": {
         "saveFavorite.title": "always",
-        "saveFavorite.documentTitle": "always",
-        "saveFavorite.aria.navigation": "always",
-        "saveFavorite.aria.main": "always",
-        "saveFavorite.alt.productMark": "always",
+        "saveFavorite.documentTitle": {
+          "when": "always",
+          "as": "title"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
         "saveFavorite.save": "always",
         "saveFavorite.cancel": "always",
-        "saveFavorite.status": [
-          "saveFavoriteSaving"
-        ],
+        "saveFavorite.status": {
+          "when": [
+            "saveFavoriteSaving"
+          ],
+          "as": "announce"
+        },
         "saveFavorite.recovery": [
           "saveFavoriteFailed"
         ],
@@ -1495,10 +1606,22 @@
       ],
       "copy": {
         "shortcuts.title": "always",
-        "shortcuts.documentTitle": "always",
-        "shortcuts.aria.navigation": "always",
-        "shortcuts.aria.main": "always",
-        "shortcuts.alt.productMark": "always",
+        "shortcuts.documentTitle": {
+          "when": "always",
+          "as": "title"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
         "shortcuts.pickUnits.label": "always",
         "shortcuts.pickUnits.keys": "always",
         "shortcuts.swapUnits.label": "always",
@@ -1549,18 +1672,27 @@
           "id": "header",
           "copy": {
             "settings.title": "always",
-            "settings.documentTitle": "always"
+            "settings.documentTitle": {
+              "when": "always",
+              "as": "title"
+            }
           }
         },
         {
           "id": "state",
           "copy": {
-            "settings.status.saving": [
-              "settingsSaving"
-            ],
-            "settings.status.saved": [
-              "settingsSaved"
-            ],
+            "settings.status.saving": {
+              "when": [
+                "settingsSaving"
+              ],
+              "as": "announce"
+            },
+            "settings.status.saved": {
+              "when": [
+                "settingsSaved"
+              ],
+              "as": "announce"
+            },
             "settings.recovery": [
               "settingsFailed"
             ]
@@ -1598,19 +1730,37 @@
       ],
       "copy": {
         "settings.title": "always",
-        "settings.documentTitle": "always",
-        "settings.aria.navigation": "always",
-        "settings.aria.main": "always",
-        "settings.alt.productMark": "always",
+        "settings.documentTitle": {
+          "when": "always",
+          "as": "title"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
         "settings.section": "always",
         "settings.save": "always",
         "settings.cancel": "always",
-        "settings.status.saving": [
-          "settingsSaving"
-        ],
-        "settings.status.saved": [
-          "settingsSaved"
-        ],
+        "settings.status.saving": {
+          "when": [
+            "settingsSaving"
+          ],
+          "as": "announce"
+        },
+        "settings.status.saved": {
+          "when": [
+            "settingsSaved"
+          ],
+          "as": "announce"
+        },
         "settings.recovery": [
           "settingsFailed"
         ],
@@ -1644,10 +1794,22 @@
       ],
       "copy": {
         "help.title": "always",
-        "help.documentTitle": "always",
-        "help.aria.navigation": "always",
-        "help.aria.main": "always",
-        "help.alt.productMark": "always",
+        "help.documentTitle": {
+          "when": "always",
+          "as": "title"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
         "help.currencyRates": "always",
         "help.exactFactors": "always",
         "nav.convert": "always",
@@ -1689,10 +1851,18 @@
       ],
       "copy": {
         "landing.title": "always",
-        "landing.documentTitle": "always",
-        "landing.aria.navigation": "always",
-        "landing.aria.main": "always",
-        "landing.alt.productMark": "always",
+        "landing.documentTitle": {
+          "when": "always",
+          "as": "title"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
         "landing.description": "always",
         "landing.action": "always",
         "landing.secondaryAction": "always",
@@ -1718,12 +1888,30 @@
         "landing.proof.supportedUnits.label": "always",
         "landing.buyerQuote.text": "always",
         "landing.buyerQuote.attribution": "always",
-        "landing.customer.pinecrest.alt": "always",
-        "landing.customer.tidewater.alt": "always",
-        "landing.customer.orchardRow.alt": "always",
-        "landing.customer.northgate.alt": "always",
-        "landing.customer.copperline.alt": "always",
-        "landing.customer.fieldstone.alt": "always"
+        "landing.customer.pinecrest.alt": {
+          "when": "always",
+          "as": "alt"
+        },
+        "landing.customer.tidewater.alt": {
+          "when": "always",
+          "as": "alt"
+        },
+        "landing.customer.orchardRow.alt": {
+          "when": "always",
+          "as": "alt"
+        },
+        "landing.customer.northgate.alt": {
+          "when": "always",
+          "as": "alt"
+        },
+        "landing.customer.copperline.alt": {
+          "when": "always",
+          "as": "alt"
+        },
+        "landing.customer.fieldstone.alt": {
+          "when": "always",
+          "as": "alt"
+        }
       }
     }
   ],

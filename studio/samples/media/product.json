@@ -1,4 +1,5 @@
 {
+  "$schema": "../../../references/product-model.schema.json",
   "model": 1,
   "product": {
     "id": "media",
@@ -1197,8 +1198,14 @@
           "id": "identity",
           "copy": {
             "home.title": "always",
-            "home.documentTitle": "always",
-            "shell.alt.productMark": "always"
+            "home.documentTitle": {
+              "when": "always",
+              "as": "title"
+            },
+            "shell.alt.productMark": {
+              "when": "always",
+              "as": "alt"
+            }
           }
         },
         {
@@ -1224,8 +1231,14 @@
         "desktop"
       ],
       "copy": {
-        "shell.aria.navigation": "always",
-        "shell.aria.main": "always",
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
         "home.newPlaylist": "always"
       }
     },
@@ -1343,10 +1356,22 @@
       ],
       "copy": {
         "library.title": "always",
-        "library.documentTitle": "always",
-        "shell.aria.navigation": "always",
-        "shell.aria.main": "always",
-        "shell.alt.productMark": "always",
+        "library.documentTitle": {
+          "when": "always",
+          "as": "title"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
         "library.queryLabel": "always",
         "library.kind.album": "always",
         "library.kind.song": "always",
@@ -1427,22 +1452,28 @@
               "playerFinished",
               "playerLongContent"
             ],
-            "player.seek.aria": [
-              "playerPaused",
-              "playerBuffering",
-              "playerPlaying",
-              "playerOfflinePlaying",
-              "playerFinished",
-              "playerLongContent"
-            ],
-            "player.volume.aria": [
-              "playerPaused",
-              "playerBuffering",
-              "playerPlaying",
-              "playerOfflinePlaying",
-              "playerFinished",
-              "playerLongContent"
-            ],
+            "player.seek.aria": {
+              "when": [
+                "playerPaused",
+                "playerBuffering",
+                "playerPlaying",
+                "playerOfflinePlaying",
+                "playerFinished",
+                "playerLongContent"
+              ],
+              "as": "label"
+            },
+            "player.volume.aria": {
+              "when": [
+                "playerPaused",
+                "playerBuffering",
+                "playerPlaying",
+                "playerOfflinePlaying",
+                "playerFinished",
+                "playerLongContent"
+              ],
+              "as": "label"
+            },
             "player.playbackSpeed": [
               "playerPaused",
               "playerBuffering",
@@ -1467,9 +1498,12 @@
         {
           "id": "state",
           "copy": {
-            "player.buffering": [
-              "playerBuffering"
-            ],
+            "player.buffering": {
+              "when": [
+                "playerBuffering"
+              ],
+              "as": "announce"
+            },
             "player.offline.title": [
               "playerOfflineUnavailable"
             ],
@@ -1491,6 +1525,13 @@
             "player.finished": [
               "playerFinished"
             ]
+          },
+          "data": {
+            "contract": "Media",
+            "many": false,
+            "map": {
+              "title": "title"
+            }
           }
         }
       ],
@@ -1510,10 +1551,22 @@
       ],
       "copy": {
         "player.title": "always",
-        "player.documentTitle": "always",
-        "shell.aria.navigation": "always",
-        "shell.aria.main": "always",
-        "shell.alt.productMark": "always",
+        "player.documentTitle": {
+          "when": "always",
+          "as": "title"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
         "nav.home": "always",
         "nav.library": "always",
         "nav.queue": "always",
@@ -1617,18 +1670,24 @@
             "downloads.recovery.action": [
               "downloadsFailed"
             ],
-            "downloads.status.transfer": [
-              "downloadsDownloading"
-            ],
+            "downloads.status.transfer": {
+              "when": [
+                "downloadsDownloading"
+              ],
+              "as": "announce"
+            },
             "downloads.transfer.recovery": [
               "downloadsDownloadFailed"
             ],
             "downloads.transfer.retry": [
               "downloadsDownloadFailed"
             ],
-            "downloads.status.removing": [
-              "downloadsRemoving"
-            ],
+            "downloads.status.removing": {
+              "when": [
+                "downloadsRemoving"
+              ],
+              "as": "announce"
+            },
             "downloads.remove.recovery": [
               "downloadsRemoveFailed"
             ],
@@ -1675,12 +1734,25 @@
           "variant": "inline",
           "because": "A completed transfer or removal remains visible in Downloads with the actual saved result.",
           "copy": {
-            "downloads.outcome": [
-              "downloadsDownloaded"
-            ],
-            "downloads.remove.outcome": [
-              "downloadsRemoved"
-            ]
+            "downloads.outcome": {
+              "when": [
+                "downloadsDownloaded"
+              ],
+              "as": "announce"
+            },
+            "downloads.remove.outcome": {
+              "when": [
+                "downloadsRemoved"
+              ],
+              "as": "announce"
+            }
+          },
+          "data": {
+            "contract": "Media",
+            "many": false,
+            "map": {
+              "title": "title"
+            }
           }
         }
       ],
@@ -1703,10 +1775,22 @@
       ],
       "copy": {
         "downloads.title": "always",
-        "downloads.documentTitle": "always",
-        "shell.aria.navigation": "always",
-        "shell.aria.main": "always",
-        "shell.alt.productMark": "always",
+        "downloads.documentTitle": {
+          "when": "always",
+          "as": "title"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
         "nav.downloads": "always",
         "nav.home": "always",
         "nav.library": "always",
@@ -1784,12 +1868,18 @@
         {
           "id": "state",
           "copy": {
-            "queue.status": [
-              "queueSaving"
-            ],
-            "queue.outcome": [
-              "queueSaved"
-            ],
+            "queue.status": {
+              "when": [
+                "queueSaving"
+              ],
+              "as": "announce"
+            },
+            "queue.outcome": {
+              "when": [
+                "queueSaved"
+              ],
+              "as": "announce"
+            },
             "queue.recovery": [
               "queueSaveFailed"
             ],
@@ -1821,10 +1911,22 @@
       ],
       "copy": {
         "queue.title": "always",
-        "queue.documentTitle": "always",
-        "shell.aria.navigation": "always",
-        "shell.aria.main": "always",
-        "shell.alt.productMark": "always",
+        "queue.documentTitle": {
+          "when": "always",
+          "as": "title"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
         "queue.empty.title": [
           "queueEmpty"
         ],
@@ -1856,7 +1958,10 @@
           "id": "header",
           "copy": {
             "newPlaylist.title": "always",
-            "newPlaylist.documentTitle": "always"
+            "newPlaylist.documentTitle": {
+              "when": "always",
+              "as": "title"
+            }
           }
         },
         {
@@ -1976,9 +2081,12 @@
         {
           "id": "state",
           "copy": {
-            "newPlaylist.status": [
-              "newPlaylistSaving"
-            ],
+            "newPlaylist.status": {
+              "when": [
+                "newPlaylistSaving"
+              ],
+              "as": "announce"
+            },
             "newPlaylist.recovery": [
               "newPlaylistFailed"
             ],
@@ -1990,9 +2098,12 @@
         {
           "id": "result",
           "copy": {
-            "newPlaylist.outcome": [
-              "newPlaylistSaved"
-            ],
+            "newPlaylist.outcome": {
+              "when": [
+                "newPlaylistSaved"
+              ],
+              "as": "announce"
+            },
             "newPlaylist.openLibrary": [
               "newPlaylistSaved"
             ]
@@ -2021,9 +2132,18 @@
         "desktop"
       ],
       "copy": {
-        "shell.aria.navigation": "always",
-        "shell.aria.main": "always",
-        "shell.alt.productMark": "always",
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
         "nav.home": "always",
         "nav.library": "always",
         "nav.queue": "always",
@@ -2054,7 +2174,10 @@
           "id": "header",
           "copy": {
             "settings.title": "always",
-            "settings.documentTitle": "always"
+            "settings.documentTitle": {
+              "when": "always",
+              "as": "title"
+            }
           }
         },
         {
@@ -2097,12 +2220,18 @@
         {
           "id": "state",
           "copy": {
-            "settings.status.saving": [
-              "settingsSaving"
-            ],
-            "settings.status.saved": [
-              "settingsSaved"
-            ],
+            "settings.status.saving": {
+              "when": [
+                "settingsSaving"
+              ],
+              "as": "announce"
+            },
+            "settings.status.saved": {
+              "when": [
+                "settingsSaved"
+              ],
+              "as": "announce"
+            },
             "settings.recovery": [
               "settingsFailed"
             ]
@@ -2126,9 +2255,18 @@
         "desktop"
       ],
       "copy": {
-        "shell.aria.navigation": "always",
-        "shell.aria.main": "always",
-        "shell.alt.productMark": "always",
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
         "nav.settings": "always",
         "nav.home": "always",
         "nav.library": "always",
@@ -2159,10 +2297,22 @@
       ],
       "copy": {
         "help.title": "always",
-        "help.documentTitle": "always",
-        "shell.aria.navigation": "always",
-        "shell.aria.main": "always",
-        "shell.alt.productMark": "always",
+        "help.documentTitle": {
+          "when": "always",
+          "as": "title"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
         "nav.home": "always",
         "nav.library": "always",
         "nav.queue": "always",
@@ -2200,10 +2350,18 @@
       ],
       "copy": {
         "landing.title": "always",
-        "landing.documentTitle": "always",
-        "shell.aria.navigation": "always",
-        "shell.aria.main": "always",
-        "shell.alt.productMark": "always",
+        "landing.documentTitle": {
+          "when": "always",
+          "as": "title"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
         "landing.secondaryAction": "always",
         "landing.footer": "always",
         "landing.navigation.listen": "always",
@@ -2218,12 +2376,30 @@
         "landing.offlinePlayback.label": "always",
         "landing.ruthQuote.text": "always",
         "landing.ruthQuote.who": "always",
-        "landing.harborlineRecords.alt": "always",
-        "landing.pineconeAudio.alt": "always",
-        "landing.tidepoolMedia.alt": "always",
-        "landing.brightwaterFm.alt": "always",
-        "landing.sablePodcasts.alt": "always",
-        "landing.northlightMusic.alt": "always"
+        "landing.harborlineRecords.alt": {
+          "when": "always",
+          "as": "alt"
+        },
+        "landing.pineconeAudio.alt": {
+          "when": "always",
+          "as": "alt"
+        },
+        "landing.tidepoolMedia.alt": {
+          "when": "always",
+          "as": "alt"
+        },
+        "landing.brightwaterFm.alt": {
+          "when": "always",
+          "as": "alt"
+        },
+        "landing.sablePodcasts.alt": {
+          "when": "always",
+          "as": "alt"
+        },
+        "landing.northlightMusic.alt": {
+          "when": "always",
+          "as": "alt"
+        }
       }
     },
     {
@@ -2248,9 +2424,18 @@
             }
           },
           "copy": {
-            "pushDownloadComplete.title": "always",
-            "pushDownloadComplete.body": "always",
-            "pushDownloadComplete.action": "always"
+            "pushDownloadComplete.title": {
+              "when": "always",
+              "as": "title"
+            },
+            "pushDownloadComplete.body": {
+              "when": "always",
+              "as": "body"
+            },
+            "pushDownloadComplete.action": {
+              "when": "always",
+              "as": "action"
+            }
           }
         }
       ],
@@ -2284,7 +2469,10 @@
           "id": "header",
           "copy": {
             "episodeComments.title": "always",
-            "episodeComments.documentTitle": "always"
+            "episodeComments.documentTitle": {
+              "when": "always",
+              "as": "title"
+            }
           }
         },
         {
@@ -2327,14 +2515,17 @@
               "episodeCommentsSent",
               "episodeCommentsSendFailed"
             ],
-            "episodeComments.aria.send": [
-              "episodeCommentsReady",
-              "episodeCommentsEmpty",
-              "episodeCommentsLongContent",
-              "episodeCommentsSending",
-              "episodeCommentsSent",
-              "episodeCommentsSendFailed"
-            ]
+            "episodeComments.aria.send": {
+              "when": [
+                "episodeCommentsReady",
+                "episodeCommentsEmpty",
+                "episodeCommentsLongContent",
+                "episodeCommentsSending",
+                "episodeCommentsSent",
+                "episodeCommentsSendFailed"
+              ],
+              "as": "label"
+            }
           },
           "on": [
             {
@@ -2399,18 +2590,24 @@
             "episodeComments.recovery.action": [
               "episodeCommentsFailed"
             ],
-            "episodeComments.status": [
-              "episodeCommentsSending"
-            ],
+            "episodeComments.status": {
+              "when": [
+                "episodeCommentsSending"
+              ],
+              "as": "announce"
+            },
             "episodeComments.sendFailure": [
               "episodeCommentsSendFailed"
             ],
             "episodeComments.retry": [
               "episodeCommentsSendFailed"
             ],
-            "episodeComments.outcome": [
-              "episodeCommentsSent"
-            ]
+            "episodeComments.outcome": {
+              "when": [
+                "episodeCommentsSent"
+              ],
+              "as": "announce"
+            }
           }
         }
       ],
@@ -2429,9 +2626,18 @@
         "desktop"
       ],
       "copy": {
-        "shell.aria.navigation": "always",
-        "shell.aria.main": "always",
-        "shell.alt.productMark": "always",
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
         "nav.home": "always",
         "nav.library": "always",
         "nav.queue": "always",
@@ -2443,6 +2649,5 @@
   "files": {
     "copy": "copy.md",
     "fixtures": "fixtures.json"
-  },
-  "$schema": "../../../references/product-model.schema.json"
+  }
 }

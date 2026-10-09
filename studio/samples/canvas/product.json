@@ -1,4 +1,5 @@
 {
+  "$schema": "../../../references/product-model.schema.json",
   "model": 1,
   "product": {
     "id": "canvas",
@@ -1264,7 +1265,10 @@
           "id": "identity",
           "copy": {
             "boards.title": "always",
-            "boards.documentTitle": "always"
+            "boards.documentTitle": {
+              "when": "always",
+              "as": "title"
+            }
           }
         },
         {
@@ -1362,9 +1366,12 @@
             "boards.stale": [
               "boardsFailed"
             ],
-            "boards.loading": [
-              "boardsLoading"
-            ]
+            "boards.loading": {
+              "when": [
+                "boardsLoading"
+              ],
+              "as": "announce"
+            }
           }
         }
       ],
@@ -1381,9 +1388,18 @@
         "desktop"
       ],
       "copy": {
-        "shell.aria.main": "always",
-        "shell.alt.productMark": "always",
-        "shell.aria.navigation": "always",
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
         "nav.boards": "always",
         "nav.comments": "always",
         "nav.settings": "always",
@@ -1409,27 +1425,6 @@
         "boards.status.archived": [
           "boardsReady",
           "boardsFailed"
-        ],
-        "boards.edited.minutes": [
-          "boardsReady",
-          "boardsFailed",
-          "boardsLongContent"
-        ],
-        "boards.edited.hours": [
-          "boardsReady",
-          "boardsFailed"
-        ],
-        "boards.edited.yesterday": [
-          "boardsReady",
-          "boardsFailed"
-        ],
-        "boards.edited.days": [
-          "boardsReady",
-          "boardsFailed"
-        ],
-        "boards.edited.weeks": [
-          "boardsReady",
-          "boardsFailed"
         ]
       }
     },
@@ -1442,7 +1437,10 @@
           "id": "header",
           "copy": {
             "boardEditor.title": "always",
-            "boardEditor.documentTitle": "always"
+            "boardEditor.documentTitle": {
+              "when": "always",
+              "as": "title"
+            }
           }
         },
         {
@@ -1501,9 +1499,12 @@
         {
           "id": "state",
           "copy": {
-            "boardEditor.status.saving": [
-              "boardEditorSaving"
-            ],
+            "boardEditor.status.saving": {
+              "when": [
+                "boardEditorSaving"
+              ],
+              "as": "announce"
+            },
             "boardEditor.recovery": [
               "boardEditorFailed"
             ],
@@ -1549,9 +1550,18 @@
         "desktop"
       ],
       "copy": {
-        "shell.aria.main": "always",
-        "shell.alt.productMark": "always",
-        "shell.aria.navigation": "always",
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
         "nav.boards": "always",
         "nav.comments": "always",
         "nav.settings": "always"
@@ -1670,17 +1680,26 @@
             "canvas.blank.body": [
               "canvasBlank"
             ],
-            "canvas.alt.emptyCanvas": [
-              "canvasBlank"
-            ],
-            "canvas.status.saving": [
-              "canvasSaving"
-            ],
-            "canvas.status.saved": [
-              "canvasSaved",
-              "canvasFirstLayerSaved",
-              "canvasReviewSaved"
-            ],
+            "canvas.alt.emptyCanvas": {
+              "when": [
+                "canvasBlank"
+              ],
+              "as": "alt"
+            },
+            "canvas.status.saving": {
+              "when": [
+                "canvasSaving"
+              ],
+              "as": "announce"
+            },
+            "canvas.status.saved": {
+              "when": [
+                "canvasSaved",
+                "canvasFirstLayerSaved",
+                "canvasReviewSaved"
+              ],
+              "as": "announce"
+            },
             "canvas.offline": [
               "canvasOffline"
             ],
@@ -1693,9 +1712,12 @@
             "canvas.recovery.action": [
               "canvasFailed"
             ],
-            "canvas.delete.pending": [
-              "canvasDeleting"
-            ],
+            "canvas.delete.pending": {
+              "when": [
+                "canvasDeleting"
+              ],
+              "as": "announce"
+            },
             "canvas.delete.saved": [
               "canvasDeleted"
             ],
@@ -1705,9 +1727,12 @@
             "canvas.delete.retry": [
               "canvasDeleteFailed"
             ],
-            "canvas.share.pending": [
-              "canvasSharing"
-            ],
+            "canvas.share.pending": {
+              "when": [
+                "canvasSharing"
+              ],
+              "as": "announce"
+            },
             "canvas.share.saved": [
               "canvasShared"
             ],
@@ -1717,9 +1742,12 @@
             "canvas.share.retry": [
               "canvasShareFailed"
             ],
-            "canvas.export.pending": [
-              "canvasExporting"
-            ],
+            "canvas.export.pending": {
+              "when": [
+                "canvasExporting"
+              ],
+              "as": "announce"
+            },
             "canvas.export.saved": [
               "canvasExported"
             ],
@@ -1732,6 +1760,14 @@
             "canvas.export.retry": [
               "canvasExportFailed"
             ]
+          },
+          "data": {
+            "contract": "CanvasBoard",
+            "many": false,
+            "map": {
+              "pendingEdits": "pendingEdits",
+              "revision": "revision"
+            }
           }
         },
         {
@@ -1769,15 +1805,25 @@
         {
           "id": "outcome",
           "copy": {
-            "canvas.outcome": [
-              "canvasSaved",
-              "canvasReviewSaved"
-            ]
+            "canvas.outcome": {
+              "when": [
+                "canvasSaved",
+                "canvasReviewSaved"
+              ],
+              "as": "announce"
+            }
           },
           "record": "notifications",
           "status": "proposed",
           "variant": "inline",
-          "because": "The acknowledged revision stays beside the board rather than disappearing in a toast."
+          "because": "The acknowledged revision stays beside the board rather than disappearing in a toast.",
+          "data": {
+            "contract": "CanvasBoard",
+            "many": false,
+            "map": {
+              "revision": "revision"
+            }
+          }
         },
         {
           "id": "invitation",
@@ -1840,20 +1886,35 @@
         "desktop"
       ],
       "copy": {
-        "shell.aria.main": "always",
-        "shell.alt.productMark": "always",
-        "shell.aria.navigation": "always",
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
         "nav.boards": "always",
         "nav.comments": "always",
         "nav.settings": "always",
         "canvas.title": "always",
-        "canvas.documentTitle": "always",
+        "canvas.documentTitle": {
+          "when": "always",
+          "as": "title"
+        },
         "canvas.select": "always",
         "canvas.draw": "always",
         "canvas.text": "always",
         "canvas.note": "always",
         "canvas.connector": "always",
-        "canvas.zoom.aria": "always",
+        "canvas.zoom.aria": {
+          "when": "always",
+          "as": "label"
+        },
         "canvas.zoomToFit": "always",
         "canvas.layers": "always",
         "canvas.comment": [
@@ -1924,25 +1985,28 @@
           "canvasExportFailed",
           "canvasReviewSaved"
         ],
-        "canvas.selection.aria": [
-          "canvasEditing",
-          "canvasSaving",
-          "canvasSaved",
-          "canvasOffline",
-          "canvasFailed",
-          "canvasLongContent",
-          "canvasDeleting",
-          "canvasDeleted",
-          "canvasDeleteFailed",
-          "canvasSharing",
-          "canvasShared",
-          "canvasShareFailed",
-          "canvasExporting",
-          "canvasExported",
-          "canvasExportFailed",
-          "canvasFirstLayerSaved",
-          "canvasReviewSaved"
-        ],
+        "canvas.selection.aria": {
+          "when": [
+            "canvasEditing",
+            "canvasSaving",
+            "canvasSaved",
+            "canvasOffline",
+            "canvasFailed",
+            "canvasLongContent",
+            "canvasDeleting",
+            "canvasDeleted",
+            "canvasDeleteFailed",
+            "canvasSharing",
+            "canvasShared",
+            "canvasShareFailed",
+            "canvasExporting",
+            "canvasExported",
+            "canvasExportFailed",
+            "canvasFirstLayerSaved",
+            "canvasReviewSaved"
+          ],
+          "as": "label"
+        },
         "canvas.fontSize": [
           "canvasEditing",
           "canvasSaving",
@@ -2142,7 +2206,10 @@
           "id": "header",
           "copy": {
             "layerEditor.title": "always",
-            "layerEditor.documentTitle": "always"
+            "layerEditor.documentTitle": {
+              "when": "always",
+              "as": "title"
+            }
           }
         },
         {
@@ -2387,10 +2454,13 @@
         {
           "id": "state",
           "copy": {
-            "layerEditor.status": [
-              "layerEditorSaving",
-              "layerEditorCreating"
-            ],
+            "layerEditor.status": {
+              "when": [
+                "layerEditorSaving",
+                "layerEditorCreating"
+              ],
+              "as": "announce"
+            },
             "layerEditor.recovery": [
               "layerEditorFailed",
               "layerEditorCreateFailed"
@@ -2451,9 +2521,18 @@
         "desktop"
       ],
       "copy": {
-        "shell.aria.main": "always",
-        "shell.alt.productMark": "always",
-        "shell.aria.navigation": "always",
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
         "nav.boards": "always",
         "nav.comments": "always",
         "nav.settings": "always"
@@ -2500,7 +2579,10 @@
           "id": "header",
           "copy": {
             "comments.title": "always",
-            "comments.documentTitle": "always"
+            "comments.documentTitle": {
+              "when": "always",
+              "as": "title"
+            }
           }
         },
         {
@@ -2581,18 +2663,21 @@
               "commentsResolved",
               "commentsResolveFailed"
             ],
-            "comments.aria.send": [
-              "commentsReady",
-              "commentsEmpty",
-              "commentsFailed",
-              "commentsLongContent",
-              "commentsSending",
-              "commentsSent",
-              "commentsSendFailed",
-              "commentsResolving",
-              "commentsResolved",
-              "commentsResolveFailed"
-            ],
+            "comments.aria.send": {
+              "when": [
+                "commentsReady",
+                "commentsEmpty",
+                "commentsFailed",
+                "commentsLongContent",
+                "commentsSending",
+                "commentsSent",
+                "commentsSendFailed",
+                "commentsResolving",
+                "commentsResolved",
+                "commentsResolveFailed"
+              ],
+              "as": "label"
+            },
             "comments.composer.label": [
               "commentsReady",
               "commentsEmpty",
@@ -2641,9 +2726,12 @@
         {
           "id": "state",
           "copy": {
-            "comments.loading": [
-              "commentsLoading"
-            ],
+            "comments.loading": {
+              "when": [
+                "commentsLoading"
+              ],
+              "as": "announce"
+            },
             "comments.empty.title": [
               "commentsEmpty"
             ],
@@ -2659,21 +2747,30 @@
             "comments.recovery.action": [
               "commentsFailed"
             ],
-            "comments.pending": [
-              "commentsSending"
-            ],
-            "comments.sent": [
-              "commentsSent"
-            ],
+            "comments.pending": {
+              "when": [
+                "commentsSending"
+              ],
+              "as": "announce"
+            },
+            "comments.sent": {
+              "when": [
+                "commentsSent"
+              ],
+              "as": "announce"
+            },
             "comments.failed": [
               "commentsSendFailed"
             ],
             "comments.retry": [
               "commentsSendFailed"
             ],
-            "comments.resolve.pending": [
-              "commentsResolving"
-            ],
+            "comments.resolve.pending": {
+              "when": [
+                "commentsResolving"
+              ],
+              "as": "announce"
+            },
             "comments.resolve.saved": [
               "commentsResolved"
             ],
@@ -2704,9 +2801,18 @@
         "desktop"
       ],
       "copy": {
-        "shell.aria.main": "always",
-        "shell.alt.productMark": "always",
-        "shell.aria.navigation": "always",
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
         "nav.boards": "always",
         "nav.comments": "always",
         "nav.settings": "always",
@@ -2744,7 +2850,10 @@
           "id": "header",
           "copy": {
             "settings.title": "always",
-            "settings.documentTitle": "always"
+            "settings.documentTitle": {
+              "when": "always",
+              "as": "title"
+            }
           }
         },
         {
@@ -2781,12 +2890,18 @@
         {
           "id": "state",
           "copy": {
-            "settings.status.saving": [
-              "settingsSaving"
-            ],
-            "settings.status.saved": [
-              "settingsSaved"
-            ],
+            "settings.status.saving": {
+              "when": [
+                "settingsSaving"
+              ],
+              "as": "announce"
+            },
+            "settings.status.saved": {
+              "when": [
+                "settingsSaved"
+              ],
+              "as": "announce"
+            },
             "settings.recovery": [
               "settingsFailed"
             ],
@@ -2807,9 +2922,18 @@
         "desktop"
       ],
       "copy": {
-        "shell.aria.main": "always",
-        "shell.alt.productMark": "always",
-        "shell.aria.navigation": "always",
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
         "nav.boards": "always",
         "nav.comments": "always",
         "nav.settings": "always"
@@ -2837,14 +2961,26 @@
         "desktop"
       ],
       "copy": {
-        "shell.aria.main": "always",
-        "shell.alt.productMark": "always",
-        "shell.aria.navigation": "always",
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
         "nav.boards": "always",
         "nav.comments": "always",
         "nav.settings": "always",
         "help.title": "always",
-        "help.documentTitle": "always"
+        "help.documentTitle": {
+          "when": "always",
+          "as": "title"
+        }
       }
     },
     {
@@ -2856,7 +2992,10 @@
           "id": "primary",
           "copy": {
             "landing.title": "always",
-            "landing.documentTitle": "always",
+            "landing.documentTitle": {
+              "when": "always",
+              "as": "title"
+            },
             "landing.description": "always",
             "landing.action": "always",
             "landing.secondaryAction": "always",
@@ -2878,12 +3017,30 @@
             "landing.collaborators.label": "always",
             "landing.testimonial.text": "always",
             "landing.testimonial.who": "always",
-            "landing.partners.alderFinch.alt": "always",
-            "landing.partners.brightwater.alt": "always",
-            "landing.partners.calloway.alt": "always",
-            "landing.partners.dunmore.alt": "always",
-            "landing.partners.eastgate.alt": "always",
-            "landing.partners.fernhill.alt": "always"
+            "landing.partners.alderFinch.alt": {
+              "when": "always",
+              "as": "alt"
+            },
+            "landing.partners.brightwater.alt": {
+              "when": "always",
+              "as": "alt"
+            },
+            "landing.partners.calloway.alt": {
+              "when": "always",
+              "as": "alt"
+            },
+            "landing.partners.dunmore.alt": {
+              "when": "always",
+              "as": "alt"
+            },
+            "landing.partners.eastgate.alt": {
+              "when": "always",
+              "as": "alt"
+            },
+            "landing.partners.fernhill.alt": {
+              "when": "always",
+              "as": "alt"
+            }
           }
         }
       ],
@@ -2895,10 +3052,19 @@
         "desktop"
       ],
       "copy": {
-        "shell.aria.main": "always",
-        "shell.alt.productMark": "always",
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
         "landing.title": "always",
-        "landing.documentTitle": "always"
+        "landing.documentTitle": {
+          "when": "always",
+          "as": "title"
+        }
       }
     },
     {
@@ -2910,10 +3076,22 @@
         {
           "id": "primary",
           "copy": {
-            "emailBoardInvitation.subject": "always",
-            "emailBoardInvitation.body": "always",
-            "emailBoardInvitation.action": "always",
-            "emailBoardInvitation.preheader": "always"
+            "emailBoardInvitation.subject": {
+              "when": "always",
+              "as": "subject"
+            },
+            "emailBoardInvitation.body": {
+              "when": "always",
+              "as": "body"
+            },
+            "emailBoardInvitation.action": {
+              "when": "always",
+              "as": "action"
+            },
+            "emailBoardInvitation.preheader": {
+              "when": "always",
+              "as": "preheader"
+            }
           },
           "data": {
             "contract": "CanvasBoard",
@@ -2948,9 +3126,18 @@
         {
           "id": "primary",
           "copy": {
-            "pushCommentAdded.body": "always",
-            "pushCommentAdded.action": "always",
-            "pushCommentAdded.title": "always"
+            "pushCommentAdded.body": {
+              "when": "always",
+              "as": "body"
+            },
+            "pushCommentAdded.action": {
+              "when": "always",
+              "as": "action"
+            },
+            "pushCommentAdded.title": {
+              "when": "always",
+              "as": "title"
+            }
           },
           "data": {
             "contract": "Comment",
@@ -2979,6 +3166,5 @@
   "files": {
     "copy": "copy.md",
     "fixtures": "fixtures.json"
-  },
-  "$schema": "../../../references/product-model.schema.json"
+  }
 }

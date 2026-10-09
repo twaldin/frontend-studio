@@ -6,13 +6,13 @@ This invented product’s fixed language belongs here, including document titles
 |---|---|---|
 | home.title | Find a tool for the weekend | home |
 | home.documentTitle | Home · Shed | home |
-| home.aria.navigation | Main navigation | home |
-| home.aria.main | Main content | home |
-| home.alt.productMark | Shed mark | home |
+| shell.aria.navigation | Main navigation | home; catalog; toolDetail; checkout; receipt; rentals; thread; settings; lendTool |
+| shell.aria.main | Main content | home; catalog; toolDetail; checkout; receipt; rentals; thread; settings; signIn; notFound; lendTool |
+| shell.alt.productMark | Shed mark | home; catalog; toolDetail; checkout; receipt; rentals; thread; settings; signIn; notFound; lendTool |
 | home.start | Browse nearby tools | home |
-| home.upcoming | Your next pickup | home · Ready; home · Account menu open; home · Loading; home · Long content |
+| home.upcoming | Your next pickup | home · Populated; home · Account menu open; home · Loading; home · Long content; home · No matches |
 | home.priceUnit | ${fee} a day | home |
-| home.viewRental | View rental | home · Ready; home · Account menu open; home · Loading; home · Long content |
+| home.viewRental | View rental | home · Populated; home · Account menu open; home · Loading; home · Long content; home · No matches |
 | home.firstVisit | Rent a tool from a neighbor, by the day. | home · First visit |
 | home.account.open | Open account menu | home |
 | home.account.settings | Settings | home · Account menu open |
@@ -25,9 +25,6 @@ This invented product’s fixed language belongs here, including document titles
 | nav.settings | Settings | home; catalog; toolDetail; checkout; receipt; rentals; thread; settings; lendTool |
 | catalog.title | Tools near you | catalog |
 | catalog.documentTitle | Tools near you · Shed | catalog |
-| catalog.aria.navigation | Main navigation | catalog |
-| catalog.aria.main | Main content | catalog |
-| catalog.alt.productMark | Shed mark | catalog |
 | catalog.priceUnit | ${fee} a day | catalog · Populated; catalog · Filters open; catalog · Loading; catalog · Long content |
 | catalog.availability.available | Available | catalog · Populated; catalog · Filters open; catalog · Loading; catalog · Long content |
 | catalog.availability.rented | Already rented | catalog · Populated; catalog · Filters open; catalog · Loading |
@@ -52,9 +49,6 @@ This invented product’s fixed language belongs here, including document titles
 | catalog.recovery.retry | Try again | catalog · Failed |
 | toolDetail.title | Tool details | toolDetail |
 | toolDetail.documentTitle | Tool details · Shed | toolDetail |
-| toolDetail.aria.navigation | Main navigation | toolDetail |
-| toolDetail.aria.main | Main content | toolDetail |
-| toolDetail.alt.productMark | Shed mark | toolDetail |
 | toolDetail.priceUnit | ${fee} a day | toolDetail · Available; toolDetail · Tool notes open; toolDetail · Request pending; toolDetail · Request sent; toolDetail · Request toast shown; toolDetail · Request failed; toolDetail · Long content |
 | toolDetail.lender | Lent by {lenderName} | toolDetail |
 | toolDetail.pickup.label | Pickup date | toolDetail · Available; toolDetail · Tool notes open; toolDetail · Request pending; toolDetail · Request sent; toolDetail · Request toast shown; toolDetail · Request failed; toolDetail · Long content |
@@ -78,9 +72,6 @@ This invented product’s fixed language belongs here, including document titles
 | toolDetail.status | Sending request… | toolDetail · Request pending |
 | checkout.title | Review and pay | checkout |
 | checkout.documentTitle | Review and pay · Shed | checkout |
-| checkout.aria.navigation | Main navigation | checkout |
-| checkout.aria.main | Main content | checkout |
-| checkout.alt.productMark | Shed mark | checkout |
 | checkout.total | Total: ${total} | checkout |
 | checkout.priceUnit | ${fee} a day | checkout |
 | checkout.payAmount | Pay ${total} with the provider | checkout · Ready; checkout · Long content |
@@ -95,31 +86,25 @@ This invented product’s fixed language belongs here, including document titles
 | checkout.status | Checking payment status… | checkout · Unknown result |
 | receipt.title | Rental receipt | receipt |
 | receipt.documentTitle | Rental receipt · Shed | receipt |
-| receipt.aria.navigation | Main navigation | receipt |
-| receipt.aria.main | Main content | receipt |
-| receipt.alt.productMark | Shed mark | receipt |
 | receipt.delivery.pending | Your confirmation email is still being sent. This receipt is saved. | receipt · Email pending |
 | receipt.outcome | Payment complete | receipt |
 | receipt.reference | Rental {reference} | receipt |
-| receipt.nextSteps | Message {lenderName} to confirm pickup arrangements. Return the tool by {returnDate}. | receipt |
-| receipt.pickup | Pickup: {pickupDate} | receipt |
-| receipt.return | Return by: {returnDate} | receipt |
+| receipt.nextSteps | Message {lenderName} to confirm pickup arrangements. Return the tool by {returnDate:date}. | receipt |
+| receipt.pickup | Pickup: {pickupDate:date} | receipt |
+| receipt.return | Return by: {returnDate:date} | receipt |
 | receipt.record.open | Open this rental | receipt |
 | receipt.record.save | Save receipt | receipt |
 | receipt.support | Questions about pickup? Message the lender. | receipt |
 | receipt.support.action | Message lender | receipt |
 | rentals.title | Rentals | rentals |
 | rentals.documentTitle | Rentals · Shed | rentals |
-| rentals.aria.navigation | Main navigation | rentals |
-| rentals.aria.main | Main content | rentals |
-| rentals.alt.productMark | Shed mark | rentals |
-| rentals.pickup | Pickup {pickupDate} | rentals · Upcoming and active; rentals · Cancel rental confirmation; rentals · Cancellation pending; rentals · Cancelled; rentals · Cancellation failed; rentals · Long content; rentals · Rental history |
-| rentals.return | Return by {returnDate} | rentals · Upcoming and active; rentals · Cancel rental confirmation; rentals · Cancellation pending; rentals · Cancelled; rentals · Cancellation failed; rentals · Long content; rentals · Rental history |
+| rentals.pickup | Pickup {pickupDate:date} | rentals · Upcoming and active; rentals · Cancel rental confirmation; rentals · Cancellation pending; rentals · Cancelled; rentals · Cancellation failed; rentals · Long content; rentals · Rental history |
+| rentals.return | Return by {returnDate:date} | rentals · Upcoming and active; rentals · Cancel rental confirmation; rentals · Cancellation pending; rentals · Cancelled; rentals · Cancellation failed; rentals · Long content; rentals · Rental history |
 | rentals.message | Message lender | rentals · Upcoming and active; rentals · Cancel rental confirmation; rentals · Cancellation pending; rentals · Cancelled; rentals · Cancellation failed; rentals · Long content; rentals · Rental history |
 | rentals.trigger | Cancel rental | rentals · Upcoming and active; rentals · Cancel rental confirmation; rentals · Cancellation failed; rentals · Long content; rentals · Rental history |
 | rentals.status.pending | Pending approval | rentals · Rental history |
-| rentals.status.approved | Approved | home · Ready; home · Account menu open; home · Loading; home · Long content; rentals · Upcoming and active; rentals · Cancel rental confirmation; rentals · Cancellation pending; rentals · Cancellation failed; rentals · Long content; rentals · Rental history |
-| rentals.status.active | Active | home · Ready; home · Account menu open; home · Loading; rentals · Upcoming and active; rentals · Cancel rental confirmation; rentals · Rental history |
+| rentals.status.approved | Approved | home · Populated; home · Account menu open; home · Loading; home · Long content; home · No matches; rentals · Upcoming and active; rentals · Cancel rental confirmation; rentals · Cancellation pending; rentals · Cancellation failed; rentals · Long content; rentals · Rental history |
+| rentals.status.active | Active | home · Populated; home · Account menu open; home · Loading; home · No matches; rentals · Upcoming and active; rentals · Cancel rental confirmation; rentals · Rental history |
 | rentals.status.returned | Returned | rentals · Rental history |
 | rentals.status.cancelled | Cancelled | rentals · Cancelled; rentals · Rental history |
 | rentals.empty.title | No rentals yet | rentals · Empty |
@@ -136,9 +121,6 @@ This invented product’s fixed language belongs here, including document titles
 | rentals.outcome.failed | The rental was not cancelled. Try again or message the lender. | rentals · Cancellation failed |
 | thread.title | Messages | thread |
 | thread.documentTitle | Messages · Shed | thread |
-| thread.aria.navigation | Main navigation | thread |
-| thread.aria.main | Main content | thread |
-| thread.alt.productMark | Shed mark | thread |
 | thread.composer.label | Message to the lender | thread |
 | thread.composer.placeholder | Ask about pickup or the tool | thread |
 | thread.send | Send | thread |
@@ -149,9 +131,6 @@ This invented product’s fixed language belongs here, including document titles
 | thread.empty | No messages yet. Send the lender a question about this rental. | thread · Empty |
 | settings.title | Settings | settings |
 | settings.documentTitle | Settings · Shed | settings |
-| settings.aria.navigation | Main navigation | settings |
-| settings.aria.main | Main content | settings |
-| settings.alt.productMark | Shed mark | settings |
 | settings.save | Save preferences | settings |
 | settings.cancel | Cancel | settings |
 | settings.status.saving | Saving preferences… | settings · Saving |
@@ -171,8 +150,6 @@ This invented product’s fixed language belongs here, including document titles
 | settings.pushReturn | Remind me before a tool is due back | settings |
 | signIn.title | Sign in | signIn |
 | signIn.documentTitle | Sign in · Shed | signIn |
-| signIn.aria.main | Main content | signIn |
-| signIn.alt.productMark | Shed mark | signIn |
 | signIn.email.label | Email address | signIn · Address entry; signIn · Email address invalid; signIn · Sending code; signIn · Code delivery failed |
 | signIn.email.placeholder | Email address | signIn · Address entry; signIn · Email address invalid; signIn · Sending code; signIn · Code delivery failed |
 | signIn.continue | Send sign-in code | signIn · Address entry; signIn · Email address invalid; signIn · Code delivery failed |
@@ -189,18 +166,16 @@ This invented product’s fixed language belongs here, including document titles
 | signIn.email.invalid | Enter an email address in the usual format. | signIn · Email address invalid |
 | notFound.title | Page not found | notFound |
 | notFound.documentTitle | Page not found · Shed | notFound |
-| notFound.aria.main | Main content | notFound |
-| notFound.alt.productMark | Shed mark | notFound |
 | notFound.explanation | We cannot find a tool or rental at this address. | notFound |
 | notFound.browse | Browse nearby tools | notFound |
 | notFound.rentals | Open your rentals | notFound |
 | notFound.dataStatus | This page does not change your rentals or payments. | notFound |
 | emailRentalConfirmed.subject | Your rental of {toolName} is confirmed | emailRentalConfirmed |
-| emailRentalConfirmed.body | Rental {reference} is paid. Pickup is {pickupDate}; return the tool by {returnDate}. Message {lenderName} in Shed to arrange pickup. | emailRentalConfirmed |
+| emailRentalConfirmed.body | Rental {reference} is paid. Pickup is {pickupDate:date}; return the tool by {returnDate:date}. Message {lenderName} in Shed to arrange pickup. | emailRentalConfirmed |
 | emailRentalConfirmed.action | Open in Shed | emailRentalConfirmed |
 | emailRentalConfirmed.preheader | Pickup and return details for your rental | emailRentalConfirmed |
 | emailRentalConfirmed.footer | You received this service message because you rented a tool with Shed. | emailRentalConfirmed |
-| emailRentalConfirmed.alt.mark | Shed mark | emailRentalConfirmed |
+| emailRentalConfirmed.alt.productMark | Shed mark | emailRentalConfirmed |
 | emailRentalConfirmed.linkTitle | Open the saved rental receipt | emailRentalConfirmed |
 | pushRequestApproved.body | {lenderName} approved {toolName}. Open the rental to review the dates and pay before pickup. | pushRequestApproved |
 | pushRequestApproved.action | Review rental | pushRequestApproved |
@@ -208,9 +183,6 @@ This invented product’s fixed language belongs here, including document titles
 | pushRequestApproved.aria.action | Open the approved rental request | pushRequestApproved |
 | lendTool.title | Lend a tool | lendTool |
 | lendTool.documentTitle | Lend a tool · Shed | lendTool |
-| lendTool.aria.navigation | Main navigation | lendTool |
-| lendTool.aria.main | Main content | lendTool |
-| lendTool.alt.productMark | Shed mark | lendTool |
 | lendTool.name.label | Tool name | lendTool |
 | lendTool.description.label | Care and safety notes | lendTool |
 | lendTool.fee.label | Daily fee in USD | lendTool |
@@ -218,11 +190,11 @@ This invented product’s fixed language belongs here, including document titles
 | lendTool.save | Save tool | lendTool |
 | lendTool.cancel | Cancel | lendTool |
 | lendTool.status | Saving tool… | lendTool · Saving |
-| home.returnDue | Return by {returnDate} | home · Ready; home · Account menu open; home · Loading; home · Long content |
+| home.returnDue | Return by {returnDate:date} | home · Populated; home · Account menu open; home · Loading; home · Long content; home · No matches |
 | catalog.distance | {distanceMiles} miles away | catalog · Populated; catalog · Filters open; catalog · Loading; catalog · Long content |
 | checkout.duration | {rentalDays} rental days | checkout |
 | receipt.total | Paid: ${total} | receipt |
-| thread.timestamp | Sent {sentAt} | thread · Populated; thread · Sending; thread · Message sent; thread · Failed; thread · Long content |
+| thread.timestamp | Sent {sentAt:time} | thread · Populated; thread · Sending; thread · Message sent; thread · Failed; thread · Long content |
 | thread.sent | Message sent. | thread · Message sent |
 | signIn.verified | You are signed in. Continue to the rental you opened. | signIn · Signed in |
 | signIn.code.sending | Requesting your sign-in code… | signIn · Sending code |
@@ -232,3 +204,9 @@ This invented product’s fixed language belongs here, including document titles
 | lendTool.open | View saved tool | lendTool · Saved |
 | lendTool.photo.label | Tool photo | lendTool |
 | lendTool.photoAlt.label | Describe the tool photo | lendTool |
+| states.loading | Loading nearby tools… | home · Loading; catalog · Loading |
+| home.empty.noMatches.title | No nearby tools match | home · No matches |
+| home.empty.noMatches.body | Browse a wider area to find nearby tools. Your current rentals are still here. | home · No matches |
+| home.recovery.title | Home could not be loaded | home · Failed |
+| home.recovery.body | Your rentals have not changed. Try loading them and nearby tools again. | home · Failed |
+| home.recovery.retry | Try again | home · Failed |

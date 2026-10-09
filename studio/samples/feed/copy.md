@@ -6,7 +6,7 @@ This is an invented product definition, not a claim that the current studio impl
 |---|---|---|
 | home.title | Home | home |
 | home.documentTitle | Home · Porchlight | home |
-| shell.aria.navigation | Main navigation | home; following; popular; saved; postThread; newPost; settings; help; landing |
+| shell.aria.navigation | Main navigation | home; following; popular; saved; postThread; newPost; settings; help |
 | shell.aria.main | Main content | home; following; popular; saved; postThread; newPost; settings; help; landing |
 | shell.alt.productMark | Porchlight mark | home; following; popular; saved; postThread; newPost; settings; help; landing |
 | home.recovery.action | Load feed again | home · Failed |
@@ -141,13 +141,13 @@ This is an invented product definition, not a claim that the current studio impl
 | pushMentionReceived.title | You were mentioned in a reply | pushMentionReceived |
 | pushMentionReceived.body | You were mentioned in the replies to {title}. Open the conversation to read the reply in context. | pushMentionReceived |
 | pushMentionReceived.action | Open in Porchlight | pushMentionReceived |
-| post.timestamp | Posted {publishedAt} | home · Ready; home · Delete my post; home · Loading; home · Long content; home · Deleting post; home · Post deleted; home · Deletion failed; home · Saving post; home · Post saved; home · Post not saved; home · New post in feed; popular · Ready; popular · Loading; popular · Long content; saved · Ready; saved · Loading; saved · Long content; postThread |
+| post.timestamp | Posted {publishedAt:date} | home · Ready; home · Delete my post; home · Loading; home · Long content; home · Deleting post; home · Post deleted; home · Deletion failed; home · Saving post; home · Post saved; home · Post not saved; home · New post in feed; popular · Ready; popular · Loading; popular · Long content; saved · Ready; saved · Loading; saved · Long content; postThread |
 | post.replyCount | {replies} replies | home · Ready; home · Delete my post; home · Loading; home · Long content; home · Deleting post; home · Post deleted; home · Deletion failed; home · Saving post; home · Post saved; home · Post not saved; home · New post in feed; popular · Ready; popular · Loading; popular · Long content |
 | home.delete | Delete my post | home · Ready; home · Delete my post; home · Loading; home · Deleting post; home · Deletion failed; home · Saving post; home · Post saved; home · Post not saved; home · New post in feed |
 | home.delete.status | Deleting your post… | home · Deleting post |
 | home.delete.recovery | Your post was not deleted. Its replies are still here. | home · Deletion failed |
 | home.delete.retry | Retry deletion | home · Deletion failed |
-| postThread.timestamp | Sent {sentAt} | postThread · Ready; postThread · Loading; postThread · Long content; postThread · Sending reply; postThread · Reply sent; postThread · Reply not sent; postThread · Replies closed |
+| postThread.timestamp | Sent {sentAt:time} | postThread · Ready; postThread · Loading; postThread · Long content; postThread · Sending reply; postThread · Reply sent; postThread · Reply not sent; postThread · Replies closed |
 | postThread.status.sending | Sending your reply… | postThread · Sending reply |
 | postThread.outcome | Your reply is in the thread. | postThread · Reply sent |
 | postThread.sendFailure | Your reply was not sent. Your draft is still here. | postThread · Reply not sent |

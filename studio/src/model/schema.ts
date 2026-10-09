@@ -16,11 +16,14 @@ export const bindingSchema = z.strictObject({
   variant: text.optional(), candidates: z.array(text).min(1).optional(), because: text.optional(),
   sameAs: z.string().regex(/^(?:flow:[a-z][A-Za-z0-9]*|surface:[a-z][A-Za-z0-9]*|slot:[a-z][A-Za-z0-9]*\/[a-z][A-Za-z0-9]*)(?![\s\S])/).optional(),
 });
-const copyRefs = z.record(copyKeySchema, z.union([z.literal("always"), ids.min(1)]));
+export const copyRoleSchema = z.enum(["text", "label", "title", "alt", "announce", "subject", "preheader", "body", "action"]);
+const copyWhenSchema = z.union([z.literal("always"), ids.min(1)]);
+const copyRefs = z.record(copyKeySchema, z.union([copyWhenSchema, z.strictObject({ when: copyWhenSchema, as: copyRoleSchema.optional() })]));
 export const dataContractSchema = z.strictObject({
   fields: z.record(contractId, z.enum(["text", "longText", "number", "money", "date", "image", "enum", "ref"])),
   enums: z.record(contractId, z.array(text).min(1)).optional(),
   typical: z.number().int().min(0), max: z.number().int().min(0).optional(), long: z.array(contractId).optional(),
+  optional: z.array(contractId).optional(),
 });
 const slotSchema = z.strictObject({
   ...bindingSchema.partial().shape,
@@ -45,6 +48,7 @@ export const productModelSchema = z.strictObject({
 }).meta({ title: "Frontend Studio product model", description: "Version 1 product structure. Run model:check for cross-file references, fixed-copy reach and fixture contracts." });
 
 export type ProductModel = z.infer<typeof productModelSchema>;
+export type Archetype = z.infer<typeof archetypeSchema>;
 export type Binding = z.infer<typeof bindingSchema>;
 export type DataContract = z.infer<typeof dataContractSchema>;
 export type CopyRefs = ProductModel["surfaces"][number]["copy"];

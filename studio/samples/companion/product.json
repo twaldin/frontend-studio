@@ -1,4 +1,5 @@
 {
+  "$schema": "../../../references/product-model.schema.json",
   "model": 1,
   "product": {
     "id": "companion",
@@ -1003,7 +1004,10 @@
           "id": "identity",
           "copy": {
             "home.title": "always",
-            "home.documentTitle": "always"
+            "home.documentTitle": {
+              "when": "always",
+              "as": "title"
+            }
           }
         },
         {
@@ -1107,9 +1111,12 @@
             "home.stale": [
               "homeFailed"
             ],
-            "home.loading": [
-              "homeLoading"
-            ]
+            "home.loading": {
+              "when": [
+                "homeLoading"
+              ],
+              "as": "announce"
+            }
           }
         },
         {
@@ -1137,9 +1144,18 @@
         "desktop"
       ],
       "copy": {
-        "shell.aria.main": "always",
-        "shell.alt.productMark": "always",
-        "shell.aria.navigation": "always",
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
         "nav.home": "always",
         "nav.quests": "always",
         "nav.inventory": "always",
@@ -1213,9 +1229,12 @@
         {
           "id": "state",
           "copy": {
-            "quests.loading": [
-              "questsLoading"
-            ],
+            "quests.loading": {
+              "when": [
+                "questsLoading"
+              ],
+              "as": "announce"
+            },
             "quests.empty.title": [
               "questsEmpty"
             ],
@@ -1231,9 +1250,12 @@
             "quests.recovery.action": [
               "questsFailed"
             ],
-            "quests.claim.pending": [
-              "questsClaiming"
-            ],
+            "quests.claim.pending": {
+              "when": [
+                "questsClaiming"
+              ],
+              "as": "announce"
+            },
             "quests.claim.failed": [
               "questsClaimFailed"
             ],
@@ -1251,9 +1273,12 @@
         {
           "id": "outcome",
           "copy": {
-            "quests.outcome": [
-              "questsClaimed"
-            ],
+            "quests.outcome": {
+              "when": [
+                "questsClaimed"
+              ],
+              "as": "announce"
+            },
             "quests.openInventory": [
               "questsClaimed"
             ]
@@ -1261,7 +1286,14 @@
           "record": "notifications",
           "status": "proposed",
           "variant": "inline",
-          "because": "The acknowledged quest and inventory destination stay visible after a claim."
+          "because": "The acknowledged quest and inventory destination stay visible after a claim.",
+          "data": {
+            "contract": "Quest",
+            "many": false,
+            "map": {
+              "rewardGear": "rewardGear"
+            }
+          }
         }
       ],
       "states": [
@@ -1281,9 +1313,18 @@
         "desktop"
       ],
       "copy": {
-        "shell.aria.main": "always",
-        "shell.alt.productMark": "always",
-        "shell.aria.navigation": "always",
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
         "nav.home": "always",
         "nav.quests": "always",
         "nav.inventory": "always",
@@ -1291,7 +1332,10 @@
         "nav.rankings": "always",
         "nav.settings": "always",
         "quests.title": "always",
-        "quests.documentTitle": "always",
+        "quests.documentTitle": {
+          "when": "always",
+          "as": "title"
+        },
         "quests.claim": [
           "questsReady",
           "questsClaimFailed"
@@ -1463,9 +1507,12 @@
         {
           "id": "state",
           "copy": {
-            "inventory.loading": [
-              "inventoryLoading"
-            ],
+            "inventory.loading": {
+              "when": [
+                "inventoryLoading"
+              ],
+              "as": "announce"
+            },
             "inventory.empty.title": [
               "inventoryEmpty"
             ],
@@ -1481,18 +1528,24 @@
             "inventory.recovery.action": [
               "inventoryFailed"
             ],
-            "inventory.equip.pending": [
-              "inventoryEquipping"
-            ],
+            "inventory.equip.pending": {
+              "when": [
+                "inventoryEquipping"
+              ],
+              "as": "announce"
+            },
             "inventory.equip.failed": [
               "inventoryEquipFailed"
             ],
             "inventory.equip.retry": [
               "inventoryEquipFailed"
             ],
-            "inventory.sell.pending": [
-              "inventorySelling"
-            ],
+            "inventory.sell.pending": {
+              "when": [
+                "inventorySelling"
+              ],
+              "as": "announce"
+            },
             "inventory.sell.saved": [
               "inventorySold"
             ],
@@ -1502,6 +1555,13 @@
             "inventory.sell.retry": [
               "inventorySellFailed"
             ]
+          },
+          "data": {
+            "contract": "Character",
+            "many": false,
+            "map": {
+              "gold": "gold"
+            }
           }
         },
         {
@@ -1526,19 +1586,37 @@
           "record": "dialogs-and-layers",
           "status": "proposed",
           "variant": "dialog",
-          "because": "A sale permanently removes the named gear; the gold return must be reviewed before committing."
+          "because": "A sale permanently removes the named gear; the gold return must be reviewed before committing.",
+          "data": {
+            "contract": "Gear",
+            "many": false,
+            "map": {
+              "name": "name",
+              "sellGold": "sellGold"
+            }
+          }
         },
         {
           "id": "outcome",
           "copy": {
-            "inventory.outcome": [
-              "inventoryEquipped"
-            ]
+            "inventory.outcome": {
+              "when": [
+                "inventoryEquipped"
+              ],
+              "as": "announce"
+            }
           },
           "record": "notifications",
           "status": "proposed",
           "variant": "inline",
-          "because": "The game-acknowledged gear swap stays beside the selected loadout."
+          "because": "The game-acknowledged gear swap stays beside the selected loadout.",
+          "data": {
+            "contract": "Character",
+            "many": false,
+            "map": {
+              "equippedWeapon": "equippedWeapon"
+            }
+          }
         }
       ],
       "states": [
@@ -1560,9 +1638,18 @@
         "desktop"
       ],
       "copy": {
-        "shell.aria.main": "always",
-        "shell.alt.productMark": "always",
-        "shell.aria.navigation": "always",
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
         "nav.home": "always",
         "nav.quests": "always",
         "nav.inventory": "always",
@@ -1570,7 +1657,10 @@
         "nav.rankings": "always",
         "nav.settings": "always",
         "inventory.title": "always",
-        "inventory.documentTitle": "always",
+        "inventory.documentTitle": {
+          "when": "always",
+          "as": "title"
+        },
         "inventory.queryLabel": "always",
         "inventory.equip": [
           "inventoryReady",
@@ -1874,7 +1964,10 @@
           "id": "header",
           "copy": {
             "clan.title": "always",
-            "clan.documentTitle": "always"
+            "clan.documentTitle": {
+              "when": "always",
+              "as": "title"
+            }
           }
         },
         {
@@ -1922,15 +2015,18 @@
               "clanSendFailed",
               "clanFailed"
             ],
-            "clan.aria.send": [
-              "clanReady",
-              "clanEmpty",
-              "clanLongContent",
-              "clanSending",
-              "clanSent",
-              "clanSendFailed",
-              "clanFailed"
-            ],
+            "clan.aria.send": {
+              "when": [
+                "clanReady",
+                "clanEmpty",
+                "clanLongContent",
+                "clanSending",
+                "clanSent",
+                "clanSendFailed",
+                "clanFailed"
+              ],
+              "as": "label"
+            },
             "clan.composer.label": [
               "clanReady",
               "clanEmpty",
@@ -1976,9 +2072,12 @@
         {
           "id": "state",
           "copy": {
-            "clan.loading": [
-              "clanLoading"
-            ],
+            "clan.loading": {
+              "when": [
+                "clanLoading"
+              ],
+              "as": "announce"
+            },
             "clan.empty.title": [
               "clanEmpty"
             ],
@@ -1994,12 +2093,18 @@
             "clan.recovery.action": [
               "clanFailed"
             ],
-            "clan.pending": [
-              "clanSending"
-            ],
-            "clan.sent": [
-              "clanSent"
-            ],
+            "clan.pending": {
+              "when": [
+                "clanSending"
+              ],
+              "as": "announce"
+            },
+            "clan.sent": {
+              "when": [
+                "clanSent"
+              ],
+              "as": "announce"
+            },
             "clan.failed": [
               "clanSendFailed"
             ],
@@ -2024,9 +2129,18 @@
         "desktop"
       ],
       "copy": {
-        "shell.aria.main": "always",
-        "shell.alt.productMark": "always",
-        "shell.aria.navigation": "always",
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
         "nav.home": "always",
         "nav.quests": "always",
         "nav.inventory": "always",
@@ -2094,9 +2208,18 @@
         "desktop"
       ],
       "copy": {
-        "shell.aria.main": "always",
-        "shell.alt.productMark": "always",
-        "shell.aria.navigation": "always",
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
         "nav.home": "always",
         "nav.quests": "always",
         "nav.inventory": "always",
@@ -2104,7 +2227,10 @@
         "nav.rankings": "always",
         "nav.settings": "always",
         "rankings.title": "always",
-        "rankings.documentTitle": "always",
+        "rankings.documentTitle": {
+          "when": "always",
+          "as": "title"
+        },
         "rankings.self": [
           "rankingsReady"
         ],
@@ -2121,9 +2247,12 @@
         "rankings.presence.offline": [
           "rankingsReady"
         ],
-        "rankings.loading": [
-          "rankingsLoading"
-        ],
+        "rankings.loading": {
+          "when": [
+            "rankingsLoading"
+          ],
+          "as": "announce"
+        },
         "rankings.empty.title": [
           "rankingsEmpty"
         ],
@@ -2156,7 +2285,10 @@
           "id": "header",
           "copy": {
             "settings.title": "always",
-            "settings.documentTitle": "always"
+            "settings.documentTitle": {
+              "when": "always",
+              "as": "title"
+            }
           }
         },
         {
@@ -2194,12 +2326,18 @@
         {
           "id": "state",
           "copy": {
-            "settings.status.saving": [
-              "settingsSaving"
-            ],
-            "settings.status.saved": [
-              "settingsSaved"
-            ],
+            "settings.status.saving": {
+              "when": [
+                "settingsSaving"
+              ],
+              "as": "announce"
+            },
+            "settings.status.saved": {
+              "when": [
+                "settingsSaved"
+              ],
+              "as": "announce"
+            },
             "settings.recovery": [
               "settingsFailed"
             ],
@@ -2220,9 +2358,18 @@
         "desktop"
       ],
       "copy": {
-        "shell.aria.main": "always",
-        "shell.alt.productMark": "always",
-        "shell.aria.navigation": "always",
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
         "nav.home": "always",
         "nav.quests": "always",
         "nav.inventory": "always",
@@ -2253,9 +2400,18 @@
         "desktop"
       ],
       "copy": {
-        "shell.aria.main": "always",
-        "shell.alt.productMark": "always",
-        "shell.aria.navigation": "always",
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
         "nav.home": "always",
         "nav.quests": "always",
         "nav.inventory": "always",
@@ -2263,7 +2419,10 @@
         "nav.rankings": "always",
         "nav.settings": "always",
         "help.title": "always",
-        "help.documentTitle": "always"
+        "help.documentTitle": {
+          "when": "always",
+          "as": "title"
+        }
       }
     },
     {
@@ -2275,7 +2434,10 @@
           "id": "primary",
           "copy": {
             "landing.title": "always",
-            "landing.documentTitle": "always",
+            "landing.documentTitle": {
+              "when": "always",
+              "as": "title"
+            },
             "landing.description": "always",
             "landing.action": "always",
             "landing.secondaryAction": "always",
@@ -2297,12 +2459,30 @@
             "landing.rating.label": "always",
             "landing.testimonial.text": "always",
             "landing.testimonial.who": "always",
-            "landing.partners.ashenWardens.alt": "always",
-            "landing.partners.hollowCourt.alt": "always",
-            "landing.partners.paleLanterns.alt": "always",
-            "landing.partners.emberGuild.alt": "always",
-            "landing.partners.veilRunners.alt": "always",
-            "landing.partners.stonebriar.alt": "always"
+            "landing.partners.ashenWardens.alt": {
+              "when": "always",
+              "as": "alt"
+            },
+            "landing.partners.hollowCourt.alt": {
+              "when": "always",
+              "as": "alt"
+            },
+            "landing.partners.paleLanterns.alt": {
+              "when": "always",
+              "as": "alt"
+            },
+            "landing.partners.emberGuild.alt": {
+              "when": "always",
+              "as": "alt"
+            },
+            "landing.partners.veilRunners.alt": {
+              "when": "always",
+              "as": "alt"
+            },
+            "landing.partners.stonebriar.alt": {
+              "when": "always",
+              "as": "alt"
+            }
           }
         }
       ],
@@ -2314,10 +2494,19 @@
         "desktop"
       ],
       "copy": {
-        "shell.aria.main": "always",
-        "shell.alt.productMark": "always",
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
         "landing.title": "always",
-        "landing.documentTitle": "always"
+        "landing.documentTitle": {
+          "when": "always",
+          "as": "title"
+        }
       }
     },
     {
@@ -2329,9 +2518,18 @@
         {
           "id": "primary",
           "copy": {
-            "pushQuestExpiring.body": "always",
-            "pushQuestExpiring.action": "always",
-            "pushQuestExpiring.title": "always"
+            "pushQuestExpiring.body": {
+              "when": "always",
+              "as": "body"
+            },
+            "pushQuestExpiring.action": {
+              "when": "always",
+              "as": "action"
+            },
+            "pushQuestExpiring.title": {
+              "when": "always",
+              "as": "title"
+            }
           },
           "data": {
             "contract": "Quest",
@@ -2370,6 +2568,5 @@
   "files": {
     "copy": "copy.md",
     "fixtures": "fixtures.json"
-  },
-  "$schema": "../../../references/product-model.schema.json"
+  }
 }

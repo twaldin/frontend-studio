@@ -12,9 +12,37 @@ export function companionPath(modelPath: string, file: string): string {
   return resolve(basename(directory) === "docs" && file.startsWith("docs/") ? dirname(directory) : directory, file);
 }
 
+function duplicateKeys(json: string): ModelCheckResult["errors"] {
+  const errors: ModelCheckResult["errors"] = [];
+  const stack: ({ kind: "object"; path: string; keys: Set<string>; key: string; expectingKey: boolean } | { kind: "array"; path: string; index: number })[] = [];
+  for (const [token] of json.matchAll(/"(?:\\[\s\S]|[^"\\])*"|[{}\[\],:]/g)) {
+    const parent = stack.at(-1);
+    if (token === "{" || token === "[") {
+      const path = !parent ? "$" : parent.kind === "array" ? `${parent.path}[${parent.index}]` : `${parent.path}${/^[A-Za-z][A-Za-z0-9]*$/.test(parent.key) ? `.${parent.key}` : `[${JSON.stringify(parent.key)}]`}`;
+      stack.push(token === "{" ? { kind: "object", path, keys: new Set(), key: "", expectingKey: true } : { kind: "array", path, index: 0 });
+    } else if (token === "}" || token === "]") stack.pop();
+    else if (token === "," && parent) {
+      if (parent.kind === "array") parent.index++;
+      else parent.expectingKey = true;
+    } else if (token.startsWith('"') && parent?.kind === "object" && parent.expectingKey) {
+      const key = JSON.parse(token) as string;
+      if (parent.keys.has(key)) errors.push({ path: `${parent.path}[${JSON.stringify(key)}]`, message: `Duplicate JSON key ${JSON.stringify(key)}; keep one declaration instead of silently replacing its value.` });
+      parent.keys.add(key);
+      parent.key = key;
+      parent.expectingKey = false;
+    }
+  }
+  return errors;
+}
+
 export async function checkModelFile(modelPath: string, catalog: PatternCatalog, options: ModelFileOptions = {}): Promise<ModelCheckResult> {
   let raw: unknown;
-  try { raw = JSON.parse(await readFile(modelPath, "utf8")); }
+  try {
+    const json = await readFile(modelPath, "utf8");
+    raw = JSON.parse(json);
+    const errors = duplicateKeys(json);
+    if (errors.length) return { errors, warnings: [] };
+  }
   catch (error) { return { errors: [{ path: "$", message: `Cannot read product JSON: ${error instanceof SyntaxError ? error.message : "file missing or unreadable"}. Supply a readable product.json.` }], warnings: [] }; }
   const parsed = productModelSchema.safeParse(raw);
   if (!parsed.success) return checkModel(raw, { catalog, deck: { entries: {}, errors: [] }, fixtures: {} });

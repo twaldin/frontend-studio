@@ -13,113 +13,105 @@ in prose.
 
 ## What it is
 
-One paragraph: the product's central outcome, what it is, who links what,
-what the system does and what the user watches. Then the kinds of user,
-their device and moment of use, and the surfaces each lives on
-(`product.outcome`, `product.users`).
+What central outcome does the product give its users? What does the system do,
+and what does the user watch or control?
 
-Archetype hint: <workspace / feed / commerce / reader / media / companion /
-canvas / conversation / utility, or omitted>. Explain the fit to the main
-object and home surface; it does not prescribe additional surfaces.
+Who uses it, on which device, and at what moment? Which familiar products give
+them useful expectations for navigation, workflow and data views?
 
-Vocabulary borrowed from: <reference for chrome>, <reference for workflow>,
-<reference for data view>, <reference for library>.
+Which archetype is a useful hint for the main object and home surface, if any?
+Explain the fit rather than inheriting a sample's decisions. The structured
+definition lives in the [model field map](product-model.md#field-map).
 
 ## Entities
 
-| Entity / model ID | What it is | Its words | Contract |
-|---|---|---|---|
-
-Collisions settled: "<word> means X here, never Y." Put the chosen vocabulary
-and rejected terms in `entities[].words` and `entities[].never`.
+What are the central entities, and what does each word mean here? Which word
+collisions need an explanation? Keep the chosen words, rejected terms and
+contract links in the [model](product-model.md#field-map).
 
 ## MVP loop and capabilities
 
 > A <target user> can <trigger>, understand <critical information>, take
 > <primary action>, and verify <outcome>.
 
-Apply [MVP scope](mvp-scope.md). Explain the capability cut and any real
-dependencies. In the model, capabilities have `real` and a reason where
-needed; every flow has `priority: must | should | later`. An imagined
-capability stays explicitly labeled, with its dependent flows and events
-identified; the built UI makes only real promises.
+Why is this the smallest coherent loop? Which capabilities make it possible,
+and which dependencies are real? What can wait without weakening the promise?
 
-| Flow / model ID | User goal | Priority | Observable end |
-|---|---|---|---|
-
-The authoritative stages, next-stage links, surfaces and capability needs
-live in `flows`.
+Explain the cut using [MVP scope](mvp-scope.md). Flow goals, priorities, stages,
+observable ends and capability needs live in the [model](product-model.md#field-map),
+not a second flow table here.
 
 ## Navigation
 
-The sidebar or top nav, in order, with any global action. Which entities have
-no nav item and how they are reached. Record items, menu destinations,
-global-action event and expected destination count in a year in `nav`.
-Navigation labels are deck keys referenced by their surfaces.
+How do users find the next task? Which objects deserve a navigation item, and
+which are reached through another object? What changes as the product grows?
+
+Explain the hierarchy and any global action. The ordered destinations and
+their copy keys live in the [model](product-model.md#field-map).
 
 ## Surfaces and channels
 
-| Surface ID | Route / logical template identity | Channel | Recipient or user question | Users / widths |
-|---|---|---|---|---|
+Why does each surface exist? What would become unclear if two surfaces were
+combined? Which questions should home answer above the fold, and how does a
+first visit reach a real outcome?
 
-One question per row. Include screen, email and push surfaces; outbound fixed
-copy belongs to the product definition too. For channels, state the recipient's
-product outcome. `email:` / `push:` routes identify logical message templates,
-not browser routes; phone/desktop viewports are preview widths.
-Name the home surface, its ordered questions above the fold, and the first
-visit's route to the first real outcome. Surfaces that borrow a known layout
-name the reference and the product reason.
+What outcome does each outbound message help its recipient reach? Which
+surfaces borrow a known layout, and why does that structure fit this product?
+
+Surface questions, routes, users and preview widths live in the
+[model](product-model.md#field-map). Email and push identities follow the
+[channel contract](product-model.md#channels). Keep that inventory out of a
+second surface table here.
 
 ## Data, states and operations
 
-Name each surface's contracts, realistic counts and long-content pressures.
-Put fields, types, enums, `typical`, `max` and `long` in `data`, then map each
-slot's record fields to those contract fields.
+Which data pressures determine the interface? What do realistic counts and
+long content make difficult? How does the product distinguish an unobserved
+value from a real zero or an empty collection?
 
-The rule for an unobserved value is a rendering rule. Define each product-wide
-state with its kind, label and one-line rule in `states`; each surface declares
-its applicable states, default first. Each state names a fixture scenario for
-every contract that surface reads.
+Which rendering conditions have the same meaning across surfaces? Which need
+surface-specific rules? Explain the user-visible behavior. Shared state IDs,
+applicable states, optional fields and null scenarios live in the
+[state](product-model.md#states-setups-and-real-operations) and
+[fixture](product-model.md#data-and-fixtures) definitions.
 
-Name menu, dialog, validation and other interaction setups with their
-triggering events. For each operation, state what is pending, done and failed,
-and whether cancellation, retry or undo is real. Record these in `events`,
-`surfaces[].setups` and slot event/axis bindings, including capability needs.
+What evidence does an operation show while pending, after completion and after
+failure? Which cancellation, retry or undo behavior is real? What should a menu,
+dialog or validation setup help the user decide?
 
 ## Pattern decisions
 
-Bindings in the model follow **flow → surface → slot**. Record `open` for
-unpicked decisions, `proposed` for recommendations and `fixed` for confirmed
-or constrained choices. Every non-open binding has a variant; every fixed
-binding has `because`. Candidate variants fit the data and real capabilities.
-Required header placements contain meaningful records, mapped data or copy.
-Independent schematic decisions are fixed. Shared choices use explicit `sameAs`
-targets; a schematic flow can
-share a compatible variant-rendered surface through its declared
-`sharesVariants` relationship, without an independent schematic walk step.
-The prose here explains important trade-offs rather than duplicating binding fields.
+Which important trade-offs explain the chosen patterns? Which choices are
+forced by a real constraint, and which remain recommendations? Why does a
+shared decision serve each placement that follows it?
+
+Keep records, statuses, variants, candidates, reasons and `sameAs` links in the
+[bindings](product-model.md#bindings). The prose here explains the decision
+instead of repeating its fields.
 
 ## Design
 
-<Design principle in one line, e.g. "Quiet chrome, expressive content.">
-References per part, app/landing visual split, and any product axes no record
-covers. Then the **Design decisions** section pasted from the studio export.
-Reference and look are walk decisions, not model fields.
+What is the design principle in one sentence? Which references inform each
+part, and why do the app and landing use the same or different visual language?
+Which product decisions have no suitable pattern record?
+
+Keep the confirmed **Design decisions** from the studio export here. Reference
+and look are walk decisions, not model fields.
 
 ## Rules
 
-Mechanical rules a lint can hold: case, type roles, size ramp, depth, status
-rendering, palette roles, motion budget, interactive states, component source,
-comment policy.
+Which mechanical rules preserve the design during implementation? State the
+case conventions, type roles, geometry, status treatments, motion limits and
+component sources that a check can enforce.
 
 ## Voice
 
-The register per surface/channel, three rules, and a before/after table.
-Keep three landing headline candidates and a written evaluator here. The keyed
-deck contains the selected strings and covers accessible names, page titles,
-alt text, email subject/preheader/body/actions and push title/body/action as
-well as visible controls and messages. Derived strings come from contract
-fields in fixtures; fixed language surrounding a placeholder remains deck copy.
-Conditional strings reference actual state/setup IDs. `always` follows the
-every-allowed-target rule in the [product model](product-model.md#keyed-copy-deck).
+What register fits each surface and channel? Which concrete writing rules
+preserve it? Give before-and-after examples of unclear and accurate language.
+
+What must the landing headline tell the reader? Keep three candidates and a
+written evaluator here. The selected fixed strings belong in the keyed deck
+under the [copy rubric](copy-rubric.md), including hidden and outbound copy.
+Placeholder sources and copy roles follow the
+[deck contract](product-model.md#keyed-copy-deck).
 

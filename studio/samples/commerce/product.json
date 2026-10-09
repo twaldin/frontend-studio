@@ -1,4 +1,5 @@
 {
+  "$schema": "../../../references/product-model.schema.json",
   "model": 1,
   "product": {
     "id": "commerce",
@@ -35,7 +36,9 @@
       ],
       "never": [
         "listing",
-        "product"
+        "listings",
+        "product",
+        "products"
       ]
     },
     {
@@ -46,7 +49,8 @@
         "parcel"
       ],
       "never": [
-        "booking"
+        "booking",
+        "bookings"
       ]
     },
     {
@@ -57,7 +61,8 @@
         "payment attempt"
       ],
       "never": [
-        "goods editor"
+        "goods editor",
+        "goods editors"
       ]
     }
   ],
@@ -715,7 +720,12 @@
         "status": "proposed",
         "variant": "grid",
         "because": "The buying decision starts in the same assortment composition as the shop.",
-        "sameAs": "surface:shop"
+        "sameAs": "surface:shop",
+        "candidates": [
+          "grid",
+          "list",
+          "shelves"
+        ]
       }
     },
     {
@@ -1004,7 +1014,10 @@
           "id": "header",
           "copy": {
             "shop.title": "always",
-            "shop.documentTitle": "always"
+            "shop.documentTitle": {
+              "when": "always",
+              "as": "title"
+            }
           }
         }
       ],
@@ -1022,10 +1035,22 @@
       ],
       "copy": {
         "shop.title": "always",
-        "shop.documentTitle": "always",
-        "shell.aria.navigation": "always",
-        "shell.aria.main": "always",
-        "shell.alt.productMark": "always",
+        "shop.documentTitle": {
+          "when": "always",
+          "as": "title"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
         "nav.shop": "always",
         "nav.orders": "always",
         "nav.saved": "always",
@@ -1064,8 +1089,7 @@
         "candidates": [
           "grid",
           "list",
-          "shelves",
-          "split"
+          "shelves"
         ]
       }
     },
@@ -1113,17 +1137,31 @@
             "goodsDetail.confirmation.close": [
               "reviewPurchaseSetup"
             ]
+          },
+          "data": {
+            "contract": "Goods",
+            "many": false,
+            "map": {
+              "name": "name",
+              "maker": "maker"
+            }
           }
         },
         {
           "id": "save",
           "copy": {
-            "goodsDetail.save.status": [
-              "goodsDetailSavingPiece"
-            ],
-            "goodsDetail.save.outcome": [
-              "goodsDetailPieceSaved"
-            ],
+            "goodsDetail.save.status": {
+              "when": [
+                "goodsDetailSavingPiece"
+              ],
+              "as": "announce"
+            },
+            "goodsDetail.save.outcome": {
+              "when": [
+                "goodsDetailPieceSaved"
+              ],
+              "as": "announce"
+            },
             "goodsDetail.save.recovery": [
               "goodsDetailSaveFailed"
             ]
@@ -1154,10 +1192,22 @@
       ],
       "copy": {
         "goodsDetail.title": "always",
-        "goodsDetail.documentTitle": "always",
-        "shell.aria.navigation": "always",
-        "shell.aria.main": "always",
-        "shell.alt.productMark": "always",
+        "goodsDetail.documentTitle": {
+          "when": "always",
+          "as": "title"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
         "nav.shop": "always",
         "nav.orders": "always",
         "nav.saved": "always",
@@ -1420,7 +1470,14 @@
               "event": "payForPieceEvent",
               "axis": "asyncFeedback"
             }
-          ]
+          ],
+          "data": {
+            "contract": "Order",
+            "many": false,
+            "map": {
+              "total": "total"
+            }
+          }
         },
         {
           "id": "recovery",
@@ -1457,18 +1514,32 @@
         {
           "id": "state",
           "copy": {
-            "checkout.status.paying": [
-              "checkoutPaying"
-            ],
-            "checkout.status.checking": [
-              "checkoutChecking"
-            ],
+            "checkout.status.paying": {
+              "when": [
+                "checkoutPaying"
+              ],
+              "as": "announce"
+            },
+            "checkout.status.checking": {
+              "when": [
+                "checkoutChecking"
+              ],
+              "as": "announce"
+            },
             "checkout.paid.title": [
               "checkoutPaid"
             ],
             "checkout.paid.body": [
               "checkoutPaid"
             ]
+          },
+          "data": {
+            "contract": "Order",
+            "many": false,
+            "map": {
+              "reference": "reference",
+              "maker": "maker"
+            }
           }
         }
       ],
@@ -1487,23 +1558,38 @@
       ],
       "copy": {
         "checkout.title": "always",
-        "checkout.documentTitle": "always",
-        "shell.aria.navigation": "always",
-        "shell.aria.main": "always",
-        "shell.alt.productMark": "always",
+        "checkout.documentTitle": {
+          "when": "always",
+          "as": "title"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
         "nav.shop": "always",
         "nav.orders": "always",
         "nav.saved": "always",
         "nav.makerThread": "always",
         "nav.settings": "always",
-        "checkout.aria.payment": [
-          "checkoutEditable",
-          "checkoutPaying",
-          "checkoutDeclined",
-          "checkoutUnknown",
-          "checkoutChecking",
-          "checkoutLongContent"
-        ]
+        "checkout.aria.payment": {
+          "when": [
+            "checkoutEditable",
+            "checkoutPaying",
+            "checkoutDeclined",
+            "checkoutUnknown",
+            "checkoutChecking",
+            "checkoutLongContent"
+          ],
+          "as": "label"
+        }
       },
       "binding": {
         "record": "checkout",
@@ -1585,10 +1671,22 @@
       ],
       "copy": {
         "orders.title": "always",
-        "orders.documentTitle": "always",
-        "shell.aria.navigation": "always",
-        "shell.aria.main": "always",
-        "shell.alt.productMark": "always",
+        "orders.documentTitle": {
+          "when": "always",
+          "as": "title"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
         "nav.shop": "always",
         "nav.orders": "always",
         "nav.saved": "always",
@@ -1701,14 +1799,17 @@
               "makerThreadSent",
               "makerThreadSendFailed"
             ],
-            "makerThread.aria.send": [
-              "makerThreadReady",
-              "makerThreadLoading",
-              "makerThreadEmpty",
-              "makerThreadLongContent",
-              "makerThreadSent",
-              "makerThreadSendFailed"
-            ]
+            "makerThread.aria.send": {
+              "when": [
+                "makerThreadReady",
+                "makerThreadLoading",
+                "makerThreadEmpty",
+                "makerThreadLongContent",
+                "makerThreadSent",
+                "makerThreadSendFailed"
+              ],
+              "as": "label"
+            }
           },
           "on": [
             {
@@ -1753,12 +1854,18 @@
             "makerThread.recovery.action": [
               "makerThreadFailed"
             ],
-            "makerThread.status.sending": [
-              "makerThreadSending"
-            ],
-            "makerThread.status.sent": [
-              "makerThreadSent"
-            ],
+            "makerThread.status.sending": {
+              "when": [
+                "makerThreadSending"
+              ],
+              "as": "announce"
+            },
+            "makerThread.status.sent": {
+              "when": [
+                "makerThreadSent"
+              ],
+              "as": "announce"
+            },
             "makerThread.sendFailure": [
               "makerThreadSendFailed"
             ],
@@ -1784,10 +1891,22 @@
       ],
       "copy": {
         "makerThread.title": "always",
-        "makerThread.documentTitle": "always",
-        "shell.aria.navigation": "always",
-        "shell.aria.main": "always",
-        "shell.alt.productMark": "always",
+        "makerThread.documentTitle": {
+          "when": "always",
+          "as": "title"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
         "nav.shop": "always",
         "nav.orders": "always",
         "nav.saved": "always",
@@ -1871,10 +1990,22 @@
       ],
       "copy": {
         "saved.title": "always",
-        "saved.documentTitle": "always",
-        "shell.aria.navigation": "always",
-        "shell.aria.main": "always",
-        "shell.alt.productMark": "always",
+        "saved.documentTitle": {
+          "when": "always",
+          "as": "title"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
         "nav.shop": "always",
         "nav.orders": "always",
         "nav.saved": "always",
@@ -1934,12 +2065,18 @@
         {
           "id": "state",
           "copy": {
-            "settings.status.saving": [
-              "settingsSaving"
-            ],
-            "settings.status.saved": [
-              "settingsSaved"
-            ],
+            "settings.status.saving": {
+              "when": [
+                "settingsSaving"
+              ],
+              "as": "announce"
+            },
+            "settings.status.saved": {
+              "when": [
+                "settingsSaved"
+              ],
+              "as": "announce"
+            },
             "settings.recovery": [
               "settingsFailed"
             ]
@@ -1958,10 +2095,22 @@
       ],
       "copy": {
         "settings.title": "always",
-        "settings.documentTitle": "always",
-        "shell.aria.navigation": "always",
-        "shell.aria.main": "always",
-        "shell.alt.productMark": "always",
+        "settings.documentTitle": {
+          "when": "always",
+          "as": "title"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
         "nav.shop": "always",
         "nav.orders": "always",
         "nav.saved": "always",
@@ -1997,10 +2146,22 @@
       ],
       "copy": {
         "help.title": "always",
-        "help.documentTitle": "always",
-        "shell.aria.navigation": "always",
-        "shell.aria.main": "always",
-        "shell.alt.productMark": "always",
+        "help.documentTitle": {
+          "when": "always",
+          "as": "title"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
         "nav.shop": "always",
         "nav.orders": "always",
         "nav.saved": "always",
@@ -2039,10 +2200,18 @@
       ],
       "copy": {
         "landing.title": "always",
-        "landing.documentTitle": "always",
-        "shell.aria.navigation": "always",
-        "shell.aria.main": "always",
-        "shell.alt.productMark": "always",
+        "landing.documentTitle": {
+          "when": "always",
+          "as": "title"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
         "landing.description": "always",
         "landing.action": "always",
         "landing.secondaryAction": "always",
@@ -2068,12 +2237,30 @@
         "landing.proof.deliveryDays.label": "always",
         "landing.makerQuote.text": "always",
         "landing.makerQuote.attribution": "always",
-        "landing.makerMarks.ternClay.alt": "always",
-        "landing.makerMarks.haldene.alt": "always",
-        "landing.makerMarks.orrinMetalworks.alt": "always",
-        "landing.makerMarks.pressFennel.alt": "always",
-        "landing.makerMarks.wickThistle.alt": "always",
-        "landing.makerMarks.birchwright.alt": "always"
+        "landing.makerMarks.ternClay.alt": {
+          "when": "always",
+          "as": "alt"
+        },
+        "landing.makerMarks.haldene.alt": {
+          "when": "always",
+          "as": "alt"
+        },
+        "landing.makerMarks.orrinMetalworks.alt": {
+          "when": "always",
+          "as": "alt"
+        },
+        "landing.makerMarks.pressFennel.alt": {
+          "when": "always",
+          "as": "alt"
+        },
+        "landing.makerMarks.wickThistle.alt": {
+          "when": "always",
+          "as": "alt"
+        },
+        "landing.makerMarks.birchwright.alt": {
+          "when": "always",
+          "as": "alt"
+        }
       }
     },
     {
@@ -2104,10 +2291,22 @@
         "desktop"
       ],
       "copy": {
-        "emailOrderShipped.subject": "always",
-        "emailOrderShipped.body": "always",
-        "emailOrderShipped.action": "always",
-        "emailOrderShipped.preheader": "always"
+        "emailOrderShipped.subject": {
+          "when": "always",
+          "as": "subject"
+        },
+        "emailOrderShipped.body": {
+          "when": "always",
+          "as": "body"
+        },
+        "emailOrderShipped.action": {
+          "when": "always",
+          "as": "action"
+        },
+        "emailOrderShipped.preheader": {
+          "when": "always",
+          "as": "preheader"
+        }
       },
       "channel": "email"
     },
@@ -2138,9 +2337,18 @@
         "desktop"
       ],
       "copy": {
-        "pushPriceChanged.title": "always",
-        "pushPriceChanged.body": "always",
-        "pushPriceChanged.action": "always"
+        "pushPriceChanged.title": {
+          "when": "always",
+          "as": "title"
+        },
+        "pushPriceChanged.body": {
+          "when": "always",
+          "as": "body"
+        },
+        "pushPriceChanged.action": {
+          "when": "always",
+          "as": "action"
+        }
       },
       "channel": "push"
     }

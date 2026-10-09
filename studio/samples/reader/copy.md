@@ -106,7 +106,7 @@ Fixed product language lives here. Lesson, game and board content lives in the t
 | landing.secondaryAction | Browse the library | landing |
 | landing.footer | © Tessel. All rights reserved. | landing |
 | emailWeeklyLearning.subject | Your week in Portuguese | emailWeeklyLearning |
-| emailWeeklyLearning.body | From {periodStart} to {periodEnd}, you finished {completedLessons} lessons and earned {earnedXp} XP. You have {dueCount} words due for review. | emailWeeklyLearning |
+| emailWeeklyLearning.body | From {periodStart:date} to {periodEnd:date}, you finished {completedLessons} lessons and earned {earnedXp} XP. You have {dueCount} words due for review. | emailWeeklyLearning |
 | emailWeeklyLearning.action | Continue learning | emailWeeklyLearning |
 | pushPracticeReminder.body | {dueCount} words are due for review. A short practice will update their next review dates. | pushPracticeReminder |
 | pushPracticeReminder.action | Review due words | pushPracticeReminder |
@@ -161,7 +161,7 @@ Fixed product language lives here. Lesson, game and board content lives in the t
 | practice.nextReview.today | Today | practice · Review schedule; practice · Long vocabulary |
 | practice.nextReview.tomorrow | Tomorrow | practice · Review schedule |
 | practice.nextReview.days | In {daysUntilReview} days | practice · Review schedule; practice · Review saved |
-| practice.nextReview.date | Review on {nextReviewAt} | practice · Review schedule; practice · Long vocabulary; practice · Review saved |
+| practice.nextReview.date | Review on {nextReviewAt:date} | practice · Review schedule; practice · Long vocabulary; practice · Review saved |
 | practice.reviewCount | {reviews} reviews | practice · Review schedule; practice · Long vocabulary; practice · Review saved |
 | practice.loading | Loading your vocabulary schedule… | practice · Loading vocabulary |
 | library.level.label | Reading level | library |

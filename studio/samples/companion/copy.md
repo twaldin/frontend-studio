@@ -151,9 +151,9 @@ Fixed product language lives here. Lesson, game and board content lives in the t
 | quests.reward.xp | {xp} XP | quests · Quest board; quests · Quest sync failed; quests · Long quest narrative; quests · Claim pending; quests · Reward claimed; quests · Claim rejected; quests · Claim outcome unknown; quests · Quest expired |
 | quests.progress | {completedCount} of {targetCount} | quests · Quest board; quests · Quest sync failed; quests · Long quest narrative; quests · Claim pending; quests · Reward claimed; quests · Claim rejected; quests · Claim outcome unknown; quests · Quest expired |
 | quests.reset.hours | Resets in {hoursUntilReset} hours | quests · Quest board; quests · Quest sync failed; quests · Claim pending; quests · Reward claimed; quests · Claim rejected; quests · Claim outcome unknown |
-| quests.reset.date | Resets at {resetsAt} | quests · Quest board; quests · Quest sync failed; quests · Claim pending; quests · Reward claimed; quests · Claim rejected; quests · Claim outcome unknown |
+| quests.reset.date | Resets on {resetsAt:date} | quests · Quest board; quests · Quest sync failed; quests · Claim pending; quests · Reward claimed; quests · Claim rejected; quests · Claim outcome unknown |
 | quests.expiry.hours | Ends in {hoursUntilExpiry} hours | quests · Quest board; quests · Quest sync failed; quests · Long quest narrative |
-| quests.expiry.date | Ends at {expiresAt} | quests · Quest board; quests · Quest sync failed; quests · Long quest narrative; quests · Quest expired |
+| quests.expiry.date | Ends on {expiresAt:date} | quests · Quest board; quests · Quest sync failed; quests · Long quest narrative; quests · Quest expired |
 | quests.chapter | Chapter {chapter} | quests · Quest board; quests · Quest sync failed; quests · Long quest narrative |
 | quests.claim.pending | Claiming the reward… | quests · Claim pending |
 | quests.claim.failed | The reward was not delivered. You can try the claim again. | quests · Claim rejected |
@@ -188,7 +188,7 @@ Fixed product language lives here. Lesson, game and board content lives in the t
 | clan.sent | Raid message delivered. | clan · Availability sent |
 | clan.failed | Your raid message was not sent. The draft is still here. | clan · Message not sent |
 | clan.retry | Send again | clan · Message not sent |
-| clan.time | Sent at {sentAt} | clan · Raid planning; clan · Long raid plan; clan · Sending availability; clan · Availability sent; clan · Message not sent; clan · Clan unavailable |
+| clan.time | Sent at {sentAt:time} | clan · Raid planning; clan · Long raid plan; clan · Sending availability; clan · Availability sent; clan · Message not sent; clan · Clan unavailable |
 | rankings.self | You | rankings · Weekly rankings |
 | rankings.loading | Loading weekly rankings… | rankings · Loading ranks |
 | settings.retry | Save preferences again | settings · Preferences not saved |

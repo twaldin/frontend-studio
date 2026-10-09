@@ -6,7 +6,7 @@ This is an invented product definition, not a claim that the current studio impl
 |---|---|---|
 | home.title | Home | home |
 | home.documentTitle | Home · Marigold | home |
-| shell.aria.navigation | Main navigation | home; library; player; downloads; queue; newPlaylist; settings; help; landing; episodeComments |
+| shell.aria.navigation | Main navigation | home; library; player; downloads; queue; newPlaylist; settings; help; episodeComments |
 | shell.aria.main | Main content | home; library; player; downloads; queue; newPlaylist; settings; help; landing; episodeComments |
 | shell.alt.productMark | Marigold mark | home; library; player; downloads; queue; newPlaylist; settings; help; landing; episodeComments |
 | home.resume | Resume | home · Ready; home · Loading; home · Long content |
@@ -169,7 +169,7 @@ This is an invented product definition, not a claim that the current studio impl
 | home.duration | {durationSeconds} s | home · Ready; home · Loading; home · Long content |
 | home.progress | Resume at {positionSeconds} s | home · Ready; home · Loading; home · Long content |
 | library.duration | {durationSeconds} s | library · Ready; library · Loading; library · Long content; library · New playlist listed |
-| library.lastPlayed | Played {lastPlayedAt} | library · Ready; library · Loading; library · Long content; library · New playlist listed |
+| library.lastPlayed | Played {lastPlayedAt:relative} | library · Ready; library · Loading; library · Long content; library · New playlist listed |
 | player.position | {positionSeconds} s of {durationSeconds} s | player |
 | player.duration | Length: {durationSeconds} s | player |
 | player.buffering | Waiting for audio… | player · Buffering |
@@ -192,7 +192,7 @@ This is an invented product definition, not a claim that the current studio impl
 | queue.retry | Retry queue change | queue · Queue change failed |
 | newPlaylist.outcome | Your playlist was created. Chosen downloads will finish separately. | newPlaylist · Saved |
 | newPlaylist.openLibrary | Open Library | newPlaylist · Saved |
-| episodeComments.timestamp | Sent {sentAt} | episodeComments · Ready; episodeComments · Loading; episodeComments · Long content; episodeComments · Sending comment; episodeComments · Comment sent; episodeComments · Comment not sent |
+| episodeComments.timestamp | Sent {sentAt:time} | episodeComments · Ready; episodeComments · Loading; episodeComments · Long content; episodeComments · Sending comment; episodeComments · Comment sent; episodeComments · Comment not sent |
 | episodeComments.status | Sending your comment… | episodeComments · Sending comment |
 | episodeComments.sendFailure | Your comment was not sent. Your draft is still here. | episodeComments · Comment not sent |
 | episodeComments.retry | Retry this comment | episodeComments · Comment not sent |

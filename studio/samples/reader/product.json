@@ -1,4 +1,5 @@
 {
+  "$schema": "../../../references/product-model.schema.json",
   "model": 1,
   "product": {
     "id": "reader",
@@ -1146,16 +1147,22 @@
             "learn.recovery.action": [
               "learnFailed"
             ],
-            "learn.loading": [
-              "learnLoading"
-            ]
+            "learn.loading": {
+              "when": [
+                "learnLoading"
+              ],
+              "as": "announce"
+            }
           }
         },
         {
           "id": "identity",
           "copy": {
             "learn.title": "always",
-            "learn.documentTitle": "always"
+            "learn.documentTitle": {
+              "when": "always",
+              "as": "title"
+            }
           }
         },
         {
@@ -1181,9 +1188,18 @@
         "desktop"
       ],
       "copy": {
-        "shell.aria.main": "always",
-        "shell.alt.productMark": "always",
-        "shell.aria.navigation": "always",
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
         "nav.learn": "always",
         "nav.practice": "always",
         "nav.library": "always",
@@ -1207,7 +1223,10 @@
           "id": "header",
           "copy": {
             "lesson.title": "always",
-            "lesson.documentTitle": "always"
+            "lesson.documentTitle": {
+              "when": "always",
+              "as": "title"
+            }
           }
         },
         {
@@ -1294,16 +1313,19 @@
               "lessonListening",
               "lessonCheckFailed"
             ],
-            "lesson.aria.check": [
-              "lessonReady",
-              "lessonLongContent",
-              "lessonChecking",
-              "lessonCorrect",
-              "lessonRetry",
-              "lessonFailed",
-              "lessonListening",
-              "lessonCheckFailed"
-            ]
+            "lesson.aria.check": {
+              "when": [
+                "lessonReady",
+                "lessonLongContent",
+                "lessonChecking",
+                "lessonCorrect",
+                "lessonRetry",
+                "lessonFailed",
+                "lessonListening",
+                "lessonCheckFailed"
+              ],
+              "as": "label"
+            }
           },
           "states": [
             "lessonReady",
@@ -1356,9 +1378,12 @@
         {
           "id": "state",
           "copy": {
-            "lesson.checking": [
-              "lessonChecking"
-            ],
+            "lesson.checking": {
+              "when": [
+                "lessonChecking"
+              ],
+              "as": "announce"
+            },
             "lesson.answer.correct": [
               "lessonCorrect"
             ],
@@ -1368,9 +1393,12 @@
             "lesson.answer.next": [
               "lessonCorrect"
             ],
-            "lesson.status.saving": [
-              "lessonSaving"
-            ],
+            "lesson.status.saving": {
+              "when": [
+                "lessonSaving"
+              ],
+              "as": "announce"
+            },
             "lesson.recovery.title": [
               "lessonFailed"
             ],
@@ -1421,9 +1449,12 @@
         {
           "id": "outcome",
           "copy": {
-            "lesson.outcome": [
-              "lessonCompleted"
-            ],
+            "lesson.outcome": {
+              "when": [
+                "lessonCompleted"
+              ],
+              "as": "announce"
+            },
             "lesson.return": [
               "lessonCompleted"
             ]
@@ -1431,7 +1462,14 @@
           "record": "notifications",
           "status": "proposed",
           "variant": "inline",
-          "because": "Earned XP and return to the path remain next to the acknowledged lesson result."
+          "because": "Earned XP and return to the path remain next to the acknowledged lesson result.",
+          "data": {
+            "contract": "Lesson",
+            "many": false,
+            "map": {
+              "xp": "xp"
+            }
+          }
         }
       ],
       "states": [
@@ -1454,9 +1492,18 @@
         "desktop"
       ],
       "copy": {
-        "shell.aria.main": "always",
-        "shell.alt.productMark": "always",
-        "shell.aria.navigation": "always",
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
         "nav.learn": "always",
         "nav.practice": "always",
         "nav.library": "always",
@@ -1464,9 +1511,12 @@
         "lesson.audio.play": [
           "lessonListening"
         ],
-        "lesson.audio.aria": [
-          "lessonListening"
-        ]
+        "lesson.audio.aria": {
+          "when": [
+            "lessonListening"
+          ],
+          "as": "label"
+        }
       },
       "setups": [
         {
@@ -1553,22 +1603,37 @@
         "desktop"
       ],
       "copy": {
-        "shell.aria.main": "always",
-        "shell.alt.productMark": "always",
-        "shell.aria.navigation": "always",
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
         "nav.learn": "always",
         "nav.practice": "always",
         "nav.library": "always",
         "nav.settings": "always",
         "practice.title": "always",
-        "practice.documentTitle": "always",
+        "practice.documentTitle": {
+          "when": "always",
+          "as": "title"
+        },
         "practice.start": [
           "practiceReady",
           "practiceLongContent"
         ],
-        "practice.loading": [
-          "practiceLoading"
-        ],
+        "practice.loading": {
+          "when": [
+            "practiceLoading"
+          ],
+          "as": "announce"
+        },
         "practice.nextReview.today": [
           "practiceReady",
           "practiceLongContent"
@@ -1651,20 +1716,35 @@
         "desktop"
       ],
       "copy": {
-        "shell.aria.main": "always",
-        "shell.alt.productMark": "always",
-        "shell.aria.navigation": "always",
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
         "nav.learn": "always",
         "nav.practice": "always",
         "nav.library": "always",
         "nav.settings": "always",
         "library.title": "always",
-        "library.documentTitle": "always",
+        "library.documentTitle": {
+          "when": "always",
+          "as": "title"
+        },
         "library.queryLabel": "always",
         "library.level.label": "always",
-        "library.loading": [
-          "libraryLoading"
-        ],
+        "library.loading": {
+          "when": [
+            "libraryLoading"
+          ],
+          "as": "announce"
+        },
         "library.empty.title": [
           "libraryEmpty"
         ],
@@ -1721,7 +1801,10 @@
           "id": "header",
           "copy": {
             "story.title": "always",
-            "story.documentTitle": "always"
+            "story.documentTitle": {
+              "when": "always",
+              "as": "title"
+            }
           }
         },
         {
@@ -1800,7 +1883,15 @@
             "storyWordSaved",
             "storyWordFailed",
             "storyFailed"
-          ]
+          ],
+          "data": {
+            "contract": "Story",
+            "many": false,
+            "map": {
+              "sectionNumber": "sectionNumber",
+              "sectionCount": "sectionCount"
+            }
+          }
         },
         {
           "id": "state",
@@ -1820,15 +1911,24 @@
             "story.recovery.action": [
               "storyFailed"
             ],
-            "story.loading": [
-              "storyLoading"
-            ],
-            "story.status.saving": [
-              "storySaving"
-            ],
-            "story.status.saved": [
-              "storyCompleted"
-            ],
+            "story.loading": {
+              "when": [
+                "storyLoading"
+              ],
+              "as": "announce"
+            },
+            "story.status.saving": {
+              "when": [
+                "storySaving"
+              ],
+              "as": "announce"
+            },
+            "story.status.saved": {
+              "when": [
+                "storyCompleted"
+              ],
+              "as": "announce"
+            },
             "story.positionRecovery": [
               "storySaveFailed"
             ],
@@ -1868,9 +1968,18 @@
         "desktop"
       ],
       "copy": {
-        "shell.aria.main": "always",
-        "shell.alt.productMark": "always",
-        "shell.aria.navigation": "always",
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
         "nav.learn": "always",
         "nav.practice": "always",
         "nav.library": "always",
@@ -1935,7 +2044,10 @@
           "id": "header",
           "copy": {
             "wordList.title": "always",
-            "wordList.documentTitle": "always"
+            "wordList.documentTitle": {
+              "when": "always",
+              "as": "title"
+            }
           }
         },
         {
@@ -2027,9 +2139,12 @@
         {
           "id": "state",
           "copy": {
-            "wordList.status": [
-              "wordListSaving"
-            ],
+            "wordList.status": {
+              "when": [
+                "wordListSaving"
+              ],
+              "as": "announce"
+            },
             "wordList.recovery": [
               "wordListFailed"
             ],
@@ -2076,9 +2191,18 @@
         "desktop"
       ],
       "copy": {
-        "shell.aria.main": "always",
-        "shell.alt.productMark": "always",
-        "shell.aria.navigation": "always",
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
         "nav.learn": "always",
         "nav.practice": "always",
         "nav.library": "always",
@@ -2108,7 +2232,10 @@
           "id": "header",
           "copy": {
             "settings.title": "always",
-            "settings.documentTitle": "always"
+            "settings.documentTitle": {
+              "when": "always",
+              "as": "title"
+            }
           }
         },
         {
@@ -2145,12 +2272,18 @@
         {
           "id": "state",
           "copy": {
-            "settings.status.saving": [
-              "settingsSaving"
-            ],
-            "settings.status.saved": [
-              "settingsSaved"
-            ],
+            "settings.status.saving": {
+              "when": [
+                "settingsSaving"
+              ],
+              "as": "announce"
+            },
+            "settings.status.saved": {
+              "when": [
+                "settingsSaved"
+              ],
+              "as": "announce"
+            },
             "settings.recovery": [
               "settingsFailed"
             ],
@@ -2171,9 +2304,18 @@
         "desktop"
       ],
       "copy": {
-        "shell.aria.main": "always",
-        "shell.alt.productMark": "always",
-        "shell.aria.navigation": "always",
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
         "nav.learn": "always",
         "nav.practice": "always",
         "nav.library": "always",
@@ -2189,7 +2331,10 @@
           "id": "primary",
           "copy": {
             "landing.title": "always",
-            "landing.documentTitle": "always",
+            "landing.documentTitle": {
+              "when": "always",
+              "as": "title"
+            },
             "landing.description": "always",
             "landing.action": "always",
             "landing.secondaryAction": "always",
@@ -2211,12 +2356,30 @@
             "landing.retention.label": "always",
             "landing.testimonial.text": "always",
             "landing.testimonial.who": "always",
-            "landing.partners.harborSchool.alt": "always",
-            "landing.partners.fernwoodAcademy.alt": "always",
-            "landing.partners.alderInstitute.alt": "always",
-            "landing.partners.marlowCollege.alt": "always",
-            "landing.partners.brightwaterLibrary.alt": "always",
-            "landing.partners.kestrelLab.alt": "always"
+            "landing.partners.harborSchool.alt": {
+              "when": "always",
+              "as": "alt"
+            },
+            "landing.partners.fernwoodAcademy.alt": {
+              "when": "always",
+              "as": "alt"
+            },
+            "landing.partners.alderInstitute.alt": {
+              "when": "always",
+              "as": "alt"
+            },
+            "landing.partners.marlowCollege.alt": {
+              "when": "always",
+              "as": "alt"
+            },
+            "landing.partners.brightwaterLibrary.alt": {
+              "when": "always",
+              "as": "alt"
+            },
+            "landing.partners.kestrelLab.alt": {
+              "when": "always",
+              "as": "alt"
+            }
           }
         }
       ],
@@ -2228,8 +2391,14 @@
         "desktop"
       ],
       "copy": {
-        "shell.aria.main": "always",
-        "shell.alt.productMark": "always"
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        }
       }
     },
     {
@@ -2241,10 +2410,22 @@
         {
           "id": "primary",
           "copy": {
-            "emailWeeklyLearning.subject": "always",
-            "emailWeeklyLearning.body": "always",
-            "emailWeeklyLearning.action": "always",
-            "emailWeeklyLearning.preheader": "always"
+            "emailWeeklyLearning.subject": {
+              "when": "always",
+              "as": "subject"
+            },
+            "emailWeeklyLearning.body": {
+              "when": "always",
+              "as": "body"
+            },
+            "emailWeeklyLearning.action": {
+              "when": "always",
+              "as": "action"
+            },
+            "emailWeeklyLearning.preheader": {
+              "when": "always",
+              "as": "preheader"
+            }
           },
           "data": {
             "contract": "LearningSummary",
@@ -2278,9 +2459,18 @@
         {
           "id": "primary",
           "copy": {
-            "pushPracticeReminder.body": "always",
-            "pushPracticeReminder.action": "always",
-            "pushPracticeReminder.title": "always"
+            "pushPracticeReminder.body": {
+              "when": "always",
+              "as": "body"
+            },
+            "pushPracticeReminder.action": {
+              "when": "always",
+              "as": "action"
+            },
+            "pushPracticeReminder.title": {
+              "when": "always",
+              "as": "title"
+            }
           },
           "data": {
             "contract": "LearningSummary",
@@ -2309,6 +2499,5 @@
   "files": {
     "copy": "copy.md",
     "fixtures": "fixtures.json"
-  },
-  "$schema": "../../../references/product-model.schema.json"
+  }
 }

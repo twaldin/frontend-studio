@@ -146,7 +146,7 @@ Fixed product language for the screen, email and push contracts in this director
 | pushPriceChanged.title | A saved piece changed price | pushPriceChanged |
 | pushPriceChanged.body | {name} now costs ${price}. Review the piece before deciding to buy. | pushPriceChanged |
 | pushPriceChanged.action | Review piece | pushPriceChanged |
-| shell.aria.navigation | Main navigation | shop; goodsDetail; checkout; orders; makerThread; saved; settings; help; landing |
+| shell.aria.navigation | Main navigation | shop; goodsDetail; checkout; orders; makerThread; saved; settings; help |
 | shell.aria.main | Main content | shop; goodsDetail; checkout; orders; makerThread; saved; settings; help; landing |
 | shell.alt.productMark | Loomlane mark | shop; goodsDetail; checkout; orders; makerThread; saved; settings; help; landing |
 | goodsDetail.save | Save piece | goodsDetail · Piece available; goodsDetail · Review purchase; goodsDetail · Long piece details; goodsDetail · Sold out; goodsDetail · Made to order; goodsDetail · Save failed |
@@ -182,7 +182,7 @@ Fixed product language for the screen, email and push contracts in this director
 | checkout.paid.action | View orders | checkout · Paid |
 | checkout.aria.payment | Secure payment method | checkout · Editable; checkout · Invalid delivery details; checkout · Delivery choices open; checkout · Paying; checkout · Card declined; checkout · Payment outcome unknown; checkout · Checking payment; checkout · Long delivery details |
 | orders.money | ${total} | orders · Order history; orders · Refreshing orders; orders · Long order name; orders · New order |
-| makerThread.sentAt | Sent {time} | makerThread · Conversation; makerThread · Refreshing messages; makerThread · Long maker reply; makerThread · Sending message; makerThread · Message sent; makerThread · Message not sent |
+| makerThread.sentAt | Sent {sentAt:time} | makerThread · Conversation; makerThread · Refreshing messages; makerThread · Long maker reply; makerThread · Sending message; makerThread · Message sent; makerThread · Message not sent |
 | makerThread.sender.you | You | makerThread · Conversation; makerThread · Refreshing messages; makerThread · Sending message; makerThread · Message sent; makerThread · Message not sent |
 | makerThread.status.sending | Sending your message… | makerThread · Sending message |
 | makerThread.status.sent | Message sent. | makerThread · Message sent |

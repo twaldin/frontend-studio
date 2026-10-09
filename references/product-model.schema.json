@@ -36,10 +36,10 @@
       "$ref": "#/$defs/__schema26"
     },
     "axes": {
-      "$ref": "#/$defs/__schema30"
+      "$ref": "#/$defs/__schema31"
     },
     "files": {
-      "$ref": "#/$defs/__schema32"
+      "$ref": "#/$defs/__schema33"
     }
   },
   "required": [
@@ -258,6 +258,12 @@
             "maximum": 9007199254740991
           },
           "long": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/__schema8"
+            }
+          },
+          "optional": {
             "type": "array",
             "items": {
               "$ref": "#/$defs/__schema8"
@@ -683,7 +689,7 @@
           "minItems": 1,
           "type": "array",
           "items": {
-            "$ref": "#/$defs/__schema29"
+            "$ref": "#/$defs/__schema30"
           }
         },
         "copy": {
@@ -709,24 +715,57 @@
       "additionalProperties": {
         "anyOf": [
           {
-            "type": "string",
-            "const": "always"
+            "$ref": "#/$defs/__schema29"
           },
           {
-            "minItems": 1,
-            "$ref": "#/$defs/__schema6"
+            "type": "object",
+            "properties": {
+              "when": {
+                "$ref": "#/$defs/__schema29"
+              },
+              "as": {
+                "type": "string",
+                "enum": [
+                  "text",
+                  "label",
+                  "title",
+                  "alt",
+                  "announce",
+                  "subject",
+                  "preheader",
+                  "body",
+                  "action"
+                ]
+              }
+            },
+            "required": [
+              "when"
+            ],
+            "additionalProperties": false
           }
         ]
       }
     },
     "__schema29": {
+      "anyOf": [
+        {
+          "type": "string",
+          "const": "always"
+        },
+        {
+          "minItems": 1,
+          "$ref": "#/$defs/__schema6"
+        }
+      ]
+    },
+    "__schema30": {
       "type": "string",
       "enum": [
         "phone",
         "desktop"
       ]
     },
-    "__schema30": {
+    "__schema31": {
       "type": "array",
       "items": {
         "type": "object",
@@ -748,7 +787,7 @@
             "minItems": 2,
             "type": "array",
             "items": {
-              "$ref": "#/$defs/__schema31"
+              "$ref": "#/$defs/__schema32"
             }
           }
         },
@@ -762,7 +801,7 @@
         "additionalProperties": false
       }
     },
-    "__schema31": {
+    "__schema32": {
       "type": "object",
       "properties": {
         "id": {
@@ -782,7 +821,7 @@
       ],
       "additionalProperties": false
     },
-    "__schema32": {
+    "__schema33": {
       "type": "object",
       "properties": {
         "copy": {

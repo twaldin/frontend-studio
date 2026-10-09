@@ -1,14 +1,14 @@
 # Kilter fixed copy
 
-This invented product’s fixed language belongs here, including document titles, accessible names, fixed image alternatives and outbound messages. Fixtures hold typed values and user-authored content; placeholders join them to these strings. Reach is authored from the model’s actual states and setups, not from somewhere a string might eventually appear.
+This invented product’s fixed language belongs here, including document titles, accessible names and fixed image alternatives. Fixtures hold typed values and user-authored content; placeholders join them to these strings. Reach is authored from the model’s actual states and setups, not from somewhere a string might eventually appear.
 
 | Key | Copy | Shown when |
 |---|---|---|
 | convert.title | Convert | convert |
 | convert.documentTitle | Convert · Kilter | convert |
-| convert.aria.navigation | Main navigation | convert |
-| convert.aria.main | Main content | convert |
-| convert.alt.productMark | Kilter mark | convert |
+| shell.aria.navigation | Main navigation | convert; history; favorites; rates; saveFavorite; shortcuts; settings; help |
+| shell.aria.main | Main content | convert; history; favorites; rates; saveFavorite; shortcuts; settings; help; landing |
+| shell.alt.productMark | Kilter mark | convert; history; favorites; rates; saveFavorite; shortcuts; settings; help; landing |
 | convert.composer.placeholder | Type 250 usd in eur | convert |
 | convert.send | Convert | convert |
 | convert.amount.label | Amount | convert |
@@ -33,9 +33,6 @@ This invented product’s fixed language belongs here, including document titles
 | nav.settings | Settings | convert; history; favorites; rates; saveFavorite; shortcuts; settings; help |
 | history.title | History | history |
 | history.documentTitle | History · Kilter | history |
-| history.aria.navigation | Main navigation | history |
-| history.aria.main | Main content | history |
-| history.alt.productMark | Kilter mark | history |
 | history.column.fromUnit | From | history · Ready; history · Confirmation open; history · Loading; history · Long content; history · Clearing history; history · Clear failed |
 | history.column.toUnit | To | history · Ready; history · Confirmation open; history · Loading; history · Long content; history · Clearing history; history · Clear failed |
 | history.column.result | Result | history · Ready; history · Confirmation open; history · Loading; history · Long content; history · Clearing history; history · Clear failed |
@@ -57,9 +54,6 @@ This invented product’s fixed language belongs here, including document titles
 | history.outcome | History cleared. Your favorites are kept. | history · History cleared |
 | favorites.title | Favorites | favorites |
 | favorites.documentTitle | Favorites · Kilter | favorites |
-| favorites.aria.navigation | Main navigation | favorites |
-| favorites.aria.main | Main content | favorites |
-| favorites.alt.productMark | Kilter mark | favorites |
 | favorites.open | Open | favorites · Ready; favorites · Loading; favorites · Long content |
 | favorites.unpin | Unpin | favorites · Ready; favorites · Loading; favorites · Long content |
 | favorites.category.currency | Currency | favorites · Ready; favorites · Loading |
@@ -73,18 +67,12 @@ This invented product’s fixed language belongs here, including document titles
 | favorites.recovery.action | Try again | favorites · Failed |
 | rates.title | Rates | rates |
 | rates.documentTitle | Rates · Kilter | rates |
-| rates.aria.navigation | Main navigation | rates |
-| rates.aria.main | Main content | rates |
-| rates.alt.productMark | Kilter mark | rates |
 | rates.refresh | Refresh rates | rates |
-| rates.updated | Updated {updatedAt} | rates · Live; rates · Cached; rates · Refreshing; rates · Refresh failed |
+| rates.updated | Updated {updatedAt:relative} | rates · Live; rates · Cached; rates · Refreshing; rates · Refresh failed |
 | rates.explanation.title | Using saved rates | rates · Cached; rates · Refresh failed |
 | rates.explanation.body | The most recent refresh did not complete. These rates retain their last successful update timestamps. | rates · Cached; rates · Refresh failed |
 | saveFavorite.title | Save favorite | saveFavorite |
 | saveFavorite.documentTitle | Save favorite · Kilter | saveFavorite |
-| saveFavorite.aria.navigation | Main navigation | saveFavorite |
-| saveFavorite.aria.main | Main content | saveFavorite |
-| saveFavorite.alt.productMark | Kilter mark | saveFavorite |
 | saveFavorite.save | Save favorite | saveFavorite |
 | saveFavorite.cancel | Cancel | saveFavorite |
 | saveFavorite.status | Saving this conversion pair… | saveFavorite · Saving |
@@ -101,9 +89,6 @@ This invented product’s fixed language belongs here, including document titles
 | saveFavorite.invalid | Check the highlighted field. | saveFavorite · Field invalid |
 | shortcuts.title | Shortcuts | shortcuts |
 | shortcuts.documentTitle | Shortcuts · Kilter | shortcuts |
-| shortcuts.aria.navigation | Main navigation | shortcuts |
-| shortcuts.aria.main | Main content | shortcuts |
-| shortcuts.alt.productMark | Kilter mark | shortcuts |
 | shortcuts.pickUnits.label | Pick units | shortcuts |
 | shortcuts.pickUnits.keys | mod+k | shortcuts |
 | shortcuts.swapUnits.label | Swap | shortcuts |
@@ -114,9 +99,6 @@ This invented product’s fixed language belongs here, including document titles
 | shortcuts.saveFavorite.keys | mod+d | shortcuts |
 | settings.title | Settings | settings |
 | settings.documentTitle | Settings · Kilter | settings |
-| settings.aria.navigation | Main navigation | settings |
-| settings.aria.main | Main content | settings |
-| settings.alt.productMark | Kilter mark | settings |
 | settings.section | Conversion preferences | settings |
 | settings.save | Save preferences | settings |
 | settings.cancel | Cancel | settings |
@@ -132,16 +114,10 @@ This invented product’s fixed language belongs here, including document titles
 | settings.favoritePin.label | Show pinned favorites above history | settings |
 | help.title | How rates are updated | help |
 | help.documentTitle | How rates are updated · Kilter | help |
-| help.aria.navigation | Main navigation | help |
-| help.aria.main | Main content | help |
-| help.alt.productMark | Kilter mark | help |
 | help.currencyRates | Currency rates refresh every five minutes while Kilter is open and are saved for offline use. A result made from a saved rate is marked Cached. | help |
 | help.exactFactors | Length, weight and volume use exact factors, so those results never change. | help |
 | landing.title | Convert anything in a keystroke. | landing |
 | landing.documentTitle | Kilter · Kilter | landing |
-| landing.aria.navigation | Main navigation | landing |
-| landing.aria.main | Main content | landing |
-| landing.alt.productMark | Kilter mark | landing |
 | landing.description | Kilter converts units and currencies as you type, keeps the last rates for offline use, and gets out of your way. | landing |
 | landing.action | Start converting | landing |
 | landing.secondaryAction | How rates work | landing |
@@ -173,10 +149,10 @@ This invented product’s fixed language belongs here, including document titles
 | landing.customer.northgate.alt | Northgate Labs | landing |
 | landing.customer.copperline.alt | Copperline Travel | landing |
 | landing.customer.fieldstone.alt | Fieldstone Design | landing |
-| convert.rateUpdated | Rate updated {updatedAt} | convert · Live currency result; convert · Unit picker open; convert · Result copied; convert · Cached rates; convert · Long content |
+| convert.rateUpdated | Rate updated {updatedAt:relative} | convert · Live currency result; convert · Unit picker open; convert · Result copied; convert · Cached rates; convert · Long content |
 | convert.outcome.copied | Copied {result} {toUnit}. | convert · Result copied |
 | convert.unavailable | No saved rate is available for this currency pair. Keep your amount or switch to an exact unit conversion. | convert · Failed |
-| convert.cachedNotice | Using the last saved rate, updated {updatedAt}. | convert · Cached rates |
+| convert.cachedNotice | Using the last saved rate, updated {updatedAt:relative}. | convert · Cached rates |
 | history.status.clearing | Clearing this device’s conversion history… | history · Clearing history |
 | history.recovery.clearFailure | History was not cleared. Your saved conversions are still here. | history · Clear failed |
 | history.conversionCount | {conversionCount} saved conversions | history · Ready; history · Confirmation open; history · Loading; history · Long content; history · Clearing history; history · Clear failed |

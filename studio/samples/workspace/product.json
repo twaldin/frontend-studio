@@ -1,87 +1,5 @@
 {
-  "model": 1,
-  "product": {
-    "id": "workspace",
-    "outcome": "Deploy a registered service, follow its reported rollout, and resolve a health incident only after the service has recovered.",
-    "archetype": "workspace",
-    "users": [
-      {
-        "id": "onCallEngineer",
-        "who": "An on-call engineer selecting artifacts, reviewing rollout failures and recording recovery with the team.",
-        "device": "both",
-        "surfaces": [
-          "home",
-          "services",
-          "serviceDetail",
-          "deploys",
-          "incidents",
-          "incidentThread",
-          "newService",
-          "settings",
-          "help",
-          "landing",
-          "emailDeployFailed",
-          "pushIncidentOpened"
-        ]
-      },
-      {
-        "id": "statusViewer",
-        "who": "A teammate checking service health and rollout progress without initiating a recovery.",
-        "device": "phone",
-        "surfaces": [
-          "home",
-          "services",
-          "serviceDetail",
-          "deploys",
-          "incidents",
-          "incidentThread"
-        ]
-      }
-    ]
-  },
-  "entities": [
-    {
-      "id": "service",
-      "contract": "Service",
-      "words": [
-        "service"
-      ],
-      "never": [
-        "project",
-        "app"
-      ]
-    },
-    {
-      "id": "deploy",
-      "contract": "Deploy",
-      "words": [
-        "deploy",
-        "rollout"
-      ],
-      "never": [
-        "task card"
-      ]
-    },
-    {
-      "id": "incident",
-      "contract": "Incident",
-      "words": [
-        "incident",
-        "recovery timeline"
-      ],
-      "never": [
-        "notice"
-      ]
-    },
-    {
-      "id": "serviceRegistration",
-      "contract": "ServiceDraft",
-      "words": [
-        "repository",
-        "service registration"
-      ]
-    }
-  ],
+  "$schema": "../../../references/product-model.schema.json",
   "capabilities": [
     {
       "id": "deployServices",
@@ -156,7 +74,10 @@
           "down",
           "paused"
         ]
-      }
+      },
+      "optional": [
+        "latencyMs"
+      ]
     },
     "Deploy": {
       "fields": {
@@ -305,6 +226,544 @@
         "revision"
       ]
     }
+  },
+  "entities": [
+    {
+      "id": "service",
+      "contract": "Service",
+      "words": [
+        "service"
+      ],
+      "never": [
+        "project",
+        "app"
+      ]
+    },
+    {
+      "id": "deploy",
+      "contract": "Deploy",
+      "words": [
+        "deploy",
+        "rollout"
+      ],
+      "never": [
+        "task card"
+      ]
+    },
+    {
+      "id": "incident",
+      "contract": "Incident",
+      "words": [
+        "incident",
+        "recovery timeline"
+      ],
+      "never": [
+        "notice"
+      ]
+    },
+    {
+      "id": "serviceRegistration",
+      "contract": "ServiceDraft",
+      "words": [
+        "repository",
+        "service registration"
+      ]
+    }
+  ],
+  "events": {
+    "deployReviewEvent": {
+      "label": "Review artifact rollout",
+      "kind": "layer"
+    },
+    "deployServiceEvent": {
+      "label": "Start reviewed rollout",
+      "kind": "operation",
+      "needs": "deployServices"
+    },
+    "rollbackReviewEvent": {
+      "label": "Review restoration of the previous artifact",
+      "kind": "layer"
+    },
+    "rollbackServiceEvent": {
+      "label": "Restore last healthy artifact",
+      "kind": "operation",
+      "needs": "rollbackServices"
+    },
+    "restartReviewEvent": {
+      "label": "Review unhealthy instance replacement",
+      "kind": "layer"
+    },
+    "restartServiceEvent": {
+      "label": "Replace unhealthy instances",
+      "kind": "operation",
+      "needs": "restartServices"
+    },
+    "incidentThreadSendEvent": {
+      "label": "Post incident observation",
+      "kind": "operation",
+      "needs": "sendMessages"
+    },
+    "resolveReviewEvent": {
+      "label": "Review recovered incident",
+      "kind": "layer"
+    },
+    "resolveIncidentEvent": {
+      "label": "Record incident resolution",
+      "kind": "operation",
+      "needs": "resolveIncidents"
+    },
+    "newServiceSaveEvent": {
+      "label": "Register repository and region",
+      "kind": "operation",
+      "needs": "registerServices"
+    },
+    "newServiceInvalidEvent": {
+      "label": "Check service registration fields",
+      "kind": "submit"
+    },
+    "savePreferencesEvent": {
+      "label": "Save preferences",
+      "kind": "operation",
+      "needs": "savePreferences"
+    },
+    "registrationRegionChoicesEvent": {
+      "label": "Open registration region choices",
+      "kind": "layer"
+    },
+    "settingsRegionChoicesEvent": {
+      "label": "Open default-region choices",
+      "kind": "layer"
+    }
+  },
+  "files": {
+    "copy": "copy.md",
+    "fixtures": "fixtures.json"
+  },
+  "flows": [
+    {
+      "id": "operateFlow",
+      "goal": "Inspect a service record, review an artifact and follow its health-gated rollout.",
+      "priority": "must",
+      "stages": [
+        {
+          "id": "exceptions",
+          "surface": "home",
+          "next": [
+            "registry"
+          ]
+        },
+        {
+          "id": "registry",
+          "surface": "services",
+          "next": [
+            "record"
+          ]
+        },
+        {
+          "id": "record",
+          "surface": "serviceDetail",
+          "next": [
+            "rollingOut"
+          ]
+        },
+        {
+          "id": "rollingOut",
+          "surface": "serviceDetail",
+          "state": "serviceDetailDeploying",
+          "next": [
+            "complete"
+          ]
+        },
+        {
+          "id": "complete",
+          "surface": "serviceDetail",
+          "state": "serviceDetailDeployed",
+          "next": [
+            "history"
+          ]
+        },
+        {
+          "id": "history",
+          "surface": "deploys"
+        }
+      ],
+      "ends": "The artifact’s rollout is recorded as Complete with measured service recovery; the engineer can revisit the attempt and its owner.",
+      "needs": [
+        "deployServices"
+      ]
+    },
+    {
+      "id": "respondFlow",
+      "goal": "Investigate the billing incident, restore its last healthy artifact and record verified recovery.",
+      "priority": "must",
+      "stages": [
+        {
+          "id": "incidentRegister",
+          "surface": "incidents",
+          "next": [
+            "evidence"
+          ]
+        },
+        {
+          "id": "evidence",
+          "surface": "incidentThread",
+          "next": [
+            "restore"
+          ]
+        },
+        {
+          "id": "restore",
+          "surface": "serviceDetail",
+          "state": "serviceDetailRollingBack",
+          "next": [
+            "serviceRecovered"
+          ]
+        },
+        {
+          "id": "serviceRecovered",
+          "surface": "serviceDetail",
+          "state": "serviceDetailRolledBack",
+          "next": [
+            "verify"
+          ]
+        },
+        {
+          "id": "verify",
+          "surface": "incidentThread",
+          "state": "incidentThreadRecovered",
+          "next": [
+            "resolve"
+          ]
+        },
+        {
+          "id": "resolve",
+          "surface": "incidentThread",
+          "state": "incidentThreadResolving",
+          "next": [
+            "resolved"
+          ]
+        },
+        {
+          "id": "resolved",
+          "surface": "incidentThread",
+          "state": "incidentThreadResolved"
+        }
+      ],
+      "ends": "The previous artifact is serving with passing health checks and the incident is persisted as Resolved with its investigation timeline intact.",
+      "needs": [
+        "rollbackServices",
+        "resolveIncidents",
+        "sendMessages"
+      ]
+    },
+    {
+      "id": "retryDeployFlow",
+      "goal": "Inspect a failed build and explicitly retry the same artifact.",
+      "priority": "must",
+      "stages": [
+        {
+          "id": "failedAttempt",
+          "surface": "serviceDetail",
+          "state": "serviceDetailDeployFailed",
+          "next": [
+            "retrying"
+          ]
+        },
+        {
+          "id": "retrying",
+          "surface": "serviceDetail",
+          "state": "serviceDetailDeploying",
+          "next": [
+            "accepted"
+          ]
+        },
+        {
+          "id": "accepted",
+          "surface": "serviceDetail",
+          "state": "serviceDetailDeployed"
+        }
+      ],
+      "ends": "The failed attempt remains inspectable and the retried rollout reports its own accepted completion.",
+      "needs": [
+        "deployServices"
+      ]
+    },
+    {
+      "id": "restartServiceFlow",
+      "goal": "Replace unhealthy notification instances after reviewing the current artifact.",
+      "priority": "should",
+      "stages": [
+        {
+          "id": "serviceRecord",
+          "surface": "serviceDetail",
+          "next": [
+            "restarting"
+          ],
+          "state": "serviceDetailNotifications"
+        },
+        {
+          "id": "restarting",
+          "surface": "serviceDetail",
+          "state": "serviceDetailRestarting",
+          "next": [
+            "healthyInstances"
+          ]
+        },
+        {
+          "id": "healthyInstances",
+          "surface": "serviceDetail",
+          "state": "serviceDetailRestarted"
+        }
+      ],
+      "ends": "Replacement instances report passing health checks while the incident remains open for on-call verification.",
+      "needs": [
+        "restartServices"
+      ]
+    },
+    {
+      "id": "newServiceFlow",
+      "goal": "Register a repository and region before choosing the service’s first artifact.",
+      "priority": "should",
+      "stages": [
+        {
+          "id": "registry",
+          "surface": "services",
+          "next": [
+            "registration"
+          ]
+        },
+        {
+          "id": "registration",
+          "surface": "newService",
+          "state": "newServiceDraft",
+          "next": [
+            "registered"
+          ]
+        },
+        {
+          "id": "registered",
+          "surface": "newService",
+          "state": "newServiceSaved",
+          "next": [
+            "record"
+          ]
+        },
+        {
+          "id": "record",
+          "surface": "serviceDetail",
+          "state": "serviceDetailRegistered"
+        }
+      ],
+      "ends": "A registered service and stable record route exist; registration alone does not claim a successful deployment.",
+      "needs": [
+        "registerServices"
+      ],
+      "binding": {
+        "record": "create-edit",
+        "status": "proposed",
+        "variant": "dedicatedPage",
+        "because": "Repository, region and deploy preferences form a deliberate registration draft distinct from observed telemetry.",
+        "sameAs": "surface:newService"
+      }
+    },
+    {
+      "id": "incidentUpdateFlow",
+      "goal": "Add an observation to the on-call investigation without issuing a deployment from chat.",
+      "priority": "should",
+      "stages": [
+        {
+          "id": "timeline",
+          "surface": "incidentThread",
+          "next": [
+            "posting"
+          ]
+        },
+        {
+          "id": "posting",
+          "surface": "incidentThread",
+          "state": "incidentThreadSending",
+          "next": [
+            "recorded"
+          ]
+        },
+        {
+          "id": "recorded",
+          "surface": "incidentThread",
+          "state": "incidentThreadSent"
+        }
+      ],
+      "ends": "The accepted observation is visible in timestamp order and its composer draft is cleared only after persistence.",
+      "needs": [
+        "sendMessages"
+      ]
+    },
+    {
+      "id": "preferencesFlow",
+      "goal": "Save default region, auto-deploy and failure or health notifications.",
+      "priority": "should",
+      "stages": [
+        {
+          "id": "editPreferences",
+          "surface": "settings",
+          "state": "settingsReady",
+          "next": [
+            "savedPreferences"
+          ]
+        },
+        {
+          "id": "savedPreferences",
+          "surface": "settings",
+          "state": "settingsSaved"
+        }
+      ],
+      "ends": "Saved preferences apply to later registrations and notifications without rewriting existing rollout attempts.",
+      "needs": [
+        "savePreferences"
+      ]
+    },
+    {
+      "id": "helpFlow",
+      "goal": "Read batch safety and artifact reuse rules before choosing recovery.",
+      "priority": "should",
+      "stages": [
+        {
+          "id": "safetyGuide",
+          "surface": "help"
+        }
+      ],
+      "ends": "The engineer understands health-gated traffic shifts and that rollback restores rather than rebuilds an artifact.",
+      "needs": []
+    },
+    {
+      "id": "emailDeployFailedFlow",
+      "goal": "Open the exact failed rollout from its email diagnostics.",
+      "priority": "should",
+      "stages": [
+        {
+          "id": "failureEmail",
+          "surface": "emailDeployFailed",
+          "next": [
+            "failureRecord"
+          ]
+        },
+        {
+          "id": "failureRecord",
+          "surface": "serviceDetail",
+          "state": "serviceDetailDeployFailed"
+        }
+      ],
+      "ends": "The persisted failed artifact, build exit code and duration are visible before an explicit retry.",
+      "needs": [
+        "deploymentEmails"
+      ]
+    },
+    {
+      "id": "pushIncidentOpenedFlow",
+      "goal": "Open a recorded incident from an on-call notification.",
+      "priority": "should",
+      "stages": [
+        {
+          "id": "incidentPush",
+          "surface": "pushIncidentOpened",
+          "next": [
+            "investigation"
+          ]
+        },
+        {
+          "id": "investigation",
+          "surface": "incidentThread"
+        }
+      ],
+      "ends": "The notified incident opens with its affected service, owner and investigation timeline.",
+      "needs": [
+        "incidentPush"
+      ]
+    },
+    {
+      "id": "discoverFlow",
+      "goal": "Understand health-gated deployments and enter the service-health overview.",
+      "priority": "later",
+      "stages": [
+        {
+          "id": "explanation",
+          "surface": "landing",
+          "next": [
+            "healthOverview"
+          ]
+        },
+        {
+          "id": "healthOverview",
+          "surface": "home"
+        }
+      ],
+      "ends": "The engineer reaches measured service health rather than an unsupported automatic-remediation or signup flow.",
+      "needs": []
+    }
+  ],
+  "model": 1,
+  "nav": {
+    "items": [
+      {
+        "surface": "home",
+        "copy": "nav.home"
+      },
+      {
+        "surface": "deploys",
+        "copy": "nav.deploys"
+      },
+      {
+        "surface": "services",
+        "copy": "nav.services"
+      },
+      {
+        "surface": "incidents",
+        "copy": "nav.incidents"
+      },
+      {
+        "surface": "settings",
+        "copy": "nav.settings"
+      }
+    ],
+    "inAYear": 8
+  },
+  "product": {
+    "id": "workspace",
+    "outcome": "Deploy a registered service, follow its reported rollout, and resolve a health incident only after the service has recovered.",
+    "archetype": "workspace",
+    "users": [
+      {
+        "id": "onCallEngineer",
+        "who": "An on-call engineer selecting artifacts, reviewing rollout failures and recording recovery with the team.",
+        "device": "both",
+        "surfaces": [
+          "home",
+          "services",
+          "serviceDetail",
+          "deploys",
+          "incidents",
+          "incidentThread",
+          "newService",
+          "settings",
+          "help",
+          "landing",
+          "emailDeployFailed",
+          "pushIncidentOpened"
+        ]
+      },
+      {
+        "id": "statusViewer",
+        "who": "A teammate checking service health and rollout progress without initiating a recovery.",
+        "device": "phone",
+        "surfaces": [
+          "home",
+          "services",
+          "serviceDetail",
+          "deploys",
+          "incidents",
+          "incidentThread"
+        ]
+      }
+    ]
   },
   "states": {
     "homeReady": {
@@ -922,457 +1381,6 @@
       }
     }
   },
-  "events": {
-    "deployReviewEvent": {
-      "label": "Review artifact rollout",
-      "kind": "layer"
-    },
-    "deployServiceEvent": {
-      "label": "Start reviewed rollout",
-      "kind": "operation",
-      "needs": "deployServices"
-    },
-    "rollbackReviewEvent": {
-      "label": "Review restoration of the previous artifact",
-      "kind": "layer"
-    },
-    "rollbackServiceEvent": {
-      "label": "Restore last healthy artifact",
-      "kind": "operation",
-      "needs": "rollbackServices"
-    },
-    "restartReviewEvent": {
-      "label": "Review unhealthy instance replacement",
-      "kind": "layer"
-    },
-    "restartServiceEvent": {
-      "label": "Replace unhealthy instances",
-      "kind": "operation",
-      "needs": "restartServices"
-    },
-    "incidentThreadSendEvent": {
-      "label": "Post incident observation",
-      "kind": "operation",
-      "needs": "sendMessages"
-    },
-    "resolveReviewEvent": {
-      "label": "Review recovered incident",
-      "kind": "layer"
-    },
-    "resolveIncidentEvent": {
-      "label": "Record incident resolution",
-      "kind": "operation",
-      "needs": "resolveIncidents"
-    },
-    "newServiceSaveEvent": {
-      "label": "Register repository and region",
-      "kind": "operation",
-      "needs": "registerServices"
-    },
-    "newServiceInvalidEvent": {
-      "label": "Check service registration fields",
-      "kind": "submit"
-    },
-    "savePreferencesEvent": {
-      "label": "Save preferences",
-      "kind": "operation",
-      "needs": "savePreferences"
-    },
-    "registrationRegionChoicesEvent": {
-      "label": "Open registration region choices",
-      "kind": "layer"
-    },
-    "settingsRegionChoicesEvent": {
-      "label": "Open default-region choices",
-      "kind": "layer"
-    }
-  },
-  "nav": {
-    "items": [
-      {
-        "surface": "home",
-        "copy": "nav.home"
-      },
-      {
-        "surface": "deploys",
-        "copy": "nav.deploys"
-      },
-      {
-        "surface": "services",
-        "copy": "nav.services"
-      },
-      {
-        "surface": "incidents",
-        "copy": "nav.incidents"
-      },
-      {
-        "surface": "settings",
-        "copy": "nav.settings"
-      }
-    ],
-    "inAYear": 8
-  },
-  "flows": [
-    {
-      "id": "operateFlow",
-      "goal": "Inspect a service record, review an artifact and follow its health-gated rollout.",
-      "priority": "must",
-      "stages": [
-        {
-          "id": "exceptions",
-          "surface": "home",
-          "next": [
-            "registry"
-          ]
-        },
-        {
-          "id": "registry",
-          "surface": "services",
-          "next": [
-            "record"
-          ]
-        },
-        {
-          "id": "record",
-          "surface": "serviceDetail",
-          "next": [
-            "rollingOut"
-          ]
-        },
-        {
-          "id": "rollingOut",
-          "surface": "serviceDetail",
-          "state": "serviceDetailDeploying",
-          "next": [
-            "complete"
-          ]
-        },
-        {
-          "id": "complete",
-          "surface": "serviceDetail",
-          "state": "serviceDetailDeployed",
-          "next": [
-            "history"
-          ]
-        },
-        {
-          "id": "history",
-          "surface": "deploys"
-        }
-      ],
-      "ends": "The artifact’s rollout is recorded as Complete with measured service recovery; the engineer can revisit the attempt and its owner.",
-      "needs": [
-        "deployServices"
-      ]
-    },
-    {
-      "id": "respondFlow",
-      "goal": "Investigate the billing incident, restore its last healthy artifact and record verified recovery.",
-      "priority": "must",
-      "stages": [
-        {
-          "id": "incidentRegister",
-          "surface": "incidents",
-          "next": [
-            "evidence"
-          ]
-        },
-        {
-          "id": "evidence",
-          "surface": "incidentThread",
-          "next": [
-            "restore"
-          ]
-        },
-        {
-          "id": "restore",
-          "surface": "serviceDetail",
-          "state": "serviceDetailRollingBack",
-          "next": [
-            "serviceRecovered"
-          ]
-        },
-        {
-          "id": "serviceRecovered",
-          "surface": "serviceDetail",
-          "state": "serviceDetailRolledBack",
-          "next": [
-            "verify"
-          ]
-        },
-        {
-          "id": "verify",
-          "surface": "incidentThread",
-          "state": "incidentThreadRecovered",
-          "next": [
-            "resolve"
-          ]
-        },
-        {
-          "id": "resolve",
-          "surface": "incidentThread",
-          "state": "incidentThreadResolving",
-          "next": [
-            "resolved"
-          ]
-        },
-        {
-          "id": "resolved",
-          "surface": "incidentThread",
-          "state": "incidentThreadResolved"
-        }
-      ],
-      "ends": "The previous artifact is serving with passing health checks and the incident is persisted as Resolved with its investigation timeline intact.",
-      "needs": [
-        "rollbackServices",
-        "resolveIncidents",
-        "sendMessages"
-      ]
-    },
-    {
-      "id": "retryDeployFlow",
-      "goal": "Inspect a failed build and explicitly retry the same artifact.",
-      "priority": "must",
-      "stages": [
-        {
-          "id": "failedAttempt",
-          "surface": "serviceDetail",
-          "state": "serviceDetailDeployFailed",
-          "next": [
-            "retrying"
-          ]
-        },
-        {
-          "id": "retrying",
-          "surface": "serviceDetail",
-          "state": "serviceDetailDeploying",
-          "next": [
-            "accepted"
-          ]
-        },
-        {
-          "id": "accepted",
-          "surface": "serviceDetail",
-          "state": "serviceDetailDeployed"
-        }
-      ],
-      "ends": "The failed attempt remains inspectable and the retried rollout reports its own accepted completion.",
-      "needs": [
-        "deployServices"
-      ]
-    },
-    {
-      "id": "restartServiceFlow",
-      "goal": "Replace unhealthy notification instances after reviewing the current artifact.",
-      "priority": "should",
-      "stages": [
-        {
-          "id": "serviceRecord",
-          "surface": "serviceDetail",
-          "next": [
-            "restarting"
-          ],
-          "state": "serviceDetailNotifications"
-        },
-        {
-          "id": "restarting",
-          "surface": "serviceDetail",
-          "state": "serviceDetailRestarting",
-          "next": [
-            "healthyInstances"
-          ]
-        },
-        {
-          "id": "healthyInstances",
-          "surface": "serviceDetail",
-          "state": "serviceDetailRestarted"
-        }
-      ],
-      "ends": "Replacement instances report passing health checks while the incident remains open for on-call verification.",
-      "needs": [
-        "restartServices"
-      ]
-    },
-    {
-      "id": "newServiceFlow",
-      "goal": "Register a repository and region before choosing the service’s first artifact.",
-      "priority": "should",
-      "stages": [
-        {
-          "id": "registry",
-          "surface": "services",
-          "next": [
-            "registration"
-          ]
-        },
-        {
-          "id": "registration",
-          "surface": "newService",
-          "state": "newServiceDraft",
-          "next": [
-            "registered"
-          ]
-        },
-        {
-          "id": "registered",
-          "surface": "newService",
-          "state": "newServiceSaved",
-          "next": [
-            "record"
-          ]
-        },
-        {
-          "id": "record",
-          "surface": "serviceDetail",
-          "state": "serviceDetailRegistered"
-        }
-      ],
-      "ends": "A registered service and stable record route exist; registration alone does not claim a successful deployment.",
-      "needs": [
-        "registerServices"
-      ],
-      "binding": {
-        "record": "create-edit",
-        "status": "proposed",
-        "variant": "dedicatedPage",
-        "because": "Repository, region and deploy preferences form a deliberate registration draft distinct from observed telemetry.",
-        "sameAs": "surface:newService"
-      }
-    },
-    {
-      "id": "incidentUpdateFlow",
-      "goal": "Add an observation to the on-call investigation without issuing a deployment from chat.",
-      "priority": "should",
-      "stages": [
-        {
-          "id": "timeline",
-          "surface": "incidentThread",
-          "next": [
-            "posting"
-          ]
-        },
-        {
-          "id": "posting",
-          "surface": "incidentThread",
-          "state": "incidentThreadSending",
-          "next": [
-            "recorded"
-          ]
-        },
-        {
-          "id": "recorded",
-          "surface": "incidentThread",
-          "state": "incidentThreadSent"
-        }
-      ],
-      "ends": "The accepted observation is visible in timestamp order and its composer draft is cleared only after persistence.",
-      "needs": [
-        "sendMessages"
-      ]
-    },
-    {
-      "id": "preferencesFlow",
-      "goal": "Save default region, auto-deploy and failure or health notifications.",
-      "priority": "should",
-      "stages": [
-        {
-          "id": "editPreferences",
-          "surface": "settings",
-          "state": "settingsReady",
-          "next": [
-            "savedPreferences"
-          ]
-        },
-        {
-          "id": "savedPreferences",
-          "surface": "settings",
-          "state": "settingsSaved"
-        }
-      ],
-      "ends": "Saved preferences apply to later registrations and notifications without rewriting existing rollout attempts.",
-      "needs": [
-        "savePreferences"
-      ]
-    },
-    {
-      "id": "helpFlow",
-      "goal": "Read batch safety and artifact reuse rules before choosing recovery.",
-      "priority": "should",
-      "stages": [
-        {
-          "id": "safetyGuide",
-          "surface": "help"
-        }
-      ],
-      "ends": "The engineer understands health-gated traffic shifts and that rollback restores rather than rebuilds an artifact.",
-      "needs": []
-    },
-    {
-      "id": "emailDeployFailedFlow",
-      "goal": "Open the exact failed rollout from its email diagnostics.",
-      "priority": "should",
-      "stages": [
-        {
-          "id": "failureEmail",
-          "surface": "emailDeployFailed",
-          "next": [
-            "failureRecord"
-          ]
-        },
-        {
-          "id": "failureRecord",
-          "surface": "serviceDetail",
-          "state": "serviceDetailDeployFailed"
-        }
-      ],
-      "ends": "The persisted failed artifact, build exit code and duration are visible before an explicit retry.",
-      "needs": [
-        "deploymentEmails"
-      ]
-    },
-    {
-      "id": "pushIncidentOpenedFlow",
-      "goal": "Open a recorded incident from an on-call notification.",
-      "priority": "should",
-      "stages": [
-        {
-          "id": "incidentPush",
-          "surface": "pushIncidentOpened",
-          "next": [
-            "investigation"
-          ]
-        },
-        {
-          "id": "investigation",
-          "surface": "incidentThread"
-        }
-      ],
-      "ends": "The notified incident opens with its affected service, owner and investigation timeline.",
-      "needs": [
-        "incidentPush"
-      ]
-    },
-    {
-      "id": "discoverFlow",
-      "goal": "Understand health-gated deployments and enter the service-health overview.",
-      "priority": "later",
-      "stages": [
-        {
-          "id": "explanation",
-          "surface": "landing",
-          "next": [
-            "healthOverview"
-          ]
-        },
-        {
-          "id": "healthOverview",
-          "surface": "home"
-        }
-      ],
-      "ends": "The engineer reaches measured service health rather than an unsupported automatic-remediation or signup flow.",
-      "needs": []
-    }
-  ],
   "surfaces": [
     {
       "id": "home",
@@ -1390,7 +1398,16 @@
               "latencyMs": "latencyMs"
             }
           },
-          "copy": {}
+          "copy": {
+            "services.latency.value": [
+              "homeReady",
+              "homeLoading"
+            ],
+            "services.latency.unobserved": [
+              "homeReady",
+              "homeLoading"
+            ]
+          }
         },
         {
           "id": "summary",
@@ -1504,7 +1521,10 @@
           "id": "identity",
           "copy": {
             "home.title": "always",
-            "shell.alt.productMark": "always"
+            "shell.alt.productMark": {
+              "when": "always",
+              "as": "alt"
+            }
           }
         },
         {
@@ -1531,10 +1551,22 @@
       ],
       "copy": {
         "home.title": "always",
-        "home.documentTitle": "always",
-        "shell.aria.navigation": "always",
-        "shell.aria.main": "always",
-        "shell.alt.productMark": "always",
+        "home.documentTitle": {
+          "when": "always",
+          "as": "title"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
         "nav.home": "always",
         "nav.deploys": "always",
         "nav.services": "always",
@@ -1613,10 +1645,22 @@
       ],
       "copy": {
         "services.title": "always",
-        "services.documentTitle": "always",
-        "shell.aria.navigation": "always",
-        "shell.aria.main": "always",
-        "shell.alt.productMark": "always",
+        "services.documentTitle": {
+          "when": "always",
+          "as": "title"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
         "nav.home": "always",
         "nav.deploys": "always",
         "nav.services": "always",
@@ -1687,25 +1731,13 @@
           "servicesDays",
           "servicesWeeks"
         ],
-        "services.lastDeploy.minutes": [
+        "services.lastDeploy.relative": [
           "servicesReady",
           "servicesLoading",
-          "servicesMinutes"
-        ],
-        "services.lastDeploy.hours": [
-          "servicesReady",
-          "servicesLoading",
+          "servicesMinutes",
           "servicesLongContent",
-          "servicesHours"
-        ],
-        "services.lastDeploy.days": [
-          "servicesReady",
-          "servicesLoading",
-          "servicesDays"
-        ],
-        "services.lastDeploy.weeks": [
-          "servicesReady",
-          "servicesLoading",
+          "servicesHours",
+          "servicesDays",
           "servicesWeeks"
         ],
         "services.status.healthy": [
@@ -1841,29 +1873,55 @@
             "serviceDetail.restartReview.close": [
               "restartReviewSetup"
             ]
+          },
+          "data": {
+            "contract": "Deploy",
+            "many": false,
+            "map": {
+              "artifact": "artifact",
+              "service": "service"
+            }
           }
         },
         {
           "id": "operations",
           "copy": {
-            "serviceDetail.status.deploying": [
-              "serviceDetailDeploying"
-            ],
-            "serviceDetail.status.deployed": [
-              "serviceDetailDeployed"
-            ],
-            "serviceDetail.status.rollingBack": [
-              "serviceDetailRollingBack"
-            ],
-            "serviceDetail.status.rolledBack": [
-              "serviceDetailRolledBack"
-            ],
-            "serviceDetail.status.restarting": [
-              "serviceDetailRestarting"
-            ],
-            "serviceDetail.status.restarted": [
-              "serviceDetailRestarted"
-            ],
+            "serviceDetail.status.deploying": {
+              "when": [
+                "serviceDetailDeploying"
+              ],
+              "as": "announce"
+            },
+            "serviceDetail.status.deployed": {
+              "when": [
+                "serviceDetailDeployed"
+              ],
+              "as": "announce"
+            },
+            "serviceDetail.status.rollingBack": {
+              "when": [
+                "serviceDetailRollingBack"
+              ],
+              "as": "announce"
+            },
+            "serviceDetail.status.rolledBack": {
+              "when": [
+                "serviceDetailRolledBack"
+              ],
+              "as": "announce"
+            },
+            "serviceDetail.status.restarting": {
+              "when": [
+                "serviceDetailRestarting"
+              ],
+              "as": "announce"
+            },
+            "serviceDetail.status.restarted": {
+              "when": [
+                "serviceDetailRestarted"
+              ],
+              "as": "announce"
+            },
             "serviceDetail.rollbackFailure": [
               "serviceDetailRollbackFailed"
             ],
@@ -1899,7 +1957,15 @@
               "event": "restartServiceEvent",
               "axis": "asyncFeedback"
             }
-          ]
+          ],
+          "data": {
+            "contract": "Deploy",
+            "many": false,
+            "map": {
+              "exitCode": "exitCode",
+              "elapsedSeconds": "elapsedSeconds"
+            }
+          }
         },
         {
           "id": "registration",
@@ -1957,10 +2023,22 @@
       ],
       "copy": {
         "serviceDetail.title": "always",
-        "serviceDetail.documentTitle": "always",
-        "shell.aria.navigation": "always",
-        "shell.aria.main": "always",
-        "shell.alt.productMark": "always",
+        "serviceDetail.documentTitle": {
+          "when": "always",
+          "as": "title"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
         "nav.home": "always",
         "nav.deploys": "always",
         "nav.services": "always",
@@ -2085,7 +2163,7 @@
           "serviceDetailRestartFailed",
           "serviceDetailNotifications"
         ],
-        "serviceDetail.latency.unobserved": [
+        "services.latency.unobserved": [
           "serviceDetailRestarting",
           "serviceDetailRestartFailed",
           "serviceDetailNotifications"
@@ -2182,10 +2260,22 @@
       ],
       "copy": {
         "deploys.title": "always",
-        "deploys.documentTitle": "always",
-        "shell.aria.navigation": "always",
-        "shell.aria.main": "always",
-        "shell.alt.productMark": "always",
+        "deploys.documentTitle": {
+          "when": "always",
+          "as": "title"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
         "nav.home": "always",
         "nav.deploys": "always",
         "nav.services": "always",
@@ -2294,10 +2384,22 @@
       ],
       "copy": {
         "incidents.title": "always",
-        "incidents.documentTitle": "always",
-        "shell.aria.navigation": "always",
-        "shell.aria.main": "always",
-        "shell.alt.productMark": "always",
+        "incidents.documentTitle": {
+          "when": "always",
+          "as": "title"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
         "nav.home": "always",
         "nav.deploys": "always",
         "nav.services": "always",
@@ -2386,17 +2488,20 @@
               "incidentThreadResolved",
               "incidentThreadResolveFailed"
             ],
-            "incidentThread.aria.send": [
-              "incidentThreadReady",
-              "incidentThreadLoading",
-              "incidentThreadEmpty",
-              "incidentThreadLongContent",
-              "incidentThreadSent",
-              "incidentThreadSendFailed",
-              "incidentThreadRecovered",
-              "incidentThreadResolved",
-              "incidentThreadResolveFailed"
-            ]
+            "incidentThread.aria.send": {
+              "when": [
+                "incidentThreadReady",
+                "incidentThreadLoading",
+                "incidentThreadEmpty",
+                "incidentThreadLongContent",
+                "incidentThreadSent",
+                "incidentThreadSendFailed",
+                "incidentThreadRecovered",
+                "incidentThreadResolved",
+                "incidentThreadResolveFailed"
+              ],
+              "as": "label"
+            }
           },
           "on": [
             {
@@ -2461,24 +2566,36 @@
             "incidentThread.recovery.action": [
               "incidentThreadFailed"
             ],
-            "incidentThread.status.sending": [
-              "incidentThreadSending"
-            ],
-            "incidentThread.status.sent": [
-              "incidentThreadSent"
-            ],
+            "incidentThread.status.sending": {
+              "when": [
+                "incidentThreadSending"
+              ],
+              "as": "announce"
+            },
+            "incidentThread.status.sent": {
+              "when": [
+                "incidentThreadSent"
+              ],
+              "as": "announce"
+            },
             "incidentThread.sendFailure": [
               "incidentThreadSendFailed"
             ],
             "incidentThread.retrySend": [
               "incidentThreadSendFailed"
             ],
-            "incidentThread.status.resolving": [
-              "incidentThreadResolving"
-            ],
-            "incidentThread.status.resolved": [
-              "incidentThreadResolved"
-            ],
+            "incidentThread.status.resolving": {
+              "when": [
+                "incidentThreadResolving"
+              ],
+              "as": "announce"
+            },
+            "incidentThread.status.resolved": {
+              "when": [
+                "incidentThreadResolved"
+              ],
+              "as": "announce"
+            },
             "incidentThread.resolveFailure": [
               "incidentThreadResolveFailed"
             ],
@@ -2509,6 +2626,13 @@
             "incidentThread.resolveReview.close": [
               "resolveIncidentSetup"
             ]
+          },
+          "data": {
+            "contract": "Incident",
+            "many": false,
+            "map": {
+              "title": "title"
+            }
           }
         },
         {
@@ -2518,9 +2642,12 @@
           "variant": "inline",
           "because": "The recorded resolution belongs beside the incident timeline and must survive a transient notification.",
           "copy": {
-            "incidentThread.outcome": [
-              "incidentThreadResolved"
-            ]
+            "incidentThread.outcome": {
+              "when": [
+                "incidentThreadResolved"
+              ],
+              "as": "announce"
+            }
           }
         }
       ],
@@ -2544,10 +2671,22 @@
       ],
       "copy": {
         "incidentThread.title": "always",
-        "incidentThread.documentTitle": "always",
-        "shell.aria.navigation": "always",
-        "shell.aria.main": "always",
-        "shell.alt.productMark": "always",
+        "incidentThread.documentTitle": {
+          "when": "always",
+          "as": "title"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
         "nav.home": "always",
         "nav.deploys": "always",
         "nav.services": "always",
@@ -2647,12 +2786,18 @@
         {
           "id": "state",
           "copy": {
-            "newService.status.saving": [
-              "newServiceSaving"
-            ],
-            "newService.status.saved": [
-              "newServiceSaved"
-            ],
+            "newService.status.saving": {
+              "when": [
+                "newServiceSaving"
+              ],
+              "as": "announce"
+            },
+            "newService.status.saved": {
+              "when": [
+                "newServiceSaved"
+              ],
+              "as": "announce"
+            },
             "newService.recovery": [
               "newServiceFailed"
             ]
@@ -2698,10 +2843,22 @@
       ],
       "copy": {
         "newService.title": "always",
-        "newService.documentTitle": "always",
-        "shell.aria.navigation": "always",
-        "shell.aria.main": "always",
-        "shell.alt.productMark": "always",
+        "newService.documentTitle": {
+          "when": "always",
+          "as": "title"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
         "nav.home": "always",
         "nav.deploys": "always",
         "nav.services": "always",
@@ -2769,12 +2926,18 @@
         "newService.invalid": [
           "newServiceInvalidSetup"
         ],
-        "newService.status.saving": [
-          "newServiceSaving"
-        ],
-        "newService.status.saved": [
-          "newServiceSaved"
-        ],
+        "newService.status.saving": {
+          "when": [
+            "newServiceSaving"
+          ],
+          "as": "announce"
+        },
+        "newService.status.saved": {
+          "when": [
+            "newServiceSaved"
+          ],
+          "as": "announce"
+        },
         "newService.recovery": [
           "newServiceFailed"
         ],
@@ -2860,12 +3023,18 @@
         {
           "id": "state",
           "copy": {
-            "settings.status.saving": [
-              "settingsSaving"
-            ],
-            "settings.status.saved": [
-              "settingsSaved"
-            ],
+            "settings.status.saving": {
+              "when": [
+                "settingsSaving"
+              ],
+              "as": "announce"
+            },
+            "settings.status.saved": {
+              "when": [
+                "settingsSaved"
+              ],
+              "as": "announce"
+            },
             "settings.recovery": [
               "settingsFailed"
             ]
@@ -2884,10 +3053,22 @@
       ],
       "copy": {
         "settings.title": "always",
-        "settings.documentTitle": "always",
-        "shell.aria.navigation": "always",
-        "shell.aria.main": "always",
-        "shell.alt.productMark": "always",
+        "settings.documentTitle": {
+          "when": "always",
+          "as": "title"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
         "nav.home": "always",
         "nav.deploys": "always",
         "nav.services": "always",
@@ -2931,10 +3112,22 @@
       ],
       "copy": {
         "help.title": "always",
-        "help.documentTitle": "always",
-        "shell.aria.navigation": "always",
-        "shell.aria.main": "always",
-        "shell.alt.productMark": "always",
+        "help.documentTitle": {
+          "when": "always",
+          "as": "title"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
         "nav.home": "always",
         "nav.deploys": "always",
         "nav.services": "always",
@@ -2973,10 +3166,18 @@
       ],
       "copy": {
         "landing.title": "always",
-        "landing.documentTitle": "always",
-        "shell.aria.navigation": "always",
-        "shell.aria.main": "always",
-        "shell.alt.productMark": "always",
+        "landing.documentTitle": {
+          "when": "always",
+          "as": "title"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
         "landing.description": "always",
         "landing.action": "always",
         "landing.secondaryAction": "always",
@@ -3002,12 +3203,30 @@
         "landing.proof.uptime.label": "always",
         "landing.engineerQuote.text": "always",
         "landing.engineerQuote.attribution": "always",
-        "landing.teamMarks.northwind.alt": "always",
-        "landing.teamMarks.contoso.alt": "always",
-        "landing.teamMarks.fabrikam.alt": "always",
-        "landing.teamMarks.initech.alt": "always",
-        "landing.teamMarks.umbrella.alt": "always",
-        "landing.teamMarks.hooli.alt": "always"
+        "landing.teamMarks.northwind.alt": {
+          "when": "always",
+          "as": "alt"
+        },
+        "landing.teamMarks.contoso.alt": {
+          "when": "always",
+          "as": "alt"
+        },
+        "landing.teamMarks.fabrikam.alt": {
+          "when": "always",
+          "as": "alt"
+        },
+        "landing.teamMarks.initech.alt": {
+          "when": "always",
+          "as": "alt"
+        },
+        "landing.teamMarks.umbrella.alt": {
+          "when": "always",
+          "as": "alt"
+        },
+        "landing.teamMarks.hooli.alt": {
+          "when": "always",
+          "as": "alt"
+        }
       }
     },
     {
@@ -3038,10 +3257,22 @@
         "desktop"
       ],
       "copy": {
-        "emailDeployFailed.subject": "always",
-        "emailDeployFailed.body": "always",
-        "emailDeployFailed.action": "always",
-        "emailDeployFailed.preheader": "always"
+        "emailDeployFailed.subject": {
+          "when": "always",
+          "as": "subject"
+        },
+        "emailDeployFailed.body": {
+          "when": "always",
+          "as": "body"
+        },
+        "emailDeployFailed.action": {
+          "when": "always",
+          "as": "action"
+        },
+        "emailDeployFailed.preheader": {
+          "when": "always",
+          "as": "preheader"
+        }
       },
       "channel": "email"
     },
@@ -3073,15 +3304,20 @@
         "desktop"
       ],
       "copy": {
-        "pushIncidentOpened.title": "always",
-        "pushIncidentOpened.body": "always",
-        "pushIncidentOpened.action": "always"
+        "pushIncidentOpened.title": {
+          "when": "always",
+          "as": "title"
+        },
+        "pushIncidentOpened.body": {
+          "when": "always",
+          "as": "body"
+        },
+        "pushIncidentOpened.action": {
+          "when": "always",
+          "as": "action"
+        }
       },
       "channel": "push"
     }
-  ],
-  "files": {
-    "copy": "copy.md",
-    "fixtures": "fixtures.json"
-  }
+  ]
 }

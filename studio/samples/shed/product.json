@@ -1,4 +1,5 @@
 {
+  "$schema": "../../../references/product-model.schema.json",
   "model": 1,
   "product": {
     "id": "shed",
@@ -48,8 +49,11 @@
       ],
       "never": [
         "item",
+        "items",
         "listing",
-        "product"
+        "listings",
+        "product",
+        "products"
       ]
     },
     {
@@ -61,7 +65,9 @@
       ],
       "never": [
         "booking",
-        "order"
+        "bookings",
+        "order",
+        "orders"
       ]
     },
     {
@@ -73,7 +79,9 @@
       ],
       "never": [
         "chat",
-        "ticket"
+        "chats",
+        "ticket",
+        "tickets"
       ]
     }
   ],
@@ -201,9 +209,9 @@
     }
   },
   "states": {
-    "homeReady": {
-      "label": "Ready",
-      "rule": "Upcoming pickup and unfinished requests lead; nearby tools remain available.",
+    "populated": {
+      "label": "Populated",
+      "rule": "Home shows current rentals and nearby tools; catalog shows comparable tool names, daily fees and distances. Each surface reads only the contracts in its own slots.",
       "kind": "data",
       "fixtures": {
         "Tool": "populated",
@@ -219,9 +227,9 @@
         "Rental": "none"
       }
     },
-    "homeLoading": {
+    "loading": {
       "label": "Loading",
-      "rule": "Keep the previous rental summary while nearby tools load.",
+      "rule": "Keep previously loaded tool rows while refreshing nearby tools. Home also retains current rentals; catalog does not render the Rental contract. Announce the local loading status without replacing retained content.",
       "kind": "data",
       "fixtures": {
         "Tool": "populated",
@@ -237,28 +245,13 @@
         "Rental": "long"
       }
     },
-    "catalogPopulated": {
-      "label": "Populated",
-      "rule": "Use real nearby-tool counts and keep name, daily fee and distance comparable.",
-      "kind": "data",
-      "fixtures": {
-        "Tool": "populated"
-      }
-    },
-    "catalogLoading": {
-      "label": "Loading",
-      "rule": "Reserve the collection layout after a short delay; keep prior results visible.",
-      "kind": "data",
-      "fixtures": {
-        "Tool": "populated"
-      }
-    },
-    "catalogNoMatches": {
+    "noMatches": {
       "label": "No matches",
-      "rule": "Explain which criteria removed all results and offer to clear them.",
+      "rule": "No Tool rows match the current nearby-search criteria. Home keeps current Rental rows and offers browsing a wider area; catalog preserves its criteria and offers clearing filters.",
       "kind": "data",
       "fixtures": {
-        "Tool": "none"
+        "Tool": "none",
+        "Rental": "current"
       }
     },
     "catalogNoTools": {
@@ -269,12 +262,13 @@
         "Tool": "none"
       }
     },
-    "catalogFailed": {
+    "failed": {
       "label": "Failed",
-      "rule": "Keep the query and criteria; do not show private diagnostics.",
+      "rule": "No Tool or Rental rows are available after the request fails. Keep route and search context, show the surface-specific recovery copy and offer a load retry without private diagnostics.",
       "kind": "data",
       "fixtures": {
-        "Tool": "none"
+        "Tool": "none",
+        "Rental": "none"
       }
     },
     "catalogLongContent": {
@@ -861,8 +855,14 @@
       "priority": "must",
       "binding": {
         "record": "browse-inspect-act",
-        "status": "open",
-        "sameAs": "surface:catalog"
+        "status": "proposed",
+        "sameAs": "surface:catalog",
+        "variant": "grid",
+        "candidates": [
+          "grid",
+          "list",
+          "split"
+        ]
       },
       "stages": [
         {
@@ -1133,6 +1133,27 @@
           "copy": {
             "home.firstVisit": [
               "homeFirstVisit"
+            ],
+            "states.loading": {
+              "when": [
+                "loading"
+              ],
+              "as": "announce"
+            },
+            "home.empty.noMatches.title": [
+              "noMatches"
+            ],
+            "home.empty.noMatches.body": [
+              "noMatches"
+            ],
+            "home.recovery.title": [
+              "failed"
+            ],
+            "home.recovery.body": [
+              "failed"
+            ],
+            "home.recovery.retry": [
+              "failed"
             ]
           }
         },
@@ -1140,8 +1161,14 @@
           "id": "identity",
           "copy": {
             "home.title": "always",
-            "home.documentTitle": "always",
-            "home.alt.productMark": "always"
+            "home.documentTitle": {
+              "when": "always",
+              "as": "title"
+            },
+            "shell.alt.productMark": {
+              "when": "always",
+              "as": "alt"
+            }
           }
         },
         {
@@ -1156,10 +1183,12 @@
         }
       ],
       "states": [
-        "homeReady",
+        "populated",
         "homeFirstVisit",
-        "homeLoading",
-        "homeLongContent"
+        "loading",
+        "homeLongContent",
+        "noMatches",
+        "failed"
       ],
       "viewports": [
         "phone",
@@ -1167,23 +1196,37 @@
       ],
       "copy": {
         "home.title": "always",
-        "home.documentTitle": "always",
-        "home.aria.navigation": "always",
-        "home.aria.main": "always",
-        "home.alt.productMark": "always",
+        "home.documentTitle": {
+          "when": "always",
+          "as": "title"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
         "home.start": "always",
         "home.upcoming": [
-          "homeReady",
-          "homeLoading",
+          "populated",
+          "loading",
           "homeLongContent",
-          "homeAccountMenuSetup"
+          "homeAccountMenuSetup",
+          "noMatches"
         ],
         "home.priceUnit": "always",
         "home.viewRental": [
-          "homeReady",
-          "homeLoading",
+          "populated",
+          "loading",
           "homeLongContent",
-          "homeAccountMenuSetup"
+          "homeAccountMenuSetup",
+          "noMatches"
         ],
         "home.firstVisit": [
           "homeFirstVisit"
@@ -1204,21 +1247,24 @@
         "nav.thread": "always",
         "nav.settings": "always",
         "rentals.status.approved": [
-          "homeReady",
-          "homeLoading",
+          "populated",
+          "loading",
           "homeLongContent",
-          "homeAccountMenuSetup"
+          "homeAccountMenuSetup",
+          "noMatches"
         ],
         "rentals.status.active": [
-          "homeReady",
-          "homeLoading",
-          "homeAccountMenuSetup"
+          "populated",
+          "loading",
+          "homeAccountMenuSetup",
+          "noMatches"
         ],
         "home.returnDue": [
-          "homeReady",
-          "homeLoading",
+          "populated",
+          "loading",
           "homeLongContent",
-          "homeAccountMenuSetup"
+          "homeAccountMenuSetup",
+          "noMatches"
         ]
       },
       "setups": [
@@ -1226,7 +1272,7 @@
           "id": "homeAccountMenuSetup",
           "label": "Account menu open",
           "event": "homeAccountMenuEvent",
-          "state": "homeReady"
+          "state": "populated"
         }
       ]
     },
@@ -1250,7 +1296,10 @@
           "id": "header",
           "copy": {
             "catalog.title": "always",
-            "catalog.documentTitle": "always"
+            "catalog.documentTitle": {
+              "when": "always",
+              "as": "title"
+            }
           }
         },
         {
@@ -1270,36 +1319,36 @@
           },
           "copy": {
             "catalog.priceUnit": [
-              "catalogPopulated",
-              "catalogLoading",
+              "populated",
+              "loading",
               "catalogLongContent",
               "catalogFiltersOpenSetup"
             ],
             "catalog.availability.available": [
-              "catalogPopulated",
-              "catalogLoading",
+              "populated",
+              "loading",
               "catalogLongContent",
               "catalogFiltersOpenSetup"
             ],
             "catalog.availability.rented": [
-              "catalogPopulated",
-              "catalogLoading",
+              "populated",
+              "loading",
               "catalogFiltersOpenSetup"
             ],
             "catalog.availability.away": [
-              "catalogPopulated",
-              "catalogLoading",
+              "populated",
+              "loading",
               "catalogFiltersOpenSetup"
             ],
             "catalog.inspect": [
-              "catalogPopulated",
-              "catalogLoading",
+              "populated",
+              "loading",
               "catalogLongContent",
               "catalogFiltersOpenSetup"
             ],
             "catalog.distance": [
-              "catalogPopulated",
-              "catalogLoading",
+              "populated",
+              "loading",
               "catalogLongContent",
               "catalogFiltersOpenSetup"
             ]
@@ -1352,7 +1401,7 @@
               "catalogFiltersOpenSetup"
             ],
             "catalog.filter.clear": [
-              "catalogNoMatches",
+              "noMatches",
               "catalogFiltersOpenSetup"
             ]
           }
@@ -1367,13 +1416,13 @@
           ],
           "copy": {
             "catalog.empty.noMatches.title": [
-              "catalogNoMatches"
+              "noMatches"
             ],
             "catalog.empty.noMatches.body": [
-              "catalogNoMatches"
+              "noMatches"
             ],
             "catalog.empty.noMatches.action": [
-              "catalogNoMatches"
+              "noMatches"
             ],
             "catalog.empty.noTools.title": [
               "catalogNoTools"
@@ -1385,23 +1434,29 @@
               "catalogNoTools"
             ],
             "catalog.recovery.title": [
-              "catalogFailed"
+              "failed"
             ],
             "catalog.recovery.body": [
-              "catalogFailed"
+              "failed"
             ],
             "catalog.recovery.retry": [
-              "catalogFailed"
-            ]
+              "failed"
+            ],
+            "states.loading": {
+              "when": [
+                "loading"
+              ],
+              "as": "announce"
+            }
           }
         }
       ],
       "states": [
-        "catalogPopulated",
-        "catalogLoading",
-        "catalogNoMatches",
+        "populated",
+        "loading",
+        "noMatches",
         "catalogNoTools",
-        "catalogFailed",
+        "failed",
         "catalogLongContent"
       ],
       "viewports": [
@@ -1410,10 +1465,22 @@
       ],
       "copy": {
         "catalog.title": "always",
-        "catalog.documentTitle": "always",
-        "catalog.aria.navigation": "always",
-        "catalog.aria.main": "always",
-        "catalog.alt.productMark": "always",
+        "catalog.documentTitle": {
+          "when": "always",
+          "as": "title"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
         "nav.catalog": "always",
         "nav.home": "always",
         "nav.rentals": "always",
@@ -1425,7 +1492,7 @@
           "id": "catalogFiltersOpenSetup",
           "label": "Filters open",
           "event": "catalogOpenFiltersEvent",
-          "state": "catalogPopulated"
+          "state": "populated"
         }
       ]
     },
@@ -1501,24 +1568,36 @@
             "toast"
           ],
           "copy": {
-            "toolDetail.outcome.pending": [
-              "toolDetailRequestPending"
-            ],
-            "toolDetail.outcome.sent": [
-              "toolDetailRequestSent"
-            ],
+            "toolDetail.outcome.pending": {
+              "when": [
+                "toolDetailRequestPending"
+              ],
+              "as": "announce"
+            },
+            "toolDetail.outcome.sent": {
+              "when": [
+                "toolDetailRequestSent"
+              ],
+              "as": "announce"
+            },
             "toolDetail.outcome.view": [
               "toolDetailRequestSent"
             ],
-            "toolDetail.outcome.failed": [
-              "toolDetailRequestFailed"
-            ],
+            "toolDetail.outcome.failed": {
+              "when": [
+                "toolDetailRequestFailed"
+              ],
+              "as": "announce"
+            },
             "toolDetail.outcome.retry": [
               "toolDetailRequestFailed"
             ],
-            "toolDetail.outcome.toast": [
-              "toolDetailToastSetup"
-            ],
+            "toolDetail.outcome.toast": {
+              "when": [
+                "toolDetailToastSetup"
+              ],
+              "as": "announce"
+            },
             "toolDetail.outcome.dismiss": [
               "toolDetailToastSetup"
             ]
@@ -1537,12 +1616,21 @@
           "variant": "spinner",
           "because": "The request has no measured total; an indeterminate local status is honest.",
           "copy": {
-            "toolDetail.status": [
-              "toolDetailRequestPending"
-            ]
+            "toolDetail.status": {
+              "when": [
+                "toolDetailRequestPending"
+              ],
+              "as": "announce"
+            }
           },
           "states": [
             "toolDetailRequestPending"
+          ],
+          "on": [
+            {
+              "event": "toolDetailRequestEvent",
+              "axis": "asyncFeedback"
+            }
           ]
         }
       ],
@@ -1561,10 +1649,22 @@
       ],
       "copy": {
         "toolDetail.title": "always",
-        "toolDetail.documentTitle": "always",
-        "toolDetail.aria.navigation": "always",
-        "toolDetail.aria.main": "always",
-        "toolDetail.alt.productMark": "always",
+        "toolDetail.documentTitle": {
+          "when": "always",
+          "as": "title"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
         "toolDetail.priceUnit": [
           "toolDetailAvailable",
           "toolDetailRequestPending",
@@ -1679,12 +1779,18 @@
           "variant": "spinner",
           "because": "Provider handoff has no measured progress total.",
           "copy": {
-            "checkout.status": [
-              "checkoutUnknownResult"
-            ],
-            "checkout.pending": [
-              "checkoutHandoffPending"
-            ]
+            "checkout.status": {
+              "when": [
+                "checkoutUnknownResult"
+              ],
+              "as": "announce"
+            },
+            "checkout.pending": {
+              "when": [
+                "checkoutHandoffPending"
+              ],
+              "as": "announce"
+            }
           },
           "on": [
             {
@@ -1712,10 +1818,22 @@
       ],
       "copy": {
         "checkout.title": "always",
-        "checkout.documentTitle": "always",
-        "checkout.aria.navigation": "always",
-        "checkout.aria.main": "always",
-        "checkout.alt.productMark": "always",
+        "checkout.documentTitle": {
+          "when": "always",
+          "as": "title"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
         "checkout.total": "always",
         "checkout.priceUnit": "always",
         "checkout.payAmount": [
@@ -1724,9 +1842,12 @@
         ],
         "checkout.paymentBoundary": "always",
         "checkout.cancel": "always",
-        "checkout.pending": [
-          "checkoutHandoffPending"
-        ],
+        "checkout.pending": {
+          "when": [
+            "checkoutHandoffPending"
+          ],
+          "as": "announce"
+        },
         "checkout.declined": [
           "checkoutDeclined"
         ],
@@ -1768,7 +1889,10 @@
           "id": "header",
           "copy": {
             "receipt.title": "always",
-            "receipt.documentTitle": "always"
+            "receipt.documentTitle": {
+              "when": "always",
+              "as": "title"
+            }
           }
         },
         {
@@ -1800,7 +1924,10 @@
             }
           },
           "copy": {
-            "receipt.outcome": "always",
+            "receipt.outcome": {
+              "when": "always",
+              "as": "announce"
+            },
             "receipt.reference": "always",
             "receipt.nextSteps": "always",
             "receipt.pickup": "always",
@@ -1833,13 +1960,28 @@
       ],
       "copy": {
         "receipt.title": "always",
-        "receipt.documentTitle": "always",
-        "receipt.aria.navigation": "always",
-        "receipt.aria.main": "always",
-        "receipt.alt.productMark": "always",
-        "receipt.delivery.pending": [
-          "receiptEmailPending"
-        ],
+        "receipt.documentTitle": {
+          "when": "always",
+          "as": "title"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
+        "receipt.delivery.pending": {
+          "when": [
+            "receiptEmailPending"
+          ],
+          "as": "announce"
+        },
         "nav.home": "always",
         "nav.catalog": "always",
         "nav.rentals": "always",
@@ -1896,6 +2038,10 @@
           "states": [
             "rentalsEmpty",
             "rentalsFailed"
+          ],
+          "candidates": [
+            "compactCue",
+            "actionPanel"
           ]
         },
         {
@@ -1943,15 +2089,24 @@
           "variant": "inline",
           "because": "Cancellation result must persist alongside rental history, not only in a transient toast.",
           "copy": {
-            "rentals.outcome.pending": [
-              "rentalsCancellationPending"
-            ],
-            "rentals.outcome.cancelled": [
-              "rentalsCancelled"
-            ],
-            "rentals.outcome.failed": [
-              "rentalsCancellationFailed"
-            ]
+            "rentals.outcome.pending": {
+              "when": [
+                "rentalsCancellationPending"
+              ],
+              "as": "announce"
+            },
+            "rentals.outcome.cancelled": {
+              "when": [
+                "rentalsCancelled"
+              ],
+              "as": "announce"
+            },
+            "rentals.outcome.failed": {
+              "when": [
+                "rentalsCancellationFailed"
+              ],
+              "as": "announce"
+            }
           },
           "on": [
             {
@@ -1977,10 +2132,22 @@
       ],
       "copy": {
         "rentals.title": "always",
-        "rentals.documentTitle": "always",
-        "rentals.aria.navigation": "always",
-        "rentals.aria.main": "always",
-        "rentals.alt.productMark": "always",
+        "rentals.documentTitle": {
+          "when": "always",
+          "as": "title"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
         "rentals.pickup": [
           "rentalsActive",
           "rentalsCancellationPending",
@@ -2070,7 +2237,10 @@
           "id": "header",
           "copy": {
             "thread.title": "always",
-            "thread.documentTitle": "always"
+            "thread.documentTitle": {
+              "when": "always",
+              "as": "title"
+            }
           }
         },
         {
@@ -2116,10 +2286,16 @@
             "thread.composer.label": "always",
             "thread.composer.placeholder": "always",
             "thread.send": "always",
-            "thread.aria.messages": "always",
-            "thread.pending": [
-              "threadSending"
-            ],
+            "thread.aria.messages": {
+              "when": "always",
+              "as": "label"
+            },
+            "thread.pending": {
+              "when": [
+                "threadSending"
+              ],
+              "as": "announce"
+            },
             "thread.recovery": [
               "threadFailed"
             ],
@@ -2140,9 +2316,12 @@
             "thread.empty": [
               "threadEmpty"
             ],
-            "thread.sent": [
-              "threadSent"
-            ]
+            "thread.sent": {
+              "when": [
+                "threadSent"
+              ],
+              "as": "announce"
+            }
           }
         }
       ],
@@ -2160,10 +2339,22 @@
       ],
       "copy": {
         "thread.title": "always",
-        "thread.documentTitle": "always",
-        "thread.aria.navigation": "always",
-        "thread.aria.main": "always",
-        "thread.alt.productMark": "always",
+        "thread.documentTitle": {
+          "when": "always",
+          "as": "title"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
         "nav.thread": "always",
         "nav.home": "always",
         "nav.catalog": "always",
@@ -2186,7 +2377,10 @@
           "id": "header",
           "copy": {
             "settings.title": "always",
-            "settings.documentTitle": "always"
+            "settings.documentTitle": {
+              "when": "always",
+              "as": "title"
+            }
           }
         },
         {
@@ -2232,12 +2426,18 @@
         {
           "id": "state",
           "copy": {
-            "settings.status.saving": [
-              "settingsSaving"
-            ],
-            "settings.status.saved": [
-              "settingsSaved"
-            ],
+            "settings.status.saving": {
+              "when": [
+                "settingsSaving"
+              ],
+              "as": "announce"
+            },
+            "settings.status.saved": {
+              "when": [
+                "settingsSaved"
+              ],
+              "as": "announce"
+            },
             "settings.recovery": [
               "settingsFailed"
             ]
@@ -2256,18 +2456,36 @@
       ],
       "copy": {
         "settings.title": "always",
-        "settings.documentTitle": "always",
-        "settings.aria.navigation": "always",
-        "settings.aria.main": "always",
-        "settings.alt.productMark": "always",
+        "settings.documentTitle": {
+          "when": "always",
+          "as": "title"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
         "settings.save": "always",
         "settings.cancel": "always",
-        "settings.status.saving": [
-          "settingsSaving"
-        ],
-        "settings.status.saved": [
-          "settingsSaved"
-        ],
+        "settings.status.saving": {
+          "when": [
+            "settingsSaving"
+          ],
+          "as": "announce"
+        },
+        "settings.status.saved": {
+          "when": [
+            "settingsSaved"
+          ],
+          "as": "announce"
+        },
         "settings.recovery": [
           "settingsFailed"
         ],
@@ -2293,7 +2511,10 @@
           "id": "header",
           "copy": {
             "signIn.title": "always",
-            "signIn.documentTitle": "always"
+            "signIn.documentTitle": {
+              "when": "always",
+              "as": "title"
+            }
           }
         },
         {
@@ -2344,15 +2565,24 @@
         {
           "id": "status",
           "copy": {
-            "signIn.code.sent": [
-              "signInCodeSent"
-            ],
-            "signIn.status": [
-              "signInVerifying"
-            ],
-            "signIn.verified": [
-              "signInVerified"
-            ],
+            "signIn.code.sent": {
+              "when": [
+                "signInCodeSent"
+              ],
+              "as": "announce"
+            },
+            "signIn.status": {
+              "when": [
+                "signInVerifying"
+              ],
+              "as": "announce"
+            },
+            "signIn.verified": {
+              "when": [
+                "signInVerified"
+              ],
+              "as": "announce"
+            },
             "signIn.start": [
               "signInVerified"
             ],
@@ -2405,9 +2635,18 @@
       ],
       "copy": {
         "signIn.title": "always",
-        "signIn.documentTitle": "always",
-        "signIn.aria.main": "always",
-        "signIn.alt.productMark": "always"
+        "signIn.documentTitle": {
+          "when": "always",
+          "as": "title"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        }
       },
       "setups": [
         {
@@ -2433,15 +2672,24 @@
           "id": "identity",
           "copy": {
             "notFound.title": "always",
-            "notFound.documentTitle": "always",
-            "notFound.alt.productMark": "always"
+            "notFound.documentTitle": {
+              "when": "always",
+              "as": "title"
+            },
+            "shell.alt.productMark": {
+              "when": "always",
+              "as": "alt"
+            }
           }
         },
         {
           "id": "header",
           "copy": {
             "notFound.title": "always",
-            "notFound.documentTitle": "always"
+            "notFound.documentTitle": {
+              "when": "always",
+              "as": "title"
+            }
           }
         },
         {
@@ -2468,9 +2716,18 @@
       ],
       "copy": {
         "notFound.title": "always",
-        "notFound.documentTitle": "always",
-        "notFound.aria.main": "always",
-        "notFound.alt.productMark": "always",
+        "notFound.documentTitle": {
+          "when": "always",
+          "as": "title"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
         "notFound.explanation": "always",
         "notFound.browse": "always",
         "notFound.rentals": "always",
@@ -2512,13 +2769,34 @@
         "desktop"
       ],
       "copy": {
-        "emailRentalConfirmed.subject": "always",
-        "emailRentalConfirmed.body": "always",
-        "emailRentalConfirmed.action": "always",
-        "emailRentalConfirmed.preheader": "always",
-        "emailRentalConfirmed.footer": "always",
-        "emailRentalConfirmed.alt.mark": "always",
-        "emailRentalConfirmed.linkTitle": "always"
+        "emailRentalConfirmed.subject": {
+          "when": "always",
+          "as": "subject"
+        },
+        "emailRentalConfirmed.body": {
+          "when": "always",
+          "as": "body"
+        },
+        "emailRentalConfirmed.action": {
+          "when": "always",
+          "as": "action"
+        },
+        "emailRentalConfirmed.preheader": {
+          "when": "always",
+          "as": "preheader"
+        },
+        "emailRentalConfirmed.footer": {
+          "when": "always",
+          "as": "body"
+        },
+        "emailRentalConfirmed.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
+        "emailRentalConfirmed.linkTitle": {
+          "when": "always",
+          "as": "label"
+        }
       }
     },
     {
@@ -2552,10 +2830,22 @@
         "desktop"
       ],
       "copy": {
-        "pushRequestApproved.body": "always",
-        "pushRequestApproved.action": "always",
-        "pushRequestApproved.title": "always",
-        "pushRequestApproved.aria.action": "always"
+        "pushRequestApproved.body": {
+          "when": "always",
+          "as": "body"
+        },
+        "pushRequestApproved.action": {
+          "when": "always",
+          "as": "action"
+        },
+        "pushRequestApproved.title": {
+          "when": "always",
+          "as": "title"
+        },
+        "pushRequestApproved.aria.action": {
+          "when": "always",
+          "as": "label"
+        }
       }
     },
     {
@@ -2592,7 +2882,10 @@
           "id": "header",
           "copy": {
             "lendTool.title": "always",
-            "lendTool.documentTitle": "always"
+            "lendTool.documentTitle": {
+              "when": "always",
+              "as": "title"
+            }
           }
         },
         {
@@ -2610,9 +2903,12 @@
         {
           "id": "state",
           "copy": {
-            "lendTool.status": [
-              "lendToolSaving"
-            ],
+            "lendTool.status": {
+              "when": [
+                "lendToolSaving"
+              ],
+              "as": "announce"
+            },
             "lendTool.recovery": [
               "lendToolFailed"
             ]
@@ -2653,19 +2949,34 @@
       ],
       "copy": {
         "lendTool.title": "always",
-        "lendTool.documentTitle": "always",
-        "lendTool.aria.navigation": "always",
-        "lendTool.aria.main": "always",
-        "lendTool.alt.productMark": "always",
+        "lendTool.documentTitle": {
+          "when": "always",
+          "as": "title"
+        },
+        "shell.aria.navigation": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.aria.main": {
+          "when": "always",
+          "as": "label"
+        },
+        "shell.alt.productMark": {
+          "when": "always",
+          "as": "alt"
+        },
         "lendTool.name.label": "always",
         "lendTool.description.label": "always",
         "lendTool.fee.label": "always",
         "lendTool.availability.label": "always",
         "lendTool.save": "always",
         "lendTool.cancel": "always",
-        "lendTool.status": [
-          "lendToolSaving"
-        ],
+        "lendTool.status": {
+          "when": [
+            "lendToolSaving"
+          ],
+          "as": "announce"
+        },
         "nav.home": "always",
         "nav.catalog": "always",
         "nav.rentals": "always",

@@ -9,7 +9,7 @@ Frontend Studio supports two paths:
 
 The studio renders every visual choice against the product's real content. The walk opens with the product's archetype (workspace, feed, store, course or reader, media library, game companion, editor, conversation or utility), which sets the home surface and sample content; then a reference and a look, followed by frame, surfaces, tokens, components, interaction and landing. Each decision is a step with a few composable options; the user confirms or departs from the defaults, records what no option offers, and exports theme variables, selected patterns, next-round notes and component configuration. Reference presets are decision systems based on structural product patterns, not templates or branded copies.
 
-**Model tooling, current studio:** The product model, pattern headers, checker, sample definitions and grill workflow define and check product files. The current studio still uses its fixed catalog, `content.json` input and saved walks. It does not load product models, generate their walk, edit deck keys in Copy mode or provide a model-driven **Every screen** page. Capture and export are not model-aware. Follow the current content-loading and export instructions below.
+Read the [current boundary](references/product-model.md#current-boundary) before using the model tooling or studio. Follow the content-loading and export instructions below.
 
 ## Install
 
@@ -66,7 +66,9 @@ bun run model:check /absolute/path/to/product/docs/product.json --write-shown-wh
 
 This is a guarded mutation: the checker validates the model, bindings, deck and fixtures with the candidate reach before writing. Other validation errors leave the deck untouched. Successful updates preserve chosen copy, prose, row order, line endings and escaped generated labels.
 
-See [product-model.md](references/product-model.md) for the [JSON Schema](references/product-model.schema.json), file-path rules, pattern metadata, diagnostics and sample usage. A passing check establishes a consistent definition; it does not load a model into the current studio or implement its flows.
+See [product-model.md](references/product-model.md) for the [JSON Schema](references/product-model.schema.json), file-path rules, copy roles and formatters, nullable fixtures, pattern metadata, diagnostics and sample usage.
+
+Every screen coverage includes every referenced fixed string across all modeled surfaces, states, setups, copy roles and channels, including Should-have and Later flows. Must-have priority scopes walk choices, not copy coverage. See the [coverage contract](references/product-model.md#every-screen-coverage).
 
 ## Run the studio
 
@@ -94,7 +96,7 @@ The five surface galleries each offer four structural options, on every archetyp
 
 The interaction branch separates **motion language** (Still, Snappy, Anchored, Tactile, Material), **layer arrival**, **control response**, **content swap**, **async feedback**, **route transition** and **theme transition**. Motion specimens show explicit before/during/after frames for static review and a live replay; reduced motion keeps access to the final state immediate. A language re-defaults the interaction axes while explicit choices remain independent.
 
-Use the [pattern index](references/patterns/README.md) to bind selections to a product as **flow → surface → slot**. The generic studio is a fixed catalog: it does not yet generate a tree from a product model, and its specimens are not complete executable product workflows. Bind only the surfaces and capabilities the brief actually needs. Guidance, link-only inspiration and cleared implementation candidates stay separate; no reference site's assets or proprietary source are bundled.
+Use the [pattern index](references/patterns/README.md) to bind selections to a product as **flow → surface → slot**. Bind only the surfaces and capabilities the brief actually needs. See the [current boundary](references/product-model.md#current-boundary) for what the generic studio renders. Guidance, link-only inspiration and cleared implementation candidates stay separate; no reference site's assets or proprietary source are bundled.
 
 Useful controls:
 
@@ -175,7 +177,7 @@ The suite checks the saved walk, keyboard selection, copy editing, reset, refere
 
 ## Add an archetype
 
-1. Add its ID to `Archetype` in `studio/src/tree/types.ts` and `archetypeSchema` in `studio/src/model/schema.ts`. Add an option of the archetype step and its starting reference in `ARCHETYPE_REFERENCE` (`studio/src/tree/steps.ts`).
+1. Add its ID to `archetypeSchema` in `studio/src/model/schema.ts`; the runtime `Archetype` type derives from that schema. Add an option of the archetype step and its starting reference in `ARCHETYPE_REFERENCE` (`studio/src/tree/steps.ts`).
 2. Write its runtime sample content in `studio/src/content/archetypes/<id>.ts` and register it in `studio/src/content/default.ts`.
 3. Write its home surface in `studio/src/gallery/app/homes/<Name>.tsx`: the main object first, built from the shared kit (`kit.tsx`, `sections.tsx`) so every step still changes it. Register it and its nav icons in `homes/index.ts`.
 4. Add `studio/samples/<id>/` with a meaningful invented-product `product.json`, keyed `copy.md` and contract/scenario `fixtures.json`. Use local companion paths, a coherent Must-have loop, a genuine Should-have/Later cut, truthful capabilities, semantic fields/keys and state/setup-specific copy reach. The model sample and runtime content remain separate.

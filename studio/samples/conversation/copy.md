@@ -6,7 +6,7 @@ This is an invented product definition, not a claim that the current studio impl
 |---|---|---|
 | chats.title | Chats | chats |
 | chats.documentTitle | Chats · Plover | chats |
-| shell.aria.navigation | Main navigation | chats; thread; agents; newAgent; settings; help; landing |
+| shell.aria.navigation | Main navigation | chats; thread; agents; newAgent; settings; help |
 | shell.aria.main | Main content | chats; thread; agents; newAgent; settings; help; landing |
 | shell.alt.productMark | Plover mark | chats; thread; agents; newAgent; settings; help; landing |
 | chats.new | New chat | chats |
@@ -130,7 +130,7 @@ This is an invented product definition, not a claim that the current studio impl
 | pushApprovalNeeded.title | A read scope needs your approval | pushApprovalNeeded |
 | pushApprovalNeeded.body | Review {name} and its requested scope before Plover reads any data. | pushApprovalNeeded |
 | pushApprovalNeeded.action | Open in Plover | pushApprovalNeeded |
-| chats.lastActive | Active {lastActiveAt} | chats · Ready; chats · Loading; chats · Long content |
+| chats.lastActive | Active {lastActiveAt:relative} | chats · Ready; chats · Loading; chats · Long content |
 | chats.unreadCount | {unread} unread messages | chats · Ready; chats · Loading; chats · Long content |
 | thread.approval.close | Close read-scope review | thread · Needs approval; thread · Review read scope |
 | thread.status.sending | Sending your question… | thread · Sending question |
@@ -138,7 +138,7 @@ This is an invented product definition, not a claim that the current studio impl
 | thread.status.completed | Answer complete. The call and its result are in this thread. | thread · Answer complete |
 | thread.status.stopping | Stopping the response… | thread · Stopping response |
 | thread.approval.denied | The read was denied. No tool result was produced. | thread · Read denied |
-| thread.timestamp | Sent {sentAt} | thread · Ready; thread · Choose teammate; thread · Sending question; thread · Responding; thread · Needs approval; thread · Review read scope; thread · Running approved read; thread · Answer complete; thread · Stopping response; thread · Response stopped; thread · Response failed; thread · Read denied; thread · Sharing thread; thread · Thread shared; thread · Sharing failed; thread · Long answer; thread · Question not sent; thread · Stop failed |
+| thread.timestamp | Sent {sentAt:time} | thread · Ready; thread · Choose teammate; thread · Sending question; thread · Responding; thread · Needs approval; thread · Review read scope; thread · Running approved read; thread · Answer complete; thread · Stopping response; thread · Response stopped; thread · Response failed; thread · Read denied; thread · Sharing thread; thread · Thread shared; thread · Sharing failed; thread · Long answer; thread · Question not sent; thread · Stop failed |
 | thread.tool.scope | Requested read scope: {scope} | thread · Ready; thread · Choose teammate; thread · Needs approval; thread · Review read scope; thread · Running approved read; thread · Answer complete; thread · Response failed; thread · Read denied; thread · Sharing thread; thread · Thread shared; thread · Sharing failed; thread · Long answer; thread · Question not sent; thread · Stop failed |
 | thread.tool.result | Tool result: {result} | thread · Ready; thread · Choose teammate; thread · Answer complete; thread · Sharing thread; thread · Thread shared; thread · Sharing failed; thread · Long answer; thread · Question not sent |
 | thread.share.recipient | Teammate | thread · Choose teammate; thread · Sharing thread; thread · Thread shared; thread · Sharing failed |
@@ -148,7 +148,7 @@ This is an invented product definition, not a claim that the current studio impl
 | thread.share.recovery | The thread was not shared. Your teammate choice is still here. | thread · Sharing failed |
 | thread.share.retry | Retry sharing | thread · Sharing failed |
 | agents.replyDuration | {medianReplySeconds} s | agents · Ready; agents · Loading; agents · Long content; agents · New agent listed |
-| agents.lastActive | Active {lastActiveAt} | agents · Ready; agents · Loading; agents · Long content; agents · New agent listed |
+| agents.lastActive | Active {lastActiveAt:relative} | agents · Ready; agents · Loading; agents · Long content; agents · New agent listed |
 | newAgent.outcome | The agent was created. Read scopes still require approval. | newAgent · Saved |
 | newAgent.openAgents | Open Agents | newAgent · Saved |
 | emailThreadShared.preheader | Read the same conversation and inspect its tool results. | emailThreadShared |

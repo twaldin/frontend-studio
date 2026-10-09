@@ -35,7 +35,9 @@ Useful immediately, but the primary loop remains coherent and trustworthy withou
 
 A second persona, second workflow, optimization, configuration surface, social layer, admin convenience, speculative integration, or polish whose absence does not break the promise. Record it in the brief but do not let it distort the first information architecture.
 
-Keep Should-have and Later flows explicit rather than silently promoting their surfaces. The checker reports surfaces reached only by those flows as outside this round's design scope. A surface shared with a Must-have flow still belongs to the Must-have cut. The model tooling checks these priorities; the current generic studio catalog does not filter or generate its walk from them.
+Keep Should-have and Later flows explicit rather than silently promoting their surfaces. The checker warns about surfaces and deck keys reached only by those flows. A surface shared with a Must-have flow still belongs to the Must-have cut. A surface reached by no flow is an error.
+
+Must-only scope limits this round's walk choices, not copy coverage. Every screen must still reach all referenced fixed strings on all modeled surfaces, including deferred surfaces, states, setups, roles and channels. See the [coverage contract](product-model.md#every-screen-coverage) and [current boundary](product-model.md#current-boundary).
 
 ## 3. Use the dependency test
 
@@ -51,7 +53,7 @@ If answers 1–2 are vague, classify its flow Should have or Later. If answer 4 
 
 ## 4. Build the surface map
 
-For each Must-have surface record in `surfaces`:
+Record every modeled surface in `surfaces`, including deferred flows. For each, define:
 
 - ID, route or entry point, channel (`screen`, `email` or `push`) and one user question;
 - users, phone/desktop viewports, entities shown and actions allowed;
@@ -77,8 +79,8 @@ The definition is ready for visual decisions when:
 - one coherent loop is written in one sentence;
 - every capability has a documented cut and real/imagined status;
 - every flow has a goal, stages, observable end, capability needs and `must` / `should` / `later` priority;
-- every Must-have surface has its question, applicable states, setups, required bindings and realistic fixture coverage;
-- every fixed string is in the keyed deck with valid surface/slot references;
+- every modeled surface is reached by a flow and has its question, applicable states, setups and realistic fixture coverage;
+- every Must-have placement has its required bindings, and every fixed string has a valid role and surface/slot reference;
 - every proposed executable control invokes real behavior, and landing claims match the Must-have scope;
 - `model:check` has no errors and its warnings have been resolved or explicitly accounted for.
 

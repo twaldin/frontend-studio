@@ -29,7 +29,7 @@
         "name": "notifications",
         "status": "down",
         "region": "us-west-2",
-        "latencyMs": 0,
+        "latencyMs": null,
         "lastDeployedAt": "2026-10-05T14:14:00Z",
         "activeArtifact": "v46"
       },
@@ -37,7 +37,7 @@
         "name": "worker-pool",
         "status": "paused",
         "region": "us-east-1",
-        "latencyMs": 0,
+        "latencyMs": null,
         "lastDeployedAt": "2026-10-01T14:14:00Z",
         "activeArtifact": "v45"
       },
@@ -240,7 +240,7 @@
         "name": "notifications",
         "status": "down",
         "region": "us-west-2",
-        "latencyMs": 0,
+        "latencyMs": null,
         "lastDeployedAt": "2026-10-05T14:14:00Z",
         "activeArtifact": "v46"
       }
@@ -270,7 +270,7 @@
         "name": "notifications",
         "status": "down",
         "region": "us-west-2",
-        "latencyMs": 0,
+        "latencyMs": null,
         "lastDeployedAt": "2026-10-05T14:14:00Z",
         "activeArtifact": "v46"
       }
@@ -280,7 +280,7 @@
         "name": "worker-pool",
         "status": "paused",
         "region": "us-east-1",
-        "latencyMs": 0,
+        "latencyMs": null,
         "lastDeployedAt": "2026-10-01T14:14:00Z",
         "activeArtifact": "v41"
       }
